@@ -306,6 +306,11 @@ int main (int argc, char** argv)
   std::vector<Mode>::const_iterator it;
   int iStep = 1, nBlock = 0;
 
+  projs.resize(pOpt.size()+1);
+
+  if (aSim)
+    aSim->setupProjections();
+
   DataExporter* exporter = NULL;
   if (model->opt.dumpHDF5(infile) && staticSol)
   {
@@ -319,6 +324,13 @@ int main (int argc, char** argv)
                             DataExporter::SECONDARY |
                             DataExporter::NORMS);
     exporter->setFieldValue("u",model, aSim ? &aSim->getSolution() : &displ);
+    i=0;
+    for (pit = pOpt.begin(); pit != pOpt.end(); pit++) {
+      exporter->registerField(prefix[i], "projected",DataExporter::SIM,
+                              DataExporter::SECONDARY, prefix[i]);
+      exporter->setFieldValue(prefix[i], model, aSim ? &aSim->getProjection(i) : &projs[i]);
+      i++;
+    }
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5));
     exporter->registerWriter(new XMLWriter(model->opt.hdf5));
     exporter->setNormPrefixes(prefix);
@@ -342,11 +354,12 @@ int main (int argc, char** argv)
 
     // Project the FE stresses onto the splines basis
     model->setMode(SIM::RECOVERY);
+    i=0;
     for (pit = pOpt.begin(); pit != pOpt.end(); pit++)
       if (!model->project(ssol,displ,pit->first))
 	return 4;
       else
-	projs.push_back(ssol);
+	projs[i++] = ssol;
 
     if (linalg.myPid == 0 && !pOpt.empty())
       std::cout << std::endl;
