@@ -44,8 +44,8 @@ class SIMLinElKL : public SIMLinEl2D
 public:
   //! \brief Default constructor.
   SIMLinElKL();
-  //! \brief Empty destructor.
-  virtual ~SIMLinElKL() {}
+  //! \brief Destructor.
+  virtual ~SIMLinElKL();
 
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \param[in] ignored Indices of patches to ignore in the analysis
@@ -76,8 +76,9 @@ protected:
   virtual double externalEnergy(const Vectors& psol) const;
 
 private:
-  RealArray tVec;    //!< Plate thickness data
-  PloadVec  myLoads; //!< Nodal point loads
+  RealArray tVec;     //!< Plate thickness data
+  PloadVec  myLoads;  //!< Nodal point loads
+  int       aCode[3]; //!< Analytical BC codes (used by destructor)
 };
 
 #endif

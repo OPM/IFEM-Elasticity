@@ -16,6 +16,7 @@
 
 #include "Function.h"
 #include "Tensor.h"
+#include "AnaSol.h"
 
 
 /*!
@@ -144,19 +145,77 @@ private:
 
 
 /*!
+  \brief Base class for analytical thin plate solutions.
+*/
+
+class ThinPlateSol : public AnaSol
+{
+public:
+  //! \brief The constructor initializes the material properties.
+  ThinPlateSol(double E, double v, double t);
+  //! \brief Empty destructor.
+  virtual ~ThinPlateSol() {}
+
+  //! \brief Returns the rotation field thetaX = dw/dx.
+  virtual RealFunc* thetaX() { return NULL; }
+  //! \brief Returns the rotation field thetaY = dw/dy.
+  virtual RealFunc* thetaY() { return NULL; }
+
+protected:
+  //! \brief Enum defining the solution derivatives.
+  enum Derivative { W, dWdx, dWdy, d2Wdx2, d2Wdy2, d2Wdxdy };
+
+  double D;  //!< Plate stiffness
+  double nu; //!< Poisson's ratio
+};
+
+
+/*!
   \brief Analytic solution for the simply supported rectangular thin plate.
 */
 
-class NavierPlate : public STensorFunc
+class NavierPlate : public ThinPlateSol, private STensorFunc
 {
+  /*!
+    \brief Nested class representing the analytic displacement field.
+  */
+  class Displ : public RealFunc
+  {
+  public:
+    //! \brief The constructor initializes the member references.
+    Displ(double& p, double& d, double& a, double& b, double& x, double& y,
+	  double& cc, double& dd, char& t, int& i) :
+      pz(p), D(d), alpha(a), beta(b), xi(x), eta(y), c2(cc), d2(dd),
+      type(t), inc(i) {}
+    //! \brief Empty destructor.
+    virtual ~Displ() {}
+
+  protected:
+    //! \brief Evaluates the displacement field at the point \a X.
+    virtual double evaluate(const Vec3& X) const;
+
+  private:
+    double& pz;    //!< Load parameter
+    double& D;     //!< Plate stiffness
+    double& alpha; //!< pi/(plate length)
+    double& beta;  //!< pi/(plate width)
+
+    double& xi;   //!< X-position of point/partial load
+    double& eta;  //!< Y-position of point/partial load
+    double& c2;   //!< Partial load extension in X-direction
+    double& d2;   //!< Partial load extension in Y-direction
+    char&   type; //!< Load type parameter (0, 1, or 2)
+    int&    inc;  //!< Increment in Fourier term summation (1 or 2)
+  };
+
 public:
   //! \brief Constructor for plate with constant pressure load.
   NavierPlate(double a, double b, double t, double E, double Poiss, double P);
   //! \brief Constructor for plate with partial pressure or point load.
   NavierPlate(double a, double b, double t, double E, double Poiss, double P,
 	      double xi_, double eta_, double c = 0.0, double d = 0.0);
-  //! \brief Empty destructor.
-  virtual ~NavierPlate() {}
+  //! \brief The destructor clears pointers to internal function members.
+  virtual ~NavierPlate();
 
 protected:
   //! \brief Evaluates the analytic stress resultant tensor at the point \a x.
@@ -166,10 +225,11 @@ protected:
   void addTerms(std::vector<double>& M, double x, double y, int m, int n) const;
 
 private:
+  Displ  w; //!< The analytical displacement field
+
   double alpha; //!< pi/(plate length)
   double beta;  //!< pi/(plate width)
   double pz;    //!< Load parameter
-  double nu;    //!< Poisson's ratio
 
   char   type; //!< Load type parameter
   double xi;   //!< X-position of point/partial load

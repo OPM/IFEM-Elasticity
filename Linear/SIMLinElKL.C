@@ -12,8 +12,8 @@
 //==============================================================================
 
 #include "SIMLinElKL.h"
-#include "../LinIsotropic.h"
 #include "KirchhoffLovePlate.h"
+#include "../LinIsotropic.h"
 #include "../AnalyticSolutions.h"
 #include "AlgEqSystem.h"
 #include "ASMbase.h"
@@ -30,6 +30,14 @@ SIMLinElKL::SIMLinElKL ()
 {
   nf[0] = 1;
   myProblem = new KirchhoffLovePlate();
+}
+
+
+SIMLinElKL::~SIMLinElKL ()
+{
+  // To prevent the SIMbase destructor try to delete already deleted functions
+  for (int i = 0; i < 3; i++)
+    if (aCode[i] > 0) myScalars.erase(aCode[i]);
 }
 
 
@@ -138,13 +146,13 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
 	  double d = atof(strtok(NULL," "));
 	  std::cout <<" c="<< c <<" d="<< d;
 	  if (!mySol)
-	    mySol = new AnaSol(new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d));
+	    mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d);
 	}
 	else if (!mySol)
-	  mySol = new AnaSol(new NavierPlate(a,b,t,E,nu,pz,xi,eta));
+	  mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta);
       }
       else if (!mySol)
-	mySol = new AnaSol(new NavierPlate(a,b,t,E,nu,pz));
+	mySol = new NavierPlate(a,b,t,E,nu,pz);
     }
     else if (!strncasecmp(cline,"EXPRESSION",10))
     {
@@ -260,13 +268,13 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
           if (c != 0.0 && d != 0.0) {
             std::cout <<" c="<< c <<" d="<< d;
             if (!mySol)
-              mySol = new AnaSol(new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d));
+              mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d);
           }
           else if (!mySol)
-            mySol = new AnaSol(new NavierPlate(a,b,t,E,nu,pz,xi,eta));
+            mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta);
         }
         else if (!mySol)
-          mySol = new AnaSol(new NavierPlate(a,b,t,E,nu,pz));
+          mySol = new NavierPlate(a,b,t,E,nu,pz);
       }
       else if (type == "expression") {
         std::cout <<"\nAnalytical solution: Expression"<< std::endl;
@@ -314,6 +322,51 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 
 bool SIMLinElKL::preprocess (const std::vector<int>& ignored, bool fixDup)
 {
+  ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
+
+  if (plSol) // Define analytical boundary condition fields (for rotations)
+    for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); p++)
+      if (p->pcode == Property::DIRICHLET_ANASOL)
+	if (abs(p->pindx) >= 200)
+	{
+	  if (aCode[2] == abs(p->pindx))
+	    p->pcode = Property::DIRICHLET_INHOM;
+	  else if (aCode[2] == 0 && plSol->thetaY())
+	  {
+	    aCode[2] = abs(p->pindx);
+	    myScalars[aCode[2]] = plSol->thetaY();
+	    p->pcode = Property::DIRICHLET_INHOM;
+	  }
+	  else
+	    p->pcode = Property::UNDEFINED;
+	}
+	else if (abs(p->pindx) >= 100)
+	{
+	  if (aCode[1] == abs(p->pindx))
+	    p->pcode = Property::DIRICHLET_INHOM;
+	  else if (aCode[1] == 0 && plSol->thetaX())
+	  {
+	    aCode[1] = abs(p->pindx);
+	    myScalars[aCode[1]] = plSol->thetaX();
+	    p->pcode = Property::DIRICHLET_INHOM;
+	  }
+	  else
+	    p->pcode = Property::UNDEFINED;
+	}
+	else if (abs(p->pindx) > 0)
+	{
+	  if (aCode[0] == abs(p->pindx))
+	    p->pcode = Property::DIRICHLET_INHOM;
+	  else if (aCode[0] == 0 && mySol->getScalarSol())
+	  {
+	    aCode[0] = abs(p->pindx);
+	    myScalars[aCode[0]] = plSol->getScalarSol();
+	    p->pcode = Property::DIRICHLET_INHOM;
+	  }
+	  else
+	    p->pcode = Property::UNDEFINED;
+	}
+
   if (!this->SIMLinEl2D::preprocess(ignored,fixDup))
     return false;
 

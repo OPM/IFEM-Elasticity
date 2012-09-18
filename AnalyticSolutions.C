@@ -180,6 +180,12 @@ SymmTensor CurvedBeam::evaluate (const Vec3& X) const
 }
 
 
+ThinPlateSol::ThinPlateSol (double E, double v, double t) : nu(v)
+{
+  D = E*t*t*t / (12.0 - 12*nu*nu);
+}
+
+
 /*!
   \class NavierPlate
 
@@ -190,73 +196,87 @@ SymmTensor CurvedBeam::evaluate (const Vec3& X) const
 */
 
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
-			  double P) : pz(P), nu(Poiss), type(0), inc(2)
+			  double P)
+  : ThinPlateSol(E,Poiss,t), w(pz,D,alpha,beta,xi,eta,c2,d2,type,inc),
+    pz(P), type(0), xi(0.0), eta(0.0), c2(0.0), d2(0.0), inc(2)
 {
   alpha = M_PI/a;
   beta  = M_PI/b;
 
+  scalSol = &w;
+  stressSol = this;
+
   // Calculate and print the maximum displacement (at the centre x=a/2, y=b/2)
-  double x = 0.5*a;
-  double y = 0.5*b;
-  double D = E*t*t*t/(12.0-12.0*nu*nu);
-
-  double w = 0.0;
-  for (int m = 1; m < 100; m += inc)
-    for (int n = 1; n < 100; n += inc)
-    {
-      double am   = alpha*m;
-      double bn   = beta*n;
-      double abmn = am*am + bn*bn;
-      w += sin(am*x)*sin(bn*y) / (double(m)*double(n)*abmn*abmn);
-    }
-
-  w *= 16.0*pz / (D*M_PI*M_PI);
-
   std::streamsize oldPrec = std::cout.precision(10);
-  std::cout <<"\nNavierPlate: w_max = "<< w << std::endl;
+  std::cout <<"\nNavierPlate: w_max = "
+	    << w(Vec3(0.5*a,0.5*b,0.0)) << std::endl;
   std::cout.precision(oldPrec);
 }
 
 
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 			  double P, double xi_, double eta_, double c, double d)
-  : pz(P), nu(Poiss), type(2), inc(1)
+  : ThinPlateSol(E,Poiss,t), w(pz,D,alpha,beta,xi,eta,c2,d2,type,inc),
+    pz(P), type(2), inc(1)
 {
   alpha = M_PI/a;
   beta  = M_PI/b;
   xi    = xi_*a;
   eta   = eta_*b;
-  c2    = 0.5*c;
-  d2    = 0.5*d;
   if (c == 0.0 || d == 0.0) type = 1;
   if (xi_ == 0.5 && eta_ == 0.5) inc = 2;
+  c2    = type == 1 ? a : 0.5*c;
+  d2    = type == 1 ? b : 0.5*d;
+
+  scalSol = &w;
+  stressSol = this;
 
   // Calculate and print the displacement at the centre x=a/2, y=b/2
-  double x = 0.5*a;
-  double y = 0.5*b;
-  double D = E*t*t*t/(12.0-12.0*nu*nu);
+  std::streamsize oldPrec = std::cout.precision(10);
+  std::cout <<"\nNavierPlate: w_centre = "
+	    << w(Vec3(0.5*a,0.5*b,0.0)) << std::endl;
+  std::cout.precision(oldPrec);
+}
+
+
+NavierPlate::~NavierPlate ()
+{
+  // Avoid that the base class AnaSol tries to deallocate these
+  scalSol = NULL;
+  stressSol = NULL;
+}
+
+
+double NavierPlate::Displ::evaluate (const Vec3& X) const
+{
+  const int max_mn = type > 0 ? 100 : 99;
 
   double w = 0.0;
-  for (int m = 1; m <= 100; m += inc)
-    for (int n = 1; n <= 100; n += inc)
+  for (int m = 1; m <= max_mn; m += inc)
+    for (int n = 1; n <= max_mn; n += inc)
     {
       double am   = alpha*m;
       double bn   = beta*n;
       double abmn = am*am + bn*bn;
-      double pzmn = sin(am*xi)*sin(bn*eta) / (abmn*abmn);
-      if (type == 2)
-	pzmn *= sin(am*c2)*sin(bn*d2) / (double(m)*double(n));
-      w += pzmn*sin(am*x)*sin(bn*y);
+      if (type == 0)
+	w += sin(am*X.x)*sin(bn*X.y) / (double(m)*double(n)*abmn*abmn);
+      else
+      {
+	double pzmn = sin(am*xi)*sin(bn*eta) / (abmn*abmn);
+	if (type == 2)
+	  pzmn *= sin(am*c2)*sin(bn*d2) / (double(m)*double(n));
+	w += pzmn*sin(am*X.x)*sin(bn*X.y);
+      }
     }
 
-  if (type == 1)
-    w *= 4.0*pz / (D*a*b);
+  if (type == 0)
+    w *= 16.0*pz / (D*M_PI*M_PI);
+  else if (type == 1)
+    w *= 4.0*pz / (D*c2*d2);
   else
     w *= 16.0*pz / (D*M_PI*M_PI);
 
-  std::streamsize oldPrec = std::cout.precision(10);
-  std::cout <<"\nNavierPlate: w_centre = "<< w << std::endl;
-  std::cout.precision(oldPrec);
+  return w;
 }
 
 
