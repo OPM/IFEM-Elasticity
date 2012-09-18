@@ -830,7 +830,7 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt,
 }
 
 
-const char* ElasticityNorm::getName(size_t i, size_t j, const char* prefix)
+const char* ElasticityNorm::getName (size_t i, size_t j, const char* prefix)
 {
   static const char* u[4] = {
     "a(u^h,u^h)^0.5",
@@ -848,7 +848,7 @@ const char* ElasticityNorm::getName(size_t i, size_t j, const char* prefix)
     "effectivity index"
   };
 
-  const char** s = j>1?p:u;
+  const char** s = i > 1 ? p : u;
 
   if (!prefix)
     return s[j-1];
@@ -861,7 +861,7 @@ const char* ElasticityNorm::getName(size_t i, size_t j, const char* prefix)
 }
 
 
-void ElasticityNorm::addBoundaryTerms(Vectors& gNorm, double extEnergy)
+void ElasticityNorm::addBoundaryTerms (Vectors& gNorm, double extEnergy)
 {
   gNorm[0](2) += extEnergy;
 }

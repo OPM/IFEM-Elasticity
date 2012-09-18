@@ -547,7 +547,8 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
 }
 
 
-const char* KirchhoffLovePlateNorm::getName(size_t i, size_t j, const char* prefix)
+const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
+                                             const char* prefix)
 {
   static const char* u[4] = {
     "a(w^h,w^h)^0.5",
@@ -564,9 +565,7 @@ const char* KirchhoffLovePlateNorm::getName(size_t i, size_t j, const char* pref
     "effectivity index"
   };
 
-  const char** s = u;
-  if (j > 1)
-    s = p;
+  const char** s = i > 1 ? p : u;
 
   if (!prefix)
     return s[j-1];
@@ -579,7 +578,7 @@ const char* KirchhoffLovePlateNorm::getName(size_t i, size_t j, const char* pref
 }
 
 
-void KirchhoffLovePlateNorm::addBoundaryTerms(Vectors& gNorm, double extEnergy)
+void KirchhoffLovePlateNorm::addBoundaryTerms (Vectors& gNorm, double extEnergy)
 {
   gNorm[0](2) += extEnergy;
 }
