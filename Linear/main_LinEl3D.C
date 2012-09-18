@@ -289,13 +289,18 @@ int main (int argc, char** argv)
   else if (model->opt.discretization == ASM::Spline)
     pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
+  if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
+  {
+    std::cout <<"\n ** HDF5 ouput is available for spline discretization only."
+	      <<" Deactivating...\n"<< std::endl;
+    model->opt.hdf5.clear();
+  }
+
   const char* prefix[pOpt.size()+1];
   prefix[pOpt.size()] = 0;
-  if (model->opt.format >= 0 || model->opt.dumpHDF5(infile)) {
-    int i=0;
-    for (pit = pOpt.begin(); pit != pOpt.end(); pit++)
+  if ((model->opt.format >= 0 || model->opt.dumpHDF5(infile)) && staticSol)
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); pit++)
       prefix[i++] = pit->second.c_str();
-  }
 
   model->setQuadratureRule(model->opt.nGauss[0],true);
 
@@ -324,12 +329,11 @@ int main (int argc, char** argv)
                             DataExporter::SECONDARY |
                             DataExporter::NORMS);
     exporter->setFieldValue("u",model, aSim ? &aSim->getSolution() : &displ);
-    i=0;
-    for (pit = pOpt.begin(); pit != pOpt.end(); pit++) {
-      exporter->registerField(prefix[i], "projected",DataExporter::SIM,
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
+      exporter->registerField(prefix[i], "projected", DataExporter::SIM,
                               DataExporter::SECONDARY, prefix[i]);
-      exporter->setFieldValue(prefix[i], model, aSim ? &aSim->getProjection(i) : &projs[i]);
-      i++;
+      exporter->setFieldValue(prefix[i], model,
+                              aSim ? &aSim->getProjection(i) : &projs[i]);
     }
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5));
     exporter->registerWriter(new XMLWriter(model->opt.hdf5));
@@ -354,12 +358,11 @@ int main (int argc, char** argv)
 
     // Project the FE stresses onto the splines basis
     model->setMode(SIM::RECOVERY);
-    i=0;
-    for (pit = pOpt.begin(); pit != pOpt.end(); pit++)
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
       if (!model->project(ssol,displ,pit->first))
 	return 4;
       else
-	projs[i++] = ssol;
+	projs[i] = ssol;
 
     if (linalg.myPid == 0 && !pOpt.empty())
       std::cout << std::endl;
@@ -397,7 +400,7 @@ int main (int argc, char** argv)
 	  std::cout <<"\nEffectivity index             : "
 		    << gNorm[j](2)/gNorm[0](4);
 	}
-        
+
 	std::cout <<"\nL2-norm |s^r| =(s^r,s^r)^0.5         : "<< gNorm[j](3);
 	std::cout <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4);
         std::cout <<"\n- relative error (% of |s^r|) : "
