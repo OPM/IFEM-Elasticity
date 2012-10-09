@@ -77,23 +77,20 @@ public:
 
   //! \brief Evaluates the secondary solution at a result point.
   //! \param[out] s Array of solution field values at current point
-  //! \param[in] N Basis function values at current point
-  //! \param[in] dNdX Basis function gradients at current point
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] MNPC Nodal point correspondance for the basis function values
-  virtual bool evalSol(Vector& s, const Vector& N, const Matrix& dNdX,
+  virtual bool evalSol(Vector& s, const FiniteElement& fe,
 		       const Vec3& X, const std::vector<int>& MNPC) const;
 
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress values at current point
   //! \param[in] eV Element solution vector
-  //! \param[in] N Basis function values at current point
-  //! \param[in] dNdX Basis function gradients at current point
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
-  virtual bool evalSol(Vector& s, const Vector& eV,
-		       const Vector& N, const Matrix& dNdX,
-		       const Vec3& X, bool toLocal = false) const;
+  bool evalSol(Vector& s, const Vector& eV, const FiniteElement& fe,
+	       const Vec3& X, bool toLocal = false) const;
 
   //! \brief Evaluates the analytical solution at an integration point.
   //! \param[out] s The analytical stress values at current point

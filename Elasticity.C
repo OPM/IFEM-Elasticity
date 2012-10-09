@@ -505,8 +505,7 @@ bool Elasticity::formCinverse (Matrix& Cinv, const Vec3& X) const
 }
 
 
-bool Elasticity::evalSol (Vector& s,
-			  const Vector& N, const Matrix& dNdX, const Vec3& X,
+bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 			  const std::vector<int>& MNPC) const
 {
   // Extract element displacements
@@ -521,7 +520,7 @@ bool Elasticity::evalSol (Vector& s,
     }
 
   // Evaluate the stress tensor
-  if (!this->evalSol(s,eV,N,dNdX,X,true))
+  if (!this->evalSol(s,eV,fe,X,true))
     return false;
 
   // Additional result variables?
@@ -541,14 +540,14 @@ bool Elasticity::evalSol (Vector& s,
 }
 
 
-bool Elasticity::evalSol (Vector& s, const Vector& eV, const Vector& N,
-			  const Matrix& dNdX, const Vec3& X, bool toLocal) const
+bool Elasticity::evalSol (Vector& s, const Vector& eV, const FiniteElement& fe,
+                          const Vec3& X, bool toLocal) const
 {
-  if (eV.size() != dNdX.rows()*nsd)
+  if (eV.size() != fe.dNdX.rows()*nsd)
   {
     std::cerr <<" *** Elasticity::evalSol: Invalid displacement vector."
 	      <<"\n     size(eV) = "<< eV.size() <<"   size(dNdX) = "
-	      << dNdX.rows() <<","<< dNdX.cols() << std::endl;
+	      << fe.dNdX.rows() <<","<< fe.dNdX.cols() << std::endl;
     return false;
   }
 
@@ -556,13 +555,13 @@ bool Elasticity::evalSol (Vector& s, const Vector& eV, const Vector& N,
   Matrix Bmat;
   Tensor dUdX(nDF);
   SymmTensor eps(nsd,axiSymmetry);
-  if (!this->kinematics(eV,N,dNdX,X.x,Bmat,dUdX,eps))
+  if (!this->kinematics(eV,fe.N,fe.dNdX,X.x,Bmat,dUdX,eps))
     return false;
 
   // Calculate the stress tensor through the constitutive relation
   Matrix Cmat;
   SymmTensor sigma(nsd, axiSymmetry || material->isPlaneStrain()); double U;
-  if (!material->evaluate(Cmat,sigma,U,0,X,dUdX,eps))
+  if (!material->evaluate(Cmat,sigma,U,fe.iGP,X,dUdX,eps))
     return false;
 
   // Congruence transformation to local coordinate system at current point
@@ -715,7 +714,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
   // Evaluate the finite element stress field
   Vector sigmah, sigma, error;
-  if (!problem.evalSol(sigmah,pnorm.vec.front(),fe.N,fe.dNdX,X))
+  if (!problem.evalSol(sigmah,pnorm.vec.front(),fe,X))
     return false;
 
   bool planeStrain = sigmah.size() == 4 && Cinv.rows() == 3;
