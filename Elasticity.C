@@ -644,6 +644,19 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
 }
 
 
+bool Elasticity::hasItgBuffers () const
+{
+  return material ? material->hasItgBuffers() : false;
+}
+
+
+void Elasticity::setItgPtMap (int ip, int jp) const
+{
+  if (material)
+    material->setItgPtMap(ip,jp);
+}
+
+
 void Elasticity::printMaxVals (std::ostream& os,
                                std::streamsize precision, size_t comp) const
 {

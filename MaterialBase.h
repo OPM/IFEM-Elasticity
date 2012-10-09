@@ -82,6 +82,11 @@ public:
 
   //! \brief Returns whether the material model has diverged.
   virtual bool diverged() const { return false; }
+
+  //! \brief Returns whether this material has internal point buffers or not.
+  virtual bool hasItgBuffers() const { return false; }
+  //! \brief Defines the internal processing order of the integration points.
+  virtual void setItgPtMap(size_t, size_t) const {}
 };
 
 #endif
