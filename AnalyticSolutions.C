@@ -345,10 +345,12 @@ SymmTensor NavierPlate::evaluate (const Vec3& X) const
 	      <<" -> "<< norm <<" "<< fabs(norm-prev)/norm << std::endl;
 #endif
     if (i%2)
+    {
       if (fabs(norm-prev) < eps*norm)
         break;
       else
 	prev = norm;
+    }
   }
 #endif
 
