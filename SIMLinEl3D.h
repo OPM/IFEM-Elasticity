@@ -33,7 +33,7 @@ class SIMLinEl3D : public SIM3D
 public:
   //! \brief Default constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMLinEl3D(bool checkRHS = false) : SIM3D(checkRHS) { aCode = 0; }
+  SIMLinEl3D(bool checkRHS = false) : SIM3D(3,0,checkRHS) { aCode = 0; }
   //! \brief The destructor frees the dynamically allocated material properties.
   virtual ~SIMLinEl3D();
 
