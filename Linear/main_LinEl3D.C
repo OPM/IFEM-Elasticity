@@ -12,7 +12,7 @@
 //==============================================================================
 
 #include "IFEM.h"
-#include "../SIMLinEl3D.h"
+#include "../SIMLinEl.h"
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"
 #include "AdaptiveSIM.h"

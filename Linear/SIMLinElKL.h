@@ -14,7 +14,7 @@
 #ifndef _SIM_LIN_EL_KL_H
 #define _SIM_LIN_EL_KL_H
 
-#include "../SIMLinEl2D.h"
+#include "../SIMLinEl.h"
 
 
 /*!
