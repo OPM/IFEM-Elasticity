@@ -533,7 +533,7 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 
   // Additional result variables?
   for (int i = 1; i <= material->getNoIntVariables(); i++)
-    s.push_back(material->getInternalVariable(i));
+    s.push_back(material->getInternalVariable(i,NULL,fe.iGP));
 
   // Find the maximum values for each quantity
   if (maxVal.empty())
@@ -649,19 +649,6 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
   }
 
   return name.c_str();
-}
-
-
-bool Elasticity::hasItgBuffers () const
-{
-  return material ? material->hasItgBuffers() : false;
-}
-
-
-void Elasticity::setItgPtMap (int ip, int jp) const
-{
-  if (material)
-    material->setItgPtMap(ip,jp);
 }
 
 

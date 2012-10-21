@@ -78,15 +78,11 @@ public:
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
   //! \brief Returns an internal variable associated with the material model.
-  virtual double getInternalVariable(int, char* = 0) const { return 0.0; }
+  virtual double getInternalVariable(int, char*, size_t = 0) const
+  { return 0.0; }
 
   //! \brief Returns whether the material model has diverged.
   virtual bool diverged() const { return false; }
-
-  //! \brief Returns whether this material has internal point buffers or not.
-  virtual bool hasItgBuffers() const { return false; }
-  //! \brief Defines the internal processing order of the integration points.
-  virtual void setItgPtMap(size_t, size_t) const {}
 };
 
 #endif

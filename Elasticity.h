@@ -149,11 +149,6 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual const char* getField2Name(size_t i, const char* prefix = 0) const;
 
-  //! \brief Returns whether this integrand has internal point buffers or not.
-  virtual bool hasItgBuffers() const;
-  //! \brief Defines the internal processing order of the integration points.
-  virtual void setItgPtMap(int ip, int jp) const;
-
   //! \brief Prints out the maximum secondary solution values.
   //! \param os Output stream to write the values to
   //! \param[in] precision Number of digits after the decimal point
