@@ -75,7 +75,6 @@ void Elasticity::print (std::ostream& os) const
 
 void Elasticity::setMode (SIM::SolutionMode mode)
 {
-  m_mode = mode;
   eM = eKm = eKg = 0;
   eS = iS = 0;
 
@@ -120,12 +119,18 @@ void Elasticity::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::RECOVERY:
-      maxVal.clear();
+      if (mode != m_mode)
+      {
+        maxVal.resize(this->getNoFields(2));
+        std::fill(maxVal.begin(),maxVal.end(),PointValue(Vec3(),0.0));
+      }
       break;
 
     default:
       ;
     }
+
+  m_mode = mode;
 }
 
 
@@ -535,14 +540,13 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
   for (int i = 1; i <= material->getNoIntVariables(); i++)
     s.push_back(material->getInternalVariable(i,NULL,fe.iGP));
 
-  // Find the maximum values for each quantity
-  if (maxVal.empty())
-    for (size_t j = 0; j < s.size(); j++)
-      maxVal.push_back(std::make_pair(X,s[j]));
-  else
-    for (size_t j = 0; j < s.size(); j++)
-      if (fabs(s[j]) > fabs(maxVal[j].second))
-	maxVal[j] = std::make_pair(X,s[j]);
+  // Find the maximum values for each quantity. This block must be performed
+  // serially on multi-threaded runs too, due to the update of the maxVal array
+  // which is a member of the Elasticity class. Therefore the critical pragma.
+#pragma omp critical
+  for (size_t j = 0; j < s.size() && j < maxVal.size(); j++)
+    if (fabs(s[j]) > fabs(maxVal[j].second))
+      maxVal[j] = std::make_pair(X,s[j]);
 
   return true;
 }
