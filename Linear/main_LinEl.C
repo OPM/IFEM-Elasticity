@@ -12,11 +12,10 @@
 //==============================================================================
 
 #include "IFEM.h"
-#include "../SIMLinEl.h"
+#include "SIMLinEl.h"
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"
 #include "AdaptiveSIM.h"
-#include "LinAlgInit.h"
 #include "HDF5Writer.h"
 #include "XMLWriter.h"
 #include "Utilities.h"
@@ -92,13 +91,13 @@ int main (int argc, char** argv)
   bool Beam = false;
   char* infile = 0;
 
-  const LinAlgInit& linalg = LinAlgInit::Init(argc,argv);
+  int myPid = argc > 1 ? InitIFEM(argc,argv) : 0;
 
   for (i = 1; i < argc; i++)
     if (dummy.parseOldOptions(argc,argv,i))
       ; // ignore the obsolete option
     else if (!strcmp(argv[i],"-dumpASC"))
-      dumpASCII = true;
+      dumpASCII = myPid == 0; // not for parallel runs
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
 	utl::parseIntegers(ignoredPatches,argv[++i]);
@@ -147,21 +146,21 @@ int main (int argc, char** argv)
     return 0;
   }
 
-  InitIFEM(argc, argv, linalg.myPid);
-  if (linalg.myPid == 0)
+  if (myPid == 0)
   {
     std::cout <<"\n >>> IFEM Linear Elasticity solver <<<"
 	      <<"\n =====================================\n"
 	      <<"\n Executing command:\n";
     for (i = 0; i < argc; i++) std::cout <<" "<< argv[i];
-    std::cout << std::endl;
-    std::cout <<"\nInput file: "<< infile
+    std::cout <<"\n\nInput file: "<< infile
 	      <<"\nEquation solver: "<< IFEM_cmdOptions.solver
 	      <<"\nNumber of Gauss points: "<< IFEM_cmdOptions.nGauss[0];
     if (IFEM_cmdOptions.format >= 0)
     {
-      std::cout <<"\nVTF file format: "<< (IFEM_cmdOptions.format ? "BINARY":"ASCII")
-		<<"\nNumber of visualization points: "<< IFEM_cmdOptions.nViz[0];
+      std::cout <<"\nVTF file format: "
+                << (IFEM_cmdOptions.format ? "BINARY":"ASCII")
+                <<"\nNumber of visualization points: "
+                << IFEM_cmdOptions.nViz[0];
       if (!Beam)
       {
 	std::cout <<" "<< IFEM_cmdOptions.nViz[1];
@@ -237,7 +236,7 @@ int main (int argc, char** argv)
   if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
     vizRHS = false;
 
-  if (linalg.myPid == 0)
+  if (myPid == 0)
   {
     std::cout <<"\n\nEquation solver: "<< model->opt.solver
 	      <<"\nNumber of Gauss points: "<< model->opt.nGauss[0]
@@ -314,7 +313,7 @@ int main (int argc, char** argv)
   DataExporter* exporter = NULL;
   if (model->opt.dumpHDF5(infile) && staticSol)
   {
-    if (linalg.myPid == 0)
+    if (myPid == 0)
       std::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
                 <<".hdf5"<< std::endl;
 
@@ -359,7 +358,7 @@ int main (int argc, char** argv)
       else
 	projs[i] = ssol;
 
-    if (linalg.myPid == 0 && !pOpt.empty())
+    if (myPid == 0 && !pOpt.empty())
       std::cout << std::endl;
 
     // Evaluate solution norms
@@ -367,16 +366,17 @@ int main (int argc, char** argv)
     if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
       return 4;
 
-    if (linalg.myPid == 0)
+    if (myPid == 0)
     {
       std::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< gNorm[0](1);
       std::cout	<<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
       if (model->haveAnaSol() && gNorm[0].size() >= 4)
 	std::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< gNorm[0](3)
 		  <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< gNorm[0](4)
-		  <<"\nExact relative error (%) : "<< gNorm[0](4)/gNorm[0](3)*100.0;
+		  <<"\nExact relative error (%) : "
+		  << gNorm[0](4)/gNorm[0](3)*100.0;
       size_t j = 1;
-      for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++, j++)
+      for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
       {
 	std::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<";
 	std::cout <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1);
