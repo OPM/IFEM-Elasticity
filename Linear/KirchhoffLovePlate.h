@@ -59,10 +59,7 @@ public:
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 
   //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const
-  { 
-    return Integrand::SECOND_DERIVATIVES;
-  }
+  virtual int getIntegrandType() const { return Integrand::SECOND_DERIVATIVES; }
 
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
@@ -214,17 +211,8 @@ public:
   //! \brief Empty destructor.
   virtual ~KirchhoffLovePlateNorm() {}
 
-  //! \brief Returns whether this norm has explicit boundary contributions.
-  virtual bool hasBoundaryTerms() const { return true; }
-
-  //! \brief Returns the number of norm quantities.
-  virtual size_t getNoFields(int fld=0) const;
-
   //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const
-  { 
-    return Integrand::SECOND_DERIVATIVES;
-  }
+  virtual int getIntegrandType() const { return Integrand::SECOND_DERIVATIVES; }
 
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
@@ -241,18 +229,21 @@ public:
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
 		       const Vec3& X, const Vec3& normal) const;
 
-  //! \brief Returns whether or not the element norm contributions should
-  //         be stored for visualization
-  virtual bool hasElementContributions(size_t i, size_t j)
-  { 
-    return (i == 1 && j < 2) || j < 3;
-  }
+  //! \brief Adds external energy terms to relevant norms.
+  //! \param gNorm Global norm quantities
+  //! \param[in] energy Global external energy
+  virtual void addBoundaryTerms(Vectors& gNorm, double energy) const;
 
-  //! \brief Return the name of a particular norm identified by group and entry
-  const char* getName(size_t i, size_t j, const char* prefix);
+  //! \brief Returns the number of norm groups or size of a specified group.
+  //! \param[in] group The norm group to return the size of
+  //! (if zero, return the number of groups)
+  virtual size_t getNoFields(int group = 0) const;
 
-  //! \brief Add external energy terms to relevant norms
-  void addBoundaryTerms(Vectors& gNorm, double extEnergy);
+  //! \brief Returns the name of a norm quantity.
+  //! \param[in] i The norm group (one-based index)
+  //! \param[in] j The norm number (one-based index)
+  //! \param[in] prefix Common prefix for all norm names
+  virtual const char* getName(size_t i, size_t j, const char* prefix) const;
 
 private:
   STensorFunc* anasol; //!< Analytical stress resultant field

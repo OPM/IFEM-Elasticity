@@ -698,22 +698,6 @@ ElasticityNorm::ElasticityNorm (Elasticity& p, STensorFunc* a)
 }
 
 
-size_t ElasticityNorm::getNoFields (int fld) const
-{
-  if (fld == 0) {
-    size_t nf=1;
-    for (size_t i = 0; i < prjsol.size(); i++)
-      if (!prjsol.empty())
-        nf++;
-    return nf;
-  }
-  if (fld == 1)
-    return anasol ? 4 : 2;
-
-  return anasol ? 6 : 4;
-}
-
-
 bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 			      const Vec3& X) const
 {
@@ -841,8 +825,33 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt,
 }
 
 
-const char* ElasticityNorm::getName (size_t i, size_t j, const char* prefix)
+void ElasticityNorm::addBoundaryTerms (Vectors& gNorm, double energy) const
 {
+  gNorm.front()(2) += energy;
+}
+
+
+size_t ElasticityNorm::getNoFields (int group) const
+{
+  size_t nf = 1;
+  if (group < 1)
+    for (size_t i = 0; i < prjsol.size(); i++)
+      nf += prjsol.empty() ? 0 : 1;
+  else if (group == 1)
+    nf = anasol ? 4 : 2;
+  else
+    nf = anasol ? 6 : 4;
+
+  return nf;
+}
+
+
+const char* ElasticityNorm::getName (size_t i, size_t j,
+                                     const char* prefix) const
+{
+  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 4))
+    return this->NormBase::getName(i,j,prefix);
+
   static const char* u[4] = {
     "a(u^h,u^h)^0.5",
     "(f,u^h)^0.5",
@@ -872,7 +881,7 @@ const char* ElasticityNorm::getName (size_t i, size_t j, const char* prefix)
 }
 
 
-void ElasticityNorm::addBoundaryTerms (Vectors& gNorm, double extEnergy)
+bool ElasticityNorm::hasElementContributions (size_t i, size_t j) const
 {
-  gNorm[0](2) += extEnergy;
+  return i > 1 || j != 2;
 }

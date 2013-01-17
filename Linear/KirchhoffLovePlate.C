@@ -450,20 +450,6 @@ KirchhoffLovePlateNorm::KirchhoffLovePlateNorm (KirchhoffLovePlate& p,
 }
 
 
-size_t KirchhoffLovePlateNorm::getNoFields (int fld) const
-{
-  if (fld == 0)
-    return 1+prjsol.size();
-
-  // solution field
-  if (fld == 1)
-    return anasol ? 4 : 2;
-
-  // projected quantities
-  return anasol ? 6 : 4;
-}
-
-
 bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 				      const FiniteElement& fe,
 				      const Vec3& X) const
@@ -547,15 +533,41 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
 }
 
 
-const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
-                                             const char* prefix)
+void KirchhoffLovePlateNorm::addBoundaryTerms (Vectors& gNorm,
+					       double energy) const
 {
+  gNorm.front()(2) += energy;
+}
+
+
+size_t KirchhoffLovePlateNorm::getNoFields (int group) const
+{
+  size_t nf = 1;
+  if (group < 1)
+    for (size_t i = 0; i < prjsol.size(); i++)
+      nf += prjsol.empty() ? 0 : 1;
+  else if (group == 1)
+    nf = anasol ? 4 : 2;
+  else
+    nf = anasol ? 6 : 4;
+
+  return nf;
+}
+
+
+const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
+                                             const char* prefix) const
+{
+  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 4))
+    return this->NormBase::getName(i,j,prefix);
+
   static const char* u[4] = {
     "a(w^h,w^h)^0.5",
     "(p,w^h)^0.5",
     "a(w,w)^0.5",
-    "a(e,e)^0.5, e=w-w^h",
+    "a(e,e)^0.5, e=w-w^h"
   };
+
   static const char* p[6] = {
     "a(w^r,w^r)^0.5",
     "a(e',e')^0.5, e'=w^r-w^h",
@@ -575,10 +587,4 @@ const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
   name += s[j-1];
 
   return name.c_str();
-}
-
-
-void KirchhoffLovePlateNorm::addBoundaryTerms (Vectors& gNorm, double extEnergy)
-{
-  gNorm[0](2) += extEnergy;
 }
