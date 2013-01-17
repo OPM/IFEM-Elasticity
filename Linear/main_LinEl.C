@@ -91,7 +91,7 @@ int main (int argc, char** argv)
   bool Beam = false;
   char* infile = 0;
 
-  int myPid = IFEM::Init(argc, argv);
+  int myPid = IFEM::Init(argc,argv);
 
   for (i = 1; i < argc; i++)
     if (dummy.parseOldOptions(argc,argv,i))
@@ -148,35 +148,35 @@ int main (int argc, char** argv)
 
   if (myPid == 0)
   {
+    const SIMoptions& opts = IFEM::getOptions();
     std::cout <<"\n >>> IFEM Linear Elasticity solver <<<"
 	      <<"\n =====================================\n"
 	      <<"\n Executing command:\n";
     for (i = 0; i < argc; i++) std::cout <<" "<< argv[i];
-    std::cout << std::endl;
-    std::cout <<"\nInput file: "<< infile
-	      <<"\nEquation solver: "<< IFEM::getOptions().solver
-	      <<"\nNumber of Gauss points: "<< IFEM::getOptions().nGauss[0];
-    if (IFEM::getOptions().format >= 0)
+    std::cout <<"\n\nInput file: "<< infile
+	      <<"\nEquation solver: "<< opts.solver
+	      <<"\nNumber of Gauss points: "<< opts.nGauss[0];
+    if (opts.format >= 0)
     {
-      std::cout <<"\nVTF file format: "<< (IFEM::getOptions().format ? "BINARY":"ASCII")
-		<<"\nNumber of visualization points: "<< IFEM::getOptions().nViz[0];
+      std::cout <<"\nVTF file format: "<< (opts.format ? "BINARY":"ASCII")
+		<<"\nNumber of visualization points: "<< opts.nViz[0];
       if (!Beam)
       {
-	std::cout <<" "<< IFEM::getOptions().nViz[1];
-	if (!twoD) std::cout <<" "<< IFEM::getOptions().nViz[2];
+	std::cout <<" "<< opts.nViz[1];
+	if (!twoD) std::cout <<" "<< opts.nViz[2];
       }
     }
 
-    if (IFEM::getOptions().eig > 0)
-      std::cout <<"\nEigenproblem solver: "<< IFEM::getOptions().eig
-		<<"\nNumber of eigenvalues: "<< IFEM::getOptions().nev
-		<<"\nNumber of Arnoldi vectors: "<< IFEM::getOptions().ncv
-		<<"\nShift value: "<< IFEM::getOptions().shift;
-    if (IFEM::getOptions().discretization == ASM::Lagrange)
+    if (opts.eig > 0)
+      std::cout <<"\nEigenproblem solver: "<< opts.eig
+		<<"\nNumber of eigenvalues: "<< opts.nev
+		<<"\nNumber of Arnoldi vectors: "<< opts.ncv
+		<<"\nShift value: "<< opts.shift;
+    if (opts.discretization == ASM::Lagrange)
       std::cout <<"\nLagrangian basis functions are used";
-    else if (IFEM::getOptions().discretization == ASM::Spectral)
+    else if (opts.discretization == ASM::Spectral)
       std::cout <<"\nSpectral basis functions are used";
-    else if (IFEM::getOptions().discretization == ASM::LRSpline)
+    else if (opts.discretization == ASM::LRSpline)
       std::cout <<"\nLR-spline basis functions are used";
     if (SIMbase::ignoreDirichlet)
       std::cout <<"\nSpecified boundary conditions are ignored";
@@ -289,8 +289,7 @@ int main (int argc, char** argv)
     model->opt.hdf5.clear();
   }
 
-  const char* prefix[pOpt.size()+1];
-  prefix[pOpt.size()] = 0;
+  const char* prefix[pOpt.size()];
   if ((model->opt.format >= 0 || model->opt.dumpHDF5(infile)) && staticSol)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); pit++)
       prefix[i++] = pit->second.c_str();
@@ -299,12 +298,10 @@ int main (int argc, char** argv)
 
   Matrix eNorm, ssol;
   Vector displ, load;
-  Vectors projs, gNorm;
+  Vectors projs(pOpt.size()), gNorm;
   std::vector<Mode> modes;
   std::vector<Mode>::const_iterator it;
   int iStep = 1, nBlock = 0;
-
-  projs.resize(pOpt.size()+1);
 
   if (aSim)
     aSim->setupProjections();
@@ -316,11 +313,14 @@ int main (int argc, char** argv)
       std::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
                 <<".hdf5"<< std::endl;
 
+    // Include secondary results only if no projection has been requested.
+    // The secondary results will be projected anyway, but without the
+    // nodal avaraging accross patch boundaries in case of multiple patches.
+    int results = DataExporter::PRIMARY | DataExporter::NORMS;
+    if (pOpt.empty()) results |= DataExporter::SECONDARY;
+
     exporter = new DataExporter(true);
-    exporter->registerField("u","solution",DataExporter::SIM,
-                            DataExporter::PRIMARY |
-                            DataExporter::SECONDARY |
-                            DataExporter::NORMS);
+    exporter->registerField("u","solution",DataExporter::SIM,results);
     exporter->setFieldValue("u",model, aSim ? &aSim->getSolution() : &displ);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
       exporter->registerField(prefix[i], "projected", DataExporter::SIM,
