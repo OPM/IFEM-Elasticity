@@ -279,7 +279,7 @@ int main (int argc, char** argv)
   bool staticSol = iop + model->opt.eig%5 == 0 || iop == 10;
   if (model->opt.discretization < ASM::Spline || !staticSol)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
-  else if (model->opt.discretization == ASM::Spline)
+  else if (model->opt.discretization == ASM::Spline && pOpt.empty())
     pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
