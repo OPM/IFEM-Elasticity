@@ -78,11 +78,10 @@ public:
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
   //! \brief Returns an internal variable associated with the material model.
-  virtual double getInternalVariable(int, char*, size_t = 0) const
-  { return 0.0; }
+  virtual double getInternalVariable(int, char*, size_t=0) const { return 0.0; }
 
   //! \brief Returns whether the material model has diverged.
-  virtual bool diverged() const { return false; }
+  virtual bool diverged(size_t=0) const { return false; }
 };
 
 #endif
