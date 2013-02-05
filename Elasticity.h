@@ -149,6 +149,11 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual const char* getField2Name(size_t i, const char* prefix = 0) const;
 
+  typedef std::pair<Vec3,double> PointValue; //!< Convenience type
+
+  //! \brief Returns a pointer to the max values for external update.
+  std::vector<PointValue>* getMaxVals() const { return &maxVal; }
+
   //! \brief Prints out the maximum secondary solution values.
   //! \param os Output stream to write the values to
   //! \param[in] precision Number of digits after the decimal point
@@ -235,8 +240,6 @@ protected:
   TractionFunc* tracFld; //!< Pointer to implicit boundary traction field
   VecFunc*      fluxFld; //!< Pointer to explicit boundary traction field
   VecFunc*      bodyFld; //!< Pointer to body force field
-
-  typedef std::pair<Vec3,double> PointValue; //!< Convenience type
 
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values
