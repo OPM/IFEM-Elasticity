@@ -12,6 +12,7 @@
 //==============================================================================
 
 #include "LinIsotropic.h"
+#include "Field.h"
 #include "Tensor.h"
 #include "Vec3.h"
 
@@ -19,7 +20,8 @@
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 {
   // Default material properties - typical values for steel (SI units)
-  Efunc = 0;
+  Efunc = NULL;
+  Efield = NULL;
   Emod = 2.05e11;
   nu = 0.29;
   rho = 7.85e3;
@@ -27,7 +29,14 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 
 
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
-  : Efunc(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(E), Efield(NULL), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+{
+  Emod = -1.0; // Should not be referenced
+}
+
+
+LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
+  : Efunc(NULL), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
   Emod = -1.0; // Should not be referenced
 }
@@ -81,17 +90,21 @@ void LinIsotropic::print (std::ostream& os) const
   \end{array}\right] \f]
 */
 
-bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U, size_t,
-			     const Vec3& X, const Tensor&,
-			     const SymmTensor& eps, char iop,
-			     const TimeDomain*, const Tensor*) const
+bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
+                             const FiniteElement& fe, const Vec3& X,
+                             const Tensor&, const SymmTensor& eps, char iop,
+                             const TimeDomain*, const Tensor*) const
 {
   const size_t nsd = sigma.dim();
   const size_t nst = nsd == 2 && axiSymmetry ? 4 : nsd*(nsd+1)/2;
   C.resize(nst,nst,true);
 
-  // Evaluate the scalar stiffness function, if defined
-  const double E = Efunc ? (*Efunc)(X) : Emod;
+  // Evaluate the scalar stiffness function or field, if defined
+  double E = Emod;
+  if (Efield)
+    E = Efield->valueFE(fe);
+  else if (Efunc)
+    E = (*Efunc)(X);
 
   if (nsd == 1)
   {
@@ -101,7 +114,7 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U, size_t,
     {
       sigma = eps; sigma *= E;
       if (iop == 3)
-	U = 0.5*sigma(1,1)*eps(1,1);
+        U = 0.5*sigma(1,1)*eps(1,1);
     }
     return true;
   }
@@ -172,11 +185,11 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U, size_t,
       // Account for non-matching tensor dimensions
       SymmTensor epsil(sigma.dim(), nsd == 2 && axiSymmetry);
       if (!C.multiply(epsil=eps,sig))
-	return false;
+        return false;
     }
     else
       if (!C.multiply(eps,sig))
-	return false;
+        return false;
 
     sigma = sig; // Add sigma_zz in case of plane strain
     if (!planeStress && ! axiSymmetry && nsd == 2 && sigma.size() == 4)

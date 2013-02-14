@@ -215,8 +215,9 @@ public:
   //! \brief Sets up the inverse constitutive matrix at current point.
   //! \param[out] Cinv \f$6\times6\f$-matrix (in 3D) or \f$3\times3\f$-matrix
   //! (in 2D), representing the inverse constitutive tensor
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
-  bool formCinverse(Matrix& Cinv, const Vec3& X) const;
+  bool formCinverse(Matrix& Cinv, const FiniteElement& fe, const Vec3& X) const;
 
   //! \brief Returns \e true if this is an axial-symmetric problem.
   bool isAxiSymmetric() const { return axiSymmetry; }

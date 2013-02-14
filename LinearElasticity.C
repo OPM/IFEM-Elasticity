@@ -45,7 +45,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
     // Evaluate the constitutive matrix and the stress tensor at this point
     double U;
-    if (!material->evaluate(Cmat,sigma,U,fe.iGP,X,eps,eps))
+    if (!material->evaluate(Cmat,sigma,U,fe,X,eps,eps))
       return false;
   }
 

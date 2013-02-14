@@ -19,6 +19,8 @@
 class Vec3;
 class Tensor;
 class SymmTensor;
+class FiniteElement;
+class Field;
 struct TimeDomain;
 
 
@@ -50,6 +52,8 @@ public:
   virtual void initResultPoints() {}
   //! \brief Defines a point location with some special material properties.
   virtual void addSpecialPoint(const Vec3&) {}
+  //! \brief Assigns a scalar field defining the material properties.
+  virtual void assignScalarField(Field*, size_t = 0) {}
 
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
@@ -58,7 +62,7 @@ public:
   //! \param[out] C Constitutive matrix at current point
   //! \param[out] sigma Stress tensor at current point
   //! \param[out] U Strain energy density at current point
-  //! \param[in] ip Global index for current point
+  //! \param[in] fe Finite element quantities at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] F Deformation gradient at current point
   //! \param[in] eps Strain tensor at current point
@@ -70,10 +74,29 @@ public:
   //!   3 : Calculate the strain energy density only.
   //! \param[in] prm Nonlinear solution algorithm parameters
   //! \param[in] Fpf Deformation gradient for push-forward transformation
-  virtual bool evaluate(Matrix& C, SymmTensor& sigma, double& U, size_t ip,
-			const Vec3& X, const Tensor& F, const SymmTensor& eps,
-			char iop = 1, const TimeDomain* prm = 0,
-			const Tensor* Fpf = 0) const = 0;
+  virtual bool evaluate(Matrix& C, SymmTensor& sigma, double& U,
+                        const FiniteElement& fe, const Vec3& X,
+                        const Tensor& F, const SymmTensor& eps,
+                        char iop = 1, const TimeDomain* prm = NULL,
+                        const Tensor* Fpf = NULL) const = 0;
+  //! \brief Evaluates the constitutive relation at an integration point.
+  //! \param[out] C Constitutive matrix at current point
+  //! \param[out] sigma Stress tensor at current point
+  //! \param[out] U Strain energy density at current point
+  //! \param[in] ip Global index for current point
+  //! \param[in] X Cartesian coordinates of current point
+  //! \param[in] F Deformation gradient at current point
+  //! \param[in] eps Strain tensor at current point
+  //! \param[in] iop Calculation option
+  //! \param[in] prm Nonlinear solution algorithm parameters
+  //! \param[in] Fpf Deformation gradient for push-forward transformation
+  //!
+  //! \details This is a wrapper used when parametric or local coordinates
+  //! of current point are not needed (or available).
+  bool evaluate(Matrix& C, SymmTensor& sigma, double& U, size_t ip,
+                const Vec3& X, const Tensor& F, const SymmTensor& eps,
+                char iop = 1, const TimeDomain* prm = NULL,
+                const Tensor* Fpf = NULL) const;
 
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
