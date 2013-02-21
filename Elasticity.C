@@ -856,16 +856,16 @@ const char* ElasticityNorm::getName (size_t i, size_t j,
 
   static const char* u[4] = {
     "a(u^h,u^h)^0.5",
-    "(f,u^h)^0.5",
+    "((f,u^h)+(t,u^h))^0.5",
     "a(u,u)^0.5",
     "a(e,e)^0.5, e=u-u^h"
   };
 
   static const char* p[6] = {
     "a(u^r,u^r)^0.5",
-    "a(e',e')^0.5, e'=u^r-u^h",
+    "a(e,e)^0.5, e=u^r-u^h",
     "(u^r,u^r)^0.5",
-    "(e',e')^0.5, e'=u^r-u^h",
+    "(e,e)^0.5, e=u^r-u^h",
     "a(e,e)^0.5, e=u-u^r",
     "effectivity index"
   };

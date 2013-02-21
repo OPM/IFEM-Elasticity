@@ -14,25 +14,14 @@
 #ifndef _SIM_LIN_EL_H
 #define _SIM_LIN_EL_H
 
-#include "Elasticity.h"
 #include "LinearElasticity.h"
-
+#include "LinIsotropic.h"
 #include "AnaSol.h"
 #include "Functions.h"
-#include "LinIsotropic.h"
-#include "MatVec.h"
-#include "SIMenums.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
 #include "Utilities.h"
-
 #include "tinyxml.h"
-
-#include <vector>
-#include <iostream>
-
-class Elasticity;
-class Material;
 
 
 /*!
@@ -42,8 +31,7 @@ class Material;
   of the parent class.
 */
 
-  template<class Dim>
-class SIMLinEl : public Dim
+template<class Dim> class SIMLinEl : public Dim
 {
 public:
   //! \brief Default constructor.
@@ -100,7 +88,7 @@ public:
     }
 
     if (Dim::mySol) // Define analytical boundary condition fields
-      for (PropertyVec::iterator p  = Dim::myProps.begin(); 
+      for (PropertyVec::iterator p = Dim::myProps.begin();
                                  p != Dim::myProps.end(); p++)
         if (p->pcode == Property::DIRICHLET_ANASOL)
         {
@@ -131,27 +119,6 @@ public:
     return this->Dim::preprocess(ignored,fixDup);
   }
 
-  //! \brief Print norms to stream
-  std::ostream& printNorms(const Vectors& norms, std::ostream& os)
-  {
-    if (norms.empty()) return os;
-
-    NormBase* norm = this->getNormIntegrand();
-    const Vector& gnorm = norms.front();
-
-    os <<"Energy norm "<< norm->getName(1,1) <<": "<< gnorm(1)
-       <<"\nExternal energy "<< norm->getName(1,2) <<": "<< gnorm(2);
-
-    if (Dim::mySol)
-      os <<"\nExact norm "<< norm->getName(1,3) <<": "<< gnorm(3)
-         <<"\nExact error "<< norm->getName(1,4) <<": "<< gnorm(4)
-         <<"\nExact relative error (%) : "<< 100.0*gnorm(4)/gnorm(3);
-
-    delete norm;
-
-    return os << std::endl;
-  }
-
   static bool planeStrain; //!< Plane strain/stress option - 2D only
   static bool axiSymmetry; //!< Axisymmtry option - 2D only
 
@@ -168,6 +135,7 @@ private:
 
     return elp;
   }
+
 protected:
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
@@ -244,7 +212,7 @@ protected:
         if (Dim::mySol && Dim::mySol->getStressSol())
         {
           std::cout <<"\tTraction on P"<< press.patch
-                    <<(Dim::dimension==3?" F":" E") 
+                    << (Dim::dimension==3?" F":" E")
                     << (int)press.lindx << std::endl;
           Dim::myTracs[1+i] = new TractionField(*Dim::mySol->getStressSol());
         }
@@ -253,7 +221,7 @@ protected:
           int pdir = atoi(strtok(NULL," "));
           double p = atof(strtok(NULL," "));
           std::cout <<"\tPressure on P"<< press.patch
-                    <<(Dim::dimension==3?" F":" E") 
+                    << (Dim::dimension==3?" F":" E")
                     << (int)press.lindx <<" direction "<< pdir <<": ";
           if ((cline = strtok(NULL," ")))
             Dim::myTracs[1+i] = new PressureField(utl::parseRealFunc(cline,p),pdir);
@@ -430,7 +398,7 @@ protected:
 
     typename Dim::VecFuncMap::const_iterator it = Dim::myVectors.end();
     for (size_t i = 0; i < Dim::myProps.size(); i++)
-      if (Dim::myProps[i].pcode == Property::BODYLOAD && 
+      if (Dim::myProps[i].pcode == Property::BODYLOAD &&
           Dim::myProps[i].patch == patchInd)
         if ((it = Dim::myVectors.find(Dim::myProps[i].pindx)) != Dim::myVectors.end())
           break;
@@ -458,6 +426,7 @@ protected:
 
     return true;
   }
+
 protected:
   std::vector<Material*> mVec; //!< Material data
 
@@ -465,19 +434,17 @@ private:
   int aCode; //!< Analytical BC code (used by destructor)
 };
 
-typedef SIMLinEl<SIM2D> SIMLinEl2D;
-typedef SIMLinEl<SIM3D> SIMLinEl3D;
+typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
+typedef SIMLinEl<SIM3D> SIMLinEl3D; //!< 3D specific driver
 
-//! \brief Template specialization - 2D specific input parsing
-  template<>
-bool SIMLinEl2D::parseDimSpecific(char* keyWord, std::istream& is);
-  template<> 
-bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* elem);
+//! \brief Template specialization - 2D specific input parsing.
+template<> bool SIMLinEl2D::parseDimSpecific(char* keyWord, std::istream& is);
+//! \brief Template specialization - 2D specific input parsing.
+template<> bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* elem);
 
-//! \brief Template specialization - 3D specific input parsing
-  template<> 
-bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is);
-  template<>
-bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem);
+//! \brief Template specialization - 3D specific input parsing.
+template<> bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is);
+//! \brief Template specialization - 3D specific input parsing.
+template<> bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem);
 
 #endif
