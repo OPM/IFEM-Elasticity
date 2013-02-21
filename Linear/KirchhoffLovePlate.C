@@ -459,7 +459,8 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
   // Evaluate the inverse constitutive matrix at this point
   Matrix Cinv;
-  if (!problem.formCmatrix(Cinv,X,true)) return false;
+  if (!problem.formCmatrix(Cinv,X,true))
+    return false;
 
   // Evaluate the finite element stress field
   Vector mh, m, error;
@@ -467,9 +468,9 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     return false;
 
   size_t ip = 0;
-
   // Integrate the energy norm a(w^h,w^h)
   pnorm[ip++] += mh.dot(Cinv*mh)*fe.detJxW;
+
   if (problem.haveLoads())
   {
     // Evaluate the body load
@@ -497,7 +498,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
   for (i = 0; i < pnorm.psol.size(); i++)
     if (!pnorm.psol[i].empty())
     {
-      // Evaluate projected stress field
+      // Evaluate projected stress resultant field
       Vector mr(mh.size());
       for (j = 0; j < nrcmp; j++)
 	mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
@@ -507,9 +508,10 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       // Integrate the error in energy norm a(w^r-w^h,w^r-w^h)
       error = mr - mh;
       pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
-      // (w^r,w^r)^0.5
+
+      // Integrate the L2-norm (m^r,m^r)
       pnorm[ip++] += mr.dot(mr)*fe.detJxW;
-      // (e,e)^0.5, e=w-w^r
+      // Integrate the error in L2-norm (m^r-m^h,m^r-m^h)
       pnorm[ip++] += error.dot(error)*fe.detJxW;
 
       if (anasol)
@@ -517,6 +519,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
         // Integrate the error in the projected solution a(w-w^r,w-w^r)
         error = m - mr;
         pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
+        ip++; // Make room for the local effectivity index here
       }
     }
 
@@ -530,6 +533,22 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
 {
   std::cerr <<" *** KirchhoffLovePlateNorm::evalBou not included."<< std::endl;
   return false;
+}
+
+
+bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt,
+                                              const TimeDomain&, size_t)
+{
+  if (!anasol) return true;
+
+  ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
+
+  // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
+  // with e^r = w^r - w^h  and  e = w - w^h
+  for (size_t ip = 9; ip < pnorm.size(); ip += 6)
+    pnorm[ip] = sqrt(pnorm[ip-4] / pnorm[3]);
+
+  return true;
 }
 
 
@@ -570,9 +589,9 @@ const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
 
   static const char* p[6] = {
     "a(w^r,w^r)^0.5",
-    "a(e',e')^0.5, e'=w^r-w^h",
+    "a(e,e)^0.5, e=w^r-w^h",
     "(w^r,w^r)^0.5",
-    "(e',e')^0.5, e'=w^r-w^h",
+    "(e,e)^0.5, e=w^r-w^h",
     "a(e,e)^0.5, e=w-w^r",
     "effectivity index"
   };

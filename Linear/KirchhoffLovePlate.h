@@ -117,6 +117,9 @@ public:
   //! \brief Returns whether an external load is defined.
   virtual bool haveLoads() const;
 
+  //! \brief Returns the derivative order of the differential operator.
+  virtual int derivativeOrder() const { return 2; }
+
   //! \brief Writes the surface pressure for a given time step to VTF-file.
   //! \param vtf The VTF-file object to receive the pressure vectors
   //! \param[in] iStep Load/time step identifier
@@ -228,6 +231,11 @@ public:
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
 		       const Vec3& X, const Vec3& normal) const;
+
+  //! \brief Finalizes the element norms after the numerical integration.
+  //! \details This method is used to compute effectivity indices.
+  //! \param elmInt The local integral object to receive the contributions
+  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain&,size_t);
 
   //! \brief Adds external energy terms to relevant norms.
   //! \param gNorm Global norm quantities
