@@ -213,7 +213,7 @@ int main (int argc, char** argv)
     theSim = aSim = new AdaptiveSIM(model);
     IFEM::getOptions().discretization = ASM::LRSpline;
   }
-  else if (KLp)
+  else if (KLp && IFEM::getOptions().discretization != ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::SplineC1;
 
   // Read in model definitions
