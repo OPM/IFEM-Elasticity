@@ -514,15 +514,18 @@ int main (int argc, char** argv)
   {
     // Write (refined) model to g2-file
     std::ofstream osg(strcat(strtok(infile,"."),".g2"));
+    osg.precision(18);
     std::cout <<"\nWriting updated g2-file "<< infile << std::endl;
     model->dumpGeometry(osg);
     if (!displ.empty())
     {
       // Write solution (control point values) to ASCII files
       std::ofstream osd(strcat(strtok(infile,"."),".dis"));
+      osd.precision(18);
       std::cout <<"\nWriting deformation to file "<< infile << std::endl;
       model->dumpPrimSol(displ,osd,false);
       std::ofstream oss(strcat(strtok(infile,"."),".sol"));
+      oss.precision(18);
       std::cout <<"\nWriting solution to file "<< infile << std::endl;
       model->dumpSolution(displ,oss);
     }
@@ -530,6 +533,7 @@ int main (int argc, char** argv)
     {
       // Write eigenvectors to ASCII files
       std::ofstream ose(strcat(strtok(infile,"."),".eig"));
+      ose.precision(18);
       std::cout <<"\nWriting eigenvectors to file "<< infile << std::endl;
       for (it = modes.begin(); it != modes.end(); it++)
       {
