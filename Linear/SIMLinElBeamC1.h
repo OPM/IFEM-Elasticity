@@ -49,10 +49,7 @@ public:
   virtual ~SIMLinElBeamC1() {}
 
   //! \brief Performs some pre-processing tasks on the FE model.
-  //! \param[in] ignored Indices of patches to ignore in the analysis
-  //! \param[in] fixDup Merge duplicated FE nodes on patch interfaces?
-  virtual bool preprocess(const std::vector<int>& ignored = std::vector<int>(),
-			  bool fixDup = false);
+  virtual bool preprocessB();
 
 protected:
   //! \brief Parses a data section from the input stream.

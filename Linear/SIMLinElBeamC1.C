@@ -276,11 +276,8 @@ bool SIMLinElBeamC1::initBodyLoad (size_t patchInd)
 }
 
 
-bool SIMLinElBeamC1::preprocess (const std::vector<int>& ignored, bool fixDup)
+bool SIMLinElBeamC1::preprocessB ()
 {
-  if (!this->SIMbase::preprocess(ignored,fixDup))
-    return false;
-
   // Preprocess the nodal point loads
   for (PloadVec::iterator p = myLoads.begin(); p != myLoads.end();)
   {

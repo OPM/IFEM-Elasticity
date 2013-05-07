@@ -36,7 +36,10 @@ template<class Dim> class SIMLinEl : public Dim
 public:
   //! \brief Default constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMLinEl(bool checkRHS = false) : Dim(Dim::dimension,0,checkRHS) { aCode = 0; }
+  SIMLinEl(bool checkRHS = false) : Dim(Dim::dimension,0,checkRHS)
+  {
+    aCode = 0;
+  }
 
   //! \brief The destructor frees the dynamically allocated material properties.
   virtual ~SIMLinEl()
@@ -70,15 +73,16 @@ public:
       delete mVec[i];
     mVec.clear();
 
-    this->SIMbase::clearProperties();
+    this->Dim::clearProperties();
   }
 
+protected:
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented inserting a call to \a getIntegrand.
   //! This makes sure the integrand has been allocated in case of minimum input.
   //! It also resolves inhomogeneous boundary condition fields in case they are
   //! derived from the analytical solution.
-  virtual bool preprocess(const std::vector<int>& ignored, bool fixDup)
+  virtual void preprocessA()
   {
     if (!Dim::myProblem)
     {
@@ -87,38 +91,39 @@ public:
         this->printProblem(std::cout);
     }
 
-    if (Dim::mySol) // Define analytical boundary condition fields
-      for (PropertyVec::iterator p = Dim::myProps.begin();
-                                 p != Dim::myProps.end(); p++)
-        if (p->pcode == Property::DIRICHLET_ANASOL)
-        {
-          if (!Dim::mySol->getVectorSol())
-            p->pcode = Property::UNDEFINED;
-          else if (aCode == abs(p->pindx))
-            p->pcode = Property::DIRICHLET_INHOM;
-          else if (aCode == 0)
-          {
-            aCode = abs(p->pindx);
-            Dim::myVectors[aCode] = Dim::mySol->getVectorSol();
-            p->pcode = Property::DIRICHLET_INHOM;
-          }
-          else
-            p->pcode = Property::UNDEFINED;
-        }
-        else if (p->pcode == Property::NEUMANN_ANASOL)
-        {
-          if (Dim::mySol->getStressSol())
-          {
-            p->pcode = Property::NEUMANN;
-            Dim::myTracs[p->pindx] = new TractionField(*Dim::mySol->getStressSol());
-          }
-          else
-            p->pcode = Property::UNDEFINED;
-        }
+    if (!Dim::mySol) return;
 
-    return this->Dim::preprocess(ignored,fixDup);
+    // Define analytical boundary condition fields
+    PropertyVec::iterator p;
+    for (p = Dim::myProps.begin(); p != Dim::myProps.end(); ++p)
+      if (p->pcode == Property::DIRICHLET_ANASOL)
+      {
+        if (!Dim::mySol->getVectorSol())
+          p->pcode = Property::UNDEFINED;
+        else if (aCode == abs(p->pindx))
+          p->pcode = Property::DIRICHLET_INHOM;
+        else if (aCode == 0)
+        {
+          aCode = abs(p->pindx);
+          Dim::myVectors[aCode] = Dim::mySol->getVectorSol();
+          p->pcode = Property::DIRICHLET_INHOM;
+        }
+        else
+          p->pcode = Property::UNDEFINED;
+      }
+      else if (p->pcode == Property::NEUMANN_ANASOL)
+      {
+        if (Dim::mySol->getStressSol())
+        {
+          p->pcode = Property::NEUMANN;
+          Dim::myTracs[p->pindx] = new TractionField(*Dim::mySol->getStressSol());
+        }
+        else
+          p->pcode = Property::UNDEFINED;
+      }
   }
 
+public:
   static bool planeStrain; //!< Plane strain/stress option - 2D only
   static bool axiSymmetry; //!< Axisymmtry option - 2D only
 
@@ -126,14 +131,14 @@ private:
   //! \brief Returns the actual integrand.
   Elasticity* getIntegrand()
   {
-    if (Dim::myProblem)
-      return dynamic_cast<Elasticity*>(Dim::myProblem);
-
-    Elasticity* elp = new LinearElasticity(Dim::dimension,
-                                         Dim::dimension == 2?axiSymmetry:false);
-    Dim::myProblem = elp;
-
-    return elp;
+    if (!Dim::myProblem)
+    {
+      if (Dim::dimension == 2)
+	Dim::myProblem = new LinearElasticity(Dim::dimension,axiSymmetry);
+      else
+	Dim::myProblem = new LinearElasticity(Dim::dimension);
+    }
+    return dynamic_cast<Elasticity*>(Dim::myProblem);
   }
 
 protected:

@@ -320,56 +320,58 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 }
 
 
-bool SIMLinElKL::preprocess (const std::vector<int>& ignored, bool fixDup)
+void SIMLinElKL::preprocessA ()
 {
   ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
+  if (!plSol) return;
 
-  if (plSol) // Define analytical boundary condition fields (for rotations)
-    for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); p++)
-      if (p->pcode == Property::DIRICHLET_ANASOL)
-	if (abs(p->pindx) >= 200)
-	{
-	  if (aCode[2] == abs(p->pindx))
-	    p->pcode = Property::DIRICHLET_INHOM;
-	  else if (aCode[2] == 0 && plSol->thetaY())
-	  {
-	    aCode[2] = abs(p->pindx);
-	    myScalars[aCode[2]] = plSol->thetaY();
-	    p->pcode = Property::DIRICHLET_INHOM;
-	  }
-	  else
-	    p->pcode = Property::UNDEFINED;
-	}
-	else if (abs(p->pindx) >= 100)
-	{
-	  if (aCode[1] == abs(p->pindx))
-	    p->pcode = Property::DIRICHLET_INHOM;
-	  else if (aCode[1] == 0 && plSol->thetaX())
-	  {
-	    aCode[1] = abs(p->pindx);
-	    myScalars[aCode[1]] = plSol->thetaX();
-	    p->pcode = Property::DIRICHLET_INHOM;
-	  }
-	  else
-	    p->pcode = Property::UNDEFINED;
-	}
-	else if (abs(p->pindx) > 0)
-	{
-	  if (aCode[0] == abs(p->pindx))
-	    p->pcode = Property::DIRICHLET_INHOM;
-	  else if (aCode[0] == 0 && mySol->getScalarSol())
-	  {
-	    aCode[0] = abs(p->pindx);
-	    myScalars[aCode[0]] = plSol->getScalarSol();
-	    p->pcode = Property::DIRICHLET_INHOM;
-	  }
-	  else
-	    p->pcode = Property::UNDEFINED;
-	}
+  // Define analytical boundary condition fields (for rotations)
+  for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); p++)
+    if (p->pcode == Property::DIRICHLET_ANASOL)
+      if (abs(p->pindx) >= 200)
+      {
+        if (aCode[2] == abs(p->pindx))
+          p->pcode = Property::DIRICHLET_INHOM;
+        else if (aCode[2] == 0 && plSol->thetaY())
+        {
+          aCode[2] = abs(p->pindx);
+          myScalars[aCode[2]] = plSol->thetaY();
+          p->pcode = Property::DIRICHLET_INHOM;
+        }
+        else
+          p->pcode = Property::UNDEFINED;
+        }
+      else if (abs(p->pindx) >= 100)
+      {
+        if (aCode[1] == abs(p->pindx))
+          p->pcode = Property::DIRICHLET_INHOM;
+        else if (aCode[1] == 0 && plSol->thetaX())
+        {
+          aCode[1] = abs(p->pindx);
+          myScalars[aCode[1]] = plSol->thetaX();
+          p->pcode = Property::DIRICHLET_INHOM;
+        }
+        else
+          p->pcode = Property::UNDEFINED;
+      }
+      else if (abs(p->pindx) > 0)
+      {
+        if (aCode[0] == abs(p->pindx))
+          p->pcode = Property::DIRICHLET_INHOM;
+        else if (aCode[0] == 0 && mySol->getScalarSol())
+        {
+          aCode[0] = abs(p->pindx);
+          myScalars[aCode[0]] = plSol->getScalarSol();
+          p->pcode = Property::DIRICHLET_INHOM;
+        }
+        else
+          p->pcode = Property::UNDEFINED;
+      }
+}
 
-  if (!this->SIMLinEl2D::preprocess(ignored,fixDup))
-    return false;
 
+bool SIMLinElKL::preprocessB ()
+{
   // Preprocess the nodal point loads
   for (PloadVec::iterator p = myLoads.begin(); p != myLoads.end();)
   {

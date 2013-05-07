@@ -47,12 +47,6 @@ public:
   //! \brief Destructor.
   virtual ~SIMLinElKL();
 
-  //! \brief Performs some pre-processing tasks on the FE model.
-  //! \param[in] ignored Indices of patches to ignore in the analysis
-  //! \param[in] fixDup Merge duplicated FE nodes on patch interfaces?
-  virtual bool preprocess(const std::vector<int>& ignored = std::vector<int>(),
-			  bool fixDup = false);
-
 protected:
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
@@ -61,6 +55,11 @@ protected:
   //! \brief Parses a data section from an XML element.
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem);
+
+  //! \brief Performs some pre-processing tasks on the FE model.
+  virtual void preprocessA();
+  //! \brief Performs some pre-processing tasks on the FE model.
+  virtual bool preprocessB();
 
   //! \brief Initializes material properties for integration of interior terms.
   //! \param[in] propInd Physical property index
