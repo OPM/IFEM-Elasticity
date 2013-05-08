@@ -6,11 +6,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                       ${PROJECT_SOURCE_DIR}/../../../cmake/Modules)
 
-# To allow standalone compilation out of the main tree
-IF(NOT IFEM_CONFIGURED)
+IF (NOT IFEM_CONFIGURED)
   FIND_PACKAGE(IFEM REQUIRED)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${IFEM_CXX_FLAGS}")
 ENDIF(NOT IFEM_CONFIGURED)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${IFEM_CXX_FLAGS}")
 
 INCLUDE_DIRECTORIES(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..)
 
@@ -28,6 +27,16 @@ TARGET_LINK_LIBRARIES(LinEl ${IFEM_LIBRARIES})
 INSTALL(TARGETS LinEl DESTINATION bin COMPONENT bin)
 
 # Regression tests
+ENABLE_TESTING()
+
+# Generate regtest script with correct paths
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/regtest.sh.in
+               regtest.sh)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/doregtests.sh.in
+  doregtests.sh @ONLY)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/check-patchseries.sh.in
+               check-patchseries.sh)
+
 IF(IFEM_USE_PARALLEL_PETSC)
   # Add parallel tests here
 ELSE(IFEM_USE_PARALLEL_PETSC)
