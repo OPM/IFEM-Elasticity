@@ -316,7 +316,9 @@ int main (int argc, char** argv)
     // Include secondary results only if no projection has been requested.
     // The secondary results will be projected anyway, but without the
     // nodal averaging across patch boundaries in case of multiple patches.
-    int results = DataExporter::PRIMARY | DataExporter::NORMS;
+    int results = DataExporter::PRIMARY | 
+                  DataExporter::NORMS   |
+                  DataExporter::DISPLACEMENT;
     if (pOpt.empty()) results |= DataExporter::SECONDARY;
 
     exporter = new DataExporter(true);
