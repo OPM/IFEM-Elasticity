@@ -30,6 +30,7 @@ SIMLinElKL::SIMLinElKL ()
 {
   nf[0] = 1;
   myProblem = new KirchhoffLovePlate();
+  aCode[0] = aCode[1] = aCode[2] = 0;
 }
 
 
