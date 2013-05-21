@@ -11,7 +11,7 @@ RAISEORDER 1
 
 REFINE 1
 # patch ru rv rw
-  1     6  6  0
+  1     3  3  0
 
 CONSTRAINTS 4
 # patch line code par

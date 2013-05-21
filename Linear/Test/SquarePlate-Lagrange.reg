@@ -14,7 +14,7 @@ Reading patch file plate_10x10x01.g2
 Number of order raise: 1
 	Raising order of P1 1 1 1
 Number of patch refinements: 1
-	Refining P1 6 6 0
+	Refining P1 3 3 0
 Number of constraints: 4
 	Constraining P1 F1 L1 at xi=0.5 in direction(s) 3
 	Constraining P1 F2 L1 at xi=0.5 in direction(s) 3
@@ -34,16 +34,16 @@ Elasticity: 3D, gravity = 0 0 0
 LinIsotropic: E = 10.92, nu = 0.3, rho = 1e-06
 Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
-Number of elements    49
-Number of nodes       675
-Number of dofs        2025
-Number of unknowns    1966
+Number of elements    16
+Number of nodes       243
+Number of dofs        729
+Number of unknowns    694
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 2 on P1
 Solving the equation system ...
  >>> Solution summary <<<
-L2-norm            : 3.24332
+L2-norm            : 3.28499
 Max X-displacement : 9.15751
 Max Y-displacement : 2.74725
 Max Z-displacement : 0.0137363
@@ -52,24 +52,23 @@ External energy ((f,u^h)+(t,u^h)^0.5 : 9.56949
 Assembling interior matrix terms for P1
 Solving the eigenvalue problem ...
  >>> Computed Eigenvalues <<<
-     Mode	Eigenvalue
-     1		0.000397498
-     2		0.000643834
-     3		0.00123561
-     4		0.0016299
-     5		0.00199837
-     6		0.00221839
-     7		0.00257798
-     8		0.00289996
-     9		0.00365368
-     10		0.00382284
-     11		0.00429388
-     12		0.00434341
-     13		0.00451961
-     14		0.00529737
-     15		0.00555164
-     16		0.00591268
-     17		0.00615693
-     18		0.00676318
-     19		0.00706523
-     20		0.00719485
+     1		0.000405148
+     2		0.000705627
+     3		0.00148878
+     4		0.00176138
+     5		0.00216871
+     6		0.00227436
+     7		0.00285739
+     8		0.0028773
+     9		0.00446186
+     10		0.00463165
+     11		0.00548
+     12		0.00707373
+     13		0.00769181
+     14		0.0115145
+     15		0.0145274
+     16		0.0351478
+     17		0.0752391
+     18		0.0997731
+     19		0.100297
+     20		0.101535
