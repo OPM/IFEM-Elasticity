@@ -14,28 +14,15 @@
 #include "SIMLinEl.h"
 #include "AnalyticSolutions.h"
 
- template<>
-bool SIMLinEl2D::planeStrain = false;
- template<>
-bool SIMLinEl2D::axiSymmetry = false;
+template<> bool SIMLinEl2D::planeStrain = false;
+template<> bool SIMLinEl2D::axiSymmetry = false;
 
 
-  template<>
-bool SIMLinEl2D::parseDimSpecific(char* keyWord, std::istream& is)
+template<> bool SIMLinEl2D::parseDimSpecific (char* keyWord, std::istream& is)
 {
-  char* cline;
-  if (!strncasecmp(keyWord,"GRAVITY",7)) {
-    double gx = 0.0, gy = 0.0;
-    gx = atof(strtok(keyWord+7," "));
-    gy = atof(strtok(NULL," "));
-    if (myPid == 0)
-      std::cout <<"\nGravitation vector: "
-		<< gx <<" "<< gy << std::endl;
-    if (gx != 0.0 || gy != 0.0)
-      this->getIntegrand()->setGravity(gx,gy);
-  } else if (!strncasecmp(keyWord,"ANASOL",6)) {
+  if (!strncasecmp(keyWord,"ANASOL",6)) {
     int code = -1;
-    cline = strtok(keyWord+6," ");
+    char* cline = strtok(keyWord+6," ");
     if (!strncasecmp(cline,"HOLE",4))
     {
       double a  = atof(strtok(NULL," "));
@@ -110,23 +97,17 @@ bool SIMLinEl2D::parseDimSpecific(char* keyWord, std::istream& is)
       this->setPropertyType(code,Property::NEUMANN);
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }
-  } else
+  }
+  else
     return false;
 
   return true;
 }
 
 
-  template<>
-bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* child)
+template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
 {
-  if (!strcasecmp(child->Value(),"gravity")) {
-    double gx=0, gy=0;
-    utl::getAttribute(child,"x",gx);
-    utl::getAttribute(child,"y",gy);
-    if (myPid == 0)
-      std::cout <<"\tGravitation vector: "<< gx <<" "<< gy << std::endl;
-  } else if (!strcasecmp(child->Value(),"anasol")) {
+  if (!strcasecmp(child->Value(),"anasol")) {
     std::string type;
     utl::getAttribute(child,"type",type,true);
     if (type == "hole") {
@@ -198,7 +179,8 @@ bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* child)
       this->setPropertyType(code,Property::NEUMANN);
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }
-  } else
+  }
+  else
     return false;
 
   return true;

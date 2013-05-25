@@ -12,7 +12,6 @@
 //==============================================================================
 
 #include "SIMLinEl.h"
-
 #include "AnalyticSolutions.h"
 #include "Vec3Oper.h"
 
@@ -144,22 +143,11 @@ private:
 };
 
 
-  template<>
-bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is)
+template<> bool SIMLinEl3D::parseDimSpecific (char* keyWord, std::istream& is)
 {
-  char* cline;
-  if (!strncasecmp(keyWord,"GRAVITY",7)) {
-    double gx=0, gy=0, gz=0;
-    gx = atof(strtok(keyWord+7," "));
-    gy = atof(strtok(NULL," "));
-    gz = atof(strtok(NULL," "));
-    if (myPid == 0)
-      std::cout <<"\nGravitation vector: "
-                << gx <<" "<< gy <<" "<< gz << std::endl;
-    this->getIntegrand()->setGravity(gx,gy,gz);
-  } else if (!strncasecmp(keyWord,"ANASOL",6)) {
+  if (!strncasecmp(keyWord,"ANASOL",6)) {
     int code = -1;
-    cline = strtok(keyWord+6," ");
+    char* cline = strtok(keyWord+6," ");
     if (!strncasecmp(cline,"HOLE",4))
     {
       double a  = atof(strtok(NULL," "));
@@ -214,7 +202,8 @@ bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is)
       this->setPropertyType(code,Property::NEUMANN);
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }
-  } else if (!strncasecmp(keyWord,"LOCAL_SYSTEM",12)) {
+  }
+  else if (!strncasecmp(keyWord,"LOCAL_SYSTEM",12)) {
     size_t i = 12;
     while (i < strlen(keyWord) && isspace(keyWord[i])) i++;
     if (!strncasecmp(keyWord+i,"CYLINDRICZ",10))
@@ -227,26 +216,17 @@ bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is)
     else
       std::cerr <<"  ** SIMLinEl3D::parse: Unsupported coordinate system: "
                 << keyWord+i <<" (ignored)"<< std::endl;
-  } else
+  }
+  else
     return false;
 
   return false;
 }
 
 
-  template<>
-bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* child)
+template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child)
 {
-  if (!strcasecmp(child->Value(),"gravity")) {
-    Vec3 g;
-    utl::getAttribute(child,"x",g.x);
-    utl::getAttribute(child,"y",g.y);
-    utl::getAttribute(child,"z",g.z);
-    if (myPid == 0)
-      std::cout <<"\tGravitation vector: "<< g << std::endl;
-    if (!g.isZero(1.0e-16))
-      this->getIntegrand()->setGravity(g.x,g.y,g.z);
-  } else if (!strcasecmp(child->Value(),"anasol")) {
+  if (!strcasecmp(child->Value(),"anasol")) {
     std::string type;
     utl::getAttribute(child,"type",type,true);
     if (type == "hole") {
@@ -297,10 +277,11 @@ bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* child)
       setPropertyType(code,Property::NEUMANN);
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }
-  } else if (!strcasecmp(child->Value(),"localsystem") && child->FirstChild()) {
-      // Caution: When running adaptively, the below will cause a small memory
-      // leak because the coordinate system objects are only deleted by the
-      // Elasticity destructor (and not in SIMbase::clearProperties).
+  }
+  else if (!strcasecmp(child->Value(),"localsystem") && child->FirstChild()) {
+    // Caution: When running adaptively, the below will cause a small memory
+    // leak because the coordinate system objects are only deleted by the
+    // Elasticity destructor (and not in SIMbase::clearProperties).
     if (!strcasecmp(child->FirstChild()->Value(),"cylindricz"))
       this->getIntegrand()->setLocalSystem(new CylinderCS);
     else if (!strcasecmp(child->FirstChild()->Value(),"cylinder+sphere")) {
@@ -311,7 +292,8 @@ bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* child)
     else
       std::cerr <<"  ** SIMLinEl3D::parse: Unsupported coordinate system: "
                 << child->FirstChild()->Value() <<" (ignored)"<< std::endl;
-  } else
+  }
+  else
     return false;
 
   return true;

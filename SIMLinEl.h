@@ -134,7 +134,7 @@ private:
     if (!Dim::myProblem)
     {
       if (Dim::dimension == 2)
-	Dim::myProblem = new LinearElasticity(Dim::dimension,axiSymmetry);
+	Dim::myProblem = new LinearElasticity(2,axiSymmetry);
       else
 	Dim::myProblem = new LinearElasticity(Dim::dimension);
     }
@@ -152,8 +152,9 @@ protected:
     int nConstPress = 0;
     int nLinearPress = 0;
 
-    if (parseDimSpecific(keyWord, is))
+    if (this->parseDimSpecific(keyWord, is))
       return true;
+
     else if (!strncasecmp(keyWord,"ISOTROPIC",9))
     {
       nmat = atoi(keyWord+10);
@@ -169,14 +170,28 @@ protected:
         double E   = atof(strtok(NULL," "));
         double nu  = atof(strtok(NULL," "));
         double rho = atof(strtok(NULL," "));
-        if (Dim::dimension == 3)
-          mVec.push_back(new LinIsotropic(E,nu,rho));
         if (Dim::dimension == 2)
           mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
+        else
+          mVec.push_back(new LinIsotropic(E,nu,rho));
         if (Dim::myPid == 0)
           std::cout <<"\tMaterial code "<< code <<": "
                     << E <<" "<< nu <<" "<< rho << std::endl;
       }
+    }
+
+    else if (!strncasecmp(keyWord,"GRAVITY",7))
+    {
+      double gx = atof(strtok(keyWord+7," "));
+      double gy = atof(strtok(NULL," "));
+      double gz = Dim::dimension == 3 ? atof(strtok(NULL," ")) : 0.0;
+      if (Dim::myPid == 0)
+      {
+	std::cout <<"\nGravitation vector: " << gx <<" "<< gy;
+        if (Dim::dimension == 3) std::cout <<" "<< gz;
+	std::cout << std::endl;
+      }
+      this->getIntegrand()->setGravity(gx,gy,gz);
     }
 
     else if (!strncasecmp(keyWord,"CONSTANT_PRESSURE",17))
@@ -193,7 +208,7 @@ protected:
     {
       Property press;
       press.pcode = Property::NEUMANN;
-      press.ldim = Dim::dimension-1;
+      press.ldim = Dim::dimension - 1;
 
       int npres = atoi(keyWord+8);
       std::cout <<"\nNumber of pressures: "<< npres << std::endl;
@@ -207,7 +222,7 @@ protected:
         if (pid < 1) continue;
 
         press.lindx = atoi(strtok(NULL," "));
-        if (press.lindx < 1 || press.lindx > 4+2*(Dim::dimension-2))
+        if (press.lindx < 1 || press.lindx > 2*Dim::dimension)
         {
           std::cerr <<" *** SIMLinEl3D::parse: Invalid face index "
                     << (int)press.lindx << std::endl;
@@ -229,7 +244,10 @@ protected:
                     << (Dim::dimension==3?" F":" E")
                     << (int)press.lindx <<" direction "<< pdir <<": ";
           if ((cline = strtok(NULL," ")))
-            Dim::myTracs[1+i] = new PressureField(utl::parseRealFunc(cline,p),pdir);
+          {
+            const RealFunc* pf = utl::parseRealFunc(cline,p);
+            Dim::myTracs[1+i] = new PressureField(pf,pdir);
+          }
           else
           {
             std::cout << p;
@@ -257,11 +275,11 @@ protected:
           {
             std::cout <<"\tMaterial for all patches: "
                       << E <<" "<< nu <<" "<< rho << std::endl;
-            if (Dim::dimension == 3)
-              mVec.push_back(new LinIsotropic(E,nu,rho));
             if (Dim::dimension == 2)
               mVec.push_back(new LinIsotropic(E,nu,rho,
                                               !planeStrain,axiSymmetry));
+            else
+              mVec.push_back(new LinIsotropic(E,nu,rho));
           }
           else
           {
@@ -272,12 +290,13 @@ protected:
 
             std::cout <<"\tMaterial for P"<< patch
                       <<": "<< E <<" "<< nu <<" "<< rho << std::endl;
-            Dim::myProps.push_back(Property(Property::MATERIAL,mVec.size(),pid,3));
-            if (Dim::dimension == 3)
-              mVec.push_back(new LinIsotropic(E,nu,rho));
+            Dim::myProps.push_back(Property(Property::MATERIAL,
+                                            mVec.size(),pid,3));
             if (Dim::dimension == 2)
               mVec.push_back(new LinIsotropic(E,nu,rho,
                                               !planeStrain,axiSymmetry));
+            else
+              mVec.push_back(new LinIsotropic(E,nu,rho));
           }
       }
     }
@@ -326,7 +345,7 @@ protected:
 
     const TiXmlElement* child = elem->FirstChildElement();
     for (; child; child = child->NextSiblingElement()) {
-      if (parseDimSpecific(child))
+      if (this->parseDimSpecific(child))
         continue;
 
       if (!strcasecmp(child->Value(),"isotropic")) {
@@ -337,13 +356,27 @@ protected:
         utl::getAttribute(child,"nu",nu);
         utl::getAttribute(child,"rho",rho);
 
-        if (Dim::dimension == 3)
-          mVec.push_back(new LinIsotropic(E,nu,rho));
         if (Dim::dimension == 2)
-          mVec.push_back(new LinIsotropic(E,nu,rho, !planeStrain,axiSymmetry));
+          mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
+        else
+          mVec.push_back(new LinIsotropic(E,nu,rho));
         if (Dim::myPid == 0)
           std::cout <<"\tMaterial code "<< code <<": "
                     << E <<" "<< nu <<" "<< rho << std::endl;
+      }
+
+      else if (!strcasecmp(child->Value(),"gravity")) {
+        double gx = 0.0, gy = 0.0, gz = 0.0;
+        utl::getAttribute(child,"x",gx);
+        utl::getAttribute(child,"y",gy);
+        if (Dim::dimension == 3)
+          utl::getAttribute(child,"z",gz);
+        if (Dim::myPid == 0) {
+          std::cout <<"\tGravitation vector: "<< gx <<" "<< gy;
+          if (Dim::dimension == 3) std::cout <<" "<< gz;
+          std::cout << std::endl;
+        }
+        this->getIntegrand()->setGravity(gx,gy,gz);
       }
 
       else if (!strcasecmp(child->Value(),"bodyforce")) {
@@ -359,7 +392,9 @@ protected:
           if (f) this->setVecProperty(code,Property::BODYLOAD,f);
           std::cout << std::endl;
         }
-      } else
+      }
+
+      else
         return this->Dim::parse(elem);
     }
 
@@ -382,16 +417,16 @@ protected:
     return true;
   }
 
-  //! \brief Parse a data section from an input file
+  //! \brief Parses a data section from an input file.
   //! \details This function allows for specialization of the template
-  //!          while still reusing as much code as possible. Only put
-  //!          dimension-specific code in here
+  //! while still reusing as much code as possible.
+  //! Only put dimension-specific code in here.
   bool parseDimSpecific(char* keyWord, std::istream& is);
 
-  //! \brief Parse a data section from an input file
+  //! \brief Parses a data section from an XML element.
   //! \details This function allows for specialization of the template
-  //!          while still reusing as much code as possible. Only put
-  //!          dimension-specific code in here
+  //! while still reusing as much code as possible.
+  //! Only put dimension-specific code in here.
   bool parseDimSpecific(const TiXmlElement* elem);
 
   //! \brief Initializes the body load properties for current patch.
@@ -401,14 +436,7 @@ protected:
     Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
     if (!elp) return false;
 
-    typename Dim::VecFuncMap::const_iterator it = Dim::myVectors.end();
-    for (size_t i = 0; i < Dim::myProps.size(); i++)
-      if (Dim::myProps[i].pcode == Property::BODYLOAD &&
-          Dim::myProps[i].patch == patchInd)
-        if ((it = Dim::myVectors.find(Dim::myProps[i].pindx)) != Dim::myVectors.end())
-          break;
-
-    elp->setBodyForce(it == Dim::myVectors.end() ? NULL : it->second);
+    elp->setBodyForce(this->getVecFunc(patchInd,Property::BODYLOAD));
     return true;
   }
 
@@ -419,7 +447,7 @@ protected:
     Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
     if (!elp) return false;
 
-    typename Dim::VecFuncMap::const_iterator  vit = Dim::myVectors.find(propInd);
+    typename Dim::VecFuncMap::const_iterator vit = Dim::myVectors.find(propInd);
     typename Dim::TracFuncMap::const_iterator tit = Dim::myTracs.find(propInd);
 
     if (vit != Dim::myVectors.end())
