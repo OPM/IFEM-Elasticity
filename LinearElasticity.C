@@ -17,11 +17,39 @@
 #include "ElmMats.h"
 #include "Tensor.h"
 #include "Vec3Oper.h"
+#include "VTF.h"
 
 
-LinearElasticity::LinearElasticity (unsigned short int n, bool axS)
+LinearElasticity::LinearElasticity (unsigned short int n, bool axS, bool GPout)
   : Elasticity(n,axS)
 {
+  myItgPts = n == 2 && GPout ? new Vec3Vec() : NULL;
+}
+
+
+void LinearElasticity::initIntegration (size_t nGp, size_t nBp)
+{
+  this->Elasticity::initIntegration(nGp,nBp);
+  if (myItgPts) myItgPts->resize(nGp);
+}
+
+
+bool LinearElasticity::hasTractionValues() const
+{
+  if (myItgPts && !myItgPts->empty())
+    return true;
+
+  return this->Elasticity::hasTractionValues();
+}
+
+
+bool LinearElasticity::writeGlvT (VTF* vtf, int iStep, int& nBlock) const
+{
+  bool ok = this->Elasticity::writeGlvT(vtf,iStep,nBlock);
+  if (ok && vtf && myItgPts && !myItgPts->empty())
+    return vtf->writePoints(*myItgPts);
+
+  return ok;
 }
 
 
@@ -82,6 +110,10 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (eS)
     // Integrate the load vector due to gravitation and other body forces
     this->formBodyForce(elMat.b[eS-1],fe.N,X,detJW);
+
+  // Store Gauss point coordinates for visualization
+  if (myItgPts && fe.iGP < myItgPts->size())
+    myItgPts->at(fe.iGP) = X;
 
   return true;
 }

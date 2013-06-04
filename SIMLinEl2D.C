@@ -16,6 +16,7 @@
 
 template<> bool SIMLinEl2D::planeStrain = false;
 template<> bool SIMLinEl2D::axiSymmetry = false;
+template<> bool SIMLinEl2D::GIpointsVTF = false;
 
 
 template<> bool SIMLinEl2D::parseDimSpecific (char* keyWord, std::istream& is)

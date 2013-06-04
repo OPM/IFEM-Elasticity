@@ -126,6 +126,7 @@ protected:
 public:
   static bool planeStrain; //!< Plane strain/stress option - 2D only
   static bool axiSymmetry; //!< Axisymmtry option - 2D only
+  static bool GIpointsVTF; //!< Gauss point output to VTF option - 2D only
 
 private:
   //! \brief Returns the actual integrand.
@@ -134,9 +135,9 @@ private:
     if (!Dim::myProblem)
     {
       if (Dim::dimension == 2)
-	Dim::myProblem = new LinearElasticity(2,axiSymmetry);
+        Dim::myProblem = new LinearElasticity(2,axiSymmetry,GIpointsVTF);
       else
-	Dim::myProblem = new LinearElasticity(Dim::dimension);
+        Dim::myProblem = new LinearElasticity(Dim::dimension);
     }
     return dynamic_cast<Elasticity*>(Dim::myProblem);
   }
@@ -187,9 +188,9 @@ protected:
       double gz = Dim::dimension == 3 ? atof(strtok(NULL," ")) : 0.0;
       if (Dim::myPid == 0)
       {
-	std::cout <<"\nGravitation vector: " << gx <<" "<< gy;
+        std::cout <<"\nGravitation vector: " << gx <<" "<< gy;
         if (Dim::dimension == 3) std::cout <<" "<< gz;
-	std::cout << std::endl;
+        std::cout << std::endl;
       }
       this->getIntegrand()->setGravity(gx,gy,gz);
     }

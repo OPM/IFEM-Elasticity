@@ -15,10 +15,12 @@
 #include "SIMLinEl.h"
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"
+#include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
 #include "HDF5Writer.h"
 #include "XMLWriter.h"
 #include "Utilities.h"
+#include "VTF.h"
 #include "Profiler.h"
 #include <fstream>
 #include <stdlib.h>
@@ -101,6 +103,14 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
 	utl::parseIntegers(ignoredPatches,argv[++i]);
+    else if (!strcmp(argv[i],"-vox") && i < argc-1)
+      VTF::vecOffset[0] = atof(argv[++i]);
+    else if (!strcmp(argv[i],"-voy") && i < argc-1)
+      VTF::vecOffset[1] = atof(argv[++i]);
+    else if (!strcmp(argv[i],"-voz") && i < argc-1)
+      VTF::vecOffset[2] = atof(argv[++i]);
+    else if (!strcmp(argv[i],"-plotSC"))
+      SIMLinEl2D::GIpointsVTF = Immersed::plotCells = true;
     else if (!strcmp(argv[i],"-free"))
       SIMbase::ignoreDirichlet = true;
     else if (!strcmp(argv[i],"-check"))
