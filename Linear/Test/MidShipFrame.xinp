@@ -1,0 +1,81 @@
+<simulation>
+
+  <geometry>
+    <patchfile>frame2.g2</patchfile>
+    <raiseorder lowerpatch="1" upperpatch="3" u="1"/>
+    <raiseorder lowerpatch="4" upperpatch="10" v="1"/>
+    <raiseorder patch="6" u="1"/>
+    <refine patch="4" u="3"/>
+    <refine patch="5" u="3"/>
+    <refine patch="8" u="3"/>
+    <refine patch="10" u="1"/>
+    <refine patch="1" u="1" v="1"/>
+    <refine patch="2" u="1"/>
+    <refine lowerpatch="3" upperpatch="10" u="1" v="1"/>
+    <refine lowerpatch="1" upperpatch="10" u="3" v="3"/>
+
+    <topology>
+      <connection master="1" medge="3" slave="2" sedge="4"/>
+      <connection master="1" medge="4" slave="3" sedge="3"/>
+      <connection master="2" medge="3" slave="4" sedge="2" reverse="true"/>
+      <connection master="3" medge="4" slave="5" sedge="1" reverse="true"/>
+      <connection master="5" medge="2" slave="6" sedge="1"/>
+      <connection master="6" medge="3" slave="7" sedge="1"/>
+      <connection master="7" medge="2" slave="8" sedge="2" reverse="true"/>
+      <connection master="8" medge="1" slave="9" sedge="2"/>
+      <connection master="9" medge="1" slave="10" sedge="1" reverse="true"/>
+    </topology>
+
+    <topologysets>
+      <set name="innspenning" type="edge">
+        <item patch="4">1</item>
+        <item patch="10">2</item>
+      </set>
+    </topologysets>
+
+    <immersedboundary patch="1" max_depth="5">
+      <Oval X1="11.2" Y1="0.75" X2="11.7" Y2="0.75" R="0.3"/>
+    </immersedboundary>
+    <immersedboundary patch="3">
+      <Oval X1="11.2" Y1="0.75" X2="11.7" Y2="0.75" R="0.3"/>
+    </immersedboundary>
+    <immersedboundary patch="4" max_depth="5">
+      <Oval X1="12.2" Y1="4.8" X2="12.4" Y2="4.8" R="0.19"/>
+      <Oval X1="12.1" Y1="5.8" X2="12.4" Y2="5.8" R="0.19"/>
+      <Oval X1="12.1" Y1="6.8" X2="12.4" Y2="6.8" R="0.19"/>
+      <Oval X1="12.15" Y1="7.8" X2="12.4" Y2="7.8" R="0.19"/>
+      <Circle Xc="12.3" Yc="9.1" R="0.18"/>
+    </immersedboundary>
+    <immersedboundary patch="5">
+      <Oval X1="3.9" Y1="0.675" X2="4.2" Y2="0.675" R="0.2"/>
+      <Oval X1="5.9" Y1="0.675" X2="6.2" Y2="0.675" R="0.2"/>
+      <Oval X1="7.9" Y1="0.675" X2="8.2" Y2="0.675" R="0.2"/>
+    </immersedboundary>
+    <immersedboundary patch="8">
+      <Circle Xc="0.86" Yc="4.8" R="0.16"/>
+      <Circle Xc="0.83" Yc="5.6" R="0.16"/>
+      <Circle Xc="0.80" Yc="6.4" R="0.16"/>
+      <Circle Xc="0.77" Yc="7.2" R="0.16"/>
+    </immersedboundary>
+    <immersedboundary patch="10">
+      <Circle Xc="0.87" Yc="9.65" R="0.14"/>
+    </immersedboundary>
+
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet comp="12" set="innspenning"/>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.1e11" nu="0.3" rho="7850"/>
+    <gravity x="9.81"/>
+  </elasticity>
+
+  <postprocessing>
+    <projection>
+      <CGL2/>
+    </projection>
+  </postprocessing>
+
+</simulation>
