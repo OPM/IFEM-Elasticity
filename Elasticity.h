@@ -64,6 +64,11 @@ public:
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
 
+  //! \brief Initializes an integration parameter for the integrand.
+  //! \param[in] i Index of the integration parameter to define
+  //! \param[in] v The parameter value to assign
+  virtual void setIntegrationPrm(int i, double v) { intPrm[i] = v; }
+
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
   //! \param[in] nBp Total number of boundary integration points
@@ -161,6 +166,10 @@ public:
   void printMaxVals(std::ostream& os, std::streamsize precision,
                     size_t comp = 0) const;
 
+  //! \brief Finalizes the element matrices after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain&,size_t);
+
 protected:
   //! \brief Calculates some kinematic quantities at current point.
   //! \param[in] eV Element solution vector
@@ -225,13 +234,15 @@ public:
 protected:
   // Finite element quantities, i.e., indices into element matrices and vectors.
   // These indices will be identical for all elements in a model and can thus
-  // be stored here, even when doing multi-threading. Note that these indices
+  // be stored here, even when doing multi-threading. Note that the indices are
   // 1-based, since the value zero is used to signal non-existing matrix/vector.
   unsigned short int eKm; //!< Index to element material stiffness matrix
   unsigned short int eKg; //!< Index to element geometric stiffness matrix
   unsigned short int eM;  //!< Index to element mass matrix
   unsigned short int eS;  //!< Index to element load vector
   unsigned short int iS;  //!< Index to element internal force vector
+
+  double intPrm[4]; //!< Newmark time integration parameters
 
   // Physical properties
   Material* material; //!< Material data and constitutive relation

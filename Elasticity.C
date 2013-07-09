@@ -14,9 +14,10 @@
 #include "Elasticity.h"
 #include "LinIsotropic.h"
 #include "FiniteElement.h"
-#include "Utilities.h"
-#include "ElmMats.h"
+#include "NewmarkMats.h"
+#include "TimeDomain.h"
 #include "ElmNorm.h"
+#include "Utilities.h"
 #include "Tensor.h"
 #include "Vec3Oper.h"
 #include "AnaSol.h"
@@ -46,6 +47,10 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
   bodyFld = 0;
   eM = eKm = eKg = 0;
   eS = iS = 0;
+
+  intPrm[0] = intPrm[1] = 0.0;
+  intPrm[2] = 0.3; // beta
+  intPrm[3] = 0.5; // gamma
 }
 
 
@@ -80,6 +85,8 @@ void Elasticity::setMode (SIM::SolutionMode mode)
 
   if (mode == SIM::BUCKLING || mode == SIM::RECOVERY)
     primsol.resize(1);
+  else if (mode == SIM::DYNAMIC)
+    primsol.resize(3);
   else
     primsol.clear();
 
@@ -91,7 +98,7 @@ void Elasticity::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::DYNAMIC:
-      eKm = 1;
+      eKm = 3;
       eM  = 2;
       eS  = 1;
       break;
@@ -137,19 +144,24 @@ void Elasticity::setMode (SIM::SolutionMode mode)
 LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 					     bool neumann) const
 {
-  ElmMats* result = new ElmMats;
+  ElmMats* result;
+  if (m_mode == SIM::DYNAMIC)
+    result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
+  else
+    result = new ElmMats();
+
   switch (m_mode)
   {
     case SIM::STATIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann?0:1,1);
+      result->resize(neumann ? 0 : 1, 1);
       break;
 
     case SIM::DYNAMIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann?0:2,1);
+      result->resize(neumann ? 0 : 3, 1);
       break;
 
     case SIM::VIBRATION:
@@ -166,7 +178,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 
     case SIM::RHS_ONLY:
       result->rhsOnly = true;
-      result->resize(0,1);
+      result->resize(neumann ? 0 : 1, 1);
       break;
 
     case SIM::RECOVERY:
@@ -180,7 +192,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   for (size_t i = 0; i < result->A.size(); i++)
     result->A[i].resize(nsd*nen,nsd*nen);
 
-  if (result->b.size())
+  if (!result->b.empty())
     result->b.front().resize(nsd*nen);
 
   return result;
@@ -511,6 +523,16 @@ bool Elasticity::formCinverse (Matrix& Cinv, const FiniteElement& fe,
 }
 
 
+bool Elasticity::finalizeElement (LocalIntegral& elmInt,
+                                  const TimeDomain& prm, size_t)
+{
+  if (m_mode == SIM::DYNAMIC)
+    static_cast<NewmarkMats&>(elmInt).setStepSize(prm.dt,prm.it);
+
+  return true;
+}
+
+
 bool Elasticity::evalSol (Vector& s, const MxFiniteElement& fe,
 			  const Vec3& X, const std::vector<int>& MNPC1,
 			  const std::vector<int>&) const
@@ -556,7 +578,7 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 bool Elasticity::evalSol (Vector& s, const Vector& eV, const FiniteElement& fe,
                           const Vec3& X, bool toLocal) const
 {
-  if (eV.size() != fe.dNdX.rows()*nsd)
+  if (!eV.empty() && eV.size() != fe.dNdX.rows()*nsd)
   {
     std::cerr <<" *** Elasticity::evalSol: Invalid displacement vector."
 	      <<"\n     size(eV) = "<< eV.size() <<"   size(dNdX) = "
