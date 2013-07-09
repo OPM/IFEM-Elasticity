@@ -14,7 +14,7 @@
 #include "SIMLinElBeamC1.h"
 #include "../LinIsotropic.h"
 #include "KirchhoffLovePlate.h"
-#include "../AnalyticSolutions.h"
+#include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
 #include "ASMbase.h"
 #include "SAMpatch.h"

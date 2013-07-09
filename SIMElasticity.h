@@ -1,7 +1,7 @@
 // $Id$
 //==============================================================================
 //!
-//! \file SIMLinEl.h
+//! \file SIMElasticity.h
 //!
 //! \date Dec 08 2009
 //!
@@ -11,15 +11,15 @@
 //!
 //==============================================================================
 
-#ifndef _SIM_LIN_EL_H
-#define _SIM_LIN_EL_H
+#ifndef _SIM_ELASTICITY_H
+#define _SIM_ELASTICITY_H
 
-#include "LinearElasticity.h"
+#include "SIM2D.h"
+#include "SIM3D.h"
+#include "Elasticity.h"
 #include "LinIsotropic.h"
 #include "AnaSol.h"
 #include "Functions.h"
-#include "SIM2D.h"
-#include "SIM3D.h"
 #include "Utilities.h"
 #include "tinyxml.h"
 
@@ -27,22 +27,22 @@
 /*!
   \brief Driver class for isogeometric FEM analysis of elasticity problems.
   \details The class incapsulates data and methods for solving linear elasticity
-  problems using NURBS-based finite elements. It reimplements the parse method
-  of the parent class.
+  problems using NURBS-based finite elements. It reimplements the parse methods
+  and some property initialization methods of the parent class.
 */
 
-template<class Dim> class SIMLinEl : public Dim
+template<class Dim> class SIMElasticity : public Dim
 {
 public:
   //! \brief Default constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMLinEl(bool checkRHS = false) : Dim(Dim::dimension,0,checkRHS)
+  SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,0,checkRHS)
   {
     aCode = 0;
   }
 
   //! \brief The destructor frees the dynamically allocated material properties.
-  virtual ~SIMLinEl()
+  virtual ~SIMElasticity()
   {
     // To prevent the SIMbase destructor try to delete already deleted functions
     if (aCode > 0)
@@ -98,14 +98,15 @@ protected:
     for (p = Dim::myProps.begin(); p != Dim::myProps.end(); ++p)
       if (p->pcode == Property::DIRICHLET_ANASOL)
       {
-        if (!Dim::mySol->getVectorSol())
+        VecFunc* vecField = Dim::mySol->getVectorSol();
+        if (!vecField)
           p->pcode = Property::UNDEFINED;
         else if (aCode == abs(p->pindx))
           p->pcode = Property::DIRICHLET_INHOM;
         else if (aCode == 0)
         {
           aCode = abs(p->pindx);
-          Dim::myVectors[aCode] = Dim::mySol->getVectorSol();
+          Dim::myVectors[aCode] = vecField;
           p->pcode = Property::DIRICHLET_INHOM;
         }
         else
@@ -113,10 +114,11 @@ protected:
       }
       else if (p->pcode == Property::NEUMANN_ANASOL)
       {
-        if (Dim::mySol->getStressSol())
+        STensorFunc* stressField = Dim::mySol->getStressSol();
+        if (stressField)
         {
           p->pcode = Property::NEUMANN;
-          Dim::myTracs[p->pindx] = new TractionField(*Dim::mySol->getStressSol());
+          Dim::myTracs[p->pindx] = new TractionField(*stressField);
         }
         else
           p->pcode = Property::UNDEFINED;
@@ -126,41 +128,33 @@ protected:
 public:
   static bool planeStrain; //!< Plane strain/stress option - 2D only
   static bool axiSymmetry; //!< Axisymmtry option - 2D only
-  static bool GIpointsVTF; //!< Gauss point output to VTF option - 2D only
-
-private:
-  //! \brief Returns the actual integrand.
-  Elasticity* getIntegrand()
-  {
-    if (!Dim::myProblem)
-    {
-      if (Dim::dimension == 2)
-        Dim::myProblem = new LinearElasticity(2,axiSymmetry,GIpointsVTF);
-      else
-        Dim::myProblem = new LinearElasticity(Dim::dimension);
-    }
-    return dynamic_cast<Elasticity*>(Dim::myProblem);
-  }
 
 protected:
+  //! \brief Returns the actual integrand.
+  virtual Elasticity* getIntegrand() { return NULL; }
+
+  //! \brief Parses a dimension-specific data section from an input file.
+  virtual bool parseDimSpecific(char*, std::istream&) { return false; }
+  //! \brief Parses a dimension-specific data section from an XML element.
+  virtual bool parseDimSpecific(const TiXmlElement*) { return false; }
+
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from
   virtual bool parse(char* keyWord, std::istream& is)
   {
-    char* cline = 0;
+    char* cline = NULL;
     int nmat = 0;
     int nConstPress = 0;
     int nLinearPress = 0;
 
-    if (this->parseDimSpecific(keyWord, is))
+    if (this->parseDimSpecific(keyWord,is))
       return true;
 
     else if (!strncasecmp(keyWord,"ISOTROPIC",9))
     {
       nmat = atoi(keyWord+10);
-      if (Dim::myPid == 0)
-        std::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
+      std::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
 
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
@@ -175,9 +169,8 @@ protected:
           mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
         else
           mVec.push_back(new LinIsotropic(E,nu,rho));
-        if (Dim::myPid == 0)
-          std::cout <<"\tMaterial code "<< code <<": "
-                    << E <<" "<< nu <<" "<< rho << std::endl;
+        std::cout <<"\tMaterial code "<< code <<": "
+                  << E <<" "<< nu <<" "<< rho << std::endl;
       }
     }
 
@@ -186,12 +179,9 @@ protected:
       double gx = atof(strtok(keyWord+7," "));
       double gy = atof(strtok(NULL," "));
       double gz = Dim::dimension == 3 ? atof(strtok(NULL," ")) : 0.0;
-      if (Dim::myPid == 0)
-      {
-        std::cout <<"\nGravitation vector: " << gx <<" "<< gy;
-        if (Dim::dimension == 3) std::cout <<" "<< gz;
-        std::cout << std::endl;
-      }
+      std::cout <<"\nGravitation vector: " << gx <<" "<< gy;
+      if (Dim::dimension == 3) std::cout <<" "<< gz;
+      std::cout << std::endl;
       this->getIntegrand()->setGravity(gx,gy,gz);
     }
 
@@ -225,7 +215,7 @@ protected:
         press.lindx = atoi(strtok(NULL," "));
         if (press.lindx < 1 || press.lindx > 2*Dim::dimension)
         {
-          std::cerr <<" *** SIMLinEl3D::parse: Invalid face index "
+          std::cerr <<" *** SIMElasticity3D::parse: Invalid face index "
                     << (int)press.lindx << std::endl;
           return false;
         }
@@ -308,16 +298,14 @@ protected:
     int npres = nConstPress + nLinearPress;
     if (npres > 0)
     {
-      if (Dim::myPid == 0)
-        std::cout <<"\nNumber of pressures: "<< npres << std::endl;
+      std::cout <<"\nNumber of pressures: "<< npres << std::endl;
       for (int i = 0; i < npres && (cline = utl::readLine(is)); i++)
       {
         int code = atoi(strtok(cline," "));
         int pdir = atoi(strtok(NULL," "));
         double p = atof(strtok(NULL," "));
-        if (Dim::myPid == 0)
-          std::cout <<"\tPressure code "<< code <<" direction "<< pdir
-                    <<": "<< p << std::endl;
+        std::cout <<"\tPressure code "<< code <<" direction "<< pdir
+                  <<": "<< p << std::endl;
 
         this->setPropertyType(code,Property::NEUMANN);
 
@@ -361,9 +349,9 @@ protected:
           mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
         else
           mVec.push_back(new LinIsotropic(E,nu,rho));
-        if (Dim::myPid == 0)
-          std::cout <<"\tMaterial code "<< code <<": "
-                    << E <<" "<< nu <<" "<< rho << std::endl;
+
+        std::cout <<"\tMaterial code "<< code <<": "
+                  << E <<" "<< nu <<" "<< rho << std::endl;
       }
 
       else if (!strcasecmp(child->Value(),"gravity")) {
@@ -372,12 +360,11 @@ protected:
         utl::getAttribute(child,"y",gy);
         if (Dim::dimension == 3)
           utl::getAttribute(child,"z",gz);
-        if (Dim::myPid == 0) {
-          std::cout <<"\tGravitation vector: "<< gx <<" "<< gy;
-          if (Dim::dimension == 3) std::cout <<" "<< gz;
-          std::cout << std::endl;
-        }
         this->getIntegrand()->setGravity(gx,gy,gz);
+
+        std::cout <<"\tGravitation vector: "<< gx <<" "<< gy;
+        if (Dim::dimension == 3) std::cout <<" "<< gz;
+        std::cout << std::endl;
       }
 
       else if (!strcasecmp(child->Value(),"bodyforce")) {
@@ -418,18 +405,6 @@ protected:
     return true;
   }
 
-  //! \brief Parses a data section from an input file.
-  //! \details This function allows for specialization of the template
-  //! while still reusing as much code as possible.
-  //! Only put dimension-specific code in here.
-  bool parseDimSpecific(char* keyWord, std::istream& is);
-
-  //! \brief Parses a data section from an XML element.
-  //! \details This function allows for specialization of the template
-  //! while still reusing as much code as possible.
-  //! Only put dimension-specific code in here.
-  bool parseDimSpecific(const TiXmlElement* elem);
-
   //! \brief Initializes the body load properties for current patch.
   //! \param[in] patchInd 1-based patch index
   virtual bool initBodyLoad(size_t patchInd)
@@ -467,18 +442,5 @@ protected:
 private:
   int aCode; //!< Analytical BC code (used by destructor)
 };
-
-typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
-typedef SIMLinEl<SIM3D> SIMLinEl3D; //!< 3D specific driver
-
-//! \brief Template specialization - 2D specific input parsing.
-template<> bool SIMLinEl2D::parseDimSpecific(char* keyWord, std::istream& is);
-//! \brief Template specialization - 2D specific input parsing.
-template<> bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* elem);
-
-//! \brief Template specialization - 3D specific input parsing.
-template<> bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is);
-//! \brief Template specialization - 3D specific input parsing.
-template<> bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem);
 
 #endif
