@@ -14,7 +14,7 @@
 #include "Elasticity.h"
 #include "LinIsotropic.h"
 #include "FiniteElement.h"
-#include "NewmarkMats.h"
+#include "GenAlphaMats.h"
 #include "TimeDomain.h"
 #include "ElmNorm.h"
 #include "Utilities.h"
@@ -49,8 +49,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
   eS = iS = 0;
 
   intPrm[0] = intPrm[1] = 0.0;
-  intPrm[2] = 0.3; // beta
-  intPrm[3] = 0.5; // gamma
+  intPrm[2] = intPrm[3] = 0.0;
 }
 
 
@@ -145,10 +144,12 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 					     bool neumann) const
 {
   ElmMats* result;
-  if (m_mode == SIM::DYNAMIC)
+  if (m_mode != SIM::DYNAMIC)
+    result = new ElmMats();
+  else if (intPrm[3] > 0.0)
     result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
   else
-    result = new ElmMats();
+    result = new GenAlphaMats(intPrm[2],intPrm[0],intPrm[1]);
 
   switch (m_mode)
   {
@@ -161,7 +162,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
     case SIM::DYNAMIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 3, 1);
+      result->resize(neumann ? 0 : 3, neumann || intPrm[3] > 0.0 ? 1 : 2);
       break;
 
     case SIM::VIBRATION:
