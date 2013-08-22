@@ -17,7 +17,7 @@
 #include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
 #include "ASMbase.h"
-#include "SAMpatch.h"
+#include "SAM.h"
 #include "Functions.h"
 #include "Utilities.h"
 #include "Property.h"
@@ -402,11 +402,8 @@ bool SIMLinElKL::preprocessB ()
 }
 
 
-bool SIMLinElKL::assembleDiscreteTerms (const IntegrandBase* problem)
+bool SIMLinElKL::assembleDiscreteTerms (const IntegrandBase*, const TimeDomain&)
 {
-  if (problem != myProblem)
-    return true; // Do this only for the main integrand
-
   SystemVector* b = myEqSys->getVector();
   for (size_t i = 0; i < myLoads.size() && b; i++)
     if (!mySam->assembleSystem(*b,&myLoads[i].pload,myLoads[i].inod))

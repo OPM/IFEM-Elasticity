@@ -17,7 +17,7 @@
 #include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
 #include "ASMbase.h"
-#include "SAMpatch.h"
+#include "SAM.h"
 #include "Functions.h"
 #include "Utilities.h"
 #include "Property.h"
@@ -26,9 +26,8 @@
 #include "tinyxml.h"
 
 
-SIMLinElBeamC1::SIMLinElBeamC1 () : SIM1D(SIM::NONE)
+SIMLinElBeamC1::SIMLinElBeamC1 () : SIM1D(1)
 {
-  nf = 1;
   myProblem = new KirchhoffLovePlate(1);
 }
 
@@ -306,11 +305,9 @@ bool SIMLinElBeamC1::preprocessB ()
 }
 
 
-bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase* problem)
+bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase*,
+                                            const TimeDomain&)
 {
-  if (problem != myProblem)
-    return true; // Do this only for the main integrand
-
   SystemVector* b = myEqSys->getVector();
   for (size_t i = 0; i < myLoads.size() && b; i++)
     if (!mySam->assembleSystem(*b,&myLoads[i].pload,myLoads[i].inod))

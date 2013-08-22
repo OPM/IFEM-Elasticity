@@ -69,7 +69,7 @@ protected:
   virtual bool initBodyLoad(size_t patchInd);
 
   //! \brief Assembles the nodal point loads, if any.
-  virtual bool assembleDiscreteTerms(const IntegrandBase* problem);
+  virtual bool assembleDiscreteTerms(const IntegrandBase*, const TimeDomain&);
 
   //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& psol) const;
