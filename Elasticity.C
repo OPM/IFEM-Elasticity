@@ -167,35 +167,27 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 
     case SIM::VIBRATION:
     case SIM::BUCKLING:
-      result->withLHS = true;
       result->resize(2,0);
       break;
 
     case SIM::STIFF_ONLY:
     case SIM::MASS_ONLY:
-      result->withLHS = true;
       result->resize(1,0);
       break;
 
     case SIM::RHS_ONLY:
-      result->rhsOnly = true;
       result->resize(neumann ? 0 : 1, 1);
-      break;
 
     case SIM::RECOVERY:
       result->rhsOnly = true;
+      result->withLHS = false;
       break;
 
     default:
       ;
   }
 
-  for (size_t i = 0; i < result->A.size(); i++)
-    result->A[i].resize(nsd*nen,nsd*nen);
-
-  if (!result->b.empty())
-    result->b.front().resize(nsd*nen);
-
+  result->redim(nsd*nen);
   return result;
 }
 

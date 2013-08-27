@@ -109,7 +109,7 @@ void KirchhoffLovePlate::setMode (SIM::SolutionMode mode)
 LocalIntegral* KirchhoffLovePlate::getLocalIntegral (size_t nen, size_t,
 						     bool neumann) const
 {
-  ElmMats* result = new ElmMats;
+  ElmMats* result = new ElmMats();
   switch (m_mode)
     {
     case SIM::STATIC:
@@ -118,42 +118,28 @@ LocalIntegral* KirchhoffLovePlate::getLocalIntegral (size_t nen, size_t,
       result->resize(neumann?0:1,1);
       break;
 
-    case SIM::DYNAMIC:
-      result->rhsOnly = neumann;
-      result->withLHS = !neumann;
-      result->resize(neumann?0:2,1);
-      break;
-
     case SIM::VIBRATION:
-      result->withLHS = true;
       result->resize(2,0);
       break;
 
     case SIM::STIFF_ONLY:
     case SIM::MASS_ONLY:
-      result->withLHS = true;
       result->resize(1,0);
       break;
 
     case SIM::RHS_ONLY:
-      result->rhsOnly = true;
-      result->resize(0,1);
-      break;
+      result->resize(neumann ? 0 : 1, 1);
 
     case SIM::RECOVERY:
       result->rhsOnly = true;
+      result->withLHS = false;
       break;
 
     default:
       ;
     }
 
-  for (size_t i = 0; i < result->A.size(); i++)
-    result->A[i].resize(nen,nen);
-
-  if (result->b.size())
-    result->b.front().resize(nen);
-
+  result->redim(nen);
   return result;
 }
 
