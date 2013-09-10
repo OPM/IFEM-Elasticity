@@ -206,7 +206,7 @@ int main (int argc, char** argv)
   utl::profiler->start("Model input");
 
   // Create the simulation model
-  SIMbase* model;
+  SIMoutput* model;
   if (Beam)
     model = new SIMLinElBeamC1();
   else if (KLp)
