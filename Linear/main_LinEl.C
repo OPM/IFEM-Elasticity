@@ -311,7 +311,6 @@ int main (int argc, char** argv)
   Vectors projs(pOpt.size()), gNorm;
   std::vector<Mode> modes;
   std::vector<Mode>::const_iterator it;
-  int iStep = 1, nBlock = 0;
 
   if (aSim)
     aSim->setupProjections();
@@ -450,16 +449,13 @@ int main (int argc, char** argv)
     if (exporter)
       exporter->setNormPrefixes(aSim->getNormPrefixes());
 
-    while (true) {
+    for (int iStep = 1; aSim->adaptMesh(iStep); iStep++)
       if (!aSim->solveStep(infile,iStep))
         return 5;
-      else if (!aSim->writeGlv(infile,iStep,nBlock,4))
+      else if (!aSim->writeGlv(infile,iStep,4))
         return 6;
       else if (exporter)
         exporter->dumpTimeLevel(NULL,true);
-      if (!aSim->adaptMesh(++iStep))
-        break;
-    }
 
   case 100:
     break; // Model check
@@ -479,12 +475,14 @@ int main (int argc, char** argv)
 
   if (iop != 10 && model->opt.format >= 0)
   {
+    int geoBlk = 0, nBlock = 0;
+
     // Write VTF-file with model geometry
-    if (!model->writeGlvG(nBlock,infile))
+    if (!model->writeGlvG(geoBlk,infile))
       return 7;
 
     // Write boundary tractions, if any
-    if (!model->writeGlvT(iStep,nBlock))
+    if (!model->writeGlvT(1,geoBlk,nBlock))
       return 8;
 
     // Write Dirichlet boundary conditions
@@ -492,18 +490,18 @@ int main (int argc, char** argv)
       return 8;
 
     // Write load vector to VTF-file
-    if (!model->writeGlvV(load,"Load vector",iStep,nBlock))
+    if (!model->writeGlvV(load,"Load vector",1,nBlock))
       return 9;
 
     // Write solution fields to VTF-file
-    if (!model->writeGlvS(displ,iStep,nBlock))
+    if (!model->writeGlvS(displ,1,nBlock))
       return 10;
 
     // Write projected solution fields to VTF-file
     size_t i = 0;
     int iBlk = 100;
     for (pit = pOpt.begin(); pit != pOpt.end(); pit++, i++, iBlk += 10)
-      if (!model->writeGlvP(projs[i],iStep,nBlock,iBlk,pit->second.c_str()))
+      if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str()))
 	return 11;
 
     // Write eigenmodes
@@ -513,7 +511,7 @@ int main (int argc, char** argv)
 	return 12;
 
     // Write element norms
-    if (!model->writeGlvN(eNorm,iStep,nBlock,prefix))
+    if (!model->writeGlvN(eNorm,1,nBlock,prefix))
       return 13;
 
     model->writeGlvStep(1);

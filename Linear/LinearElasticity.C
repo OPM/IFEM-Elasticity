@@ -43,11 +43,12 @@ bool LinearElasticity::hasTractionValues() const
 }
 
 
-bool LinearElasticity::writeGlvT (VTF* vtf, int iStep, int& nBlock) const
+bool LinearElasticity::writeGlvT (VTF* vtf, int iStep,
+                                  int& geoBlk, int& nBlock) const
 {
-  bool ok = this->Elasticity::writeGlvT(vtf,iStep,nBlock);
+  bool ok = this->Elasticity::writeGlvT(vtf,iStep,geoBlk,nBlock);
   if (ok && vtf && myItgPts && !myItgPts->empty())
-    return vtf->writePoints(*myItgPts);
+    return vtf->writePoints(*myItgPts,geoBlk);
 
   return ok;
 }

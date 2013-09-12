@@ -45,8 +45,9 @@ public:
   //! \brief Writes the surface tractions for a given time step to VTF-file.
   //! \param vtf The VTF-file object to receive the tractions
   //! \param[in] iStep Load/time step identifier
+  //! \param geoBlk Running geometry block counter
   //! \param nBlock Running result block counter
-  virtual bool writeGlvT(VTF* vtf, int iStep, int& nBlock) const;
+  virtual bool writeGlvT(VTF* vtf, int iStep, int& geoBlk, int& nBlock) const;
 
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
