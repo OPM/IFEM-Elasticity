@@ -8,7 +8,7 @@
     <refine patch="1" u="7" v="1" w="1"/>
     <topologysets>
       <set name="fixed edge" type="edge">
-        <item patch="1">12</item>
+        <item patch="1">11</item>
       </set>
       <set name="fixed end" type="face">
         <item patch="1">1</item>

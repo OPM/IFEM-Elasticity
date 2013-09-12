@@ -12,7 +12,7 @@ Parsing <geometry>
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: back surface (1,1,1D) (1,5,-1D) (1,6,-1D) (1,5,-2D)
-	               fixed edge (1,12,1D)
+	               fixed edge (1,11,1D)
 	               fixed end (1,1,2D)
 	               inner edge (1,2,1D)
 	               inner surface (1,4,2D)
@@ -44,7 +44,7 @@ Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 3
 	Constraining P1 E5 in direction(s) 3
 	Constraining P1 E6 in direction(s) 3
-	Constraining P1 E12 in direction(s) 123
+	Constraining P1 E11 in direction(s) 123
 	Constraining P1 E2 in direction(s) 1
 	Constraining P1 F5 in direction(s) 3
 	Constraining P1 F1 in direction(s) 2
