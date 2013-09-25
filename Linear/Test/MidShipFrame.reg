@@ -135,7 +135,6 @@ Number of elements    1248
 Number of nodes       1610
 Number of dofs        3220
 Number of unknowns    3178
-Pre-computing sparsity pattern for system matrix (3178x3178): nNZ = 93340
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
