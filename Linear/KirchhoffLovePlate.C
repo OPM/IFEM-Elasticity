@@ -309,8 +309,8 @@ bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 }
 
 
-bool KirchhoffLovePlate::evalSol (Vector& s, const Vector&, const Matrix&,
-				  const Matrix3D& d2NdX2, const Vec3& X,
+bool KirchhoffLovePlate::evalSol (Vector& s, const FiniteElement& fe,
+				  const Vec3& X,
 				  const std::vector<int>& MNPC) const
 {
   // Extract element displacements
@@ -325,7 +325,7 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector&, const Matrix&,
     }
 
   // Evaluate the stress resultant tensor
-  return this->evalSol(s,eV,d2NdX2,X,true);
+  return this->evalSol(s,eV,fe.d2NdX2,X,true);
 }
 
 

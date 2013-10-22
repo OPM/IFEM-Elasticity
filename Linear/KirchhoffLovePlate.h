@@ -59,7 +59,7 @@ public:
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 
   //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const { return Integrand::SECOND_DERIVATIVES; }
+  virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
 
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
@@ -89,12 +89,11 @@ public:
 
   //! \brief Evaluates the secondary solution at a result point.
   //! \param[out] s Array of solution field values at current point
-  //! \param[in] d2NdX2 Basis function 2nd derivatives at current point
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] MNPC Nodal point correspondance for the basis function values
-  virtual bool evalSol(Vector& s, const Vector&, const Matrix&,
-		       const Matrix3D& d2NdX2, const Vec3& X,
-		       const std::vector<int>& MNPC) const;
+  virtual bool evalSol(Vector& s, const FiniteElement& fe,
+                       const Vec3& X, const std::vector<int>& MNPC) const;
 
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress resultant values at current point
