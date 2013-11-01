@@ -79,24 +79,6 @@ public:
                         const Tensor& F, const SymmTensor& eps,
                         char iop = 1, const TimeDomain* prm = NULL,
                         const Tensor* Fpf = NULL) const = 0;
-  //! \brief Evaluates the constitutive relation at an integration point.
-  //! \param[out] C Constitutive matrix at current point
-  //! \param[out] sigma Stress tensor at current point
-  //! \param[out] U Strain energy density at current point
-  //! \param[in] ip Global index for current point
-  //! \param[in] X Cartesian coordinates of current point
-  //! \param[in] F Deformation gradient at current point
-  //! \param[in] eps Strain tensor at current point
-  //! \param[in] iop Calculation option
-  //! \param[in] prm Nonlinear solution algorithm parameters
-  //! \param[in] Fpf Deformation gradient for push-forward transformation
-  //!
-  //! \details This is a wrapper used when parametric or local coordinates
-  //! of current point are not needed (or available).
-  bool evaluate(Matrix& C, SymmTensor& sigma, double& U, size_t ip,
-                const Vec3& X, const Tensor& F, const SymmTensor& eps,
-                char iop = 1, const TimeDomain* prm = NULL,
-                const Tensor* Fpf = NULL) const;
 
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
