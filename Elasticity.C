@@ -85,7 +85,7 @@ void Elasticity::setMode (SIM::SolutionMode mode)
   if (mode == SIM::BUCKLING || mode == SIM::RECOVERY)
     primsol.resize(1);
   else if (mode == SIM::DYNAMIC)
-    primsol.resize(3);
+    primsol.resize(5); // temporary, set this depending on BDF scheme, etc.
   else
     primsol.clear();
 
