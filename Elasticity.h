@@ -155,6 +155,9 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual const char* getField2Name(size_t i, const char* prefix = 0) const;
 
+  //! \brief Defines the number solution vectors.
+  void setNoSolutions(size_t n) { nSV = n; }
+
   typedef std::pair<Vec3,double> PointValue; //!< Convenience type
 
   //! \brief Returns a pointer to the max values for external update.
@@ -259,6 +262,7 @@ protected:
 
   unsigned short int nsd; //!< Number of space dimensions (1, 2 or 3)
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
+  unsigned short int nSV; //!< Number of solution vectors
   bool       axiSymmetry; //!< \e true if the problem is axi-symmetric
 };
 

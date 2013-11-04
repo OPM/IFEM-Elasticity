@@ -36,6 +36,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
 
   nDF = axiSymmetry ? 3 : nsd;
   npv = nsd; // Number of primary unknowns per node
+  nSV = 1;   // Number of solution vectors in core
 
   // Default is zero gravity
   grav[0] = grav[1] = grav[2] = 0.0;
@@ -85,7 +86,7 @@ void Elasticity::setMode (SIM::SolutionMode mode)
   if (mode == SIM::BUCKLING || mode == SIM::RECOVERY)
     primsol.resize(1);
   else if (mode == SIM::DYNAMIC)
-    primsol.resize(5); // temporary, set this depending on BDF scheme, etc.
+    primsol.resize(nSV+2); // adding velocity and acceleration
   else
     primsol.clear();
 
