@@ -316,7 +316,7 @@ int main (int argc, char** argv)
     aSim->setupProjections();
 
   DataExporter* exporter = NULL;
-  if (model->opt.dumpHDF5(infile) && staticSol)
+  if (model->opt.dumpHDF5(infile))
   {
     if (myPid == 0)
       std::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
@@ -331,13 +331,18 @@ int main (int argc, char** argv)
     if (pOpt.empty()) results |= DataExporter::SECONDARY;
 
     exporter = new DataExporter(true);
-    exporter->registerField("u","solution",DataExporter::SIM,results);
-    exporter->setFieldValue("u",model, aSim ? &aSim->getSolution() : &displ);
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
-      exporter->registerField(prefix[i], "projected", DataExporter::SIM,
-                              DataExporter::SECONDARY, prefix[i]);
-      exporter->setFieldValue(prefix[i], model,
-                              aSim ? &aSim->getProjection(i) : &projs[i]);
+    if (model->opt.eig > 0) {
+      exporter->registerField("eig", "eigenmode", DataExporter::SIM, DataExporter::EIGENMODES);
+      exporter->setFieldValue("eig", model, &modes);
+    } else {
+      exporter->registerField("u","solution",DataExporter::SIM,results);
+      exporter->setFieldValue("u",model, aSim ? &aSim->getSolution() : &displ);
+      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
+        exporter->registerField(prefix[i], "projected", DataExporter::SIM,
+                                DataExporter::SECONDARY, prefix[i]);
+        exporter->setFieldValue(prefix[i], model,
+                                aSim ? &aSim->getProjection(i) : &projs[i]);
+      }
     }
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5));
     exporter->registerWriter(new XMLWriter(model->opt.hdf5));
