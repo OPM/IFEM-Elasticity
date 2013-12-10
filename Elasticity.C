@@ -708,6 +708,20 @@ NormBase* Elasticity::getNormIntegrand (AnaSol* asol) const
 }
 
 
+ForceBase* Elasticity::getForceIntegrand (const Vec3* X0, AnaSol* asol) const
+{
+   return new ElasticityForce(*const_cast<Elasticity*>(this),X0,asol);
+}
+ 
+ 
+ForceBase* Elasticity::getForceIntegrand () const
+{
+   return new ElasticityForce(*const_cast<Elasticity*>(this));
+}
+
+
+
+
 ElasticityNorm::ElasticityNorm (Elasticity& p, STensorFunc* a)
   : NormBase(p), anasol(a)
 {
@@ -903,3 +917,93 @@ bool ElasticityNorm::hasElementContributions (size_t i, size_t j) const
 {
   return i > 1 || j != 2;
 }
+
+
+LocalIntegral* ElasticityForce::getLocalIntegral (size_t nen, size_t iEl,
+                                                  bool) const
+{
+  if (nodal) {
+    ElmMats* result = new ElmMats(false);
+    result->resize(0,1);
+    result->redim(static_cast<Elasticity&>(myProblem).getNoSpaceDim()*nen);
+    return result;
+  }
+  
+  return this->ForceBase::getLocalIntegral(nen,iEl);
+}
+
+
+bool ElasticityForce::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
+			       const TimeDomain& time,
+			       const Vec3& X, const Vec3& normal) const
+{
+  Elasticity& problem = static_cast<Elasticity&>(myProblem);
+  size_t nsd = fe.dNdX.cols();
+
+  // Numerical approximation of stress
+  Vector stress;
+  problem.evalSol(stress,elmInt.vec.front(),fe,X);
+  SymmTensor sigmah(stress);
+
+  // Finite element traction
+  Vec3 th = sigmah*normal;
+
+  if (nodal) // Evaluate nodal force vectors
+    return this->evalForce(static_cast<ElmMats&>(elmInt),th,fe);
+
+  // Evaluate integrated forces (and errors) over the element
+  return this->evalForce(static_cast<ElmNorm&>(elmInt),
+                         th,X,normal,fe.detJxW,nsd);
+}
+
+
+bool ElasticityForce::evalForce (ElmNorm& pnorm, const Vec3& th,
+				 const Vec3& X, const Vec3& normal,
+				 double detJW, size_t nsd) const
+{
+  // Numerical force term
+  size_t i, ip = 0;
+  for (i = 0; i < nsd; i++)
+    pnorm[ip++] += th[i]*detJW;
+
+  if (X0) {
+    // Numerical torque term
+    Vec3 T(X-(*X0),th);
+    if (nsd == 2)
+      pnorm[ip++] += T[2]*detJW;
+    else 
+      for (i = 0; i < nsd; i++)
+	pnorm[ip++] += T[i]*detJW;
+  }
+  
+  return true;
+}
+
+
+bool ElasticityForce::evalForce (ElmMats& elmat, const Vec3& th,
+                             const FiniteElement& fe) const
+{
+  // Integrate the nodal force vector
+  Vector& ES = elmat.b.front();
+  size_t nsd = fe.dNdX.cols();
+  for (size_t a = 1; a <= fe.N.size(); a++)
+    for (size_t d = 1; d <= nsd; d++)
+      ES(nsd*(a-1)+d) += th[d-1]*fe.N(a)*fe.detJxW;
+  
+  return true;
+}
+
+
+size_t ElasticityForce::getNoComps () const
+{
+  size_t nsd = static_cast<Elasticity&>(myProblem).getNoSpaceDim();
+  if (nodal) return nsd;
+
+  size_t nf = nsd; // traction components
+
+  if (X0)
+    nf += nsd == 2 ? 1 : nsd; // add torque component(s)
+
+  return nf;
+}
+

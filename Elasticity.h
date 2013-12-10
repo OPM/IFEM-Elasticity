@@ -19,6 +19,8 @@
 
 class LocalSystem;
 class Material;
+class ElmNorm;
+class ElmMats;
 
 
 /*!
@@ -142,6 +144,20 @@ public:
   //! returned pointer value.
   //! \param[in] asol Pointer to analytical solution fields (optional)
   virtual NormBase* getNormIntegrand(AnaSol* asol = 0) const;
+
+  //! \brief Returns a pointer to an Integrand for boundary force evaluation.
+  //! \note The Integrand is allocated dynamically and has to be deleted
+  //! manually when leaving the scope of the pointer returned.
+  //! \param[in] x Reference point for torque calculation
+  //! \param[in] asol Pointer to analytical solution fields (optional)
+  virtual ForceBase* getForceIntegrand(const Vec3* x, AnaSol* asol = 0) const;
+  //! \brief Returns a pointer to an Integrand for nodal force evaluation.
+  //! \note The Integrand is allocated dynamically and has to be deleted
+  //! manually when leaving the scope of the pointer returned.
+  virtual ForceBase* getForceIntegrand() const;
+
+  //! \brief Returns the number of spatial dimensions.
+  unsigned short int getNoSpaceDim() const { return nsd; }
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
@@ -326,5 +342,63 @@ public:
 private:
   STensorFunc* anasol; //!< Analytical stress field
 };
+
+/*!
+  \brief Class representing the integrand for computing boundary forces
+*/
+
+class ElasticityForce : public ForceBase
+{
+public:
+  //! \brief Constructor for global force resultant integration.
+  //! \param[in] p The Elasticity problem to evaluate forces for
+  //! \param[in] x Reference point for torque calculation
+  //! \param[in] a The analytical velocity and pressure fields
+  ElasticityForce(Elasticity& p, const Vec3* x, AnaSol* a = 0)
+    : ForceBase(p), X0(x), anasol(a), nodal(false) {}
+  //! \brief Constructor for global nodal force integration.
+  //! \param[in] p The Elasticity problem to evaluate nodal forces for
+  //! \param[in] robinInt If \e true, a Robin term is integrated instead of traction
+ ElasticityForce(Elasticity& p) : ForceBase(p), X0(0), anasol(0), nodal(true) {}
+
+  //! \brief Empty destructor.
+  virtual ~ElasticityForce() {}
+
+  //! \brief Returns a local integral container for the element \a iEl.
+  virtual LocalIntegral* getLocalIntegral(size_t, size_t iEl, bool) const;
+
+  //! \brief Evaluates the integrand at a boundary point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //! \param[in] X Cartesian coordinates of current integration point
+  //! \param[in] normal Boundary normal vector at current integration point
+  virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
+                       const TimeDomain& time,
+                       const Vec3& X, const Vec3& normal) const;
+
+  //! \brief Returns the number of force components.
+  virtual size_t getNoComps() const;
+
+private:
+  //! \brief Evaluates the integrand for global force resultants.
+  bool evalForce(ElmNorm& pnorm, const Vec3& th,
+                 const Vec3& X, const Vec3& normal,
+                 double detJW, size_t nsd) const;
+
+  //! \brief Evaluates the integrand for nodal forces.
+  bool evalForce(ElmMats& elmat, const Vec3& th, const FiniteElement& fe) const;
+
+  //! \brief Evaluates the integrand for Robin type nodal conditions
+  bool evalRobin(ElmMats& elmat, const Vec3& th, const Vec3& U, 
+                 const FiniteElement& fe, double alpha = 1.0) const;
+
+protected:
+  const Vec3* X0; //!< Reference point for torque computations
+  AnaSol* anasol; //!< Analytical solution fields
+  bool     nodal; //!< If \e true, we are integrating nodal forces
+};
+
+
 
 #endif
