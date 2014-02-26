@@ -16,6 +16,7 @@
 
 #include "IntegrandBase.h"
 #include "Vec3.h"
+#include "BDF.h"
 
 class LocalSystem;
 class Material;
@@ -191,6 +192,9 @@ public:
   //! \param elmInt The local integral object to receive the contributions
   virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain&,size_t);
 
+  //! \brief Advances the time step scheme one step forward.
+  virtual void advanceStep(double dt, double dtn) { bdf.advanceStep(dt,dtn); }
+
 protected:
   //! \brief Calculates some kinematic quantities at current point.
   //! \param[in] eV Element solution vector
@@ -263,7 +267,8 @@ protected:
   unsigned short int eS;  //!< Index to element load vector
   unsigned short int iS;  //!< Index to element internal force vector
 
-  double intPrm[4]; //!< Newmark time integration parameters
+  double intPrm[4];            //!< Newmark time integration parameters
+  TimeIntegration::BDFD2 bdf;  //!< BDF time discretization parameters
 
   // Physical properties
   Material* material; //!< Material data and constitutive relation

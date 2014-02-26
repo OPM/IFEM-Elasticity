@@ -22,7 +22,7 @@
 #include "Functions.h"
 #include "Utilities.h"
 #include "tinyxml.h"
-
+#include "TimeStep.h"
 
 /*!
   \brief Driver class for isogeometric FEM analysis of elasticity problems.
@@ -50,6 +50,16 @@ public:
 
     for (size_t i = 0; i < mVec.size(); i++)
       delete mVec[i];
+  }
+
+  //! \brief Advances the time step one step forward.
+  virtual bool advanceStep(TimeStep& tp)
+  {
+    Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
+    if (elp)
+      elp->advanceStep(tp.time.dt,tp.time.dtn);
+    
+    return true;
   }
 
   //! \brief Initializes the property containers of the model.

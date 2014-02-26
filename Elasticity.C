@@ -15,6 +15,7 @@
 #include "LinIsotropic.h"
 #include "FiniteElement.h"
 #include "GenAlphaMats.h"
+#include "BDFMats.h"
 #include "TimeDomain.h"
 #include "ElmNorm.h"
 #include "Utilities.h"
@@ -147,6 +148,10 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   ElmMats* result;
   if (m_mode != SIM::DYNAMIC)
     result = new ElmMats();
+  else if (!intPrm[0] && !intPrm[1] && !intPrm[2] && !intPrm[3]) {
+    TimeIntegration::BDFD2& bdfscheme = const_cast<TimeIntegration::BDFD2&>(bdf);
+    result = new BDFMats(bdfscheme);
+  }
   else if (intPrm[3] > 0.0)
     result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
   else
