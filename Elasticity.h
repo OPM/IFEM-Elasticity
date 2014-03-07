@@ -190,7 +190,9 @@ public:
 
   //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
-  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain&,size_t);
+  //! \param[in] prm Nonlinear solution algorithm parameters
+  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain& prm,
+                               size_t);
 
   //! \brief Advances the time step scheme one step forward.
   virtual void advanceStep(double dt, double dtn) { bdf.advanceStep(dt,dtn); }
@@ -308,7 +310,7 @@ public:
   //! \param[in] fe Finite element data of current integration point
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X) const;
+                       const Vec3& X) const;
 
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
@@ -316,12 +318,14 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X, const Vec3& normal) const;
+                       const Vec3& X, const Vec3& normal) const;
 
   //! \brief Finalizes the element norms after the numerical integration.
   //! \details This method is used to compute effectivity indices.
   //! \param elmInt The local integral object to receive the contributions
-  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain&,size_t);
+  //! \param[in] prm Nonlinear solution algorithm parameters
+  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain& prm,
+                               size_t);
 
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return true; }
@@ -349,6 +353,7 @@ private:
   STensorFunc* anasol; //!< Analytical stress field
 };
 
+
 /*!
   \brief Class representing the integrand for computing boundary forces
 */
@@ -364,8 +369,7 @@ public:
     : ForceBase(p), X0(x), anasol(a), nodal(false) {}
   //! \brief Constructor for global nodal force integration.
   //! \param[in] p The Elasticity problem to evaluate nodal forces for
-  //! \param[in] robinInt If \e true, a Robin term is integrated instead of traction
- ElasticityForce(Elasticity& p) : ForceBase(p), X0(0), anasol(0), nodal(true) {}
+  ElasticityForce(Elasticity& p) : ForceBase(p), X0(0), anasol(0), nodal(true) {}
 
   //! \brief Empty destructor.
   virtual ~ElasticityForce() {}
@@ -395,8 +399,8 @@ private:
   //! \brief Evaluates the integrand for nodal forces.
   bool evalForce(ElmMats& elmat, const Vec3& th, const FiniteElement& fe) const;
 
-  //! \brief Evaluates the integrand for Robin type nodal conditions
-  bool evalRobin(ElmMats& elmat, const Vec3& th, const Vec3& U, 
+  //! \brief Evaluates the integrand for Robin type nodal conditions.
+  bool evalRobin(ElmMats& elmat, const Vec3& th, const Vec3& U,
                  const FiniteElement& fe, double alpha = 1.0) const;
 
 protected:
@@ -404,7 +408,5 @@ protected:
   AnaSol* anasol; //!< Analytical solution fields
   bool     nodal; //!< If \e true, we are integrating nodal forces
 };
-
-
 
 #endif

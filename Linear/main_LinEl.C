@@ -15,6 +15,7 @@
 #include "SIMLinEl.h"
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"
+#include "SIMElasticBar.h"
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
 #include "HDF5Writer.h"
@@ -65,7 +66,8 @@
   \arg -2Dpstrain : Use two-parametric simulation driver (plane strain)
   \arg -2Daxisymm : Use two-parametric simulation driver (axi-symmetric solid)
   \arg -KL : Use two-parametric simulation driver for Kirchhoff-Love plate
-  \arg -Beam : Use one-parametric simulation driver for C1-continous beam
+  \arg -1D : Use one-parametric simulation driver for beam with rotational DOFs
+  \arg -1DC1 : Use one-parametric simulation driver for C1-continous beam
   \arg -adap : Use adaptive simulation driver with LR-splines discretization
   \arg -DGL2 : Estimate error using discrete global L2 projection
   \arg -CGL2 : Estimate error using continuous global L2 projection
@@ -90,6 +92,7 @@ int main (int argc, char** argv)
   bool dumpASCII = false;
   bool twoD = false;
   bool KLp = false;
+  bool oneD = false;
   bool Beam = false;
   char* infile = 0;
 
@@ -121,8 +124,10 @@ int main (int argc, char** argv)
       vizRHS = true;
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
-    else if (!strcmp(argv[i],"-Beam"))
-      Beam = true;
+    else if (!strncmp(argv[i],"-1DC1",5))
+      oneD = Beam = true;
+    else if (!strncmp(argv[i],"-1D",3))
+      oneD = true;
     else if (!strcmp(argv[i],"-KL"))
       twoD = KLp = true;
     else if (!strncmp(argv[i],"-2Dpstra",8))
@@ -146,7 +151,7 @@ int main (int argc, char** argv)
   {
     std::cout <<"usage: "<< argv[0]
 	      <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n      "
-	      <<" [-free] [-lag|-spec|-LR] [-2D[pstrain|axisymm]] [-KL|-Beam]"
+	      <<" [-free] [-lag|-spec|-LR] [-1D[C1]|-2D[pstrain|axisymm]|-KL]"
 	      <<" [-adap[<i>]] [-nGauss <n>]\n       [-vtf <format>"
 	      <<" [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]] [-hdf5]\n"
 	      <<"       [-DGL2] [-CGL2] [-SCR] [-VDLSA] [-LSQ] [-QUASI]\n"
@@ -170,7 +175,7 @@ int main (int argc, char** argv)
     {
       std::cout <<"\nVTF file format: "<< (opts.format ? "BINARY":"ASCII")
 		<<"\nNumber of visualization points: "<< opts.nViz[0];
-      if (!Beam)
+      if (!oneD)
       {
 	std::cout <<" "<< opts.nViz[1];
 	if (!twoD) std::cout <<" "<< opts.nViz[2];
@@ -209,6 +214,8 @@ int main (int argc, char** argv)
   SIMoutput* model;
   if (Beam)
     model = new SIMLinElBeamC1();
+  else if (oneD)
+    model = new SIMElasticBar(6);
   else if (KLp)
     model = new SIMLinElKL();
   else if (twoD)
@@ -238,7 +245,7 @@ int main (int argc, char** argv)
   if (model->opt.eig != 4 && model->opt.eig != 6)
     SIMbase::ignoreDirichlet = false;
 
-  if (Beam) model->opt.nViz[1] = model->opt.nViz[2] = 1;
+  if (oneD) model->opt.nViz[1] = model->opt.nViz[2] = 1;
   if (twoD) model->opt.nViz[2] = 1;
 
   // Load vector visualization is not available when using additional viz-points
@@ -254,7 +261,7 @@ int main (int argc, char** argv)
     {
       std::cout <<"\nVTF file format: "<< (model->opt.format ? "BINARY":"ASCII")
 		<<"\nNumber of visualization points: "<< model->opt.nViz[0];
-      if (!Beam)
+      if (!oneD)
       {
 	std::cout <<" "<< model->opt.nViz[1];
 	if (!twoD) std::cout <<" "<< model->opt.nViz[2];
@@ -289,7 +296,7 @@ int main (int argc, char** argv)
   bool staticSol = iop + model->opt.eig%5 == 0 || iop == 10;
   if (model->opt.discretization < ASM::Spline || !staticSol)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
-  else if (model->opt.discretization == ASM::Spline && pOpt.empty())
+  else if (model->opt.discretization == ASM::Spline && pOpt.empty() && !oneD)
     pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
@@ -300,7 +307,7 @@ int main (int argc, char** argv)
   }
 
   const char* prefix[pOpt.size()];
-  if ((model->opt.format >= 0 || model->opt.dumpHDF5(infile)) && staticSol)
+  if ((model->opt.format >= 0 || model->opt.dumpHDF5(infile)))
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); pit++)
       prefix[i++] = pit->second.c_str();
 
@@ -325,28 +332,32 @@ int main (int argc, char** argv)
     // Include secondary results only if no projection has been requested.
     // The secondary results will be projected anyway, but without the
     // nodal averaging across patch boundaries in case of multiple patches.
-    int results = DataExporter::PRIMARY | 
+    int results = DataExporter::PRIMARY |
                   DataExporter::NORMS   |
                   DataExporter::DISPLACEMENT;
     if (pOpt.empty()) results |= DataExporter::SECONDARY;
 
     exporter = new DataExporter(true);
-    if (model->opt.eig > 0) {
-      exporter->registerField("eig", "eigenmode", DataExporter::SIM, DataExporter::EIGENMODES);
-      exporter->setFieldValue("eig", model, &modes);
-    } else {
-      exporter->registerField("u","solution",DataExporter::SIM,results);
-      exporter->setFieldValue("u",model, aSim ? &aSim->getSolution() : &displ);
+    if (staticSol)
+    {
+      exporter->registerField("u", "solution", DataExporter::SIM, results);
+      exporter->setFieldValue("u", model, aSim ? &aSim->getSolution() : &displ);
       for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
         exporter->registerField(prefix[i], "projected", DataExporter::SIM,
                                 DataExporter::SECONDARY, prefix[i]);
         exporter->setFieldValue(prefix[i], model,
                                 aSim ? &aSim->getProjection(i) : &projs[i]);
       }
+      exporter->setNormPrefixes(prefix);
+    }
+    if (model->opt.eig > 0)
+    {
+      exporter->registerField("eig", "eigenmode", DataExporter::SIM,
+                              DataExporter::EIGENMODES);
+      exporter->setFieldValue("eig", model, &modes);
     }
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5));
     exporter->registerWriter(new XMLWriter(model->opt.hdf5));
-    exporter->setNormPrefixes(prefix);
   }
 
   switch (iop+model->opt.eig) {
