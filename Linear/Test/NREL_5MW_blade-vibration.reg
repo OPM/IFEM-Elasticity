@@ -1,0 +1,77 @@
+NREL_5MW_blade.xinp -1D -eig 4
+
+Input file: NREL_5MW_blade.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Eigenproblem solver: 4
+Number of eigenvalues: 10
+Number of Arnoldi vectors: 20
+Shift value: 0
+Parsing input file NREL_5MW_blade.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file NREL_5MW_blade.g2
+	Reading patch 1
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,1,0D)
+  Parsing <patchfile>
+  Parsing <refine>
+	Refining P1 122
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123456: (fixed)
+Parsing <beam>
+  Parsing <twist>
+    Continuous twist angle: (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #4,X)
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.1, moments of inertia = 0 0.001 0.001 0.002
+	Shear parameters = 0 0 0 0
+    Continuous beam properties:
+	rho (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #5,X)
+	EIy (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #6,X)
+	EIz (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #7,X)
+	GIt (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #8,X)
+	EA (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #9,X)
+	Iy (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #11,X)
+	Iz (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #12,X)
+	CGy (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #16,X)
+  Parsing <nodeload>
+	Node 6 Load: -1e+06
+  Parsing <gravity>
+	Gravitation vector: 0 0 -9.81
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 1 1
+Eigenproblem solver: 4
+Number of eigenvalues: 10
+Number of Arnoldi vectors: 20
+Shift value: 0
+Problem definition:
+ElasticBeam: E = 2.05e+11, G = 7.94e+10, rho = 7850
+             A = 0.1 Ix = 0, Iy = 0.001, Iz = 0.001, It = 0.002
+             Ky = 0, Kz = 0, Sy = 0, Sz = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 123456
+ >>> SAM model summary <<<
+Number of elements    123
+Number of nodes       124
+Number of dofs        744
+Number of unknowns    738
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the eigenvalue problem ...
+ >>> Computed Eigenvalues <<<
+     Mode	Frequency \[Hz]
+     1		0.620363
+     2		0.702045
+     3		1.98238
+     4		2.27421
+     5		4.54239
+     6		5.1296
+     7		8.0874
+     8		9.15465
+     9		12.6656
+     10		14.5222

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test. Cantilever beam with tip shear load. !-->
+
+<simulation>
+
+  <geometry>
+    <patchfile>NREL_5MW_blade.g2</patchfile>
+    <refine patch="1" u="122"/>
+    <topologysets>
+      <set name="end1" type="vertex">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="end1" comp="123456"/>
+  </boundaryconditions>
+
+  <beam>
+    <twist type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c4</twist>
+    <properties Ix="0.0">
+      <rho type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c5</rho>
+      <EIy type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c6</EIy>
+      <EIz type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c7</EIz>
+      <GIt type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c8</GIt>
+      <EA  type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c9</EA>
+      <Iy  type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c11</Iy>
+      <Iz  type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c12</Iz>
+      <CGy type="Interpolate1D">1.0 NREL_5MW_blade-properties.dat 0 c16</CGy>
+    </properties>
+    <nodeload node="6" dof="2" type="constant">-1.0e6</nodeload>
+    <gravity z="-9.81"/>
+  </beam>
+
+</simulation>
