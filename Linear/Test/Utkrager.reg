@@ -20,9 +20,11 @@ Parsing <boundaryconditions>
 	Dirichlet code 123456: (fixed)
 Parsing <beam>
   Parsing <material>
-	Axial stiffness = 2.05e+10, bending stiffness = 2.05e+08 2.05e+08
-	Torsional stiffness = 1.62e+08, mass density = 7850
+	Stiffness moduli = 2.05e+11 8.1e+10, mass density = 7850
   Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.1, moments of inertia = 0.002 0.001 0.001 0.002
+	Shear parameters = 0 0 1.2 1.2
   Parsing <nodeload>
 	Node 6 Load: -1e+06
 Parsing input file succeeded.
