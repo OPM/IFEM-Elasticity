@@ -392,7 +392,7 @@ int main (int argc, char** argv)
     if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
       return 4;
 
-    if (myPid == 0)
+    if (myPid == 0 && !gNorm.empty())
     {
       std::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< gNorm[0](1);
       std::cout	<<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
@@ -428,9 +428,10 @@ int main (int argc, char** argv)
                   << gNorm[j](4)/gNorm[j](3)*100.0;
       }
       std::cout << std::endl;
-
-      model->dumpResults(displ,0.0,std::cout,true,6);
     }
+
+    if (myPid == 0)
+      model->dumpResults(displ,0.0,std::cout,true,6);
 
     if (model->opt.eig == 0) break;
 
