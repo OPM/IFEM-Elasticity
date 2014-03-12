@@ -65,13 +65,13 @@ Assembling interior matrix terms for P1
 Solving the eigenvalue problem ...
  >>> Computed Eigenvalues <<<
      Mode	Frequency \[Hz]
-     1		0.620363
-     2		0.702045
-     3		1.98238
-     4		2.27421
-     5		4.54239
-     6		5.1296
-     7		8.0874
-     8		9.15465
-     9		12.6656
-     10		14.5222
+     1		0.692033
+     2		1.10889
+     3		1.99029
+     4		4.07975
+     5		4.62091
+     6		8.14226
+     7		9.48211
+     8		12.7549
+     9		14.8821
+     10		16.8513
