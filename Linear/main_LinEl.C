@@ -94,7 +94,7 @@ int main (int argc, char** argv)
   bool KLp = false;
   bool oneD = false;
   bool Beam = false;
-  char* infile = 0;
+  char* infile = NULL;
 
   int myPid = IFEM::Init(argc,argv);
 
@@ -105,7 +105,7 @@ int main (int argc, char** argv)
       dumpASCII = myPid == 0; // not for parallel runs
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
-	utl::parseIntegers(ignoredPatches,argv[++i]);
+        utl::parseIntegers(ignoredPatches,argv[++i]);
     else if (!strcmp(argv[i],"-vox") && i < argc-1)
       VTF::vecOffset[0] = atof(argv[++i]);
     else if (!strcmp(argv[i],"-voy") && i < argc-1)
@@ -161,6 +161,11 @@ int main (int argc, char** argv)
     return 0;
   }
 
+  if (iop == 10)
+    IFEM::getOptions().discretization = ASM::LRSpline;
+  else if (KLp && IFEM::getOptions().discretization != ASM::LRSpline)
+    IFEM::getOptions().discretization = ASM::SplineC1;
+
   if (myPid == 0)
   {
     const SIMoptions& opts = IFEM::getOptions();
@@ -193,6 +198,8 @@ int main (int argc, char** argv)
       std::cout <<"\nSpectral basis functions are used";
     else if (opts.discretization == ASM::LRSpline)
       std::cout <<"\nLR-spline basis functions are used";
+    else if (opts.discretization == ASM::SplineC1)
+      std::cout <<"\nSpline basis with C1-continuous patch interfaces is used";
     if (SIMbase::ignoreDirichlet)
       std::cout <<"\nSpecified boundary conditions are ignored";
     if (fixDup)
@@ -224,22 +231,13 @@ int main (int argc, char** argv)
     model = new SIMLinEl3D(checkRHS);
 
   SIMinput* theSim = model;
-  AdaptiveSIM* aSim = 0;
+  AdaptiveSIM* aSim = NULL;
   if (iop == 10)
-  {
     theSim = aSim = new AdaptiveSIM(model);
-    IFEM::getOptions().discretization = ASM::LRSpline;
-  }
-  else if (KLp && IFEM::getOptions().discretization != ASM::LRSpline)
-    IFEM::getOptions().discretization = ASM::SplineC1;
 
   // Read in model definitions
   if (!theSim->read(infile))
     return 1;
-
-  for (i = 1; i < argc; i++)
-    if (!strcmp(argv[i],"-ignore"))
-      while (i < argc-1 && isdigit(argv[i+1][0])) ++i;
 
   // Boundary conditions can be ignored only in generalized eigenvalue analysis
   if (model->opt.eig != 4 && model->opt.eig != 6)
@@ -278,6 +276,8 @@ int main (int argc, char** argv)
       std::cout <<"\nSpectral basis functions are used";
     else if (model->opt.discretization == ASM::LRSpline)
       std::cout <<"\nLR-spline basis functions are used";
+    else if (model->opt.discretization == ASM::SplineC1)
+      std::cout <<"\nSpline basis with C1-continuous patch interfaces is used";
     std::cout << std::endl;
 
     model->printProblem(std::cout);
@@ -307,9 +307,9 @@ int main (int argc, char** argv)
   }
 
   const char* prefix[pOpt.size()];
-  if ((model->opt.format >= 0 || model->opt.dumpHDF5(infile)))
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); pit++)
-      prefix[i++] = pit->second.c_str();
+  if (model->opt.format >= 0 || model->opt.dumpHDF5(infile))
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
+      prefix[i] = pit->second.c_str();
 
   model->setQuadratureRule(model->opt.nGauss[0],true);
 
