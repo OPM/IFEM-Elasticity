@@ -168,7 +168,8 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
     case SIM::DYNAMIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 3, neumann || intPrm[3] > 0.0 ? 1 : 2);
+      result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
+                     neumann || intPrm[3] > 0.0 ? 1 : 2);
       break;
 
     case SIM::VIBRATION:
@@ -717,14 +718,12 @@ ForceBase* Elasticity::getForceIntegrand (const Vec3* X0, AnaSol* asol) const
 {
    return new ElasticityForce(*const_cast<Elasticity*>(this),X0,asol);
 }
- 
- 
+
+
 ForceBase* Elasticity::getForceIntegrand () const
 {
    return new ElasticityForce(*const_cast<Elasticity*>(this));
 }
-
-
 
 
 ElasticityNorm::ElasticityNorm (Elasticity& p, STensorFunc* a)
@@ -933,7 +932,7 @@ LocalIntegral* ElasticityForce::getLocalIntegral (size_t nen, size_t iEl,
     result->redim(static_cast<Elasticity&>(myProblem).getNoSpaceDim()*nen);
     return result;
   }
-  
+
   return this->ForceBase::getLocalIntegral(nen,iEl);
 }
 
@@ -976,17 +975,16 @@ bool ElasticityForce::evalForce (ElmNorm& pnorm, const Vec3& th,
     Vec3 T(X-(*X0),th);
     if (nsd == 2)
       pnorm[ip++] += T[2]*detJW;
-    else 
-      for (i = 0; i < nsd; i++)
-	pnorm[ip++] += T[i]*detJW;
+    else for (i = 0; i < nsd; i++)
+      pnorm[ip++] += T[i]*detJW;
   }
-  
+
   return true;
 }
 
 
 bool ElasticityForce::evalForce (ElmMats& elmat, const Vec3& th,
-                             const FiniteElement& fe) const
+                                 const FiniteElement& fe) const
 {
   // Integrate the nodal force vector
   Vector& ES = elmat.b.front();
@@ -994,7 +992,7 @@ bool ElasticityForce::evalForce (ElmMats& elmat, const Vec3& th,
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (size_t d = 1; d <= nsd; d++)
       ES(nsd*(a-1)+d) += th[d-1]*fe.N(a)*fe.detJxW;
-  
+
   return true;
 }
 
@@ -1011,4 +1009,3 @@ size_t ElasticityForce::getNoComps () const
 
   return nf;
 }
-
