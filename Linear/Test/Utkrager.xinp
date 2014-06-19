@@ -5,7 +5,6 @@
 <simulation>
 
   <geometry>
-    <patchfile>horizontalbeam1D.g2</patchfile>
     <refine patch="1" u="4"/>
     <topologysets>
       <set name="end1" type="vertex">

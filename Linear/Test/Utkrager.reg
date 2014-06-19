@@ -5,13 +5,10 @@ Equation solver: 2
 Number of Gauss points: 4
 Parsing input file Utkrager.xinp
 Parsing <geometry>
-  Parsing <patchfile>
-	Reading data file horizontalbeam1D.g2
-	Reading patch 1
+  Using default linear geometry basis on unit domain \[0,1]
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: end1 (1,1,0D)
-  Parsing <patchfile>
   Parsing <refine>
 	Refining P1 4
   Parsing <topologysets>
@@ -45,6 +42,6 @@ Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Solving the equation system ...
  >>> Solution summary <<<
-L2-norm            : 0.0482366
-Max Y-displacement : 0.203993 node 6
-Max z-displacement : 0.0609756 node 6
+L2-norm            : 0.000822911
+Max Y-displacement : 0.00177416 node 6
+Max z-displacement : 0.00243902 node 6
