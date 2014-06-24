@@ -1,0 +1,72 @@
+SS45-Cable4p.xinp -1DC1 -nGauss 5
+
+Input file: SS45-Cable4p.xinp
+Equation solver: 2
+Number of Gauss points: 5
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file SS45-Cable4p.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file diagonalbeam1D.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: all (1,0,1D)
+	               ends (1,1,0D) (1,2,0D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 3
+  Parsing <refine>
+	Refining P1 9
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 123: (fixed)
+Parsing <cable>
+  Parsing <gravity>
+	Gravitation vector: 0 -9.81 0
+  Parsing <material>
+	Axial stiffness = 7.85398e+08
+	Bending stiffness = 490873
+	Mass density = 235.619
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.25
+	Point 2: P1 xi = 0.5
+	Point 3: P1 xi = 0.75
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 5 5
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+ElasticCable: Stiffness = 7.85398e+08 490873, Mass density = 235.619
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 123
+	Constraining P1 V2 in direction(s) 123
+	Constraining P1 in direction(s) 3
+Result point #1: patch #1 u=0.25, node #5, X = 0.25 0.25 0
+Result point #2: patch #1 u=0.5, X = 0.5 0.5 0
+Result point #3: patch #1 u=0.75, node #10, X = 0.75 0.75 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       14
+Number of dofs        42
+Number of unknowns    24
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 6.17504e-05
+Max X-displacement : 0.000123236
+Max Y-displacement : 0.000123976
+  Node #5:	sol1 =  8.709439e-05 -8.764620e-05  0.000000e+00
+		sol2 = -1.098551e+03  6.129089e+02
+		reac =  0.000000e+00  0.000000e+00  0.000000e+00
+  Point #2:	sol1 =  1.222571e-04 -1.229929e-04  0.000000e+00
+		sol2 =  0.000000e+00  8.172112e+02
+  Node #10:	sol1 =  8.709439e-05 -8.764620e-05  0.000000e+00
+		sol2 =  1.212872e+03  6.129078e+02
+		reac =  0.000000e+00  0.000000e+00  0.000000e+00

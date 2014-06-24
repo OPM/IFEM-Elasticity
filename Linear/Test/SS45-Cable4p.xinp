@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test. Simply supported skew beam with gravity load. !-->
+
+<simulation>
+
+  <geometry>
+    <patchfile>diagonalbeam1D.g2</patchfile>
+    <raiseorder patch="1" u="3"/>
+    <refine patch="1" u="9"/>
+    <topologysets>
+      <set name="all" type="curve">
+        <item patch="1"/>
+      </set>
+      <set name="ends" type="vertex">
+        <item patch="1">1 2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="all" comp="3"/>
+    <dirichlet set="ends" comp="123"/>
+  </boundaryconditions>
+
+  <cable>
+    <gravity y="-9.81"/>
+    <material EA="7.85398e8" EI="490873.0" rho="235.619"/>
+  </cable>
+
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.25"/>
+      <point patch="1" u="0.5"/>
+      <point patch="1" u="0.75"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

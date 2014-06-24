@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test. Cantilever beam with tip shear load. !-->
+
+<simulation>
+
+  <geometry>
+    <raiseorder patch="1" u="2"/>
+    <refine patch="1" u="9"/>
+    <topologysets>
+      <set name="all" type="curve">
+        <item patch="1"/>
+      </set>
+      <set name="innspenning" type="vertex">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="all" comp="3"/>
+    <dirichlet set="innspenning" comp="1123"/>
+  </boundaryconditions>
+
+  <cable>
+    <material EA="785398.16" EI="490.87385"/>
+    <nodeload node="13" dof="2" type="constant">100.0</nodeload>
+  </cable>
+
+</simulation>
