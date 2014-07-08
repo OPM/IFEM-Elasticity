@@ -27,6 +27,22 @@ LinearElasticity::LinearElasticity (unsigned short int n, bool axS, bool GPout)
 }
 
 
+void LinearElasticity::setMode (SIM::SolutionMode mode)
+{
+  if (mode == SIM::RECOVERY && m_mode != mode)
+  {
+    maxVal.resize(this->getNoFields(2));
+    std::fill(maxVal.begin(),maxVal.end(),PointValue(Vec3(),0.0));
+  }
+
+  this->ElasticBase::setMode(mode);
+
+  // These quantities are not needed in linear problems
+  if (mode != SIM::BUCKLING) eKg = 0;
+  iS = 0;
+}
+
+
 void LinearElasticity::initIntegration (size_t nGp, size_t nBp)
 {
   this->Elasticity::initIntegration(nGp,nBp);

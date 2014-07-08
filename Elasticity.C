@@ -37,21 +37,12 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
 
   nDF = axiSymmetry ? 3 : nsd;
   npv = nsd; // Number of primary unknowns per node
-  nSV = 1;   // Number of solution vectors in core
-
-  // Default is zero gravity
-  grav[0] = grav[1] = grav[2] = 0.0;
 
   material = 0;
   locSys = 0;
   tracFld = 0;
   fluxFld = 0;
   bodyFld = 0;
-  eM = eKm = eKg = 0;
-  eS = iS = 0;
-
-  intPrm[0] = intPrm[1] = 0.0;
-  intPrm[2] = intPrm[3] = 0.0;
 }
 
 
@@ -67,7 +58,7 @@ void Elasticity::print (std::ostream& os) const
     std::cout <<"Axial-symmetric Elasticity problem\n";
   std::cout <<"Elasticity: "<< nsd <<"D, gravity =";
   for (unsigned short int d = 0; d < nsd; d++)
-    std::cout <<" "<< grav[d];
+    std::cout <<" "<< gravity[d];
   std::cout << std::endl;
 
   if (!material)
@@ -76,69 +67,6 @@ void Elasticity::print (std::ostream& os) const
     const_cast<Elasticity*>(this)->material = &defaultMat;
   }
   material->print(os);
-}
-
-
-void Elasticity::setMode (SIM::SolutionMode mode)
-{
-  eM = eKm = eKg = 0;
-  eS = iS = 0;
-
-  if (mode == SIM::BUCKLING || mode == SIM::RECOVERY)
-    primsol.resize(1);
-  else if (mode == SIM::DYNAMIC)
-    primsol.resize(nSV+2); // adding velocity and acceleration
-  else
-    primsol.clear();
-
-  switch (mode)
-    {
-    case SIM::STATIC:
-      eKm = 1;
-      eS  = 1;
-      break;
-
-    case SIM::DYNAMIC:
-      eKm = 3;
-      eM  = 2;
-      eS  = 1;
-      break;
-
-    case SIM::VIBRATION:
-      eKm = 1;
-      eM  = 2;
-      break;
-
-    case SIM::BUCKLING:
-      eKm = 1;
-      eKg = 2;
-      break;
-
-    case SIM::STIFF_ONLY:
-      eKm = 1;
-      break;
-
-    case SIM::MASS_ONLY:
-      eM = 1;
-      break;
-
-    case SIM::RHS_ONLY:
-      eS = 1;
-      break;
-
-    case SIM::RECOVERY:
-      if (mode != m_mode)
-      {
-        maxVal.resize(this->getNoFields(2));
-        std::fill(maxVal.begin(),maxVal.end(),PointValue(Vec3(),0.0));
-      }
-      break;
-
-    default:
-      ;
-    }
-
-  m_mode = mode;
 }
 
 
@@ -212,7 +140,7 @@ Vec3 Elasticity::getTraction (const Vec3& X, const Vec3& n) const
 
 Vec3 Elasticity::getBodyforce (const Vec3& X) const
 {
-  Vec3 f(grav[0],grav[1],grav[2]);
+  Vec3 f(gravity);
   f *= material->getMassDensity(X);
 
   if (bodyFld)
@@ -229,7 +157,7 @@ bool Elasticity::haveLoads () const
   if (bodyFld) return true;
 
   for (unsigned short int i = 0; i < nsd; i++)
-    if (grav[i] != 0.0)
+    if (gravity[i] != 0.0)
       if (material)
 	return material->getMassDensity(Vec3()) != 0.0;
 

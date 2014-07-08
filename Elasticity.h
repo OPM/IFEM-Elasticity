@@ -14,9 +14,7 @@
 #ifndef _ELASTICITY_H
 #define _ELASTICITY_H
 
-#include "IntegrandBase.h"
-#include "Vec3.h"
-#include "BDF.h"
+#include "ElasticBase.h"
 
 class LocalSystem;
 class Material;
@@ -27,11 +25,13 @@ class ElmMats;
 /*!
   \brief Base class representing the integrand of elasticity problems.
   \details Implements common features for linear and nonlinear elasticity
-  problems. None of the \a evalInt and \a evalBou methods are implemented here.
+  problems. This class is used for continuum problems only (2D and 3D domains
+  with the same number of unknowns per node as the number of space dimensions.
+  None of the \a evalInt and \a evalBou methods are implemented by this class.
   Thus, it is regarded as an abstract base class with a protected constructor.
 */
 
-class Elasticity : public IntegrandBase
+class Elasticity : public ElasticBase
 {
 protected:
   //! \brief The default constructor initializes all pointers to zero.
@@ -53,24 +53,11 @@ public:
   //! \brief Defines the body force field.
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
 
-  //! \brief Defines the gravitation vector.
-  void setGravity(double gx, double gy = 0.0, double gz = 0.0)
-  { grav[0] = gx; grav[1] = gy; grav[2] = gz; }
-
   //! \brief Defines the material properties.
   virtual void setMaterial(Material* mat) { material = mat; }
 
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
-
-  //! \brief Defines the solution mode before the element assembly is started.
-  //! \param[in] mode The solution mode to use
-  virtual void setMode(SIM::SolutionMode mode);
-
-  //! \brief Initializes an integration parameter for the integrand.
-  //! \param[in] i Index of the integration parameter to define
-  //! \param[in] v The parameter value to assign
-  virtual void setIntegrationPrm(int i, double v) { intPrm[i] = v; }
 
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
@@ -83,7 +70,10 @@ public:
   virtual LocalIntegral* getLocalIntegral(size_t nen, size_t,
                                           bool neumann) const;
 
-  using IntegrandBase::evalSol;
+  //! \brief Returns whether this norm has explicit boundary contributions.
+  virtual bool hasBoundaryTerms() const { return true; }
+
+  using ElasticBase::evalSol;
   //! \brief Evaluates the secondary solution at a result point (mixed problem).
   //! \param[out] s The solution field values at current point
   //! \param[in] fe Mixed finite element data at current point
@@ -173,9 +163,6 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual const char* getField2Name(size_t i, const char* prefix = 0) const;
 
-  //! \brief Defines the number solution vectors.
-  void setNoSolutions(size_t n) { nSV = n; }
-
   typedef std::pair<Vec3,double> PointValue; //!< Convenience type
 
   //! \brief Returns a pointer to the max values for external update.
@@ -193,9 +180,6 @@ public:
   //! \param[in] prm Nonlinear solution algorithm parameters
   virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain& prm,
                                size_t);
-
-  //! \brief Advances the time step scheme one step forward.
-  virtual void advanceStep(double dt, double dtn) { bdf.advanceStep(dt,dtn); }
 
 protected:
   //! \brief Calculates some kinematic quantities at current point.
@@ -259,34 +243,18 @@ public:
   bool isAxiSymmetric() const { return axiSymmetry; }
 
 protected:
-  // Finite element quantities, i.e., indices into element matrices and vectors.
-  // These indices will be identical for all elements in a model and can thus
-  // be stored here, even when doing multi-threading. Note that the indices are
-  // 1-based, since the value zero is used to signal non-existing matrix/vector.
-  unsigned short int eKm; //!< Index to element material stiffness matrix
-  unsigned short int eKg; //!< Index to element geometric stiffness matrix
-  unsigned short int eM;  //!< Index to element mass matrix
-  unsigned short int eS;  //!< Index to element load vector
-  unsigned short int iS;  //!< Index to element internal force vector
-
-  double intPrm[4];            //!< Newmark time integration parameters
-  TimeIntegration::BDFD2 bdf;  //!< BDF time discretization parameters
-
   // Physical properties
-  Material* material; //!< Material data and constitutive relation
-  double    grav[3];  //!< Gravitation vector
-
-  LocalSystem*  locSys;  //!< Local coordinate system for result output
-  TractionFunc* tracFld; //!< Pointer to implicit boundary traction field
-  VecFunc*      fluxFld; //!< Pointer to explicit boundary traction field
-  VecFunc*      bodyFld; //!< Pointer to body force field
+  Material*     material; //!< Material data and constitutive relation
+  LocalSystem*  locSys;   //!< Local coordinate system for result output
+  TractionFunc* tracFld;  //!< Pointer to implicit boundary traction field
+  VecFunc*      fluxFld;  //!< Pointer to explicit boundary traction field
+  VecFunc*      bodyFld;  //!< Pointer to body force field
 
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values
 
   unsigned short int nsd; //!< Number of space dimensions (1, 2 or 3)
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
-  unsigned short int nSV; //!< Number of solution vectors
   bool       axiSymmetry; //!< \e true if the problem is axi-symmetric
 };
 
@@ -304,6 +272,9 @@ public:
   ElasticityNorm(Elasticity& p, STensorFunc* a = 0);
   //! \brief Empty destructor.
   virtual ~ElasticityNorm() {}
+
+  //! \brief Returns whether this norm has explicit boundary contributions.
+  virtual bool hasBoundaryTerms() const { return true; }
 
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
@@ -326,9 +297,6 @@ public:
   //! \param[in] prm Nonlinear solution algorithm parameters
   virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain& prm,
                                size_t);
-
-  //! \brief Returns whether this norm has explicit boundary contributions.
-  virtual bool hasBoundaryTerms() const { return true; }
 
   //! \brief Adds external energy terms to relevant norms.
   //! \param gNorm Global norm quantities
