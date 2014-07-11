@@ -84,6 +84,7 @@ public:
     mVec.clear();
 
     this->Dim::clearProperties();
+    this->Dim::setOwnProblem(true); // we always own our integrand
   }
 
 protected:
