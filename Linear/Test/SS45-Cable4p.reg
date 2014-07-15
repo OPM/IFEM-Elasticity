@@ -6,15 +6,11 @@ Number of Gauss points: 5
 Spline basis with C1-continuous patch interfaces is used
 Parsing input file SS45-Cable4p.xinp
 Parsing <geometry>
-  Parsing <patchfile>
-	Reading data file diagonalbeam1D.g2
-	Reading patch 1
   Parsing <raiseorder>
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: all (1,0,1D)
 	               ends (1,1,0D) (1,2,0D)
-  Parsing <patchfile>
   Parsing <raiseorder>
 	Raising order of P1 3
   Parsing <refine>

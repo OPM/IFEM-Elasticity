@@ -9,13 +9,9 @@ Number of Arnoldi vectors: 20
 Shift value: 0
 Parsing input file NREL_5MW_blade.xinp
 Parsing <geometry>
-  Parsing <patchfile>
-	Reading data file NREL_5MW_blade.g2
-	Reading patch 1
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: end1 (1,1,0D)
-  Parsing <patchfile>
   Parsing <refine>
 	Refining P1 122
   Parsing <topologysets>

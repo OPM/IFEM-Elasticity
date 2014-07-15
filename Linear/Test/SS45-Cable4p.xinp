@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!-- Basic 1D elastic beam test. Simply supported skew beam with gravity load. !-->
+<!-- Basic 1D elastic beam test.
+     Simply supported skew beam with gravity load. !-->
 
 <simulation>
 
-  <geometry>
-    <patchfile>diagonalbeam1D.g2</patchfile>
+  <geometry X1="1.0 1.0 0.0">
     <raiseorder patch="1" u="3"/>
     <refine patch="1" u="9"/>
     <topologysets>
