@@ -175,11 +175,12 @@ public:
   void printMaxVals(std::ostream& os, std::streamsize precision,
                     size_t comp = 0) const;
 
+  using ElasticBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] prm Nonlinear solution algorithm parameters
-  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain& prm,
-                               size_t);
+  virtual bool finalizeElement(LocalIntegral& elmInt,
+                               const TimeDomain& prm, size_t);
 
 protected:
   //! \brief Calculates some kinematic quantities at current point.
@@ -291,12 +292,11 @@ public:
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X, const Vec3& normal) const;
 
+  using NormBase::finalizeElement;
   //! \brief Finalizes the element norms after the numerical integration.
   //! \details This method is used to compute effectivity indices.
   //! \param elmInt The local integral object to receive the contributions
-  //! \param[in] prm Nonlinear solution algorithm parameters
-  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain& prm,
-                               size_t);
+  virtual bool finalizeElement(LocalIntegral& elmInt);
 
   //! \brief Adds external energy terms to relevant norms.
   //! \param gNorm Global norm quantities

@@ -235,8 +235,7 @@ public:
 
   //! \brief Finalizes the element norms after the numerical integration.
   //! \details This method is used to compute effectivity indices.
-  //! \param elmInt The local integral object to receive the contributions
-  virtual bool finalizeElement(LocalIntegral& elmInt, const TimeDomain&,size_t);
+  virtual bool finalizeElement(LocalIntegral& elmInt);
 
   //! \brief Adds external energy terms to relevant norms.
   //! \param gNorm Global norm quantities

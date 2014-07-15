@@ -523,8 +523,7 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
 }
 
 
-bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt,
-                                              const TimeDomain&, size_t)
+bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
 {
   if (!anasol) return true;
 

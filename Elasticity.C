@@ -773,8 +773,7 @@ bool ElasticityNorm::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
 }
 
 
-bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt,
-				      const TimeDomain&, size_t)
+bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
 {
   if (!anasol) return true;
 
