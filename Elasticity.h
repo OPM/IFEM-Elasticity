@@ -20,6 +20,7 @@ class LocalSystem;
 class Material;
 class ElmNorm;
 class ElmMats;
+class TiXmlElement;
 
 
 /*!
@@ -42,6 +43,9 @@ protected:
 public:
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~Elasticity();
+
+  //! \brief Parses a data section from an XML element.
+  virtual bool parse(const TiXmlElement*) { return true; }
 
   //! \brief Prints out the problem definition to the given output stream.
   virtual void print(std::ostream& os) const;

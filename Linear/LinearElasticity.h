@@ -68,6 +68,12 @@ public:
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
 		       const Vec3& X, const Vec3& normal) const;
 
+protected:
+  //! \brief Calculates integration point initial strain force contributions.
+  virtual bool formInitStrainForces(ElmMats&, const Vector&,
+                                    const Matrix&, const Matrix&,
+                                    const Vec3&, double) const { return true; }
+
 private:
   mutable Vec3Vec* myItgPts;  //!< Global Gauss point coordinates
 };
