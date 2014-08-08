@@ -18,11 +18,12 @@
 #include "SIM3D.h"
 #include "Elasticity.h"
 #include "LinIsotropic.h"
+#include "TimeStep.h"
 #include "AnaSol.h"
 #include "Functions.h"
 #include "Utilities.h"
 #include "tinyxml.h"
-#include "TimeStep.h"
+
 
 /*!
   \brief Driver class for isogeometric FEM analysis of elasticity problems.
@@ -58,7 +59,7 @@ public:
     Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
     if (elp)
       elp->advanceStep(tp.time.dt,tp.time.dtn);
-    
+
     return true;
   }
 
@@ -344,25 +345,18 @@ protected:
       return this->Dim::parse(elem);
 
     const TiXmlElement* child = elem->FirstChildElement();
-    for (; child; child = child->NextSiblingElement()) {
+    for (; child; child = child->NextSiblingElement())
       if (this->parseDimSpecific(child))
         continue;
 
-      if (!strcasecmp(child->Value(),"isotropic")) {
+      else if (!strcasecmp(child->Value(),"isotropic")) {
         int code = this->parseMaterialSet(child,mVec.size());
-
-        double E = 1000.0, nu = 0.3, rho = 1.0;
-        utl::getAttribute(child,"E",E);
-        utl::getAttribute(child,"nu",nu);
-        utl::getAttribute(child,"rho",rho);
-
+        std::cout <<"\tMaterial code "<< code <<":";
         if (Dim::dimension == 2)
-          mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
+          mVec.push_back(new LinIsotropic(!planeStrain,axiSymmetry));
         else
-          mVec.push_back(new LinIsotropic(E,nu,rho));
-
-        std::cout <<"\tMaterial code "<< code <<": "
-                  << E <<" "<< nu <<" "<< rho << std::endl;
+          mVec.push_back(new LinIsotropic(false,false));
+        mVec.back()->parse(child);
       }
 
       else if (!strcasecmp(child->Value(),"gravity")) {
@@ -394,8 +388,7 @@ protected:
       }
 
       else
-        return this->Dim::parse(elem);
-    }
+        this->Dim::parse(child);
 
     if (!mVec.empty())
       this->getIntegrand()->setMaterial(mVec.front());

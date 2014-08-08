@@ -21,6 +21,7 @@ class Tensor;
 class SymmTensor;
 class FiniteElement;
 class Field;
+class TiXmlElement;
 struct TimeDomain;
 
 
@@ -38,11 +39,14 @@ public:
   //! \brief Empty destructor.
   virtual ~Material() {}
 
-  //! \brief Returns \e false if plane stress in 2D.
-  virtual bool isPlaneStrain() const { return true; }
+  //! \brief Parses material parementers from an XML element.
+  virtual void parse(const TiXmlElement*) {}
 
   //! \brief Prints out material parameters to the given output stream.
   virtual void print(std::ostream&) const {}
+
+  //! \brief Returns \e false if plane stress in 2D.
+  virtual bool isPlaneStrain() const { return true; }
 
   //! \brief Initializes the material with the number of integration points.
   virtual void initIntegration(size_t) {}
@@ -57,6 +61,8 @@ public:
 
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
+  //! \brief Evaluates the thermal expansion coefficient for given temperature.
+  virtual double getThermalExpansion(double) const { return 0.0; }
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point
@@ -84,9 +90,8 @@ public:
   virtual int getNoIntVariables() const { return 0; }
   //! \brief Returns an internal variable associated with the material model.
   virtual double getInternalVariable(int, char*, size_t=0) const { return 0.0; }
-
   //! \brief Returns whether the material model has diverged.
-  virtual bool diverged(size_t=0) const { return false; }
+  virtual bool diverged(size_t = 0) const { return false; }
 };
 
 #endif

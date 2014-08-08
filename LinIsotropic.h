@@ -39,7 +39,7 @@ public:
   LinIsotropic(double E, double v = 0.0, double densty = 0.0,
                bool ps = false, bool ax = false)
     : Efunc(NULL), Efield(NULL), Emod(E), nu(v), rho(densty),
-      planeStress(ps), axiSymmetry(ax) {}
+      Afunc(NULL), alpha(0.0), planeStress(ps), axiSymmetry(ax) {}
   //! \brief Constructor initializing the material parameters.
   //! \param[in] E Young's modulus (spatial function)
   //! \param[in] v Poisson's ratio
@@ -57,16 +57,21 @@ public:
   LinIsotropic(Field* E, double v = 0.0, double density = 0.0,
                bool ps = false, bool ax = false);
   //! \brief The destructor deletes the stiffness function, if defined.
-  virtual ~LinIsotropic() { delete Efunc; delete Efield; }
+  virtual ~LinIsotropic() { delete Efunc; delete Efield; delete Afunc; }
 
-  //! \brief Returns \e false if plane stress in 2D.
-  virtual bool isPlaneStrain() const { return !planeStress; }
+  //! \brief Parses material parementers from an XML element.
+  virtual void parse(const TiXmlElement* elem);
 
   //! \brief Prints out material parameters to the given output stream.
   virtual void print(std::ostream& os) const;
 
+  //! \brief Returns \e false if plane stress in 2D.
+  virtual bool isPlaneStrain() const { return !planeStress; }
+
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return rho; }
+  //! \brief Evaluates the thermal expansion coefficient for given temperature.
+  virtual double getThermalExpansion(double T) const;
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point
@@ -98,6 +103,8 @@ protected:
   double Emod;        //!< Young's modulus (constant)
   double nu;          //!< Poisson's ratio
   double rho;         //!< Mass density
+  ScalarFunc* Afunc;  //!< Thermal expansion coefficient function
+  double alpha;       //!< Thermal expansion coefficient (constant)
   bool   planeStress; //!< Plane stress/strain option for 2D problems
   bool   axiSymmetry; //!< Axi-symmetric option
 };

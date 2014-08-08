@@ -12,9 +12,12 @@
 //==============================================================================
 
 #include "LinIsotropic.h"
+#include "Utilities.h"
+#include "Functions.h"
 #include "Field.h"
 #include "Tensor.h"
 #include "Vec3.h"
+#include "tinyxml.h"
 
 
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
@@ -25,20 +28,51 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
   Emod = 2.05e11;
   nu = 0.29;
   rho = 7.85e3;
+  Afunc = NULL;
+  alpha = 1.2e-7;
 }
 
 
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
-  : Efunc(E), Efield(NULL), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(E), Efield(NULL), nu(v), rho(den), Afunc(NULL), alpha(1.2e-7),
+    planeStress(ps), axiSymmetry(ax)
 {
   Emod = -1.0; // Should not be referenced
 }
 
 
 LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
-  : Efunc(NULL), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(NULL), Efield(E), nu(v), rho(den), Afunc(NULL), alpha(1.2e-7),
+    planeStress(ps), axiSymmetry(ax)
 {
   Emod = -1.0; // Should not be referenced
+}
+
+
+void LinIsotropic::parse (const TiXmlElement* elem)
+{
+  if (utl::getAttribute(elem,"E",Emod))
+    std::cout <<" "<< Emod;
+  if (utl::getAttribute(elem,"nu",nu))
+    std::cout <<" "<< nu;
+  if (utl::getAttribute(elem,"rho",rho))
+    std::cout <<" "<< rho;
+  if (utl::getAttribute(elem,"alpha",alpha))
+    std::cout <<" "<< alpha;
+
+  const TiXmlNode* aval = NULL;
+  const TiXmlElement* child = elem->FirstChildElement();
+  for (; child; child = child->NextSiblingElement())
+    if (!strcasecmp(child->Value(),"thermalexpansion"))
+    {
+      std::cout <<" ";
+      std::string type;
+      utl::getAttribute(child,"type",type,true);
+      if ((aval = child->FirstChild()))
+        Afunc = utl::parseTimeFunc(aval->Value(),type);
+    }
+
+  if (!aval) std::cout << std::endl;
 }
 
 
@@ -49,7 +83,8 @@ void LinIsotropic::print (std::ostream& os) const
     std::cout <<"axial-symmetric, ";
   else if (planeStress)
     std::cout <<"plane stress, ";
-  std::cout <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho << std::endl;
+  std::cout <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
+            <<"alpha = "<< alpha << std::endl;
 }
 
 
@@ -200,4 +235,10 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
     U = 0.5*sigma.innerProd(eps);
 
   return true;
+}
+
+
+double LinIsotropic::getThermalExpansion (double T) const
+{
+  return Afunc ? (*Afunc)(T) : alpha;
 }
