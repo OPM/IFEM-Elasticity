@@ -71,7 +71,7 @@ void LinearElasticity::setMode (SIM::SolutionMode mode)
 
   // These quantities are not needed in linear problems
   if (mode != SIM::BUCKLING) eKg = 0;
-  iS = 0;
+  if (mode != SIM::DYNAMIC)  iS  = 0;
 }
 
 
@@ -103,7 +103,7 @@ bool LinearElasticity::writeGlvT (VTF* vtf, int iStep,
 
 
 bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
-				const Vec3& X) const
+                                const Vec3& X) const
 {
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
 
@@ -124,6 +124,15 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     double U;
     if (!material->evaluate(Cmat,sigma,U,fe,X,eps,eps))
       return false;
+
+#if INT_DEBUG > 3
+    std::cout <<"LinearElasticity::evalInt(X = "<< X <<")\n"
+              <<"Bmat ="<< Bmat <<"Cmat ="<< Cmat;
+#if INT_DEBUG > 4
+    if (lHaveStrains) std::cout <<"sigma =\n"<< sigma;
+#endif
+    std::cout << std::endl;
+#endif
   }
 
   // Axi-symmetric integration point volume; 2*pi*r*|J|*w
@@ -174,7 +183,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
 
 bool LinearElasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
-				const Vec3& X, const Vec3& normal) const
+                                const Vec3& X, const Vec3& normal) const
 {
   if (!tracFld && !fluxFld)
   {

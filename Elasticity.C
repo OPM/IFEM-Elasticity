@@ -83,7 +83,8 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   else if (!intPrm[0] && !intPrm[1] && !intPrm[2] && !intPrm[3])
     result = new BDFMats(bdf);
   else if (intPrm[3] > 0.0)
-    result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
+    result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3],
+                             intPrm[4] == 2.0);
   else
     result = new HHTMats(intPrm[2],intPrm[0],intPrm[1],true);
 
