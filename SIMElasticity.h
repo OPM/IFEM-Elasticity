@@ -341,7 +341,8 @@ protected:
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem)
   {
-    if (strcasecmp(elem->Value(),"elasticity"))
+    if (strcasecmp(elem->Value(),"elasticity") &&
+        strcasecmp(elem->Value(),"thermoelasticity"))
       return this->Dim::parse(elem);
 
     const TiXmlElement* child = elem->FirstChildElement();
