@@ -30,11 +30,16 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
   rho = 7.85e3;
   Afunc = NULL;
   alpha = 1.2e-7;
+  heatcapacity = 1.0;
+  conductivity = 1.0;
+  Cpfunc = NULL;
+  condFunc = NULL;
 }
 
 
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
   : Efunc(E), Efield(NULL), nu(v), rho(den), Afunc(NULL), alpha(1.2e-7),
+    heatcapacity(1.0), Cpfunc(NULL), conductivity(1.0), condFunc(NULL),
     planeStress(ps), axiSymmetry(ax)
 {
   Emod = -1.0; // Should not be referenced
@@ -43,6 +48,7 @@ LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
 
 LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
   : Efunc(NULL), Efield(E), nu(v), rho(den), Afunc(NULL), alpha(1.2e-7),
+    heatcapacity(1.0), Cpfunc(NULL), conductivity(1.0), condFunc(NULL),
     planeStress(ps), axiSymmetry(ax)
 {
   Emod = -1.0; // Should not be referenced
@@ -59,6 +65,10 @@ void LinIsotropic::parse (const TiXmlElement* elem)
     std::cout <<" "<< rho;
   if (utl::getAttribute(elem,"alpha",alpha))
     std::cout <<" "<< alpha;
+  if (utl::getAttribute(elem,"cp",heatcapacity))
+    std::cout <<" "<< heatcapacity;
+  if (utl::getAttribute(elem,"kappa",conductivity))
+    std::cout <<" "<< conductivity;
 
   const TiXmlNode* aval = NULL;
   const TiXmlElement* child = elem->FirstChildElement();
@@ -70,6 +80,22 @@ void LinIsotropic::parse (const TiXmlElement* elem)
       utl::getAttribute(child,"type",type,true);
       if ((aval = child->FirstChild()))
         Afunc = utl::parseTimeFunc(aval->Value(),type);
+    }
+    else if (!strcasecmp(child->Value(),"heatcapacity"))
+    {
+      std::cout <<" ";
+      std::string type;
+      utl::getAttribute(child,"type",type,true);
+      if ((aval = child->FirstChild()))
+        Cpfunc = utl::parseTimeFunc(aval->Value(),type);
+    }
+    else if (!strcasecmp(child->Value(),"conductivity"))
+    {
+      std::cout <<" ";
+      std::string type;
+      utl::getAttribute(child,"type",type,true);
+      if ((aval = child->FirstChild()))
+        condFunc = utl::parseTimeFunc(aval->Value(),type);
     }
 
   if (!aval) std::cout << std::endl;
@@ -241,4 +267,16 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 double LinIsotropic::getThermalExpansion (double T) const
 {
   return Afunc ? (*Afunc)(T) : alpha;
+}
+
+
+double LinIsotropic::getHeatCapacity (double T) const
+{
+  return Cpfunc ? (*Cpfunc)(T) : heatcapacity;
+}
+
+
+double LinIsotropic::getThermalConductivity(double T) const
+{
+  return condFunc ? (*condFunc)(T) : conductivity;
 }

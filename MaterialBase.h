@@ -63,6 +63,10 @@ public:
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
   //! \brief Evaluates the thermal expansion coefficient for given temperature.
   virtual double getThermalExpansion(double) const { return 0.0; }
+  //! \brief Evaluates the heat capacity at the current point
+  virtual double getHeatCapacity(double T) const { return 1.0; }
+  //! \brief Evaluates the thermal conductivity at the current point
+  virtual double getThermalConductivity(double T) const { return 1.0; }
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point

@@ -72,6 +72,10 @@ public:
   virtual double getMassDensity(const Vec3&) const { return rho; }
   //! \brief Evaluates the thermal expansion coefficient for given temperature.
   virtual double getThermalExpansion(double T) const;
+  //! \brief Evaluates the heat capacity at the current point
+  virtual double getHeatCapacity(double T) const;
+  //! \brief Evaluates the thermal conductivity at the current point
+  virtual double getThermalConductivity(double T) const;
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point
@@ -98,15 +102,19 @@ public:
 
 protected:
   // Material properties
-  RealFunc* Efunc;    //!< Young's modulus (spatial function)
-  Field* Efield;      //!< Young's modulus (spatial field)
-  double Emod;        //!< Young's modulus (constant)
-  double nu;          //!< Poisson's ratio
-  double rho;         //!< Mass density
-  ScalarFunc* Afunc;  //!< Thermal expansion coefficient function
-  double alpha;       //!< Thermal expansion coefficient (constant)
-  bool   planeStress; //!< Plane stress/strain option for 2D problems
-  bool   axiSymmetry; //!< Axi-symmetric option
+  RealFunc* Efunc;      //!< Young's modulus (spatial function)
+  Field* Efield;        //!< Young's modulus (spatial field)
+  double Emod;          //!< Young's modulus (constant)
+  double nu;            //!< Poisson's ratio
+  double rho;           //!< Mass density
+  ScalarFunc* Afunc;    //!< Thermal expansion coefficient function
+  double alpha;         //!< Thermal expansion coefficient (constant)
+  double heatcapacity;  //!< Specific heat capacity (constant)
+  ScalarFunc* Cpfunc;   //!< Specific heat capacity function
+  double conductivity;  //!< Thermal conductivity (constant)
+  ScalarFunc* condFunc; //!< Thermal conductivity function
+  bool   planeStress;   //!< Plane stress/strain option for 2D problems
+  bool   axiSymmetry;   //!< Axi-symmetric option
 };
 
 #endif
