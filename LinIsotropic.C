@@ -30,10 +30,10 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
   rho = 7.85e3;
   Afunc = NULL;
   alpha = 1.2e-7;
-  heatcapacity = 1.0;
-  conductivity = 1.0;
   Cpfunc = NULL;
+  heatcapacity = 1.0;
   condFunc = NULL;
+  conductivity = 1.0;
 }
 
 
@@ -110,7 +110,7 @@ void LinIsotropic::print (std::ostream& os) const
   else if (planeStress)
     std::cout <<"plane stress, ";
   std::cout <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
-            <<"alpha = "<< alpha << std::endl;
+            <<", alpha = "<< alpha << std::endl;
 }
 
 
