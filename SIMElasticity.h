@@ -96,12 +96,14 @@ protected:
   //! derived from the analytical solution.
   virtual void preprocessA()
   {
-    if (!Dim::myProblem)
-    {
-      this->getIntegrand();
-      if (Dim::myPid == 0)
-        this->printProblem(std::cout);
+    Elasticity* elInt = this->getIntegrand();
+    if (mVec.empty()) {
+      static LinIsotropic defaultMat;
+      elInt->setMaterial(&defaultMat);
     }
+
+    if (Dim::myPid == 0)
+      this->printProblem(std::cout);
 
     if (!Dim::mySol) return;
 

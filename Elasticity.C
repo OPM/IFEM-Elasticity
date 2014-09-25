@@ -12,7 +12,7 @@
 //==============================================================================
 
 #include "Elasticity.h"
-#include "LinIsotropic.h"
+#include "MaterialBase.h"
 #include "FiniteElement.h"
 #include "GenAlphaMats.h"
 #include "BDFMats.h"
@@ -61,12 +61,8 @@ void Elasticity::print (std::ostream& os) const
     std::cout <<" "<< gravity[d];
   std::cout << std::endl;
 
-  if (!material)
-  {
-    static LinIsotropic defaultMat;
-    const_cast<Elasticity*>(this)->material = &defaultMat;
-  }
-  material->print(os);
+  if (material)
+    material->print(os);
 }
 
 

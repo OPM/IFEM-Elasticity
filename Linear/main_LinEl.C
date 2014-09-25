@@ -282,8 +282,6 @@ int main (int argc, char** argv)
     else if (model->opt.discretization == ASM::SplineC1)
       std::cout <<"\nSpline basis with C1-continuous patch interfaces is used";
     std::cout << std::endl;
-
-    model->printProblem(std::cout);
   }
 
   utl::profiler->stop("Model input");
