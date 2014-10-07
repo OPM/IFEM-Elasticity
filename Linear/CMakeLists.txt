@@ -6,9 +6,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                       ${PROJECT_SOURCE_DIR}/../../../cmake/Modules)
 
+# Required packages
 IF (NOT IFEM_CONFIGURED)
   FIND_PACKAGE(IFEM REQUIRED)
 ENDIF(NOT IFEM_CONFIGURED)
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${IFEM_CXX_FLAGS}")
 
 INCLUDE_DIRECTORIES(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
@@ -16,12 +18,8 @@ INCLUDE_DIRECTORIES(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-# Generate regtest script with correct paths
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/regtest.sh.in
-               regtest.sh)
-
-FILE(GLOB LinEl_SRCS *.C;../*.C;
-                     ../FiniteDeformation/SIMElasticBar.C;
+FILE(GLOB LinEl_SRCS *.C ../*.C
+                     ../FiniteDeformation/SIMElasticBar.C
                      ../FiniteDeformation/Elastic*.C)
 ADD_EXECUTABLE(LinEl ${LinEl_SRCS})
 TARGET_LINK_LIBRARIES(LinEl ${IFEM_LIBRARIES})
