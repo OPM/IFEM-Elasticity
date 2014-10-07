@@ -35,10 +35,6 @@ ENABLE_TESTING()
 # Generate regtest script with correct paths
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/regtest.sh.in
                regtest.sh)
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/doregtests.sh.in
-               doregtests.sh @ONLY)
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/check-patchseries.sh.in
-               check-patchseries.sh)
 
 IF(IFEM_USE_PARALLEL_PETSC)
   # Add parallel tests here
