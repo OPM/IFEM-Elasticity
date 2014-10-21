@@ -94,6 +94,18 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 }
 
 
+void ElasticBase::setIntegrationPrm (unsigned short int i, double prm)
+{
+  if (i < 4) intPrm[i] = prm;
+}
+
+
+double ElasticBase::getIntegrationPrm (unsigned short int i) const
+{
+  return i < 4 && m_mode == SIM::DYNAMIC ? intPrm[i] : 0.0;
+}
+
+
 const char* ElasticBase::getField1Name (size_t i, const char* prefix) const
 {
   if (i > 6 || i > npv) i = 6;

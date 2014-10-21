@@ -48,8 +48,11 @@ public:
 
   //! \brief Initializes an integration parameter for the integrand.
   //! \param[in] i Index of the integration parameter to define
-  //! \param[in] v The parameter value to assign
-  virtual void setIntegrationPrm(int i, double v) { intPrm[i] = v; }
+  //! \param[in] prm The parameter value to assign
+  virtual void setIntegrationPrm(unsigned short int i, double prm);
+  //! \brief Returns an integration parameter for the integrand.
+  //! \param[in] i Index of the integration parameter to return
+  virtual double getIntegrationPrm(unsigned short int i) const;
 
   //! \brief Advances the BDF time step scheme one step forward.
   void advanceStep(double dt, double dtn) { bdf.advanceStep(dt,dtn); }
