@@ -28,7 +28,7 @@ Parsing <cable>
 	Bending stiffness = 490.874
 	Mass density = 7850
   Parsing <nodeload>
-	Node 13 Load: 100
+	Node 13 dof 2 Load: 100
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 4 4

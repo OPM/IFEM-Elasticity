@@ -23,7 +23,7 @@ Parsing <beam>
 	Cross section area = 0.1, moments of inertia = 0.002 0.001 0.001 0.002
 	Shear parameters = 0 0 1.2 1.2
   Parsing <nodeload>
-	Node 6 Load: -1e+06
+	Node 6 dof 2 Load: -1e+06
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 1 1

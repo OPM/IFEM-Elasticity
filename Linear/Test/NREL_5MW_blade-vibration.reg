@@ -35,7 +35,7 @@ Parsing <beam>
 	Iz (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #12,X)
 	CGy (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #16,X)
   Parsing <nodeload>
-	Node 6 Load: -1e+06
+	Node 6 dof 2 Load: -1e+06
   Parsing <gravity>
 	Gravitation vector: 0 0 -9.81
 Parsing input file succeeded.
