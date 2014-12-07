@@ -84,7 +84,7 @@ protected:
 
   TimeIntegration::BDFD2 bdf; //!< BDF time discretization parameters
 
-  double intPrm[4]; //!< Newmark time integration parameters
+  double intPrm[5]; //!< Newmark time integration parameters
 };
 
 #endif

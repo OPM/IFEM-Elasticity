@@ -21,8 +21,7 @@ ElasticBase::ElasticBase ()
   eM = eKm = eKg = 0;
   eS = iS = 0;
 
-  intPrm[0] = intPrm[1] = 0.0;
-  intPrm[2] = intPrm[3] = 0.0;
+  memset(intPrm,0,sizeof(intPrm));
 }
 
 
@@ -47,6 +46,8 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
         eKg = 4; // Structural damping from material stiffness only
       eM = 2;
       eS = iS = 1;
+      if (intPrm[4] == 1.0)
+        eS = 3; // Store external and internal forces separately when using HHT
       break;
 
     case SIM::BUCKLING:
@@ -79,7 +80,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::DYNAMIC:
-      primsol.resize(nSV+2); // adding velocity and acceleration
+      primsol.resize(nSV + (intPrm[4] == 1 ? 4 : 2));
       break;
 
     case SIM::BUCKLING:
@@ -96,13 +97,16 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 
 void ElasticBase::setIntegrationPrm (unsigned short int i, double prm)
 {
-  if (i < 4) intPrm[i] = prm;
+  if (i < sizeof(intPrm)/sizeof(double)) intPrm[i] = prm;
 }
 
 
 double ElasticBase::getIntegrationPrm (unsigned short int i) const
 {
-  return i < 4 && m_mode == SIM::DYNAMIC ? intPrm[i] : 0.0;
+  if (i < sizeof(intPrm)/sizeof(double) && m_mode == SIM::DYNAMIC)
+    return intPrm[i];
+  else
+    return 0.0;
 }
 
 
