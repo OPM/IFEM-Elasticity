@@ -357,8 +357,8 @@ int main (int argc, char** argv)
                               DataExporter::EIGENMODES);
       exporter->setFieldValue("eig", model, &modes);
     }
-    exporter->registerWriter(new HDF5Writer(model->opt.hdf5));
-    exporter->registerWriter(new XMLWriter(model->opt.hdf5));
+    exporter->registerWriter(new HDF5Writer(model->opt.hdf5,model->getProcessAdm()));
+    exporter->registerWriter(new XMLWriter(model->opt.hdf5,model->getProcessAdm()));
   }
 
   switch (iop+model->opt.eig) {
