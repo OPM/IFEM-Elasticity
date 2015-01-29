@@ -32,7 +32,7 @@ Parsing <postprocessing>
   Parsing <vtfformat>
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 4 4
+Number of Gauss points: 4
 Problem definition:
 Elasticity: 2D, gravity = 0 0
 LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7820

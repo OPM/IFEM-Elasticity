@@ -26,7 +26,7 @@ Parsing <beam>
 	Node 6 dof 2 Load: -1e+06
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 1 1
+Number of Gauss points: 1
 Problem definition:
 ElasticBeam: E = 2.05e+11, G = 8.1e+10, rho = 7850
              A = 0.1 Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002

@@ -35,7 +35,7 @@ Parsing <postprocessing>
 	Point 3: P1 xi = 0.75
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 5 5
+Number of Gauss points: 5
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 ElasticCable: Stiffness = 7.85398e+08 490873, Mass density = 235.619

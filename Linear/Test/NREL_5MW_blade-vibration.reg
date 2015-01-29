@@ -40,7 +40,7 @@ Parsing <beam>
 	Gravitation vector: 0 0 -9.81
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 1 1
+Number of Gauss points: 1
 Eigenproblem solver: 4
 Number of eigenvalues: 10
 Number of Arnoldi vectors: 20

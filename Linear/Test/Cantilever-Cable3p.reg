@@ -31,7 +31,7 @@ Parsing <cable>
 	Node 13 dof 2 Load: 100
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 4 4
+Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 ElasticCable: Stiffness = 785398 490.874, Mass density = 7850

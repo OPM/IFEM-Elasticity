@@ -36,7 +36,7 @@ Parsing <elasticity>
 	Material code 0: 2.068e+11 0.29 7820
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 4 4
+Number of Gauss points: 4
 Problem definition:
 Elasticity: 3D, gravity = 0 0 0
 LinIsotropic: E = 2.068e+11, nu = 0.29, rho = 7820
