@@ -707,6 +707,9 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     pnorm[ip++] += error.dot(Cinv*error)*detJW;
   }
 
+  // Integrate the volume
+  pnorm[ip++] += detJW;
+
   size_t i, j, k;
   for (i = 0; i < pnorm.psol.size(); i++)
     if (!pnorm.psol[i].empty())
@@ -775,7 +778,7 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
 
   // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
   // with e^r = u^r - u^h  and  e = u - u^h
-  for (size_t ip = 9; ip < pnorm.size(); ip += 6)
+  for (size_t ip = 10; ip < pnorm.size(); ip += 6)
     pnorm[ip] = sqrt(pnorm[ip-4] / pnorm[3]);
 
   return true;
@@ -795,7 +798,7 @@ size_t ElasticityNorm::getNoFields (int group) const
     for (size_t i = 0; i < prjsol.size(); i++)
       nf += prjsol.empty() ? 0 : 1;
   else if (group == 1)
-    nf = anasol ? 4 : 2;
+    nf = anasol ? 5 : 3;
   else
     nf = anasol ? 6 : 4;
 
@@ -806,14 +809,15 @@ size_t ElasticityNorm::getNoFields (int group) const
 const char* ElasticityNorm::getName (size_t i, size_t j,
                                      const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 4))
+  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 5))
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[4] = {
+  static const char* u[5] = {
     "a(u^h,u^h)^0.5",
     "((f,u^h)+(t,u^h))^0.5",
     "a(u,u)^0.5",
-    "a(e,e)^0.5, e=u-u^h"
+    "a(e,e)^0.5, e=u-u^h",
+    "volume"
   };
 
   static const char* p[6] = {
@@ -826,6 +830,7 @@ const char* ElasticityNorm::getName (size_t i, size_t j,
   };
 
   const char** s = i > 1 ? p : u;
+  if (!anasol && j == 3) j = 5;
 
   if (!prefix)
     return s[j-1];
