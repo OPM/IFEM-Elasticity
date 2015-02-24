@@ -181,7 +181,7 @@ int main (int argc, char** argv)
       std::cout <<"\nSpecified boundary conditions are ignored";
     if (fixDup)
       std::cout <<"\nCo-located nodes will be merged";
-    if (checkRHS)
+    if (checkRHS && !oneD && !KLp)
       std::cout <<"\nCheck that each patch has a right-hand coordinate system";
     if (!ignoredPatches.empty())
     {
@@ -203,7 +203,7 @@ int main (int argc, char** argv)
   else if (KLp)
     model = new SIMLinElKL();
   else if (twoD)
-    model = new SIMLinEl2D();
+    model = new SIMLinEl2D(checkRHS);
   else
     model = new SIMLinEl3D(checkRHS);
 
