@@ -63,7 +63,7 @@ public:
   virtual void parse(const TiXmlElement* elem);
 
   //! \brief Prints out material parameters to the given output stream.
-  virtual void print(std::ostream& os) const;
+  virtual void print(utl::LogStream& os) const;
 
   //! \brief Returns \e false if plane stress in 2D.
   virtual bool isPlaneStrain() const { return !planeStress; }

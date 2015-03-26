@@ -15,6 +15,7 @@
 #include "Utilities.h"
 #include "Functions.h"
 #include "Field.h"
+#include "IFEM.h"
 #include "Tensor.h"
 #include "Vec3.h"
 #include "tinyxml.h"
@@ -58,24 +59,24 @@ LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
 void LinIsotropic::parse (const TiXmlElement* elem)
 {
   if (utl::getAttribute(elem,"E",Emod))
-    std::cout <<" "<< Emod;
+    IFEM::cout <<" "<< Emod;
   if (utl::getAttribute(elem,"nu",nu))
-    std::cout <<" "<< nu;
+    IFEM::cout <<" "<< nu;
   if (utl::getAttribute(elem,"rho",rho))
-    std::cout <<" "<< rho;
+    IFEM::cout <<" "<< rho;
   if (utl::getAttribute(elem,"alpha",alpha))
-    std::cout <<" "<< alpha;
+    IFEM::cout <<" "<< alpha;
   if (utl::getAttribute(elem,"cp",heatcapacity))
-    std::cout <<" "<< heatcapacity;
+    IFEM::cout <<" "<< heatcapacity;
   if (utl::getAttribute(elem,"kappa",conductivity))
-    std::cout <<" "<< conductivity;
+    IFEM::cout <<" "<< conductivity;
 
   const TiXmlNode* aval = NULL;
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (!strcasecmp(child->Value(),"thermalexpansion"))
     {
-      std::cout <<" ";
+      IFEM::cout <<" ";
       std::string type;
       utl::getAttribute(child,"type",type,true);
       if ((aval = child->FirstChild()))
@@ -83,7 +84,7 @@ void LinIsotropic::parse (const TiXmlElement* elem)
     }
     else if (!strcasecmp(child->Value(),"heatcapacity"))
     {
-      std::cout <<" ";
+      IFEM::cout <<" ";
       std::string type;
       utl::getAttribute(child,"type",type,true);
       if ((aval = child->FirstChild()))
@@ -91,26 +92,26 @@ void LinIsotropic::parse (const TiXmlElement* elem)
     }
     else if (!strcasecmp(child->Value(),"conductivity"))
     {
-      std::cout <<" ";
+      IFEM::cout <<" ";
       std::string type;
       utl::getAttribute(child,"type",type,true);
       if ((aval = child->FirstChild()))
         condFunc = utl::parseTimeFunc(aval->Value(),type);
     }
 
-  if (!aval) std::cout << std::endl;
+  if (!aval) IFEM::cout << std::endl;
 }
 
 
-void LinIsotropic::print (std::ostream& os) const
+void LinIsotropic::print (utl::LogStream& os) const
 {
-  std::cout <<"LinIsotropic: ";
+  os <<"LinIsotropic: ";
   if (axiSymmetry)
-    std::cout <<"axial-symmetric, ";
+    os <<"axial-symmetric, ";
   else if (planeStress)
-    std::cout <<"plane stress, ";
-  std::cout <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
-            <<", alpha = "<< alpha << std::endl;
+    os <<"plane stress, ";
+  os <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
+     <<", alpha = "<< alpha << std::endl;
 }
 
 

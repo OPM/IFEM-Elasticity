@@ -44,10 +44,10 @@ KirchhoffLovePlate::~KirchhoffLovePlate ()
 }
 
 
-void KirchhoffLovePlate::print (std::ostream& os) const
+void KirchhoffLovePlate::print (utl::LogStream& os) const
 {
-  std::cout <<"KirchhoffLovePlate: thickness = "<< thickness
-	    <<", gravity = "<< gravity << std::endl;
+  os <<"KirchhoffLovePlate: thickness = "<< thickness
+     <<", gravity = "<< gravity << std::endl;
 
   if (!material)
   {

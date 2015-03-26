@@ -44,7 +44,7 @@ public:
   virtual ~Elasticity();
 
   //! \brief Prints out the problem definition to the given output stream.
-  virtual void print(std::ostream& os) const;
+  virtual void print(utl::LogStream& os) const;
 
   //! \brief Defines the traction field to use in Neumann boundary conditions.
   void setTraction(TractionFunc* tf) { tracFld = tf; }

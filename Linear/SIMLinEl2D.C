@@ -114,8 +114,8 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"a",a);
       utl::getAttribute(child,"F0",F0);
       utl::getAttribute(child,"nu",nu);
-      std::cout <<"\tAnalytical solution: Hole a="<< a <<" F0="<< F0
-                <<" nu="<< nu << std::endl;
+      IFEM::cout <<"\tAnalytical solution: Hole a="<< a <<" F0="<< F0
+                 <<" nu="<< nu << std::endl;
       if (!mySol)
         mySol = new AnaSol(new Hole(a,F0,nu));
     }
@@ -124,8 +124,8 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"a",a);
       utl::getAttribute(child,"F0",F0);
       utl::getAttribute(child,"nu",nu);
-      std::cout <<"\tAnalytical solution: Lshape a="<< a <<" F0="<< F0
-                <<" nu="<< nu << std::endl;
+      IFEM::cout <<"\tAnalytical solution: Lshape a="<< a <<" F0="<< F0
+                 <<" nu="<< nu << std::endl;
       if (!mySol)
         mySol = new AnaSol(new Lshape(a,F0,nu));
     }
@@ -134,8 +134,8 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"L",L);
       utl::getAttribute(child,"H",H);
       utl::getAttribute(child,"F0",F0);
-      std::cout <<"\tAnalytical solution: CanTS L="<< L <<" H="<< H
-                <<" F0="<< F0 << std::endl;
+      IFEM::cout <<"\tAnalytical solution: CanTS L="<< L <<" H="<< H
+                 <<" F0="<< F0 << std::endl;
       if (!mySol)
         mySol = new AnaSol(new CanTS(L,H,F0));
     }
@@ -144,8 +144,8 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"L",L);
       utl::getAttribute(child,"H",H);
       utl::getAttribute(child,"M0",M0);
-      std::cout <<"\tAnalytical solution: CanTM H="<< H
-                <<" M0="<< M0 << std::endl;
+      IFEM::cout <<"\tAnalytical solution: CanTM H="<< H
+                 <<" M0="<< M0 << std::endl;
       if (!mySol)
         mySol = new AnaSol(new CanTM(H,M0));
     }
@@ -155,13 +155,13 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"b",b);
       utl::getAttribute(child,"u0",u0);
       utl::getAttribute(child,"E",E);
-      std::cout <<"\tAnalytical solution: Curved Beam a="<< a <<" b="<< b
-                <<" u0="<< u0 <<" E="<< E << std::endl;
+      IFEM::cout <<"\tAnalytical solution: Curved Beam a="<< a <<" b="<< b
+                 <<" u0="<< u0 <<" E="<< E << std::endl;
       if (!mySol)
         mySol = new AnaSol(new CurvedBeam(u0,a,b,E));
     }
     else if (type == "expression") {
-      std::cout <<"\tAnalytical solution: Expression"<< std::endl;
+      IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
       if (!mySol)
         mySol = new AnaSol(child,false);
     }
@@ -173,8 +173,8 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
     int code = 0;
     utl::getAttribute(child,"code",code);
     if (code > 0 && mySol && mySol->getStressSol()) {
-      std::cout <<"\tNeumann code "<< code
-                <<": Analytical traction"<< std::endl;
+      IFEM::cout <<"\tNeumann code "<< code
+                 <<": Analytical traction"<< std::endl;
       this->setPropertyType(code,Property::NEUMANN);
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }

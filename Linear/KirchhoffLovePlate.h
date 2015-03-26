@@ -37,7 +37,7 @@ public:
   virtual ~KirchhoffLovePlate();
 
   //! \brief Prints out the problem definition to the given output stream.
-  virtual void print(std::ostream& os) const;
+  virtual void print(utl::LogStream& os) const;
 
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use

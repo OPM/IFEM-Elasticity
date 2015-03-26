@@ -26,7 +26,7 @@ public:
   //! \brief Constructor printing a message making user aware of its presense.
   CylinderCS()
   {
-    std::cout <<"\nLocal coordinate system: Cylindric"<< std::endl;
+    IFEM::cout <<"\nLocal coordinate system: Cylindric"<< std::endl;
   }
 
   //! \brief Computes the global-to-local transformation at the point \a X.
@@ -59,7 +59,7 @@ public:
   //! \brief Constructor printing a message making user aware of its presense.
   CylinderSphereCS(double H = 0.0) : h(H)
   {
-    std::cout <<"\nLocal coordinate system: Cylindric with Spherical cap, h="
+    IFEM::cout <<"\nLocal coordinate system: Cylindric with Spherical cap, h="
 	      << h << std::endl;
 #ifdef PRINT_CS
     sn.open("nodes.dat");
@@ -77,7 +77,7 @@ public:
 
   virtual ~CylinderSphereCS()
   {
-    std::cout <<"Finalizing VTF-output of local coordinate systems"<< std::endl;
+    IFEM::cout <<"Finalizing VTF-output of local coordinate systems"<< std::endl;
     s1 <<"\n*GLVIEWVECTOR 2\n%NAME \"v1\"\n%STEP 1\n31\n";
     s2 <<"\n*GLVIEWVECTOR 3\n%NAME \"v2\"\n%STEP 1\n32\n";
     s3 <<"\n*GLVIEWVECTOR 4\n%NAME \"v3\"\n%STEP 1\n33\n";
@@ -234,8 +234,8 @@ template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"a",a);
       utl::getAttribute(child,"F0",F0);
       utl::getAttribute(child,"nu",nu);
-      std::cout <<"\tAnalytical solution: Hole a="<< a <<" F0="<< F0
-                <<" nu="<< nu << std::endl;
+      IFEM::cout <<"\tAnalytical solution: Hole a="<< a <<" F0="<< F0
+                 <<" nu="<< nu << std::endl;
       if (!mySol)
         mySol = new AnaSol(new Hole(a,F0,nu,true));
     }
@@ -244,8 +244,8 @@ template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"a",a);
       utl::getAttribute(child,"F0",F0);
       utl::getAttribute(child,"nu",nu);
-      std::cout <<"\tAnalytical solution: Lshape a="<< a <<" F0="<< F0
-                <<" nu="<< nu << std::endl;
+      IFEM::cout <<"\tAnalytical solution: Lshape a="<< a <<" F0="<< F0
+                 <<" nu="<< nu << std::endl;
       if (!mySol)
         mySol = new AnaSol(new Lshape(a,F0,nu,true));
     }
@@ -254,13 +254,13 @@ template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child)
       utl::getAttribute(child,"L",L);
       utl::getAttribute(child,"H",H);
       utl::getAttribute(child,"F0",F0);
-      std::cout <<"\tAnalytical solution: CanTS L="<< L <<" H="<< H
-                <<" F0="<< F0 << std::endl;
+      IFEM::cout <<"\tAnalytical solution: CanTS L="<< L <<" H="<< H
+                 <<" F0="<< F0 << std::endl;
       if (!mySol)
         mySol = new AnaSol(new CanTS(L,H,F0,true));
     }
     else if (type == "expression") {
-      std::cout <<"\tAnalytical solution: Expression"<< std::endl;
+      IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
       if (!mySol)
         mySol = new AnaSol(child,false);
     }
@@ -272,8 +272,8 @@ template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child)
     int code = 0;
     utl::getAttribute(child,"code",code);
     if (code > 0 && mySol && mySol->getStressSol()) {
-      std::cout <<"\tNeumann code "<< code
-                <<": Analytical traction"<< std::endl;
+      IFEM::cout <<"\tNeumann code "<< code
+                 <<": Analytical traction"<< std::endl;
       setPropertyType(code,Property::NEUMANN);
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }

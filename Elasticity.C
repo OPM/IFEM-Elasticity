@@ -52,14 +52,14 @@ Elasticity::~Elasticity ()
 }
 
 
-void Elasticity::print (std::ostream& os) const
+void Elasticity::print (utl::LogStream& os) const
 {
   if (axiSymmetry)
-    std::cout <<"Axial-symmetric Elasticity problem\n";
-  std::cout <<"Elasticity: "<< nsd <<"D, gravity =";
+    os <<"Axial-symmetric Elasticity problem\n";
+  os <<"Elasticity: "<< nsd <<"D, gravity =";
   for (unsigned short int d = 0; d < nsd; d++)
-    std::cout <<" "<< gravity[d];
-  std::cout << std::endl;
+    os <<" "<< gravity[d];
+  os << std::endl;
 
   if (material)
     material->print(os);

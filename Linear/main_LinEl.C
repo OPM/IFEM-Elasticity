@@ -168,28 +168,26 @@ int main (int argc, char** argv)
   else if (isC1 && IFEM::getOptions().discretization != ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::SplineC1;
 
-  if (myPid == 0)
+  IFEM::cout <<"\n >>> IFEM Linear Elasticity solver <<<"
+             <<"\n =====================================\n"
+	     <<"\n Executing command:\n";
+  for (i = 0; i < argc; i++) IFEM::cout <<" "<< argv[i];
+  IFEM::cout <<"\n\nInput file: "<< infile;
+  IFEM::getOptions().print(IFEM::cout);
+  if (SIMbase::ignoreDirichlet)
+    IFEM::cout <<"\nSpecified boundary conditions are ignored";
+  if (fixDup)
+    IFEM::cout <<"\nCo-located nodes will be merged";
+  if (checkRHS && !oneD && !KLp)
+    IFEM::cout <<"\nCheck that each patch has a right-hand coordinate system";
+  if (!ignoredPatches.empty())
   {
-    std::cout <<"\n >>> IFEM Linear Elasticity solver <<<"
-	      <<"\n =====================================\n"
-	      <<"\n Executing command:\n";
-    for (i = 0; i < argc; i++) std::cout <<" "<< argv[i];
-    std::cout <<"\n\nInput file: "<< infile;
-    IFEM::getOptions().print(std::cout);
-    if (SIMbase::ignoreDirichlet)
-      std::cout <<"\nSpecified boundary conditions are ignored";
-    if (fixDup)
-      std::cout <<"\nCo-located nodes will be merged";
-    if (checkRHS && !oneD && !KLp)
-      std::cout <<"\nCheck that each patch has a right-hand coordinate system";
-    if (!ignoredPatches.empty())
-    {
-      std::cout <<"\nIgnored patches:";
-      for (size_t i = 0; i < ignoredPatches.size(); i++)
-	std::cout <<" "<< ignoredPatches[i];
-    }
-    std::cout << std::endl;
+    IFEM::cout <<"\nIgnored patches:";
+    for (size_t i = 0; i < ignoredPatches.size(); i++)
+      IFEM::cout <<" "<< ignoredPatches[i];
   }
+  IFEM::cout << std::endl;
+
   utl::profiler->stop("Initialization");
   utl::profiler->start("Model input");
 
@@ -226,8 +224,7 @@ int main (int argc, char** argv)
   if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
     vizRHS = false;
 
-  if (myPid == 0)
-    model->opt.print(std::cout,true) << std::endl;
+  model->opt.print(IFEM::cout,true) << std::endl;
 
   utl::profiler->stop("Model input");
 
@@ -247,8 +244,8 @@ int main (int argc, char** argv)
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
   {
-    std::cout <<"\n ** HDF5 output is available for spline discretization only."
-	      <<" Deactivating...\n"<< std::endl;
+    IFEM::cout <<"\n ** HDF5 output is available for spline discretization only."
+               <<" Deactivating...\n"<< std::endl;
     model->opt.hdf5.clear();
   }
 
@@ -271,9 +268,8 @@ int main (int argc, char** argv)
   DataExporter* exporter = NULL;
   if (model->opt.dumpHDF5(infile))
   {
-    if (myPid == 0)
-      std::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
-                <<".hdf5"<< std::endl;
+    IFEM::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
+               <<".hdf5"<< std::endl;
 
     // Include secondary results only if no projection has been requested.
     // The secondary results will be projected anyway, but without the
@@ -332,54 +328,53 @@ int main (int argc, char** argv)
       else
 	projs[i] = ssol;
 
-    if (myPid == 0 && !pOpt.empty())
-      std::cout << std::endl;
+    if (!pOpt.empty())
+      IFEM::cout << std::endl;
 
     // Evaluate solution norms
     model->setQuadratureRule(model->opt.nGauss[1]);
     if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
       return 4;
 
-    if (myPid == 0 && !gNorm.empty())
+    if (!gNorm.empty())
     {
-      std::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< gNorm[0](1);
-      std::cout	<<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
+      IFEM::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< gNorm[0](1);
+      IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
       if (model->haveAnaSol() && gNorm[0].size() >= 4)
-	std::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< gNorm[0](3)
-		  <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< gNorm[0](4)
-		  <<"\nExact relative error (%) : "
-		  << gNorm[0](4)/gNorm[0](3)*100.0;
+        IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< gNorm[0](3)
+                   <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< gNorm[0](4)
+                   <<"\nExact relative error (%) : "
+                   << gNorm[0](4)/gNorm[0](3)*100.0;
       size_t j = 1;
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
       {
-	std::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<";
-	std::cout <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1);
-	std::cout <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2);
-	std::cout <<"\n- relative error (% of |u^r|) : "
-		  << gNorm[j](2)/gNorm[j](1)*100.0;
+        IFEM::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<";
+        IFEM::cout <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1);
+        IFEM::cout <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2);
+        IFEM::cout <<"\n- relative error (% of |u^r|) : "
+                   << gNorm[j](2)/gNorm[j](1)*100.0;
 
         if (j == 0)
           continue;
 
 	if (model->haveAnaSol())
 	{
-	  std::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< gNorm[j](5)
-		    <<"\n- relative error (% of |u|)   : "
-		    << gNorm[j](5)/gNorm[0](3)*100.0;
-	  std::cout <<"\nEffectivity index             : "
-		    << gNorm[j](2)/gNorm[0](4);
+          IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< gNorm[j](5)
+                     <<"\n- relative error (% of |u|)   : "
+                     << gNorm[j](5)/gNorm[0](3)*100.0;
+          IFEM::cout <<"\nEffectivity index             : "
+                     << gNorm[j](2)/gNorm[0](4);
 	}
 
-	std::cout <<"\nL2-norm |s^r| =(s^r,s^r)^0.5         : "<< gNorm[j](3);
-	std::cout <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4);
-        std::cout <<"\n- relative error (% of |s^r|) : "
-                  << gNorm[j](4)/gNorm[j](3)*100.0;
+        IFEM::cout <<"\nL2-norm |s^r| =(s^r,s^r)^0.5         : "<< gNorm[j](3);
+        IFEM::cout <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4);
+        IFEM::cout <<"\n- relative error (% of |s^r|) : "
+                   << gNorm[j](4)/gNorm[j](3)*100.0;
       }
-      std::cout << std::endl;
+      IFEM::cout << std::endl;
     }
 
-    if (myPid == 0)
-      model->dumpResults(displ,0.0,std::cout,true,6);
+    model->dumpResults(displ,0.0,IFEM::cout,true,6);
 
     if (model->opt.eig == 0) break;
 
@@ -491,29 +486,33 @@ int main (int argc, char** argv)
     std::ofstream osg(strcat(strtok(infile,"."),".g2"));
     osg.precision(18);
     std::cout <<"\nWriting updated g2-file "<< infile << std::endl;
-    model->dumpGeometry(osg);
+    utl::LogStream log(osg);
+    model->dumpGeometry(log);
     if (!displ.empty())
     {
       // Write solution (control point values) to ASCII files
       std::ofstream osd(strcat(strtok(infile,"."),".dis"));
       osd.precision(18);
       std::cout <<"\nWriting deformation to file "<< infile << std::endl;
-      model->dumpPrimSol(displ,osd,false);
+      utl::LogStream log(osd);
+      model->dumpPrimSol(displ,log,false);
       std::ofstream oss(strcat(strtok(infile,"."),".sol"));
       oss.precision(18);
       std::cout <<"\nWriting solution to file "<< infile << std::endl;
-      model->dumpSolution(displ,oss);
+      utl::LogStream log2(oss);
+      model->dumpSolution(displ,log2);
     }
     if (!modes.empty())
     {
       // Write eigenvectors to ASCII files
       std::ofstream ose(strcat(strtok(infile,"."),".eig"));
       ose.precision(18);
-      std::cout <<"\nWriting eigenvectors to file "<< infile << std::endl;
+      IFEM::cout <<"\nWriting eigenvectors to file "<< infile << std::endl;
+      utl::LogStream log(ose);
       for (it = modes.begin(); it != modes.end(); it++)
       {
 	ose <<"# Eigenvector_"<< it->eigNo <<" Eigenvalue="<< it->eigVal <<"\n";
-	model->dumpPrimSol(it->eigVec,ose,false);
+        model->dumpPrimSol(it->eigVec,log,false);
       }
     }
   }

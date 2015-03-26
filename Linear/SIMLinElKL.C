@@ -323,8 +323,7 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 
 void SIMLinElKL::preprocessA ()
 {
-  if (myPid == 0)
-    this->printProblem(std::cout);
+  this->printProblem(IFEM::cout);
 
   ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
   if (!plSol) return;

@@ -18,6 +18,7 @@
 #include "SIM3D.h"
 #include "Elasticity.h"
 #include "LinIsotropic.h"
+#include "IFEM.h"
 #include "TimeStep.h"
 #include "AnaSol.h"
 #include "Functions.h"
@@ -102,8 +103,7 @@ protected:
       elInt->setMaterial(&defaultMat);
     }
 
-    if (Dim::myPid == 0)
-      this->printProblem(std::cout);
+    this->printProblem(IFEM::cout);
 
     if (!Dim::mySol) return;
 
@@ -354,7 +354,7 @@ protected:
 
       else if (!strcasecmp(child->Value(),"isotropic")) {
         int code = this->parseMaterialSet(child,mVec.size());
-        std::cout <<"\tMaterial code "<< code <<":";
+        IFEM::cout <<"\tMaterial code "<< code <<":";
         if (Dim::dimension == 2)
           mVec.push_back(new LinIsotropic(!planeStrain,axiSymmetry));
         else
@@ -370,9 +370,9 @@ protected:
           utl::getAttribute(child,"z",gz);
         this->getIntegrand()->setGravity(gx,gy,gz);
 
-        std::cout <<"\tGravitation vector: "<< gx <<" "<< gy;
-        if (Dim::dimension == 3) std::cout <<" "<< gz;
-        std::cout << std::endl;
+        IFEM::cout <<"\tGravitation vector: "<< gx <<" "<< gy;
+        if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
+        IFEM::cout << std::endl;
       }
 
       else if (!strcasecmp(child->Value(),"bodyforce")) {
@@ -382,11 +382,11 @@ protected:
         if (code == 0) utl::getAttribute(child,"code",code);
         if (child->FirstChild() && code > 0) {
           utl::getAttribute(child,"type",type,true);
-          std::cout <<"\tBodyforce code "<< code;
-          if (!type.empty()) std::cout <<" ("<< type <<")";
+          IFEM::cout <<"\tBodyforce code "<< code;
+          if (!type.empty()) IFEM::cout <<" ("<< type <<")";
           VecFunc* f = utl::parseVecFunc(child->FirstChild()->Value(),type);
           if (f) this->setVecProperty(code,Property::BODYLOAD,f);
-          std::cout << std::endl;
+          IFEM::cout << std::endl;
         }
       }
 
