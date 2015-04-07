@@ -20,6 +20,7 @@ class LocalSystem;
 class Material;
 class ElmNorm;
 class ElmMats;
+class TiXmlElement;
 
 
 /*!
@@ -42,6 +43,11 @@ protected:
 public:
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~Elasticity();
+
+  //! \brief Parses local coordinate system definition from a character string.
+  bool parseLocalSystem(const char* cline);
+  //! \brief Parses local coordinate system definition from an XML-element.
+  bool parseLocalSystem(const TiXmlElement* elem);
 
   //! \brief Prints out the problem definition to the given output stream.
   virtual void print(utl::LogStream& os) const;
