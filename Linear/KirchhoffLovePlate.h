@@ -215,9 +215,6 @@ public:
   //! \brief Empty destructor.
   virtual ~KirchhoffLovePlateNorm() {}
 
-  //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const { return Integrand::SECOND_DERIVATIVES; }
-
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
