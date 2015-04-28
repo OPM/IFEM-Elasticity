@@ -103,7 +103,7 @@ protected:
       elInt->setMaterial(&defaultMat);
     }
 
-    this->printProblem(IFEM::cout);
+    this->printProblem();
 
     if (!Dim::mySol) return;
 
@@ -168,7 +168,7 @@ protected:
     else if (!strncasecmp(keyWord,"ISOTROPIC",9))
     {
       nmat = atoi(keyWord+10);
-      std::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
+      IFEM::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
 
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
@@ -183,8 +183,8 @@ protected:
           mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
         else
           mVec.push_back(new LinIsotropic(E,nu,rho));
-        std::cout <<"\tMaterial code "<< code <<": "
-                  << E <<" "<< nu <<" "<< rho << std::endl;
+        IFEM::cout <<"\tMaterial code "<< code <<": "
+                   << E <<" "<< nu <<" "<< rho << std::endl;
       }
     }
 
@@ -193,9 +193,9 @@ protected:
       double gx = atof(strtok(keyWord+7," "));
       double gy = atof(strtok(NULL," "));
       double gz = Dim::dimension == 3 ? atof(strtok(NULL," ")) : 0.0;
-      std::cout <<"\nGravitation vector: " << gx <<" "<< gy;
-      if (Dim::dimension == 3) std::cout <<" "<< gz;
-      std::cout << std::endl;
+      IFEM::cout <<"\nGravitation vector: " << gx <<" "<< gy;
+      if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
+      IFEM::cout << std::endl;
       this->getIntegrand()->setGravity(gx,gy,gz);
     }
 
@@ -216,7 +216,7 @@ protected:
       press.ldim = Dim::dimension - 1;
 
       int npres = atoi(keyWord+8);
-      std::cout <<"\nNumber of pressures: "<< npres << std::endl;
+      IFEM::cout <<"\nNumber of pressures: "<< npres << std::endl;
       for (int i = 0; i < npres && (cline = utl::readLine(is)); i++)
       {
         press.pindx = 1+i;
@@ -236,7 +236,7 @@ protected:
 
         if (Dim::mySol && Dim::mySol->getStressSol())
         {
-          std::cout <<"\tTraction on P"<< press.patch
+          IFEM::cout <<"\tTraction on P"<< press.patch
                     << (Dim::dimension==3?" F":" E")
                     << (int)press.lindx << std::endl;
           Dim::myTracs[1+i] = new TractionField(*Dim::mySol->getStressSol());
@@ -245,7 +245,7 @@ protected:
         {
           int pdir = atoi(strtok(NULL," "));
           double p = atof(strtok(NULL," "));
-          std::cout <<"\tPressure on P"<< press.patch
+          IFEM::cout <<"\tPressure on P"<< press.patch
                     << (Dim::dimension==3?" F":" E")
                     << (int)press.lindx <<" direction "<< pdir <<": ";
           if ((cline = strtok(NULL," ")))
@@ -255,10 +255,10 @@ protected:
           }
           else
           {
-            std::cout << p;
+            IFEM::cout << p;
             Dim::myTracs[1+i] = new PressureField(p,pdir);
           }
-          std::cout << std::endl;
+          IFEM::cout << std::endl;
         }
 
         press.patch = pid;
@@ -269,7 +269,7 @@ protected:
     else if (!strncasecmp(keyWord,"MATERIAL",8))
     {
       nmat = atoi(keyWord+8);
-      std::cout <<"\nNumber of materials: "<< nmat << std::endl;
+      IFEM::cout <<"\nNumber of materials: "<< nmat << std::endl;
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
         double E   = atof(strtok(cline," "));
@@ -278,8 +278,8 @@ protected:
         while ((cline = strtok(NULL," ")))
           if (!strncasecmp(cline,"ALL",3))
           {
-            std::cout <<"\tMaterial for all patches: "
-                      << E <<" "<< nu <<" "<< rho << std::endl;
+            IFEM::cout <<"\tMaterial for all patches: "
+                       << E <<" "<< nu <<" "<< rho << std::endl;
             if (Dim::dimension == 2)
               mVec.push_back(new LinIsotropic(E,nu,rho,
                                               !planeStrain,axiSymmetry));
@@ -293,8 +293,8 @@ protected:
             if (pid < 0) return false;
             if (pid < 1) continue;
 
-            std::cout <<"\tMaterial for P"<< patch
-                      <<": "<< E <<" "<< nu <<" "<< rho << std::endl;
+            IFEM::cout <<"\tMaterial for P"<< patch
+                       <<": "<< E <<" "<< nu <<" "<< rho << std::endl;
             Dim::myProps.push_back(Property(Property::MATERIAL,
                                             mVec.size(),pid,3));
             if (Dim::dimension == 2)
@@ -312,14 +312,14 @@ protected:
     int npres = nConstPress + nLinearPress;
     if (npres > 0)
     {
-      std::cout <<"\nNumber of pressures: "<< npres << std::endl;
+      IFEM::cout <<"\nNumber of pressures: "<< npres << std::endl;
       for (int i = 0; i < npres && (cline = utl::readLine(is)); i++)
       {
         int code = atoi(strtok(cline," "));
         int pdir = atoi(strtok(NULL," "));
         double p = atof(strtok(NULL," "));
-        std::cout <<"\tPressure code "<< code <<" direction "<< pdir
-                  <<": "<< p << std::endl;
+        IFEM::cout <<"\tPressure code "<< code <<" direction "<< pdir
+                   <<": "<< p << std::endl;
 
         this->setPropertyType(code,Property::NEUMANN);
 

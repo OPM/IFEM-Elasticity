@@ -36,8 +36,8 @@ public:
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~KirchhoffLovePlate();
 
-  //! \brief Prints out the problem definition to the given output stream.
-  virtual void print(utl::LogStream& os) const;
+  //! \brief Prints out the problem definition to the log stream.
+  virtual void printLog() const;
 
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use

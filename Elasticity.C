@@ -23,6 +23,7 @@
 #include "Vec3Oper.h"
 #include "AnaSol.h"
 #include "VTF.h"
+#include "IFEM.h"
 #include <iomanip>
 
 #ifndef epsR
@@ -52,8 +53,10 @@ Elasticity::~Elasticity ()
 }
 
 
-void Elasticity::print (utl::LogStream& os) const
+void Elasticity::printLog () const
 {
+  utl::LogStream& os = IFEM::cout;
+
   if (axiSymmetry)
     os <<"Axial-symmetric Elasticity problem\n";
   os <<"Elasticity: "<< nsd <<"D, gravity =";
@@ -62,7 +65,7 @@ void Elasticity::print (utl::LogStream& os) const
   os << std::endl;
 
   if (material)
-    material->print(os);
+    material->printLog();
 }
 
 
@@ -601,8 +604,7 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
 }
 
 
-void Elasticity::printMaxVals (std::ostream& os,
-                               std::streamsize precision, size_t comp) const
+void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
 {
   size_t i1 = 1, i2 = maxVal.size();
   if (comp > i2)
@@ -610,6 +612,7 @@ void Elasticity::printMaxVals (std::ostream& os,
   else if (comp > 0)
     i1 = i2 = comp;
 
+  utl::LogStream& os = IFEM::cout;
   for (size_t i = i1; i <= i2; i++)
   {
     const char* name = this->getField2Name(i-1);
@@ -621,7 +624,7 @@ void Elasticity::printMaxVals (std::ostream& os,
     os << std::setw(flWidth) << maxVal[i-1].second;
     os.precision(oldPrec);
     os.flags(oldF);
-    std::cout <<"  X = "<< maxVal[i-1].first << std::endl;
+    os <<"  X = "<< maxVal[i-1].first << std::endl;
   }
 }
 

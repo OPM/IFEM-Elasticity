@@ -62,8 +62,8 @@ public:
   //! \brief Parses material parementers from an XML element.
   virtual void parse(const TiXmlElement* elem);
 
-  //! \brief Prints out material parameters to the given output stream.
-  virtual void print(utl::LogStream& os) const;
+  //! \brief Prints out material parameters to the log stream.
+  virtual void printLog() const;
 
   //! \brief Returns \e false if plane stress in 2D.
   virtual bool isPlaneStrain() const { return !planeStress; }

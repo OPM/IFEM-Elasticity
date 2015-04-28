@@ -14,7 +14,6 @@
 #ifndef _MATERIAL_BASE_H
 #define _MATERIAL_BASE_H
 
-#include "LogStream.h"
 #include "MatVec.h"
 
 class Vec3;
@@ -43,8 +42,8 @@ public:
   //! \brief Parses material parementers from an XML element.
   virtual void parse(const TiXmlElement*) {}
 
-  //! \brief Prints out material parameters to the given output stream.
-  virtual void print(utl::LogStream&) const {}
+  //! \brief Prints out material parameters to the log stream.
+  virtual void printLog() const {}
 
   //! \brief Returns \e false if plane stress in 2D.
   virtual bool isPlaneStrain() const { return true; }

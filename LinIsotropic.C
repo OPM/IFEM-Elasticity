@@ -103,15 +103,15 @@ void LinIsotropic::parse (const TiXmlElement* elem)
 }
 
 
-void LinIsotropic::print (utl::LogStream& os) const
+void LinIsotropic::printLog () const
 {
-  os <<"LinIsotropic: ";
+  IFEM::cout <<"LinIsotropic: ";
   if (axiSymmetry)
-    os <<"axial-symmetric, ";
+    IFEM::cout <<"axial-symmetric, ";
   else if (planeStress)
-    os <<"plane stress, ";
-  os <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
-     <<", alpha = "<< alpha << std::endl;
+    IFEM::cout <<"plane stress, ";
+  IFEM::cout <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
+             <<", alpha = "<< alpha << std::endl;
 }
 
 

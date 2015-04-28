@@ -53,15 +53,13 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
     double g = atof(strtok(keyWord+7," "));
     if (klp)
       klp->setGravity(g);
-    if (myPid == 0)
-      std::cout <<"\nGravitation constant: "<< g << std::endl;
+    IFEM::cout <<"\nGravitation constant: "<< g << std::endl;
   }
 
   else if (!strncasecmp(keyWord,"ISOTROPIC",9))
   {
     int nmat = atoi(keyWord+10);
-    if (myPid == 0)
-      std::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
+    IFEM::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
 
     for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
     {
@@ -75,9 +73,8 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
       double thk = (cline = strtok(NULL, " ")) ? atof(cline) : 0.0;
       mVec.push_back(new LinIsotropic(E,nu,rho,true));
       tVec.push_back(thk);
-      if (myPid == 0)
-	std::cout <<"\tMaterial code "<< code <<": "
-		  << E <<" "<< nu <<" "<< rho <<" "<< thk << std::endl;
+      IFEM::cout <<"\tMaterial code "<< code <<": "
+                 << E <<" "<< nu <<" "<< rho <<" "<< thk << std::endl;
     }
 
     if (!mVec.empty())
@@ -89,7 +86,7 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
   else if (!strncasecmp(keyWord,"POINTLOAD",9))
   {
     int nload = atoi(keyWord+9);
-    std::cout <<"\nNumber of point loads: "<< nload;
+    IFEM::cout <<"\nNumber of point loads: "<< nload;
 
     myLoads.resize(nload);
     for (int i = 0; i < nload && (cline = utl::readLine(is)); i++)
@@ -98,26 +95,25 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
       myLoads[i].xi[0] = atof(strtok(NULL," "));
       myLoads[i].xi[1] = atof(strtok(NULL," "));
       myLoads[i].pload = atof(strtok(NULL," "));
-      if (myPid == 0)
-	std::cout <<"\n\tPoint "<< i+1 <<": P"<< myLoads[i].patch
-		  <<" xi = "<< myLoads[i].xi[0] <<" "<< myLoads[i].xi[1]
-		  <<" load = "<< myLoads[i].pload;
+      IFEM::cout <<"\n\tPoint "<< i+1 <<": P"<< myLoads[i].patch
+                 <<" xi = "<< myLoads[i].xi[0] <<" "<< myLoads[i].xi[1]
+                 <<" load = "<< myLoads[i].pload;
     }
   }
 
   else if (!strncasecmp(keyWord,"PRESSURE",8))
   {
     int npres = atoi(keyWord+8);
-    std::cout <<"\nNumber of pressures: "<< npres << std::endl;
+    IFEM::cout <<"\nNumber of pressures: "<< npres << std::endl;
 
     for (int i = 0; i < npres && (cline = utl::readLine(is)); i++)
     {
       int code = atoi(strtok(cline," "));
       double p = atof(strtok(NULL," "));
-      std::cout <<"\tPressure code "<< code <<": ";
+      IFEM::cout <<"\tPressure code "<< code <<": ";
       cline = strtok(NULL," ");
       myScalars[code] = const_cast<RealFunc*>(utl::parseRealFunc(cline,p));
-      std::cout << std::endl;
+      IFEM::cout << std::endl;
       if (code > 0)
 	this->setPropertyType(code,Property::BODYLOAD);
     }
@@ -134,18 +130,18 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
       double E  = atof(strtok(NULL," "));
       double nu = atof(strtok(NULL," "));
       double pz = atof(strtok(NULL," "));
-      std::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
-		<<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
+      IFEM::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
+                 <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
       if ((cline = strtok(NULL," ")))
       {
 	double xi  = atof(cline);
 	double eta = atof(strtok(NULL," "));
-	std::cout <<" xi="<< xi <<" eta="<< eta;
+	IFEM::cout <<" xi="<< xi <<" eta="<< eta;
 	if ((cline = strtok(NULL," ")))
 	{
 	  double c = atof(cline);
 	  double d = atof(strtok(NULL," "));
-	  std::cout <<" c="<< c <<" d="<< d;
+	  IFEM::cout <<" c="<< c <<" d="<< d;
 	  if (!mySol)
 	    mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d);
 	}
@@ -157,7 +153,7 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
     }
     else if (!strncasecmp(cline,"EXPRESSION",10))
     {
-      std::cout <<"\nAnalytical solution: Expression"<< std::endl;
+      IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;
       int lines = (cline = strtok(NULL," ")) ? atoi(cline) : 0;
       if (!mySol)
 	mySol = new AnaSol(is,lines,false);
@@ -192,8 +188,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
       double g = 0.0;
       utl::getAttribute(child,"g",g);
       klp->setGravity(g);
-      if (myPid == 0)
-        std::cout <<"\nGravitation constant: "<< g << std::endl;
+      IFEM::cout <<"\nGravitation constant: "<< g << std::endl;
     }
 
     else if (!strcasecmp(child->Value(),"isotropic")) {
@@ -207,9 +202,8 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
 
       mVec.push_back(new LinIsotropic(E,nu,rho,true));
       tVec.push_back(thk);
-      if (myPid == 0)
-        std::cout <<"\tMaterial code "<< code <<": "
-                  << E <<" "<< nu <<" "<< rho <<" " << thk << std::endl;
+      IFEM::cout <<"\tMaterial code "<< code <<": "
+                 << E <<" "<< nu <<" "<< rho <<" " << thk << std::endl;
       klp->setMaterial(mVec.front());
       if (tVec.front() != 0.0)
         klp->setThickness(tVec.front());
@@ -223,10 +217,9 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         load.pload = atof(child->FirstChild()->Value());
         utl::getAttribute(child,"xi",load.xi[0]);
         utl::getAttribute(child,"eta",load.xi[1]);
-        if (myPid == 0)
-          std::cout <<"\n\tPoint: P"<< load.patch
-                    <<" xi = "<< load.xi[0] <<" "<< load.xi[1]
-                    <<" load = "<< load.pload;
+        IFEM::cout <<"\n\tPoint: P"<< load.patch
+                   <<" xi = "<< load.xi[0] <<" "<< load.xi[1]
+                   <<" load = "<< load.pload;
         myLoads.push_back(load);
       }
     }
@@ -239,8 +232,8 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
 
       if (child->FirstChild() && code > 0) {
         utl::getAttribute(child,"type",type,true);
-        std::cout <<"\tPressure code "<< code;
-        if (!type.empty()) std::cout <<" ("<< type <<")";
+        IFEM::cout <<"\tPressure code "<< code;
+        if (!type.empty()) IFEM::cout <<" ("<< type <<")";
         myScalars[code] = utl::parseRealFunc(child->FirstChild()->Value(),type);
         this->setPropertyType(code,Property::BODYLOAD);
       }
@@ -262,12 +255,12 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         utl::getAttribute(child,"pz",pz);
         utl::getAttribute(child,"xi",xi);
         utl::getAttribute(child,"eta",eta);
-        std::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
-                  <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
+        IFEM::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
+                   <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
         if (xi != 0.0 && eta != 0.0) {
-          std::cout <<" xi="<< xi <<" eta="<< eta;
+          IFEM::cout <<" xi="<< xi <<" eta="<< eta;
           if (c != 0.0 && d != 0.0) {
-            std::cout <<" c="<< c <<" d="<< d;
+            IFEM::cout <<" c="<< c <<" d="<< d;
             if (!mySol)
               mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d);
           }
@@ -278,7 +271,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
           mySol = new NavierPlate(a,b,t,E,nu,pz);
       }
       else if (type == "expression") {
-        std::cout <<"\nAnalytical solution: Expression"<< std::endl;
+        IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;
         if (!mySol)
           mySol = new AnaSol(child);
       }
@@ -323,7 +316,7 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 
 void SIMLinElKL::preprocessA ()
 {
-  this->printProblem(IFEM::cout);
+  this->printProblem();
 
   ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
   if (!plSol) return;
@@ -392,10 +385,10 @@ bool SIMLinElKL::preprocessB ()
     else
     {
       int ipt = 1 + (int)(p-myLoads.begin());
-      if (ipt == 1) std::cout <<'\n';
-      std::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
-		<<" (u,v)=("<< p->xi[0] <<','<< p->xi[1]
-		<<"), node #"<< p->inod <<", X = "<< p->X << std::endl;
+      if (ipt == 1) IFEM::cout <<'\n';
+      IFEM::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
+                 <<" (u,v)=("<< p->xi[0] <<','<< p->xi[1]
+                 <<"), node #"<< p->inod <<", X = "<< p->X << std::endl;
       p++;
     }
   }

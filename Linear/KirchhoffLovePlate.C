@@ -12,7 +12,7 @@
 //==============================================================================
 
 #include "KirchhoffLovePlate.h"
-#include "../LinIsotropic.h"
+#include "LinIsotropic.h"
 #include "FiniteElement.h"
 #include "Utilities.h"
 #include "ElmMats.h"
@@ -21,6 +21,7 @@
 #include "Vec3Oper.h"
 #include "AnaSol.h"
 #include "VTF.h"
+#include "IFEM.h"
 
 
 KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : nsd(n)
@@ -44,10 +45,10 @@ KirchhoffLovePlate::~KirchhoffLovePlate ()
 }
 
 
-void KirchhoffLovePlate::print (utl::LogStream& os) const
+void KirchhoffLovePlate::printLog () const
 {
-  os <<"KirchhoffLovePlate: thickness = "<< thickness
-     <<", gravity = "<< gravity << std::endl;
+  IFEM::cout <<"KirchhoffLovePlate: thickness = "<< thickness
+             <<", gravity = "<< gravity << std::endl;
 
   if (!material)
   {
@@ -55,7 +56,7 @@ void KirchhoffLovePlate::print (utl::LogStream& os) const
     const_cast<KirchhoffLovePlate*>(this)->material = &defaultMat;
   }
 
-  material->print(os);
+  material->printLog();
 }
 
 

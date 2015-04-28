@@ -49,8 +49,8 @@ public:
   //! \brief Parses local coordinate system definition from an XML-element.
   bool parseLocalSystem(const TiXmlElement* elem);
 
-  //! \brief Prints out the problem definition to the given output stream.
-  virtual void print(utl::LogStream& os) const;
+  //! \brief Prints out the problem definition to the log stream.
+  virtual void printLog() const;
 
   //! \brief Defines the traction field to use in Neumann boundary conditions.
   void setTraction(TractionFunc* tf) { tracFld = tf; }
@@ -174,12 +174,10 @@ public:
   //! \brief Returns a pointer to the max values for external update.
   std::vector<PointValue>* getMaxVals() const { return &maxVal; }
 
-  //! \brief Prints out the maximum secondary solution values.
-  //! \param os Output stream to write the values to
+  //! \brief Prints out the maximum secondary solution values to the log stream.
   //! \param[in] precision Number of digits after the decimal point
   //! \param[in] comp Which component to print (0 means all)
-  void printMaxVals(std::ostream& os, std::streamsize precision,
-                    size_t comp = 0) const;
+  void printMaxVals(std::streamsize precision, size_t comp = 0) const;
 
   using ElasticBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.
