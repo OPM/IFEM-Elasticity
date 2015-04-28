@@ -170,7 +170,7 @@ int main (int argc, char** argv)
 
   IFEM::cout <<"\n >>> IFEM Linear Elasticity solver <<<"
              <<"\n =====================================\n"
-	     <<"\n Executing command:\n";
+             <<"\n Executing command:\n";
   for (i = 0; i < argc; i++) IFEM::cout <<" "<< argv[i];
   IFEM::cout <<"\n\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
@@ -485,20 +485,19 @@ int main (int argc, char** argv)
     // Write (refined) model to g2-file
     std::ofstream osg(strcat(strtok(infile,"."),".g2"));
     osg.precision(18);
-    std::cout <<"\nWriting updated g2-file "<< infile << std::endl;
-    utl::LogStream log(osg);
-    model->dumpGeometry(log);
+    IFEM::cout <<"\nWriting updated g2-file "<< infile << std::endl;
+    model->dumpGeometry(osg);
     if (!displ.empty())
     {
       // Write solution (control point values) to ASCII files
       std::ofstream osd(strcat(strtok(infile,"."),".dis"));
       osd.precision(18);
-      std::cout <<"\nWriting deformation to file "<< infile << std::endl;
+      IFEM::cout <<"\nWriting deformation to file "<< infile << std::endl;
       utl::LogStream log(osd);
       model->dumpPrimSol(displ,log,false);
       std::ofstream oss(strcat(strtok(infile,"."),".sol"));
       oss.precision(18);
-      std::cout <<"\nWriting solution to file "<< infile << std::endl;
+      IFEM::cout <<"\nWriting solution to file "<< infile << std::endl;
       utl::LogStream log2(oss);
       model->dumpSolution(displ,log2);
     }
