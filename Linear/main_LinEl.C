@@ -94,6 +94,8 @@ int main (int argc, char** argv)
   bool KLp = false;
   bool oneD = false;
   bool isC1 = false;
+  bool noProj = false;
+  bool noError = false;
   char* infile = NULL;
 
   int myPid = IFEM::Init(argc,argv);
@@ -138,6 +140,10 @@ int main (int argc, char** argv)
       twoD = SIMLinEl2D::axiSymmetry = true;
     else if (!strncmp(argv[i],"-2D",3))
       twoD = true;
+    else if (!strncmp(argv[i],"-noP",4))
+      noProj = true;
+    else if (!strncmp(argv[i],"-noE",4))
+      noError = true;
     else if (!strncmp(argv[i],"-adap",5))
     {
       iop = 10;
@@ -237,15 +243,15 @@ int main (int argc, char** argv)
 
   // Set default projection method (tensor splines only)
   bool staticSol = iop + model->opt.eig%5 == 0 || iop == 10;
-  if (model->opt.discretization < ASM::Spline || !staticSol)
+  if (model->opt.discretization < ASM::Spline || !staticSol || noProj)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
   else if (model->opt.discretization == ASM::Spline && pOpt.empty() && !oneD)
     pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
   {
-    IFEM::cout <<"\n ** HDF5 output is available for spline discretization only."
-               <<" Deactivating...\n"<< std::endl;
+    IFEM::cout <<"\n ** HDF5 output is available for spline discretization only"
+               <<". Deactivating...\n"<< std::endl;
     model->opt.hdf5.clear();
   }
 
@@ -254,7 +260,7 @@ int main (int argc, char** argv)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
       prefix[i] = pit->second.c_str();
 
-  model->setQuadratureRule(model->opt.nGauss[0],true);
+  model->setQuadratureRule(model->opt.nGauss[0],true,true);
 
   Matrix eNorm, ssol;
   Vector displ, load;
@@ -331,10 +337,13 @@ int main (int argc, char** argv)
     if (!pOpt.empty())
       IFEM::cout << std::endl;
 
-    // Evaluate solution norms
-    model->setQuadratureRule(model->opt.nGauss[1]);
-    if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
-      return 4;
+    if (!noError)
+    {
+      // Evaluate solution norms
+      model->setQuadratureRule(model->opt.nGauss[1]);
+      if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
+        return 4;
+    }
 
     if (!gNorm.empty())
     {
