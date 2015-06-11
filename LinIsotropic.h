@@ -68,14 +68,16 @@ public:
   //! \brief Returns \e false if plane stress in 2D.
   virtual bool isPlaneStrain() const { return !planeStress; }
 
+  //! \brief Evaluates the stiffness at current point.
+  virtual double getStiffness(const Vec3& X) const;
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return rho; }
+  //! \brief Evaluates the heat capacity for given temperature.
+  virtual double getHeatCapacity(double T) const;
+  //! \brief Evaluates the thermal conductivity for given temperature.
+  virtual double getThermalConductivity(double T) const;
   //! \brief Evaluates the thermal expansion coefficient for given temperature.
   virtual double getThermalExpansion(double T) const;
-  //! \brief Evaluates the heat capacity at the current point
-  virtual double getHeatCapacity(double T) const;
-  //! \brief Evaluates the thermal conductivity at the current point
-  virtual double getThermalConductivity(double T) const;
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point
@@ -107,12 +109,12 @@ protected:
   double Emod;          //!< Young's modulus (constant)
   double nu;            //!< Poisson's ratio
   double rho;           //!< Mass density
+  ScalarFunc* Cpfunc;   //!< Specific heat capacity function
+  double heatcapacity;  //!< Specific heat capacity (constant)
   ScalarFunc* Afunc;    //!< Thermal expansion coefficient function
   double alpha;         //!< Thermal expansion coefficient (constant)
-  double heatcapacity;  //!< Specific heat capacity (constant)
-  ScalarFunc* Cpfunc;   //!< Specific heat capacity function
-  double conductivity;  //!< Thermal conductivity (constant)
   ScalarFunc* condFunc; //!< Thermal conductivity function
+  double conductivity;  //!< Thermal conductivity (constant)
   bool   planeStress;   //!< Plane stress/strain option for 2D problems
   bool   axiSymmetry;   //!< Axi-symmetric option
 };

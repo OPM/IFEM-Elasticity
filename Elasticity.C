@@ -44,6 +44,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
   tracFld = 0;
   fluxFld = 0;
   bodyFld = 0;
+  gamma = 1.0;
 }
 
 

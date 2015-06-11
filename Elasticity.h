@@ -64,6 +64,8 @@ public:
 
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
+  //! \brief Defines the numeric stabilization parameter.
+  void setStabilizationPrm(double gam) { gamma = gam; }
 
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
@@ -261,6 +263,7 @@ protected:
   unsigned short int nsd; //!< Number of space dimensions (1, 2 or 3)
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
   bool       axiSymmetry; //!< \e true if the problem is axi-symmetric
+  double           gamma; //!< Numeric stabilization parameter
 };
 
 

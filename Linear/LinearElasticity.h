@@ -58,7 +58,15 @@ public:
   //! \param[in] fe Finite element data of current integration point
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X) const;
+                       const Vec3& X) const;
+
+  //! \brief Evaluates the integrand at an element interface point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] X Cartesian coordinates of current integration point
+  //! \param[in] normal Interface normal vector at current integration point
+  virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
+                       const Vec3& X, const Vec3& normal) const;
 
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
@@ -66,7 +74,10 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X, const Vec3& normal) const;
+                       const Vec3& X, const Vec3& normal) const;
+
+  //! \brief Returns which integrand to be used.
+  virtual int getIntegrandType() const;
 
 protected:
   //! \brief Calculates integration point initial strain force contributions.
@@ -75,7 +86,7 @@ protected:
                                     const Vec3&, double) const { return true; }
 
 private:
-  mutable Vec3Vec* myItgPts;  //!< Global Gauss point coordinates
+  mutable Vec3Vec* myItgPts; //!< Global Gauss point coordinates
 };
 
 #endif

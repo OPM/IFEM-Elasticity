@@ -176,3 +176,79 @@ bool LinearElasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
 
   return true;
 }
+
+
+/*!
+  This method evaluates the stabilization term used in immersed boundary
+  simulations. According to Mats Larsons suggestion.
+*/
+
+bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
+                                const Vec3& X, const Vec3&) const
+{
+  if (!eKm)
+  {
+    std::cerr <<" *** LinearElasticity::evalInt: No material stiffness matrix."
+              << std::endl;
+    return false;
+  }
+  else if (axiSymmetry)
+  {
+    std::cerr <<" *** LinearElasticity::evalInt: Axi-symmetric problem!"
+              << std::endl;
+    return false;
+  }
+
+  int pdir = 0;
+  if (fe.xi == -1.0)
+    pdir = -1;
+  else if (fe.xi == 1.0)
+    pdir =  1;
+  else if (fe.eta == -1.0)
+    pdir = -2;
+  else if (fe.eta ==  1.0)
+    pdir =  2;
+  else if (fe.zeta == -1.0)
+    pdir = -3;
+  else if (fe.zeta ==  1.0)
+    pdir =  3;
+  else
+  {
+    std::cerr <<" *** LinearElasticity::evalInt: Not on an interface, "
+              <<" xi="<< fe.xi <<" eta="<< fe.eta <<" zeta="<< fe.zeta
+              << std::endl;
+    return false;
+  }
+
+  // Compute the element length in the parametric normal direction
+  // of the interface, assuming here a Cartesian grid, for now...
+  double h = 0.0;
+  if (pdir == 1 || pdir == -1)
+    h = (fe.XC[1] - fe.XC.front()).length();
+  else if (pdir == 2 || pdir == -2)
+    h = (fe.XC[2] - fe.XC.front()).length();
+  else
+    h = (fe.XC[4] - fe.XC.front()).length();
+
+  // Evaluate the stiffness at current point
+  double E = material->getStiffness(X)*gamma;
+
+  // Evaluate the stabilization constant
+  double hJW = pow(h,2*fe.p+1)*E*fe.detJxW;
+  if (pdir < 0) hJW = -hJW;
+
+  // Integrate the interface jump term
+  Matrix& EK = static_cast<ElmMats&>(elmInt).A[eKm-1];
+  for (size_t a = 1; a <= fe.N.size(); a++)
+    for (size_t b = 1; b <= fe.N.size(); b++)
+      for (unsigned short int i = 1; i <= nsd; i++)
+        EK(nsd*(a-1)+i,nsd*(b-1)+i) += hJW*fe.N(a)*fe.N(b);
+
+  return true;
+}
+
+
+int LinearElasticity::getIntegrandType () const
+{
+  return INTERFACE_TERMS | ELEMENT_CORNERS | NORMAL_DERIVS;
+}

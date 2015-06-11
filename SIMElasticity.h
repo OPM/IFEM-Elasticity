@@ -390,6 +390,13 @@ protected:
         }
       }
 
+      else if (!strcasecmp(child->Value(),"stabilization")) {
+        double gamma = 1.0;
+        utl::getAttribute(child,"gamma",gamma);
+        IFEM::cout <<"\tStabilization parameter "<< gamma << std::endl;
+        this->getIntegrand()->setStabilizationPrm(gamma);
+      }
+
       else
         this->Dim::parse(child);
 

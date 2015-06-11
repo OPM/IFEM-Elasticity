@@ -59,14 +59,16 @@ public:
   //! \brief Assigns a scalar field defining the material properties.
   virtual void assignScalarField(Field*, size_t = 0) {}
 
+  //! \brief Evaluates the stiffness at current point.
+  virtual double getStiffness(const Vec3&) const { return 1.0; }
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
+  //! \brief Evaluates the heat capacity for given temperature.
+  virtual double getHeatCapacity(double) const { return 1.0; }
+  //! \brief Evaluates the thermal conductivity for given temperature.
+  virtual double getThermalConductivity(double) const { return 1.0; }
   //! \brief Evaluates the thermal expansion coefficient for given temperature.
   virtual double getThermalExpansion(double) const { return 0.0; }
-  //! \brief Evaluates the heat capacity at the current point
-  virtual double getHeatCapacity(double T) const { return 1.0; }
-  //! \brief Evaluates the thermal conductivity at the current point
-  virtual double getThermalConductivity(double T) const { return 1.0; }
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point

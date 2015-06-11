@@ -23,36 +23,38 @@
 
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 {
-  // Default material properties - typical values for steel (SI units)
   Efunc = NULL;
   Efield = NULL;
+  Cpfunc = Afunc = condFunc = NULL;
+
+  // Default material properties - typical values for steel (SI units)
   Emod = 2.05e11;
   nu = 0.29;
   rho = 7.85e3;
-  Afunc = NULL;
   alpha = 1.2e-7;
-  Cpfunc = NULL;
-  heatcapacity = 1.0;
-  condFunc = NULL;
-  conductivity = 1.0;
+  heatcapacity = conductivity = 1.0;
 }
 
 
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
-  : Efunc(E), Efield(NULL), nu(v), rho(den), Afunc(NULL), alpha(1.2e-7),
-    heatcapacity(1.0), Cpfunc(NULL), conductivity(1.0), condFunc(NULL),
-    planeStress(ps), axiSymmetry(ax)
+  : Efunc(E), Efield(NULL), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
+  Cpfunc = Afunc = condFunc = NULL;
+
   Emod = -1.0; // Should not be referenced
+  alpha = 1.2e-7;
+  heatcapacity = conductivity = 1.0;
 }
 
 
 LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
-  : Efunc(NULL), Efield(E), nu(v), rho(den), Afunc(NULL), alpha(1.2e-7),
-    heatcapacity(1.0), Cpfunc(NULL), conductivity(1.0), condFunc(NULL),
-    planeStress(ps), axiSymmetry(ax)
+  : Efunc(NULL), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
+  Cpfunc = Afunc = condFunc = NULL;
+
   Emod = -1.0; // Should not be referenced
+  alpha = 1.2e-7;
+  heatcapacity = conductivity = 1.0;
 }
 
 
@@ -265,6 +267,12 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 }
 
 
+double LinIsotropic::getStiffness (const Vec3& X) const
+{
+  return Efunc ? (*Efunc)(X) : Emod;
+}
+
+
 double LinIsotropic::getThermalExpansion (double T) const
 {
   return Afunc ? (*Afunc)(T) : alpha;
@@ -277,7 +285,7 @@ double LinIsotropic::getHeatCapacity (double T) const
 }
 
 
-double LinIsotropic::getThermalConductivity(double T) const
+double LinIsotropic::getThermalConductivity (double T) const
 {
   return condFunc ? (*condFunc)(T) : conductivity;
 }
