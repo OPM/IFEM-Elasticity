@@ -33,8 +33,9 @@
 bool Elasticity::wantPrincipalStress = false;
 
 
-Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
+Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
 {
+  nsd = n;
   if (axiSymmetry) nsd = 2;
 
   nDF = axiSymmetry ? 3 : nsd;

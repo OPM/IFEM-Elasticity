@@ -106,12 +106,6 @@ public:
 	       const Matrix3D& d2NdX2, const Vec3& X,
 	       bool toLocal = false) const;
 
-  //! \brief Evaluates the analytical solution at an integration point.
-  //! \param[out] s The analytical stress resultant values at current point
-  //! \param[in] asol The analytical solution field
-  //! \param[in] X Cartesian coordinates of current point
-  virtual bool evalSol(Vector& s, const STensorFunc& asol, const Vec3& X) const;
-
   //! \brief Evaluates the pressure field (if any) at specified point.
   virtual double getPressure(const Vec3& X) const;
   //! \brief Returns whether an external load is defined.

@@ -364,14 +364,6 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
 }
 
 
-bool KirchhoffLovePlate::evalSol (Vector& s, const STensorFunc& asol,
-				  const Vec3& X) const
-{
-  s = asol(X);
-  return true;
-}
-
-
 size_t KirchhoffLovePlate::getNoFields (int fld) const
 {
   return fld < 2 ? 1 : nsd*(nsd+1)/2;

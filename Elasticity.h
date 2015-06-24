@@ -168,9 +168,6 @@ public:
   //! manually when leaving the scope of the pointer returned.
   virtual ForceBase* getForceIntegrand() const;
 
-  //! \brief Returns the number of spatial dimensions.
-  unsigned short int getNoSpaceDim() const { return nsd; }
-
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
   virtual size_t getNoFields(int fld = 2) const;
@@ -278,7 +275,6 @@ protected:
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values
 
-  unsigned short int nsd; //!< Number of space dimensions (1, 2 or 3)
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
   bool       axiSymmetry; //!< \e true if the problem is axi-symmetric
   double           gamma; //!< Numeric stabilization parameter
