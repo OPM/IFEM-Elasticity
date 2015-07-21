@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <geometry>
+    <patchfile>quartulus.g2</patchfile>
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="15" v="15"/>
+    <topologysets>
+      <set name="Bottom" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="Left" type="edge">
+        <item patch="1">2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <elasticity>
+    <boundaryconditions>
+      <dirichlet set="Left" comp="1"/>
+      <dirichlet set="Bottom" comp="2"/>
+    </boundaryconditions>
+    <isotropic E="2.0e11" nu="0.3" rho="7850.0" alpha="1.2e-5"/>
+    <initialtemperature>273.0</initialtemperature>
+    <temperature type="expression">
+      r=sqrt(x*x+y*y); a=0.03; b=0.04; Ti=373.0; To=293.0;
+      Ti+(To-Ti)*log(r/a)/log(b/a)
+    </temperature>
+    <anasol type="pipe"
+            Ri="0.03" Ro="0.04" Ti="373.0" To="293.0" Tref="273.0"
+            E="2.0e11" nu="0.3" alpha="1.2e-5"/>
+  </elasticity>
+
+</simulation>

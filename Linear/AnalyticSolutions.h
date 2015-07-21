@@ -145,6 +145,40 @@ private:
 
 
 /*!
+  \brief Analytic solution for a cylindric pipe with temperature gradient.
+*/
+
+class Pipe : public STensorFunc
+{
+public:
+  //! \brief Constructor with some default parameters.
+  Pipe(double Ri, double Ro, double Ti, double To, double T0 = 0.0,
+       double E = 2.1e11, double ny = 0.3, double alpha = 0.0,
+       bool use3D = false, bool usePolar = true);
+  //! \brief Empty destructor.
+  virtual ~Pipe() {}
+
+protected:
+  //! \brief Evaluates the analytic stress tensor at the point \a x.
+  virtual SymmTensor evaluate(const Vec3& x) const;
+
+private:
+  bool   is3D;     //!< Flag telling whether to return a 3D stress tensor or not
+  bool   polar;    //!< Flag telling whether to return stresses in polar axes
+  double C;        //!< Temperature-dependent constant
+  double Tin;      //!< Temperature on inner surface
+  double Tex;      //!< Temperature on outer surface
+  double T_ref;    //!< Reference temperature
+  double Ea;       //!< Temperature-proportional axial stress
+  double ra;       //!< Inner radius
+  double rb;       //!< Outer radius
+  double rba2m1;   //!< Radius-dependent parameter
+  double ln_rb_ra; //!< Radius-dependent parameter
+  double nu;       //!< Poisson's ratio
+};
+
+
+/*!
   \brief Base class for analytical thin plate solutions.
 */
 

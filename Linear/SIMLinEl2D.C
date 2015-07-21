@@ -160,6 +160,24 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       if (!mySol)
         mySol = new AnaSol(new CurvedBeam(u0,a,b,E));
     }
+    else if (type == "pipe") {
+      double Ri = 0.0, Ro = 0.0, Ti = 0.0, To = 0.0, T0 = 273.0;
+      double E = 0.0, nu = 0.0, alpha = 0.0;
+      bool polar = false;
+      utl::getAttribute(child,"Ri",Ri);
+      utl::getAttribute(child,"Ro",Ro);
+      utl::getAttribute(child,"Ti",Ti);
+      utl::getAttribute(child,"To",To);
+      utl::getAttribute(child,"Tref",T0);
+      utl::getAttribute(child,"E",E);
+      utl::getAttribute(child,"nu",nu);
+      utl::getAttribute(child,"alpha",alpha);
+      utl::getAttribute(child,"polar",polar);
+      IFEM::cout <<"\tAnalytical solution: Pipe Ri="<< Ri <<" Ro="<< Ro
+                 <<" Ti="<< Ti <<" To="<< To << std::endl;
+      if (!mySol)
+        mySol = new AnaSol(new Pipe(Ri,Ro,Ti,To,T0,E,nu,alpha,false,polar));
+    }
     else if (type == "expression") {
       IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
       if (!mySol)

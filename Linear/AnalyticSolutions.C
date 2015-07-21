@@ -70,13 +70,11 @@ SymmTensor Hole::evaluate (const Vec3& X) const
 */
 
 Lshape::Lshape (double r, double f, double P, bool use3D)
-  : a(r), F0(f), nu(P), is3D(use3D), T(use3D ? 3 : 2)
+  : a(r), F0(f), nu(P), is3D(use3D), T(2)
 {
   // Set up the local-to-global transformation tensor
   T(1,1) = T(2,2) = T(2,1) = -sqrt(0.5);
   T(1,2) = sqrt(0.5);
-
-  if (is3D) T(3,3) = 1.0;
 }
 
 
@@ -170,12 +168,63 @@ SymmTensor CurvedBeam::evaluate (const Vec3& X) const
   sigma(1,2) = PN*(   -r - c1 + c2)*ct;
 
   // Transform to Cartesian coordinates
-  Tensor T(is3D ? 3 : 2);
+  Tensor T(2);
   T(1,1) =  ct;
   T(2,1) =  st;
   T(1,2) = -st;
   T(2,2) =  ct;
-  if (is3D) T(3,3) = 1.0;
+
+  return sigma.transform(T);
+}
+
+
+/*!
+  \class Pipe
+
+  Expansion of a circular cylinder subjected to a temperature gradient
+  over the thickness.
+
+  Reference: SINTEF Report 2014: NEST Project. Isogeometric Finite Element
+  Solver For Thermal Stress Analysis. page 11.
+*/
+
+Pipe::Pipe (double Ri, double Ro, double Ti, double To, double T0,
+            double E, double ny, double alpha, bool use3D, bool usePolar)
+  : is3D(use3D), polar(usePolar), Tin(Ti), Tex(To), ra(Ri), rb(Ro), nu(ny)
+{
+  double r = rb/ra;
+  ln_rb_ra = log(r);
+  rba2m1   = r*r - 1.0;
+  C        = E*alpha*(Tex-Tin)*0.5/(1.0-nu*nu);
+  // Note: In the reference it is used (1-nu) in the denominator. I suspect
+  // that is a mis-print since we get matching results only when using (1-nu^2).
+  Ea    = E*alpha;
+  T_ref = T0;
+}
+
+
+SymmTensor Pipe::evaluate (const Vec3& X) const
+{
+  double r     = hypot(X.x,X.y);
+  double ln_rb = log(rb/r);
+  double rbr2  = (rb/r)*(rb/r);
+  double Temp  = Tin + (Tex-Tin)*log(r/ra)/ln_rb_ra;
+
+  // Stress tensor in polar coordinates
+  SymmTensor sigma(is3D ? 3 : 2, true);
+  sigma(1,1) = C*( ln_rb     /ln_rb_ra - (rbr2-1.0)/rba2m1);
+  sigma(2,2) = C*((ln_rb-1.0)/ln_rb_ra + (rbr2+1.0)/rba2m1);
+  sigma(3,3) = nu * (sigma(1,1)+sigma(2,2)) - Ea*(Temp-T_ref);
+  if (polar) return sigma;
+
+  // Local-to-global transformation
+  Tensor T(2);
+  T(1,1) =  X.x/r;
+  T(2,1) =  X.y/r;
+  T(1,2) = -T(2,1);
+  T(2,2) =  T(1,1);
+
+  // Transform to global Cartesian coordinates
   return sigma.transform(T);
 }
 
