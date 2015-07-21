@@ -305,6 +305,13 @@ protected:
       }
     }
 
+    else if (!strncasecmp(keyWord,"LOCAL_SYSTEM",12))
+    {
+      size_t i = 12;
+      while (i < strlen(keyWord) && isspace(keyWord[i])) i++;
+      this->getIntegrand()->parseLocalSystem(keyWord+i);
+    }
+
     else
       return this->Dim::parse(keyWord,is);
 
@@ -396,8 +403,14 @@ protected:
         this->getIntegrand()->setStabilizationPrm(gamma);
       }
 
+      else if (!strcasecmp(child->Value(),"localsystem"))
+        this->getIntegrand()->parseLocalSystem(child);
+
       else
+      {
+        this->getIntegrand()->parse(child);
         this->Dim::parse(child);
+      }
 
     if (!mVec.empty())
       this->getIntegrand()->setMaterial(mVec.front());

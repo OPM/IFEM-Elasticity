@@ -77,11 +77,6 @@ template<> bool SIMLinEl3D::parseDimSpecific (char* keyWord, std::istream& is)
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }
   }
-  else if (!strncasecmp(keyWord,"LOCAL_SYSTEM",12)) {
-    size_t i = 12;
-    while (i < strlen(keyWord) && isspace(keyWord[i])) i++;
-    return !this->getIntegrand()->parseLocalSystem(keyWord+i);
-  }
 
   return false;
 }
@@ -141,8 +136,6 @@ template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child)
       myTracs[code] = new TractionField(*mySol->getStressSol());
     }
   }
-  else if (!strcasecmp(child->Value(),"localsystem"))
-    return this->getIntegrand()->parseLocalSystem(child);
   else
     return false;
 
