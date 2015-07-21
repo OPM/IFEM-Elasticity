@@ -471,10 +471,10 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 			  const std::vector<int>& MNPC) const
 {
   // Extract element displacements
-  Vector eV;
+  Vectors eV(1);
   int ierr = 0;
   if (!primsol.empty() && !primsol.front().empty())
-    if ((ierr = utl::gather(MNPC,nsd,primsol.front(),eV)))
+    if ((ierr = utl::gather(MNPC,nsd,primsol.front(),eV.front())))
     {
       std::cerr <<" *** Elasticity::evalSol: Detected "<< ierr
 		<<" node numbers out of range."<< std::endl;
@@ -501,13 +501,18 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 }
 
 
-bool Elasticity::evalSol (Vector& s, const Vector& eV, const FiniteElement& fe,
+bool Elasticity::evalSol (Vector& s, const Vectors& eV, const FiniteElement& fe,
                           const Vec3& X, bool toLocal) const
 {
-  if (!eV.empty() && eV.size() != fe.dNdX.rows()*nsd)
+  if (eV.empty())
+  {
+    std::cerr <<" *** Elasticity::evalSol: No solutions vector."<< std::endl;
+    return false;
+  }
+  else if (!eV.front().empty() && eV.front().size() != fe.dNdX.rows()*nsd)
   {
     std::cerr <<" *** Elasticity::evalSol: Invalid displacement vector."
-	      <<"\n     size(eV) = "<< eV.size() <<"   size(dNdX) = "
+	      <<"\n     size(eV) = "<< eV.front().size() <<"   size(dNdX) = "
 	      << fe.dNdX.rows() <<","<< fe.dNdX.cols() << std::endl;
     return false;
   }
@@ -516,11 +521,11 @@ bool Elasticity::evalSol (Vector& s, const Vector& eV, const FiniteElement& fe,
   Matrix Bmat;
   Tensor dUdX(nDF);
   SymmTensor eps(nsd,axiSymmetry);
-  if (!this->kinematics(eV,fe.N,fe.dNdX,X.x,Bmat,dUdX,eps))
+  if (!this->kinematics(eV.front(),fe.N,fe.dNdX,X.x,Bmat,dUdX,eps))
     return false;
 
-  // Add strains due to temperature expansion
-  double epsT = this->getThermalStrain(eV,fe.N,X);
+  // Add strains due to temperature expansion, if any
+  double epsT = this->getThermalStrain(eV.back(),fe.N,X);
   if (epsT != 0.0) eps -= epsT;
 
   // Calculate the stress tensor through the constitutive relation
@@ -678,7 +683,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
   // Evaluate the finite element stress field
   Vector sigmah, sigma, error;
-  if (!problem.evalSol(sigmah,pnorm.vec.front(),fe,X))
+  if (!problem.evalSol(sigmah,pnorm.vec,fe,X))
     return false;
 
   bool planeStrain = sigmah.size() == 4 && Cinv.rows() == 3;
@@ -882,7 +887,7 @@ bool ElasticityForce::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
 
   // Numerical approximation of stress
   Vector stress;
-  problem.evalSol(stress,elmInt.vec.front(),fe,X);
+  problem.evalSol(stress,elmInt.vec,fe,X);
   SymmTensor sigmah(stress);
 
   // Finite element traction

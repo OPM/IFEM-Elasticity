@@ -102,12 +102,12 @@ public:
 
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress values at current point
-  //! \param[in] eV Element solution vector
+  //! \param[in] eV Element solution vectors
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
-  bool evalSol(Vector& s, const Vector& eV, const FiniteElement& fe,
-	       const Vec3& X, bool toLocal = false) const;
+  bool evalSol(Vector& s, const Vectors& eV, const FiniteElement& fe,
+               const Vec3& X, bool toLocal = false) const;
 
   //! \brief Evaluates the analytical solution at an integration point.
   //! \param[out] s The analytical stress values at current point
