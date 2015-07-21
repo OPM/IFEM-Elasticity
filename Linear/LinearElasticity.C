@@ -18,12 +18,44 @@
 #include "Tensor.h"
 #include "Vec3Oper.h"
 #include "VTF.h"
+#include "Functions.h"
+#include "Utilities.h"
+#include "tinyxml.h"
 
 
 LinearElasticity::LinearElasticity (unsigned short int n, bool axS, bool GPout)
   : Elasticity(n,axS)
 {
+  myTemp0 = myTemp = NULL;
   myItgPts = n == 2 && GPout ? new Vec3Vec() : NULL;
+}
+
+
+bool LinearElasticity::parse (const TiXmlElement* elem)
+{
+  bool initT = !strcasecmp(elem->Value(),"initialtemperature");
+  if (initT || !strcasecmp(elem->Value(),"temperature"))
+  {
+    std::string type;
+    utl::getAttribute(elem,"type",type,true);
+    const TiXmlNode* tval = elem->FirstChild();
+    if (tval)
+    {
+      if (initT)
+      {
+        std::cout <<"\tInitial temperature";
+        myTemp0 = utl::parseRealFunc(tval->Value(),type);
+      }
+      else
+      {
+        std::cout <<"\tTemperature";
+        myTemp = utl::parseRealFunc(tval->Value(),type);
+      }
+      std::cout << std::endl;
+    }
+  }
+
+  return true;
 }
 
 
@@ -251,4 +283,37 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 int LinearElasticity::getIntegrandType () const
 {
   return INTERFACE_TERMS | ELEMENT_CORNERS | NORMAL_DERIVS;
+}
+
+
+double LinearElasticity::getThermalStrain (const Vector&, const Vector&,
+                                           const Vec3& X) const
+{
+  if (!myTemp) return 0.0;
+
+  double T0 = myTemp0 ? (*myTemp0)(X) : 0.0;
+  double T = (*myTemp)(X);
+  return material->getThermalExpansion(T)*(T-T0);
+}
+
+
+bool LinearElasticity::formInitStrainForces (ElmMats& elMat, const Vector& N,
+                                             const Matrix& B, const Matrix& C,
+                                             const Vec3& X, double detJW) const
+{
+  if (!eS || !myTemp)
+    return true; // No temperature field
+
+  // Strains due to thermal expansion
+  SymmTensor eps(nsd,axiSymmetry);
+  eps = this->getThermalStrain(N,N,X)*detJW;
+
+  // Stresses due to thermal expansion
+  Vector sigma0;
+  if (!C.multiply(eps,sigma0))
+    return false;
+
+  // Integrate external forces due to thermal expansion
+  SymmTensor sigma(nsd,axiSymmetry); sigma = sigma0;
+  return B.multiply(sigma,elMat.b[eS-1],true,true); // ES += B^T*sigma0
 }

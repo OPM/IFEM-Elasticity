@@ -519,11 +519,17 @@ bool Elasticity::evalSol (Vector& s, const Vector& eV, const FiniteElement& fe,
   if (!this->kinematics(eV,fe.N,fe.dNdX,X.x,Bmat,dUdX,eps))
     return false;
 
+  // Add strains due to temperature expansion
+  double epsT = this->getThermalStrain(eV,fe.N,X);
+  if (epsT != 0.0) eps -= epsT;
+
   // Calculate the stress tensor through the constitutive relation
   Matrix Cmat;
   SymmTensor sigma(nsd, axiSymmetry || material->isPlaneStrain()); double U;
   if (!material->evaluate(Cmat,sigma,U,fe,X,dUdX,eps))
     return false;
+  else if (epsT != 0.0 && material->isPlaneStrain())
+    sigma(3,3) -= material->getStiffness(X)*epsT;
 
   // Congruence transformation to local coordinate system at current point
   if (toLocal && locSys) sigma.transform(locSys->getTmat(X));

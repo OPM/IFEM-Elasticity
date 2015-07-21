@@ -330,9 +330,9 @@ int main (int argc, char** argv)
     model->setMode(SIM::RECOVERY);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
       if (!model->project(ssol,displ,pit->first))
-	return 4;
+        return 4;
       else
-	projs[i] = ssol;
+        projs[i] = ssol;
 
     if (!pOpt.empty())
       IFEM::cout << std::endl;
@@ -348,7 +348,8 @@ int main (int argc, char** argv)
     if (!gNorm.empty())
     {
       IFEM::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< gNorm[0](1);
-      IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
+      if (gNorm[0](2) != 0.0)
+        IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
       if (model->haveAnaSol() && gNorm[0].size() >= 4)
         IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< gNorm[0](3)
                    <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< gNorm[0](4)
@@ -362,18 +363,14 @@ int main (int argc, char** argv)
         IFEM::cout <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2);
         IFEM::cout <<"\n- relative error (% of |u^r|) : "
                    << gNorm[j](2)/gNorm[j](1)*100.0;
+        if (j == 0) continue;
 
-        if (j == 0)
-          continue;
-
-	if (model->haveAnaSol())
-	{
+        if (model->haveAnaSol())
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< gNorm[j](5)
                      <<"\n- relative error (% of |u|)   : "
-                     << gNorm[j](5)/gNorm[0](3)*100.0;
-          IFEM::cout <<"\nEffectivity index             : "
+                     << gNorm[j](5)/gNorm[0](3)*100.0
+                     <<"\nEffectivity index             : "
                      << gNorm[j](2)/gNorm[0](4);
-	}
 
         IFEM::cout <<"\nL2-norm |s^r| =(s^r,s^r)^0.5         : "<< gNorm[j](3);
         IFEM::cout <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4);
@@ -458,30 +455,38 @@ int main (int argc, char** argv)
     if (!model->writeGlvBC(nBlock))
       return 8;
 
+    // Write temperature field, if specified
+    const RealFunc* temp;
+    const LinearElasticity* lelp;
+    if ((lelp = dynamic_cast<const LinearElasticity*>(model->getProblem())))
+      if ((temp = lelp->getTemperature()))
+        if (!model->writeGlvF(*temp,"Temperature",1,nBlock))
+          return 9;
+
     // Write load vector to VTF-file
     if (!model->writeGlvV(load,"Load vector",1,nBlock))
-      return 9;
+      return 10;
 
     // Write solution fields to VTF-file
     if (!model->writeGlvS(displ,1,nBlock))
-      return 10;
+      return 11;
 
     // Write projected solution fields to VTF-file
     size_t i = 0;
     int iBlk = 100;
     for (pit = pOpt.begin(); pit != pOpt.end(); pit++, i++, iBlk += 10)
       if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str()))
-	return 11;
+        return 12;
 
     // Write eigenmodes
     bool isFreq = model->opt.eig==3 || model->opt.eig==4 || model->opt.eig==6;
     for (it = modes.begin(); it != modes.end(); it++)
       if (!model->writeGlvM(*it,isFreq,nBlock))
-	return 12;
+        return 13;
 
     // Write element norms
     if (!model->writeGlvN(eNorm,1,nBlock,prefix))
-      return 13;
+      return 14;
 
     model->writeGlvStep(1);
   }
@@ -519,7 +524,7 @@ int main (int argc, char** argv)
       utl::LogStream log(ose);
       for (it = modes.begin(); it != modes.end(); it++)
       {
-	ose <<"# Eigenvector_"<< it->eigNo <<" Eigenvalue="<< it->eigVal <<"\n";
+        ose <<"# Eigenvector_"<< it->eigNo <<" Eigenvalue="<< it->eigVal <<"\n";
         model->dumpPrimSol(it->eigVec,log,false);
       }
     }

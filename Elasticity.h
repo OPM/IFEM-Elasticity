@@ -238,6 +238,10 @@ protected:
   bool formBmatrix(Matrix& Bmat, const Vector& N, const Matrix& dNdX,
 		   double r) const;
 
+  //! \brief Evaluates the thermal strain at current integration point.
+  virtual double getThermalStrain(const Vector&, const Vector&,
+                                  const Vec3&) const { return 0.0; }
+
 public:
   //! \brief Sets up the inverse constitutive matrix at current point.
   //! \param[out] Cinv \f$6\times6\f$-matrix (in 3D) or \f$3\times3\f$-matrix

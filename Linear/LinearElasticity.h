@@ -35,6 +35,9 @@ public:
   //! \brief Empty destructor.
   virtual ~LinearElasticity() {}
 
+  //! \brief Parses a data section from an XML element.
+  virtual bool parse(const TiXmlElement* elem);
+
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
@@ -79,11 +82,30 @@ public:
   //! \brief Returns which integrand to be used.
   virtual int getIntegrandType() const;
 
+  //! \brief Returns the initial temperature field.
+  const RealFunc* getInitialTemperature() const { return myTemp0; }
+  //! \brief Returns the stationary temperature field.
+  const RealFunc* getTemperature() const { return myTemp; }
+
 protected:
+  //! \brief Evaluates the thermal strain at current integration point.
+  //! \param[in] X Cartesian coordinates of current integration point
+  virtual double getThermalStrain(const Vector&, const Vector&,
+                                  const Vec3& X) const;
+
   //! \brief Calculates integration point initial strain force contributions.
-  virtual bool formInitStrainForces(ElmMats&, const Vector&,
-                                    const Matrix&, const Matrix&,
-                                    const Vec3&, double) const { return true; }
+  //! \param elMat Element matrices for current element
+  //! \param[in] N Basis function values at current point
+  //! \param[in] B Strain-displacement matrix
+  //! \param[in] C Constitutive matrix
+  //! \param[in] X Cartesian coordinates of current point
+  //! \param[in] detJW Jacobian determinant times integration point weight
+  virtual bool formInitStrainForces(ElmMats& elMat, const Vector& N,
+                                    const Matrix& B, const Matrix& C,
+                                    const Vec3& X, double detJW) const;
+
+  RealFunc* myTemp0; //!< Initial temperature field
+  RealFunc* myTemp;  //!< Explicit stationary temperature field
 
 private:
   mutable Vec3Vec* myItgPts; //!< Global Gauss point coordinates
