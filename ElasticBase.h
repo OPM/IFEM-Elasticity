@@ -68,6 +68,17 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual const char* getField1Name(size_t i, const char* prefix = NULL) const;
 
+  using IntegrandBase::finalizeElement;
+  //! \brief Finalizes the element matrices after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //!
+  //! \details This method is used to pass time step size parameters to the
+  //! integrand in case of a dynamics simulation, where it is needed to compute
+  //! the effective stiffness matrix used in the Newton iterations.
+  virtual bool finalizeElement(LocalIntegral& elmInt,
+                               const TimeDomain& time, size_t);
+
 protected:
   Vec3 gravity; //!< Gravitation vector
 

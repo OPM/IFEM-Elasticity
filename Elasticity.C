@@ -16,12 +16,11 @@
 #include "FiniteElement.h"
 #include "GenAlphaMats.h"
 #include "BDFMats.h"
-#include "TimeDomain.h"
 #include "ElmNorm.h"
-#include "Utilities.h"
+#include "AnaSol.h"
 #include "Tensor.h"
 #include "Vec3Oper.h"
-#include "AnaSol.h"
+#include "Utilities.h"
 #include "VTF.h"
 #include "IFEM.h"
 #include <iomanip>
@@ -39,11 +38,11 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
   nDF = axiSymmetry ? 3 : nsd;
   npv = nsd; // Number of primary unknowns per node
 
-  material = 0;
-  locSys = 0;
-  tracFld = 0;
-  fluxFld = 0;
-  bodyFld = 0;
+  material = NULL;
+  locSys = NULL;
+  tracFld = NULL;
+  fluxFld = NULL;
+  bodyFld = NULL;
   gamma = 1.0;
 }
 
@@ -449,16 +448,6 @@ bool Elasticity::formCinverse (Matrix& Cinv, const FiniteElement& fe,
 }
 
 
-bool Elasticity::finalizeElement (LocalIntegral& elmInt,
-                                  const TimeDomain& prm, size_t)
-{
-  if (m_mode == SIM::DYNAMIC)
-    static_cast<NewmarkMats&>(elmInt).setStepSize(prm.dt,prm.it);
-
-  return true;
-}
-
-
 bool Elasticity::evalSol (Vector& s, const MxFiniteElement& fe,
 			  const Vec3& X, const std::vector<int>& MNPC1,
 			  const std::vector<int>&) const
@@ -583,7 +572,7 @@ const char* Elasticity::getField1Name (size_t i, const char* prefix) const
 const char* Elasticity::getField2Name (size_t i, const char* prefix) const
 {
   size_t nStress = this->getNoFields(2);
-  if (i >= nStress) return 0;
+  if (i >= nStress) return NULL;
 
   static const char* r[4] = { "s_rr", "s_zz", "s_tt", "s_zr" };
   static const char* s[6] = { "s_xx", "s_yy", "s_zz", "s_xy", "s_yz", "s_xz" };
@@ -879,7 +868,6 @@ LocalIntegral* ElasticityForce::getLocalIntegral (size_t nen, size_t iEl,
 
 
 bool ElasticityForce::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
-			       const TimeDomain& time,
 			       const Vec3& X, const Vec3& normal) const
 {
   Elasticity& problem = static_cast<Elasticity&>(myProblem);

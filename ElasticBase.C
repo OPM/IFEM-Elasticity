@@ -12,6 +12,8 @@
 //==============================================================================
 
 #include "ElasticBase.h"
+#include "TimeDomain.h"
+#include "NewmarkMats.h"
 
 
 ElasticBase::ElasticBase ()
@@ -122,4 +124,14 @@ const char* ElasticBase::getField1Name (size_t i, const char* prefix) const
   name = prefix + std::string(" ") + s[i];
 
   return name.c_str();
+}
+
+
+bool ElasticBase::finalizeElement (LocalIntegral& elmInt,
+                                   const TimeDomain& time, size_t)
+{
+  if (m_mode == SIM::DYNAMIC)
+    static_cast<NewmarkMats&>(elmInt).setStepSize(time.dt,time.it);
+
+  return true;
 }

@@ -181,13 +181,6 @@ public:
   //! \param[in] comp Which component to print (0 means all)
   void printMaxVals(std::streamsize precision, size_t comp = 0) const;
 
-  using ElasticBase::finalizeElement;
-  //! \brief Finalizes the element matrices after the numerical integration.
-  //! \param elmInt The local integral object to receive the contributions
-  //! \param[in] prm Nonlinear solution algorithm parameters
-  virtual bool finalizeElement(LocalIntegral& elmInt,
-                               const TimeDomain& prm, size_t);
-
 protected:
   //! \brief Calculates some kinematic quantities at current point.
   //! \param[in] eV Element solution vector
@@ -305,8 +298,9 @@ public:
 
   using NormBase::finalizeElement;
   //! \brief Finalizes the element norms after the numerical integration.
-  //! \details This method is used to compute effectivity indices.
   //! \param elmInt The local integral object to receive the contributions
+  //!
+  //! \details This method is used to compute effectivity indices.
   virtual bool finalizeElement(LocalIntegral& elmInt);
 
   //! \brief Adds external energy terms to relevant norms.
@@ -359,11 +353,9 @@ public:
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
-  //! \param[in] time Parameters for nonlinear and time-dependent simulations
   //! \param[in] X Cartesian coordinates of current integration point
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
-                       const TimeDomain& time,
                        const Vec3& X, const Vec3& normal) const;
 
   //! \brief Returns the number of force components.
