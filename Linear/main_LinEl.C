@@ -199,10 +199,15 @@ int main (int argc, char** argv)
 
   // Create the simulation model
   SIMoutput* model;
-  if (KLp && oneD)
-    model = new SIMLinElBeamC1();
-  else if (oneD)
-    model = new SIMElasticBar();
+  if (oneD)
+  {
+    if (KLp)
+      model = new SIMLinElBeamC1();
+    else if (IFEM::getOptions().eig == 4 || IFEM::getOptions().eig == 6)
+      model = new SIMElasticDynBar();
+    else
+      model = new SIMElasticBar();
+  }
   else if (KLp)
     model = new SIMLinElKL();
   else if (twoD)
@@ -260,8 +265,6 @@ int main (int argc, char** argv)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
       prefix[i] = pit->second.c_str();
 
-  model->setQuadratureRule(model->opt.nGauss[0],true,true);
-
   Matrix eNorm, ssol;
   Vector displ, load;
   Vectors projs(pOpt.size()), gNorm;
@@ -315,8 +318,8 @@ int main (int argc, char** argv)
   case 5:
     // Static solution: Assemble [Km] and {R}
     model->setMode(SIM::STATIC);
-    model->initSystem(model->opt.solver,1,1);
-    model->setAssociatedRHS(0,0);
+    model->setQuadratureRule(model->opt.nGauss[0],true,true);
+    model->initSystem(model->opt.solver);
     if (!model->assembleSystem())
       return 2;
     else if (vizRHS)
@@ -399,6 +402,7 @@ int main (int argc, char** argv)
   case 2:
     // Assemble and solve the regular eigenvalue problem
     model->setMode(SIM::STIFF_ONLY);
+    model->setQuadratureRule(model->opt.nGauss[0],true,true);
     model->initSystem(model->opt.solver,1,0);
     if (!model->assembleSystem())
       return 5;
@@ -429,6 +433,7 @@ int main (int argc, char** argv)
   default:
     // Free vibration: Assemble [Km] and [M]
     model->setMode(SIM::VIBRATION);
+    model->setQuadratureRule(model->opt.nGauss[0],true,true);
     model->initSystem(model->opt.solver,2,0);
     if (!model->assembleSystem())
       return 5;
