@@ -31,9 +31,9 @@ KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : nsd(n)
   gravity = 0.0;
   thickness = 0.1;
 
-  material = 0;
-  locSys = 0;
-  presFld = 0;
+  material = NULL;
+  locSys = NULL;
+  presFld = NULL;
   eM = eK = 0;
   eS = 0;
 }
@@ -78,12 +78,6 @@ void KirchhoffLovePlate::setMode (SIM::SolutionMode mode)
       eS = 1;
       break;
 
-    case SIM::DYNAMIC:
-      eK = 1;
-      eM = 2;
-      eS = 1;
-      break;
-
     case SIM::VIBRATION:
       eK = 1;
       eM = 2;
@@ -91,10 +85,6 @@ void KirchhoffLovePlate::setMode (SIM::SolutionMode mode)
 
     case SIM::STIFF_ONLY:
       eK = 1;
-      break;
-
-    case SIM::MASS_ONLY:
-      eM = 1;
       break;
 
     case SIM::RHS_ONLY:
@@ -116,7 +106,7 @@ LocalIntegral* KirchhoffLovePlate::getLocalIntegral (size_t nen, size_t,
     case SIM::STATIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann?0:1,1);
+      result->resize(neumann ? 0 : 1, 1);
       break;
 
     case SIM::VIBRATION:
@@ -124,7 +114,6 @@ LocalIntegral* KirchhoffLovePlate::getLocalIntegral (size_t nen, size_t,
       break;
 
     case SIM::STIFF_ONLY:
-    case SIM::MASS_ONLY:
       result->resize(1,0);
       break;
 
@@ -404,7 +393,7 @@ const char* KirchhoffLovePlate::getField1Name (size_t,
 const char* KirchhoffLovePlate::getField2Name (size_t i,
 					       const char* prefix) const
 {
-  if (i >= 3) return 0;
+  if (i >= 3) return NULL;
 
   static const char* s[6] = { "m_xx", "m_yy", "m_xy" };
 

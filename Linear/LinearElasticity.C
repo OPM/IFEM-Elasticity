@@ -12,14 +12,14 @@
 //==============================================================================
 
 #include "LinearElasticity.h"
-#include "FiniteElement.h"
 #include "MaterialBase.h"
+#include "FiniteElement.h"
 #include "ElmMats.h"
 #include "Tensor.h"
 #include "Vec3Oper.h"
-#include "VTF.h"
 #include "Functions.h"
 #include "Utilities.h"
+#include "VTF.h"
 #include "tinyxml.h"
 
 
@@ -111,7 +111,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   SymmTensor eps(nsd,axiSymmetry), sigma(nsd,axiSymmetry);
 
   Matrix Bmat, Cmat;
-  if (eKm || eKg || iS)
+  if (eKm || eKg || iS || (eS && myTemp))
   {
     // Compute the strain-displacement matrix B from N, dNdX and r = X.x,
     // and evaluate the symmetric strain tensor if displacements are available

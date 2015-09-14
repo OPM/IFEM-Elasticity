@@ -65,6 +65,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 
     case SIM::MASS_ONLY:
       eM = 1;
+      eS = 1;
       break;
 
     case SIM::RHS_ONLY:

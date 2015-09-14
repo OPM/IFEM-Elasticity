@@ -220,7 +220,7 @@ public:
   //! \param[in] fe Finite element data of current integration point
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X) const;
+                       const Vec3& X) const;
 
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
@@ -228,9 +228,12 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X, const Vec3& normal) const;
+                       const Vec3& X, const Vec3& normal) const;
 
+  using NormBase::finalizeElement;
   //! \brief Finalizes the element norms after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  //!
   //! \details This method is used to compute effectivity indices.
   virtual bool finalizeElement(LocalIntegral& elmInt);
 
