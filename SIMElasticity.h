@@ -38,7 +38,7 @@ template<class Dim> class SIMElasticity : public Dim
 public:
   //! \brief Default constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,0,checkRHS)
+  SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,checkRHS)
   {
     aCode = 0;
   }
