@@ -72,6 +72,11 @@ public:
   //! \param[in] nBp Total number of boundary integration points
   virtual void initIntegration(size_t nGp, size_t nBp);
 
+  //! \brief Initializes the integrand for a new result point loop.
+  //! \param[in] lambda Load parameter
+  //! \param[in] prinDir If \e true, compute/store principal directions
+  virtual void initResultPoints(double lambda, bool prinDirs);
+
   //! \brief Returns a local integral container for the given element.
   //! \param[in] nen Number of nodes on element
   //! \param[in] neumann Whether or not we are assembling Neumann BC's
@@ -106,8 +111,9 @@ public:
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
+  //! \param[out] pdir Directions of the principal stresses (optional)
   bool evalSol(Vector& s, const Vectors& eV, const FiniteElement& fe,
-               const Vec3& X, bool toLocal = false) const;
+               const Vec3& X, bool toLocal = false, Vec3* pdir = NULL) const;
 
   //! \brief Evaluates the analytical solution at an integration point.
   //! \param[out] s The analytical stress values at current point
@@ -120,6 +126,12 @@ public:
   //! \param[in] N Basis function values at current point
   //! \return Primary solution vector at current point
   Vec3 evalSol(const Vector& eV, const Vector& N) const;
+
+  //! \brief Returns an evaluated principal direction vector field for plotting.
+  //! \param[out] pdir Principal direction vectors at each result point
+  //! \param[in] nPt Number of result points
+  //! \param[in] idx 1-based index of which direction vector to return
+  virtual bool getPrincipalDir(Matrix& pdir, size_t nPt, size_t idx) const;
 
   //! \brief Evaluates the boundary traction field (if any) at specified point.
   Vec3 getTraction(const Vec3& X, const Vec3& n) const;
@@ -235,6 +247,14 @@ protected:
   virtual double getThermalStrain(const Vector&, const Vector&,
                                   const Vec3&) const { return 0.0; }
 
+  //! \brief Evaluates the finite element (FE) solution at an integration point.
+  //! \param[out] s The FE stress values at current point
+  //! \param[in] eV Element solution vectors
+  //! \param[in] fe Finite element data at current point
+  //! \param[in] X Cartesian coordinates of current point
+  bool evalSol2(Vector& s, const Vectors& eV,
+                const FiniteElement& fe, const Vec3& X) const;
+
 public:
   //! \brief Sets up the inverse constitutive matrix at current point.
   //! \param[out] Cinv \f$6\times6\f$-matrix (in 3D) or \f$3\times3\f$-matrix
@@ -253,6 +273,7 @@ protected:
   TractionFunc* tracFld;  //!< Pointer to implicit boundary traction field
   VecFunc*      fluxFld;  //!< Pointer to explicit boundary traction field
   VecFunc*      bodyFld;  //!< Pointer to body force field
+  Vec3Vec*      pDirBuf;  //!< Principal stress directions buffer
 
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values
@@ -261,6 +282,9 @@ protected:
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
   bool       axiSymmetry; //!< \e true if the problem is axi-symmetric
   double           gamma; //!< Numeric stabilization parameter
+
+public:
+  static bool wantPrincipalStress; //!< Option for principal stress calculation
 };
 
 

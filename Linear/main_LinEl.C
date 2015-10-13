@@ -97,6 +97,7 @@ int main (int argc, char** argv)
   bool noProj = false;
   bool noError = false;
   char* infile = NULL;
+  Elasticity::wantPrincipalStress = true;
 
   int myPid = IFEM::Init(argc,argv);
 

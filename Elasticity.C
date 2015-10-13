@@ -30,6 +30,8 @@
 #define epsR 1.0e-16
 #endif
 
+bool Elasticity::wantPrincipalStress = false;
+
 
 Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
 {
@@ -43,6 +45,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
   tracFld = NULL;
   fluxFld = NULL;
   bodyFld = NULL;
+  pDirBuf = NULL;
   gamma = 1.0;
 }
 
@@ -50,6 +53,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : nsd(n), axiSymmetry(ax)
 Elasticity::~Elasticity ()
 {
   if (locSys) delete locSys;
+  if (pDirBuf) delete pDirBuf;
 }
 
 
@@ -166,6 +170,21 @@ void Elasticity::initIntegration (size_t, size_t nBp)
 {
   tracVal.clear();
   tracVal.resize(nBp,std::make_pair(Vec3(),Vec3()));
+}
+
+
+void Elasticity::initResultPoints (double, bool prinDir)
+{
+  if (wantPrincipalStress && prinDir)
+  {
+    if (!pDirBuf) pDirBuf = new Vec3Vec();
+    pDirBuf->clear();
+  }
+  else if (pDirBuf)
+  {
+    delete pDirBuf;
+    pDirBuf = NULL;
+  }
 }
 
 
@@ -470,9 +489,36 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
       return false;
     }
 
+  return this->evalSol2(s,eV,fe,X);
+}
+
+
+bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
+                           const FiniteElement& fe, const Vec3& X) const
+{
+  Vec3* pBuf = NULL;
+  if (pDirBuf)
+  {
+    // Store principal stress directions in the internal buffer
+    size_t ifirst = pDirBuf->size();
+    pDirBuf->resize(ifirst+2);
+    pBuf = pDirBuf->data() + ifirst;
+  }
+
   // Evaluate the stress tensor
-  if (!this->evalSol(s,eV,fe,X,true))
+  if (fe.detJxW == 0.0)
+  {
+    // Singular point, just return an empty vector for now
+    s.clear();
+    return true;
+  }
+  else if (!this->evalSol(s,eV,fe,X,true,pBuf))
     return false;
+#if SP_DEBUG > 2
+  else if (pBuf)
+    std::cout <<"Elasticity::evalSol2("<< X <<"): "
+	      <<" Pdir1 = "<< pBuf[0] <<", Pdir2 = "<< pBuf[1] << std::endl;
+#endif
 
   // Additional result variables?
   for (int i = 1; i <= material->getNoIntVariables(); i++)
@@ -491,7 +537,7 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 
 
 bool Elasticity::evalSol (Vector& s, const Vectors& eV, const FiniteElement& fe,
-                          const Vec3& X, bool toLocal) const
+                          const Vec3& X, bool toLocal, Vec3* pdir) const
 {
   if (eV.empty())
   {
@@ -522,14 +568,38 @@ bool Elasticity::evalSol (Vector& s, const Vectors& eV, const FiniteElement& fe,
   SymmTensor sigma(nsd, axiSymmetry || material->isPlaneStrain()); double U;
   if (!material->evaluate(Cmat,sigma,U,fe,X,dUdX,eps))
     return false;
-  else if (epsT != 0.0 && material->isPlaneStrain())
+  else if (epsT != 0.0 && nsd == 2 && material->isPlaneStrain())
     sigma(3,3) -= material->getStiffness(X)*epsT;
 
-  // Congruence transformation to local coordinate system at current point
-  if (toLocal && locSys) sigma.transform(locSys->getTmat(X));
+  Vec3 p;
+  bool havePval = false;
+  if (toLocal && wantPrincipalStress)
+  {
+    // Calculate principal stresses and associated direction vectors
+    if (sigma.size() == 4)
+    {
+      SymmTensor tmp(2); tmp = sigma; // discard the sigma_zz component
+      havePval = pdir ? tmp.principal(p,pdir,2) : tmp.principal(p);
+    }
+    else
+      havePval = pdir ? sigma.principal(p,pdir,2) : sigma.principal(p);
+
+    // Congruence transformation to local coordinate system at current point
+    if (locSys) sigma.transform(locSys->getTmat(X));
+  }
 
   s = sigma;
-  if (toLocal) s.push_back(sigma.vonMises());
+
+  if (toLocal)
+    s.push_back(sigma.vonMises());
+
+  if (havePval)
+  {
+    s.push_back(p.x);
+    s.push_back(p.y);
+    if (sigma.dim() == 3)
+      s.push_back(p.z);
+  }
 
   return true;
 }
@@ -539,7 +609,39 @@ bool Elasticity::evalSol (Vector& s, const STensorFunc& asol,
 			  const Vec3& X) const
 {
   s = asol(X);
-  s.push_back(SymmTensor(s).vonMises());
+  SymmTensor sigma(s);
+  s = sigma;
+  s.push_back(sigma.vonMises());
+
+  if (wantPrincipalStress)
+  {
+    Vec3 p;
+    sigma.principal(p);
+    s.resize(s.size()+material->getNoIntVariables());
+    s.push_back(p.x);
+    s.push_back(p.y);
+    if (nsd == 3)
+      s.push_back(p.z);
+  }
+  return true;
+}
+
+
+bool Elasticity::getPrincipalDir (Matrix& pdir, size_t nPt, size_t idx) const
+{
+  if (!pDirBuf || idx < 1 || idx > 2) return false;
+
+  if (pDirBuf->size() != nPt*2)
+  {
+    std::cerr <<" *** Elasticity::getPrincipalDir: Result point mismatch, nPt="
+              << nPt <<", pDirBuf->size()="<< pDirBuf->size() << std::endl;
+    return false;
+  }
+
+  pdir.resize(nsd,nPt);
+  for (size_t i = 0; i < nPt; i++)
+    pdir.fillColumn(1+i,(*pDirBuf)[2*i+idx-1].ptr());
+
   return true;
 }
 
@@ -547,11 +649,24 @@ bool Elasticity::evalSol (Vector& s, const STensorFunc& asol,
 size_t Elasticity::getNoFields (int fld) const
 {
   if (fld < 2)
-    return nsd;
-  else if (nsd == 2 && (axiSymmetry || material->isPlaneStrain()))
-    return 5 + material->getNoIntVariables();
-  else
-    return nsd*(nsd+1)/2 + 1 + material->getNoIntVariables();
+    return nsd; // Displacement components
+
+  size_t nf = nsd*(nsd+1)/2; // Symmetric stress tensor components
+  if (nsd == 2 && (axiSymmetry || material->isPlaneStrain()))
+    ++nf; // Include Hoop or normal stress
+
+  if (fld == 2)
+  {
+    // Include von Mises stress and internal variables
+    nf += 1 + material->getNoIntVariables();
+    if (wantPrincipalStress)
+      nf += nsd; // Include principal stress components
+  }
+
+#ifdef SP_DEBUG
+  std::cout <<"Elasticity::getNoFields: "<< nf << std::endl;
+#endif
+  return nf;
 }
 
 
@@ -571,8 +686,8 @@ const char* Elasticity::getField1Name (size_t i, const char* prefix) const
 
 const char* Elasticity::getField2Name (size_t i, const char* prefix) const
 {
-  size_t nStress = this->getNoFields(2);
-  if (i >= nStress) return NULL;
+  size_t nVars = this->getNoFields(2);
+  if (i >= nVars) return 0;
 
   static const char* r[4] = { "s_rr", "s_zz", "s_tt", "s_zr" };
   static const char* s[6] = { "s_xx", "s_yy", "s_zz", "s_xy", "s_yz", "s_xz" };
@@ -584,7 +699,7 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
     name.clear();
 
   // Number of components in the stress vector of this problem
-  nStress -= 1 + material->getNoIntVariables();
+  size_t nStress = this->getNoFields(3);
 
   if (nsd == 1)
     name += "Axial stress";
@@ -594,11 +709,17 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
     name += axiSymmetry ? r[i] : s[i];
   else if (i == nStress)
     name += "von Mises stress";
-  else
+  else if ((i -= nStress) <= material->getNoIntVariables())
   {
     static char varName[32];
-    material->getInternalVariable(i-nStress,varName);
+    material->getInternalVariable(i,varName);
     name += varName;
+  }
+  else if ((i -= material->getNoIntVariables()) <= nsd)
+  {
+    char pName[8] = "P0";
+    pName[1] += i;
+    name += pName;
   }
 
   return name.c_str();
@@ -614,18 +735,19 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
     i1 = i2 = comp;
 
   utl::LogStream& os = IFEM::cout;
-  for (size_t i = i1; i <= i2; i++)
+  for (size_t i = i1-1; i < i2; i++)
   {
-    const char* name = this->getField2Name(i-1);
+    if (maxVal[i].second == 0.0) continue; // no value
+    const char* name = this->getField2Name(i);
     os <<"  Max "<< name <<":";
     for (size_t j = strlen(name); j < 16; j++) std::cout <<' ';
     std::streamsize flWidth = 8 + precision;
     std::streamsize oldPrec = os.precision(precision);
     std::ios::fmtflags oldF = os.flags(std::ios::scientific | std::ios::right);
-    os << std::setw(flWidth) << maxVal[i-1].second;
+    os << std::setw(flWidth) << maxVal[i].second;
     os.precision(oldPrec);
     os.flags(oldF);
-    os <<"  X = "<< maxVal[i-1].first << std::endl;
+    os <<"  X = "<< maxVal[i].first << std::endl;
   }
 }
 
