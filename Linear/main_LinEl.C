@@ -351,14 +351,33 @@ int main (int argc, char** argv)
 
     if (!gNorm.empty())
     {
-      IFEM::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< gNorm[0](1);
-      if (gNorm[0](2) != 0.0)
-        IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< gNorm[0](2);
-      if (model->haveAnaSol() && gNorm[0].size() >= 4)
-        IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< gNorm[0](3)
-                   <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< gNorm[0](4)
-                   <<"\nExact relative error (%) : "
-                   << gNorm[0](4)/gNorm[0](3)*100.0;
+      const Vector& norm = gNorm.front();
+      if (oneD)
+      {
+        IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
+        if (norm.size() > 2)
+          IFEM::cout <<"\n           |u| = (u,u)^0.5         : "<< norm(2)
+                     <<"\n           |e| = (u^h-u,u^h-u)^0.5 : "<< norm(3);
+      }
+      else
+      {
+        IFEM::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< norm(1);
+        if (norm(2) != 0.0)
+          IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< norm(2);
+        if (model->haveAnaSol() && norm.size() >= 4)
+          IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< norm(3)
+                     <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
+                     <<"\nExact relative error (%) : "
+                     << norm(4)/norm(3)*100.0;
+        IFEM::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< norm(1);
+        if (norm(2) != 0.0)
+          IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< norm(2);
+        if (model->haveAnaSol() && norm.size() >= 4)
+          IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< norm(3)
+                     <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
+                     <<"\nExact relative error (%) : "
+                     << norm(4)/norm(3)*100.0;
+      }
       size_t j = 1;
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
       {
@@ -372,9 +391,9 @@ int main (int argc, char** argv)
         if (model->haveAnaSol())
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< gNorm[j](5)
                      <<"\n- relative error (% of |u|)   : "
-                     << gNorm[j](5)/gNorm[0](3)*100.0
+                     << gNorm[j](5)/norm(3)*100.0
                      <<"\nEffectivity index             : "
-                     << gNorm[j](2)/gNorm[0](4);
+                     << gNorm[j](2)/norm(4);
 
         IFEM::cout <<"\nL2-norm |s^r| =(s^r,s^r)^0.5         : "<< gNorm[j](3);
         IFEM::cout <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4);
