@@ -267,6 +267,31 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 }
 
 
+bool LinIsotropic::evaluate (double& lambda, double& mu,
+                             const FiniteElement& fe, const Vec3& X) const
+{
+  if (nu < 0.0 || nu >= 0.5)
+  {
+    std::cerr <<" *** LinIsotropic::evaluate: Poisson's ratio "<< nu
+              <<" out of range [0,0.5>."<< std::endl;
+    return false;
+  }
+
+  // Evaluate the scalar stiffness function or field, if defined
+  double E = Emod;
+  if (Efield)
+    E = Efield->valueFE(fe);
+  else if (Efunc)
+    E = (*Efunc)(X);
+
+  // Evaluate the Lame parameters
+  mu = 0.5*E/(1.0+nu);
+  lambda = mu*nu/(0.5-nu);
+
+  return true;
+}
+
+
 double LinIsotropic::getStiffness (const Vec3& X) const
 {
   return Efunc ? (*Efunc)(X) : Emod;

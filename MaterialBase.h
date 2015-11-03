@@ -92,6 +92,10 @@ public:
                         char iop = 1, const TimeDomain* prm = nullptr,
                         const Tensor* Fpf = nullptr) const = 0;
 
+  //! \brief Evaluates the Lame-parameters at an integration point.
+  virtual bool evaluate(double&, double&, const FiniteElement&,
+                        const Vec3&) const { return false; }
+
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
   //! \brief Returns an internal variable associated with the material model.

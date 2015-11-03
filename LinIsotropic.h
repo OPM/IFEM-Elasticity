@@ -97,6 +97,14 @@ public:
                         char iop = 1, const TimeDomain* = nullptr,
                         const Tensor* = nullptr) const;
 
+  //! \brief Evaluates the Lame-parameters at an integration point.
+  //! \param[out] lambda Lame's first parameter
+  //! \param[out] mu Lame's second parameter (shear modulus)
+  //! \param[in] fe Finite element quantities at current point
+  //! \param[in] X Cartesian coordinates of current point
+  virtual bool evaluate(double& lambda, double& mu,
+                        const FiniteElement& fe, const Vec3& X) const;
+
   //! \brief Returns the function, if any, describing the stiffness variation.
   const RealFunc* getEfunc() const { return Efunc; }
   //! \brief Returns the field, if any, describing the stiffness variation.
