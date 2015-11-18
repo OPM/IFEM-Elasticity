@@ -89,8 +89,8 @@ public:
   virtual bool evaluate(Matrix& C, SymmTensor& sigma, double& U,
                         const FiniteElement& fe, const Vec3& X,
                         const Tensor& F, const SymmTensor& eps,
-                        char iop = 1, const TimeDomain* prm = NULL,
-                        const Tensor* Fpf = NULL) const = 0;
+                        char iop = 1, const TimeDomain* prm = nullptr,
+                        const Tensor* Fpf = nullptr) const = 0;
 
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }

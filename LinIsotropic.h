@@ -38,8 +38,8 @@ public:
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
   LinIsotropic(double E, double v = 0.0, double densty = 0.0,
                bool ps = false, bool ax = false)
-    : Efunc(NULL), Efield(NULL), Emod(E), nu(v), rho(densty),
-      Afunc(NULL), alpha(0.0), planeStress(ps), axiSymmetry(ax) {}
+    : Efunc(nullptr), Efield(nullptr), Emod(E), nu(v), rho(densty),
+      Afunc(nullptr), alpha(0.0), planeStress(ps), axiSymmetry(ax) {}
   //! \brief Constructor initializing the material parameters.
   //! \param[in] E Young's modulus (spatial function)
   //! \param[in] v Poisson's ratio
@@ -94,8 +94,8 @@ public:
   virtual bool evaluate(Matrix& C, SymmTensor& sigma, double& U,
                         const FiniteElement& fe, const Vec3& X,
                         const Tensor&, const SymmTensor& eps,
-                        char iop = 1, const TimeDomain* = NULL,
-                        const Tensor* = NULL) const;
+                        char iop = 1, const TimeDomain* = nullptr,
+                        const Tensor* = nullptr) const;
 
   //! \brief Returns the function, if any, describing the stiffness variation.
   const RealFunc* getEfunc() const { return Efunc; }

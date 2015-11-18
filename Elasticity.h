@@ -113,7 +113,7 @@ public:
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
   //! \param[out] pdir Directions of the principal stresses (optional)
   bool evalSol(Vector& s, const Vectors& eV, const FiniteElement& fe,
-               const Vec3& X, bool toLocal = false, Vec3* pdir = NULL) const;
+               const Vec3& X, bool toLocal = false, Vec3* pdir = nullptr) const;
 
   //! \brief Evaluates the analytical solution at an integration point.
   //! \param[out] s The analytical stress values at current point

@@ -23,9 +23,9 @@
 
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 {
-  Efunc = NULL;
-  Efield = NULL;
-  Cpfunc = Afunc = condFunc = NULL;
+  Efunc = nullptr;
+  Efield = nullptr;
+  Cpfunc = Afunc = condFunc = nullptr;
 
   // Default material properties - typical values for steel (SI units)
   Emod = 2.05e11;
@@ -37,9 +37,9 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 
 
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
-  : Efunc(E), Efield(NULL), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(E), Efield(nullptr), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
-  Cpfunc = Afunc = condFunc = NULL;
+  Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
   alpha = 1.2e-7;
@@ -48,9 +48,9 @@ LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
 
 
 LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
-  : Efunc(NULL), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(nullptr), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
-  Cpfunc = Afunc = condFunc = NULL;
+  Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
   alpha = 1.2e-7;
@@ -73,7 +73,7 @@ void LinIsotropic::parse (const TiXmlElement* elem)
   if (utl::getAttribute(elem,"kappa",conductivity))
     IFEM::cout <<" "<< conductivity;
 
-  const TiXmlNode* aval = NULL;
+  const TiXmlNode* aval = nullptr;
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (!strcasecmp(child->Value(),"thermalexpansion"))

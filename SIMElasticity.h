@@ -75,10 +75,10 @@ public:
     Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
     if (elp)
     {
-      elp->setMaterial(NULL);
-      elp->setBodyForce(NULL);
-      elp->setTraction((VecFunc*)NULL);
-      elp->setTraction((TractionFunc*)NULL);
+      elp->setMaterial(nullptr);
+      elp->setBodyForce(nullptr);
+      elp->setTraction((VecFunc*)nullptr);
+      elp->setTraction((TractionFunc*)nullptr);
     }
 
     for (size_t i = 0; i < mVec.size(); i++)
@@ -144,7 +144,7 @@ public:
 
 protected:
   //! \brief Returns the actual integrand.
-  virtual Elasticity* getIntegrand() { return NULL; }
+  virtual Elasticity* getIntegrand() { return nullptr; }
 
   //! \brief Parses a dimension-specific data section from an input file.
   virtual bool parseDimSpecific(char*, std::istream&) { return false; }
@@ -156,7 +156,7 @@ protected:
   //! \param is The file stream to read from
   virtual bool parse(char* keyWord, std::istream& is)
   {
-    char* cline = NULL;
+    char* cline = nullptr;
     int nmat = 0;
     int nConstPress = 0;
     int nLinearPress = 0;
@@ -175,9 +175,9 @@ protected:
         if (code > 0)
           this->setPropertyType(code,Property::MATERIAL,mVec.size());
 
-        double E   = atof(strtok(NULL," "));
-        double nu  = atof(strtok(NULL," "));
-        double rho = atof(strtok(NULL," "));
+        double E   = atof(strtok(nullptr," "));
+        double nu  = atof(strtok(nullptr," "));
+        double rho = atof(strtok(nullptr," "));
         if (Dim::dimension == 2)
           mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
         else
@@ -190,8 +190,8 @@ protected:
     else if (!strncasecmp(keyWord,"GRAVITY",7))
     {
       double gx = atof(strtok(keyWord+7," "));
-      double gy = atof(strtok(NULL," "));
-      double gz = Dim::dimension == 3 ? atof(strtok(NULL," ")) : 0.0;
+      double gy = atof(strtok(nullptr," "));
+      double gz = Dim::dimension == 3 ? atof(strtok(nullptr," ")) : 0.0;
       IFEM::cout <<"\nGravitation vector: " << gx <<" "<< gy;
       if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
       IFEM::cout << std::endl;
@@ -225,7 +225,7 @@ protected:
         if (pid < 0) return false;
         if (pid < 1) continue;
 
-        press.lindx = atoi(strtok(NULL," "));
+        press.lindx = atoi(strtok(nullptr," "));
         if (press.lindx < 1 || press.lindx > 2*Dim::dimension)
         {
           std::cerr <<" *** SIMElasticity3D::parse: Invalid face index "
@@ -242,12 +242,12 @@ protected:
         }
         else
         {
-          int pdir = atoi(strtok(NULL," "));
-          double p = atof(strtok(NULL," "));
+          int pdir = atoi(strtok(nullptr," "));
+          double p = atof(strtok(nullptr," "));
           IFEM::cout <<"\tPressure on P"<< press.patch
                     << (Dim::dimension==3?" F":" E")
                     << (int)press.lindx <<" direction "<< pdir <<": ";
-          if ((cline = strtok(NULL," ")))
+          if ((cline = strtok(nullptr," ")))
           {
             const RealFunc* pf = utl::parseRealFunc(cline,p);
             Dim::myTracs[1+i] = new PressureField(pf,pdir);
@@ -272,9 +272,9 @@ protected:
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
         double E   = atof(strtok(cline," "));
-        double nu  = atof(strtok(NULL," "));
-        double rho = atof(strtok(NULL," "));
-        while ((cline = strtok(NULL," ")))
+        double nu  = atof(strtok(nullptr," "));
+        double rho = atof(strtok(nullptr," "));
+        while ((cline = strtok(nullptr," ")))
           if (!strncasecmp(cline,"ALL",3))
           {
             IFEM::cout <<"\tMaterial for all patches: "
@@ -322,8 +322,8 @@ protected:
       for (int i = 0; i < npres && (cline = utl::readLine(is)); i++)
       {
         int code = atoi(strtok(cline," "));
-        int pdir = atoi(strtok(NULL," "));
-        double p = atof(strtok(NULL," "));
+        int pdir = atoi(strtok(nullptr," "));
+        double p = atof(strtok(nullptr," "));
         IFEM::cout <<"\tPressure code "<< code <<" direction "<< pdir
                    <<": "<< p << std::endl;
 

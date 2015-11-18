@@ -166,7 +166,7 @@ bool Elasticity::parseLocalSystem (const char* cline)
 
 bool Elasticity::parseLocalSystem (const TiXmlElement* elem)
 {
-  if (elem->FirstChild() == NULL) return false;
+  if (elem->FirstChild() == nullptr) return false;
 
   // Caution: When running adaptively, the below will cause a small memory
   // leak because the coordinate system objects are only deleted by the

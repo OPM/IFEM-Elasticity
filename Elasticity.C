@@ -41,12 +41,12 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   nDF = axiSymmetry ? 3 : nsd;
   npv = nsd; // Number of primary unknowns per node
 
-  material = NULL;
-  locSys = NULL;
-  tracFld = NULL;
-  fluxFld = NULL;
-  bodyFld = NULL;
-  pDirBuf = NULL;
+  material = nullptr;
+  locSys = nullptr;
+  tracFld = nullptr;
+  fluxFld = nullptr;
+  bodyFld = nullptr;
+  pDirBuf = nullptr;
   gamma = 1.0;
 }
 
@@ -184,7 +184,7 @@ void Elasticity::initResultPoints (double, bool prinDir)
   else if (pDirBuf)
   {
     delete pDirBuf;
-    pDirBuf = NULL;
+    pDirBuf = nullptr;
   }
 }
 
@@ -497,7 +497,7 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
                            const FiniteElement& fe, const Vec3& X) const
 {
-  Vec3* pBuf = NULL;
+  Vec3* pBuf = nullptr;
   if (pDirBuf)
   {
     // Store principal stress directions in the internal buffer
@@ -523,7 +523,7 @@ bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
 
   // Additional result variables?
   for (int i = 1; i <= material->getNoIntVariables(); i++)
-    s.push_back(material->getInternalVariable(i,NULL,fe.iGP));
+    s.push_back(material->getInternalVariable(i,nullptr,fe.iGP));
 
   // Find the maximum values for each quantity. This block must be performed
   // serially on multi-threaded runs too, due to the update of the maxVal array

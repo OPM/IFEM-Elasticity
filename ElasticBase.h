@@ -66,7 +66,7 @@ public:
   //! \brief Returns the name of a primary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField1Name(size_t i, const char* prefix = NULL) const;
+  virtual std::string getField1Name(size_t i, const char* prefix = nullptr) const;
 
   using IntegrandBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.
