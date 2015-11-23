@@ -113,7 +113,7 @@ double ElasticBase::getIntegrationPrm (unsigned short int i) const
 }
 
 
-const char* ElasticBase::getField1Name (size_t i, const char* prefix) const
+std::string ElasticBase::getField1Name (size_t i, const char* prefix) const
 {
   if (i > 6 || i > npv) i = 6;
 
@@ -121,10 +121,7 @@ const char* ElasticBase::getField1Name (size_t i, const char* prefix) const
                               "displacement" };
   if (!prefix) return s[i];
 
-  static std::string name;
-  name = prefix + std::string(" ") + s[i];
-
-  return name.c_str();
+  return prefix + std::string(" ") + s[i];
 }
 
 

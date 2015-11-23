@@ -670,29 +670,26 @@ size_t Elasticity::getNoFields (int fld) const
 }
 
 
-const char* Elasticity::getField1Name (size_t i, const char* prefix) const
+std::string Elasticity::getField1Name (size_t i, const char* prefix) const
 {
   if (i > nsd) i = 4;
 
   static const char* s[5] = { "u_x", "u_y", "u_z", "u_r", "displacement" };
   if (!prefix) return s[i];
 
-  static std::string name;
-  name = prefix + std::string(" ") + s[axiSymmetry ? 3-i : i];
-
-  return name.c_str();
+  return prefix + std::string(" ") + s[axiSymmetry ? 3-i : i];
 }
 
 
-const char* Elasticity::getField2Name (size_t i, const char* prefix) const
+std::string Elasticity::getField2Name (size_t i, const char* prefix) const
 {
   size_t nVars = this->getNoFields(2);
-  if (i >= nVars) return 0;
+  if (i >= nVars) return "";
 
   static const char* r[4] = { "s_rr", "s_zz", "s_tt", "s_zr" };
   static const char* s[6] = { "s_xx", "s_yy", "s_zz", "s_xy", "s_yz", "s_xz" };
 
-  static std::string name;
+  std::string name;
   if (prefix)
     name = std::string(prefix) + " ";
   else
@@ -711,7 +708,7 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
     name += "von Mises stress";
   else if ((i -= nStress) <= material->getNoIntVariables())
   {
-    static char varName[32];
+    char varName[32];
     material->getInternalVariable(i,varName);
     name += varName;
   }
@@ -722,7 +719,7 @@ const char* Elasticity::getField2Name (size_t i, const char* prefix) const
     name += pName;
   }
 
-  return name.c_str();
+  return name;
 }
 
 
@@ -738,9 +735,9 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
   for (size_t i = i1-1; i < i2; i++)
   {
     if (maxVal[i].second == 0.0) continue; // no value
-    const char* name = this->getField2Name(i);
+    std::string name = this->getField2Name(i);
     os <<"  Max "<< name <<":";
-    for (size_t j = strlen(name); j < 16; j++) std::cout <<' ';
+    for (size_t j = name.size(); j < 16; j++) std::cout <<' ';
     std::streamsize flWidth = 8 + precision;
     std::streamsize oldPrec = os.precision(precision);
     std::ios::fmtflags oldF = os.flags(std::ios::scientific | std::ios::right);

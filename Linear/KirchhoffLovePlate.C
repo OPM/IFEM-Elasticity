@@ -378,26 +378,23 @@ size_t KirchhoffLovePlate::getNoFields (int fld) const
 }
 
 
-const char* KirchhoffLovePlate::getField1Name (size_t,
+std::string KirchhoffLovePlate::getField1Name (size_t,
 					       const char* prefix) const
 {
   if (!prefix) return "w";
 
-  static std::string name;
-  name = prefix + std::string(" w");
-
-  return name.c_str();
+  return prefix + std::string(" w");
 }
 
 
-const char* KirchhoffLovePlate::getField2Name (size_t i,
+std::string KirchhoffLovePlate::getField2Name (size_t i,
 					       const char* prefix) const
 {
   if (i >= 3) return NULL;
 
   static const char* s[6] = { "m_xx", "m_yy", "m_xy" };
 
-  static std::string name;
+  std::string name;
   if (prefix)
     name = std::string(prefix) + " ";
   else
@@ -405,7 +402,7 @@ const char* KirchhoffLovePlate::getField2Name (size_t i,
 
   name += s[i];
 
-  return name.c_str();
+  return name;
 }
 
 
