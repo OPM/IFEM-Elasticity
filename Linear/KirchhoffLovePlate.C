@@ -547,7 +547,7 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
 }
 
 
-const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
+std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
                                              const char* prefix) const
 {
   if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 4))
@@ -574,9 +574,5 @@ const char* KirchhoffLovePlateNorm::getName (size_t i, size_t j,
   if (!prefix)
     return s[j-1];
 
-  static std::string name;
-  name = prefix + std::string(" ");
-  name += s[j-1];
-
-  return name.c_str();
+  return prefix + std::string(" ") + s[j-1];
 }

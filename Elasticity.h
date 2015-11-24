@@ -341,7 +341,7 @@ public:
   //! \param[in] i The norm group (one-based index)
   //! \param[in] j The norm number (one-based index)
   //! \param[in] prefix Common prefix for all norm names
-  virtual const char* getName(size_t i, size_t j, const char* prefix) const;
+  virtual std::string getName(size_t i, size_t j, const char* prefix) const;
 
   //! \brief Returns whether a norm quantity stores element contributions.
   virtual bool hasElementContributions(size_t i, size_t j) const;

@@ -706,7 +706,7 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
     name += axiSymmetry ? r[i] : s[i];
   else if (i == nStress)
     name += "von Mises stress";
-  else if ((i -= nStress) <= material->getNoIntVariables())
+  else if ((int)(i -= nStress) <= material->getNoIntVariables())
   {
     char varName[32];
     material->getInternalVariable(i,varName);
@@ -929,7 +929,7 @@ size_t ElasticityNorm::getNoFields (int group) const
 }
 
 
-const char* ElasticityNorm::getName (size_t i, size_t j,
+std::string ElasticityNorm::getName (size_t i, size_t j,
                                      const char* prefix) const
 {
   if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 5))
@@ -958,11 +958,7 @@ const char* ElasticityNorm::getName (size_t i, size_t j,
   if (!prefix)
     return s[j-1];
 
-  static std::string name;
-  name = prefix + std::string(" ");
-  name += s[j-1];
-
-  return name.c_str();
+  return prefix + std::string(" ") + s[j-1];
 }
 
 
