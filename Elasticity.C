@@ -14,7 +14,7 @@
 #include "Elasticity.h"
 #include "MaterialBase.h"
 #include "FiniteElement.h"
-#include "GenAlphaMats.h"
+#include "HHTMats.h"
 #include "BDFMats.h"
 #include "ElmNorm.h"
 #include "AnaSol.h"
@@ -85,7 +85,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   else if (intPrm[3] > 0.0)
     result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
   else
-    result = new GenAlphaMats(intPrm[2],intPrm[0],intPrm[1]);
+    result = new HHTMats(intPrm[2],intPrm[0],intPrm[1],true);
 
   switch (m_mode)
   {
