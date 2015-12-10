@@ -35,9 +35,7 @@ bool Elasticity::wantPrincipalStress = false;
 
 Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
 {
-  nsd = n;
-  if (axiSymmetry) nsd = 2;
-
+  nsd = axiSymmetry ? 2 : n;
   nDF = axiSymmetry ? 3 : nsd;
   npv = nsd; // Number of primary unknowns per node
 
