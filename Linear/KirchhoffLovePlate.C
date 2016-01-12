@@ -526,16 +526,12 @@ void KirchhoffLovePlateNorm::addBoundaryTerms (Vectors& gNorm,
 
 size_t KirchhoffLovePlateNorm::getNoFields (int group) const
 {
-  size_t nf = 1;
   if (group < 1)
-    for (size_t i = 0; i < prjsol.size(); i++)
-      nf += prjsol.empty() ? 0 : 1;
+    return this->NormBase::getNoFields();
   else if (group == 1)
-    nf = anasol ? 4 : 2;
+    return anasol ? 4 : 2;
   else
-    nf = anasol ? 6 : 4;
-
-  return nf;
+    return anasol ? 6 : 4;
 }
 
 

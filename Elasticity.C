@@ -918,16 +918,12 @@ void ElasticityNorm::addBoundaryTerms (Vectors& gNorm, double energy) const
 
 size_t ElasticityNorm::getNoFields (int group) const
 {
-  size_t nf = 1;
   if (group < 1)
-    for (size_t i = 0; i < prjsol.size(); i++)
-      nf += prjsol.empty() ? 0 : 1;
+    return this->NormBase::getNoFields();
   else if (group == 1)
-    nf = anasol ? 5 : 3;
+    return anasol ? 5 : 3;
   else
-    nf = anasol ? 6 : 4;
-
-  return nf;
+    return anasol ? 6 : 4;
 }
 
 
