@@ -287,7 +287,8 @@ int main (int argc, char** argv)
     int results = DataExporter::PRIMARY |
                   DataExporter::NORMS   |
                   DataExporter::DISPLACEMENT;
-    if (pOpt.empty()) results |= DataExporter::SECONDARY;
+    if (pOpt.empty() && !model->opt.pSolOnly)
+      results |= DataExporter::SECONDARY;
 
     exporter = new DataExporter(true);
     if (staticSol)
