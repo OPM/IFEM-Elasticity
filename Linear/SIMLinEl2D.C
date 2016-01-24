@@ -14,8 +14,6 @@
 #include "SIMLinEl.h"
 #include "AnalyticSolutions.h"
 
-template<> bool SIMLinEl2D::GIpointsVTF = false;
-
 
 template<> bool SIMLinEl2D::parseDimSpecific (char* keyWord, std::istream& is)
 {

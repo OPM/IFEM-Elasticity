@@ -12,6 +12,8 @@
 //==============================================================================
 
 #include "SIMElasticity.h"
+#include "SIM2D.h"
 
 template<> bool SIMElasticity<SIM2D>::planeStrain = false;
 template<> bool SIMElasticity<SIM2D>::axiSymmetry = false;
+template<> bool SIMElasticity<SIM2D>::GIpointsVTF = false;

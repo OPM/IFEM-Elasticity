@@ -14,11 +14,10 @@
 #ifndef _SIM_ELASTICITY_H
 #define _SIM_ELASTICITY_H
 
-#include "SIM2D.h"
-#include "SIM3D.h"
-#include "Elasticity.h"
-#include "LinIsotropic.h"
 #include "IFEM.h"
+#include "LinearElasticity.h"
+#include "LinIsotropic.h"
+#include "Property.h"
 #include "TimeStep.h"
 #include "AnaSol.h"
 #include "Functions.h"
@@ -141,10 +140,21 @@ protected:
 public:
   static bool planeStrain; //!< Plane strain/stress option - 2D only
   static bool axiSymmetry; //!< Axisymmtry option - 2D only
+  static bool GIpointsVTF; //!< Gauss point output to VTF option - 2D only
 
 protected:
   //! \brief Returns the actual integrand.
-  virtual Elasticity* getIntegrand() { return nullptr; }
+  virtual Elasticity* getIntegrand()
+  {
+    if (!Dim::myProblem)
+    {
+      if (Dim::dimension == 2)
+	Dim::myProblem = new LinearElasticity(2,axiSymmetry,GIpointsVTF);
+      else
+	Dim::myProblem = new LinearElasticity(Dim::dimension);
+    }
+    return dynamic_cast<Elasticity*>(Dim::myProblem);
+  }
 
   //! \brief Parses a dimension-specific data section from an input file.
   virtual bool parseDimSpecific(char*, std::istream&) { return false; }

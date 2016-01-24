@@ -7,6 +7,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                       ${PROJECT_SOURCE_DIR}/../../../cmake/Modules)
 
 # Required packages
+set(IFEM_PRECONFIGURED ${IFEM_CONFIGURED})
 IF (NOT IFEM_CONFIGURED)
   FIND_PACKAGE(IFEM REQUIRED)
 ENDIF(NOT IFEM_CONFIGURED)
@@ -14,15 +15,19 @@ ENDIF(NOT IFEM_CONFIGURED)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${IFEM_CXX_FLAGS}")
 
 INCLUDE_DIRECTORIES(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
-                                     ${PROJECT_SOURCE_DIR}/../FiniteDeformation)
+                                     ${PROJECT_SOURCE_DIR}/../Beam)
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-FILE(GLOB LinEl_SRCS *.C ../*.C
-                     ../FiniteDeformation/SIMElasticBar.C
-                     ../FiniteDeformation/Elastic*.C)
+IF (NOT IFEM_PRECONFIGURED)
+  add_subdirectory(../ Elasticity.dir)
+  add_subdirectory(../Beam Beam.dir)
+ENDIF (NOT IFEM_PRECONFIGURED)
+
+FILE(GLOB LinEl_SRCS *.C)
+
 ADD_EXECUTABLE(LinEl ${LinEl_SRCS})
-TARGET_LINK_LIBRARIES(LinEl ${IFEM_LIBRARIES})
+TARGET_LINK_LIBRARIES(LinEl Beam Elasticity ${IFEM_LIBRARIES})
 
 # Installation
 INSTALL(TARGETS LinEl DESTINATION bin COMPONENT bin)
@@ -43,8 +48,8 @@ ELSE(IFEM_USE_PARALLEL_PETSC)
     IFEM_ADD_TEST(${TESTFILE} LinEl)
   ENDFOREACH()
 ENDIF(IFEM_USE_PARALLEL_PETSC)
-list(APPEND TEST_APPS LinEl)
 
+list(APPEND TEST_APPS LinEl)
 if(IFEM_COMMON_APP_BUILD)
   set(TEST_APPS ${TEST_APPS} PARENT_SCOPE)
 else()

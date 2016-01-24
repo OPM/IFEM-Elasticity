@@ -126,12 +126,12 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
       return false;
 
 #if INT_DEBUG > 3
-    std::cout <<"LinearElasticity::evalInt(X = "<< X <<")\n"
-              <<"Bmat ="<< Bmat <<"Cmat ="<< Cmat;
+    std::cout <<"LinearElasticity::evalInt(X = "<< X <<")\nBmat ="<< Bmat;
+    if (lHaveStrains) std::cout <<"eps =\n"<< eps;
 #if INT_DEBUG > 4
     if (lHaveStrains) std::cout <<"sigma =\n"<< sigma;
 #endif
-    std::cout << std::endl;
+    std::cout <<"Cmat ="<< Cmat << std::endl;
 #endif
   }
 

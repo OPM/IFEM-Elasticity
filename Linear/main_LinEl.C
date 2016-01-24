@@ -204,8 +204,6 @@ int main (int argc, char** argv)
   {
     if (KLp)
       model = new SIMLinElBeamC1();
-    else if (IFEM::getOptions().eig == 4 || IFEM::getOptions().eig == 6)
-      model = new SIMElasticDynBar();
     else
       model = new SIMElasticBar();
   }
