@@ -20,8 +20,9 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/../../Common/scripts/regtest.sh.in
                regtest.sh)
 
-FILE(GLOB LinEl_SRCS *.C;../*.C;../FiniteDeformation/SIMElasticBar.C;
-                     ../FiniteDeformation/ElasticB*.C)
+FILE(GLOB LinEl_SRCS *.C;../*.C;
+                     ../FiniteDeformation/SIMElasticBar.C;
+                     ../FiniteDeformation/Elastic*.C)
 ADD_EXECUTABLE(LinEl ${LinEl_SRCS})
 TARGET_LINK_LIBRARIES(LinEl ${IFEM_LIBRARIES})
 

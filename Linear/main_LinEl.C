@@ -65,9 +65,10 @@
   \arg -2D : Use two-parametric simulation driver (plane stress)
   \arg -2Dpstrain : Use two-parametric simulation driver (plane strain)
   \arg -2Daxisymm : Use two-parametric simulation driver (axi-symmetric solid)
-  \arg -KL : Use two-parametric simulation driver for Kirchhoff-Love plate
+  \arg -2DKL : Use two-parametric simulation driver for Kirchhoff-Love plate
   \arg -1D : Use one-parametric simulation driver for beam with rotational DOFs
-  \arg -1DC1 : Use one-parametric simulation driver for C1-continous beam
+  \arg -1DKL : Use one-parametric simulation driver for C1-continous beam
+  \arg -1DC1 : Use one-parametric simulation driver for C1-continous cable
   \arg -adap : Use adaptive simulation driver with LR-splines discretization
   \arg -DGL2 : Estimate error using discrete global L2 projection
   \arg -CGL2 : Estimate error using continuous global L2 projection
@@ -93,7 +94,7 @@ int main (int argc, char** argv)
   bool twoD = false;
   bool KLp = false;
   bool oneD = false;
-  bool Beam = false;
+  bool isC1 = false;
   char* infile = NULL;
 
   int myPid = IFEM::Init(argc,argv);
@@ -124,12 +125,14 @@ int main (int argc, char** argv)
       vizRHS = true;
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
-    else if (!strncmp(argv[i],"-1DC1",5))
-      oneD = Beam = true;
+    else if (!strcmp(argv[i],"-1DC1"))
+      oneD = isC1 = true;
+    else if (!strcmp(argv[i],"-1DKL"))
+      oneD = isC1 = KLp = true;
     else if (!strncmp(argv[i],"-1D",3))
       oneD = true;
-    else if (!strcmp(argv[i],"-KL"))
-      twoD = KLp = true;
+    else if (!strcmp(argv[i],"-2DKL"))
+      twoD = isC1 = KLp = true;
     else if (!strncmp(argv[i],"-2Dpstra",8))
       twoD = SIMLinEl2D::planeStrain = true;
     else if (!strncmp(argv[i],"-2Daxi",6))
@@ -150,20 +153,20 @@ int main (int argc, char** argv)
   if (!infile)
   {
     std::cout <<"usage: "<< argv[0]
-	      <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n      "
-	      <<" [-free] [-lag|-spec|-LR] [-1D[C1]|-2D[pstrain|axisymm]|-KL]"
-	      <<" [-adap[<i>]] [-nGauss <n>]\n       [-vtf <format>"
-	      <<" [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]] [-hdf5]\n"
-	      <<"       [-DGL2] [-CGL2] [-SCR] [-VDLSA] [-LSQ] [-QUASI]\n"
-	      <<"       [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>]]\n"
-	      <<"       [-ignore <p1> <p2> ...] [-fixDup]"
-	      <<" [-checkRHS] [-check] [-dumpASC]\n";
+              <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n"
+              <<"       [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL]]"
+              <<" [-nGauss <n>]\n       [-hdf5] [-vtf <format> [-nviz <nviz>]"
+              <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]]"
+              <<" [-DGL2] [-CGL2] [-SCR] [-VDLSA] [-LSQ] [-QUASI]\n      "
+              <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
+              <<"\n       [-ignore <p1> <p2> ...] [-fixDup]"
+              <<" [-checkRHS] [-check] [-dumpASC]\n";
     return 0;
   }
 
   if (iop == 10)
     IFEM::getOptions().discretization = ASM::LRSpline;
-  else if (KLp && IFEM::getOptions().discretization != ASM::LRSpline)
+  else if (isC1 && IFEM::getOptions().discretization != ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::SplineC1;
 
   if (myPid == 0)
@@ -219,10 +222,10 @@ int main (int argc, char** argv)
 
   // Create the simulation model
   SIMoutput* model;
-  if (Beam)
+  if (KLp && oneD)
     model = new SIMLinElBeamC1();
   else if (oneD)
-    model = new SIMElasticBar(6);
+    model = new SIMElasticBar();
   else if (KLp)
     model = new SIMLinElKL();
   else if (twoD)
