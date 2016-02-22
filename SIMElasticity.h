@@ -27,7 +27,7 @@
 
 /*!
   \brief Driver class for isogeometric FEM analysis of elasticity problems.
-  \details The class incapsulates data and methods for solving linear elasticity
+  \details The class incapsulates data and methods for solving elasticity
   problems using NURBS-based finite elements. It reimplements the parse methods
   and some property initialization methods of the parent class.
 */
@@ -52,6 +52,9 @@ public:
     for (size_t i = 0; i < mVec.size(); i++)
       delete mVec[i];
   }
+
+  //! \brief Returns the name of this simulator (for use in the HDF5 export).
+  virtual std::string getName() const { return "Elasticity"; }
 
   //! \brief Advances the time step one step forward.
   virtual bool advanceStep(TimeStep& tp)
@@ -149,9 +152,9 @@ protected:
     if (!Dim::myProblem)
     {
       if (Dim::dimension == 2)
-	Dim::myProblem = new LinearElasticity(2,axiSymmetry,GIpointsVTF);
+        Dim::myProblem = new LinearElasticity(2,axiSymmetry,GIpointsVTF);
       else
-	Dim::myProblem = new LinearElasticity(Dim::dimension);
+        Dim::myProblem = new LinearElasticity(Dim::dimension);
     }
     return dynamic_cast<Elasticity*>(Dim::myProblem);
   }
