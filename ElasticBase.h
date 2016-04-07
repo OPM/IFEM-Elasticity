@@ -66,7 +66,7 @@ public:
   //! \brief Returns the name of a primary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField1Name(size_t i, const char* prefix = nullptr) const;
+  virtual std::string getField1Name(size_t i, const char* prefix = 0) const;
 
   using IntegrandBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.
@@ -75,7 +75,7 @@ public:
   //!
   //! \details This method is used to pass time step size parameters to the
   //! integrand in case of a dynamics simulation, where it is needed to compute
-  //! the effective stiffness matrix used in the Newton iterations.
+  //! the effective stiffness/mass matrix used in the Newton iterations.
   virtual bool finalizeElement(LocalIntegral& elmInt,
                                const TimeDomain& time, size_t);
 

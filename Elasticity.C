@@ -467,14 +467,6 @@ bool Elasticity::formCinverse (Matrix& Cinv, const FiniteElement& fe,
 }
 
 
-bool Elasticity::evalSol (Vector& s, const MxFiniteElement& fe,
-			  const Vec3& X, const std::vector<int>& MNPC1,
-			  const std::vector<int>&) const
-{
-  return this->evalSol(s,fe,X,MNPC1);
-}
-
-
 bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 			  const std::vector<int>& MNPC) const
 {
