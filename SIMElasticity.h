@@ -16,13 +16,15 @@
 
 #include "IFEM.h"
 #include "LinearElasticity.h"
-#include "LinIsotropic.h"
+#include "MaterialBase.h"
 #include "Property.h"
 #include "TimeStep.h"
 #include "AnaSol.h"
 #include "Functions.h"
 #include "Utilities.h"
 #include "tinyxml.h"
+
+typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
 
 
 /*!
@@ -39,6 +41,7 @@ public:
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
   SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,checkRHS)
   {
+    myContext = "elasticity";
     aCode = 0;
   }
 
@@ -98,12 +101,7 @@ protected:
   //! derived from the analytical solution.
   virtual void preprocessA()
   {
-    Elasticity* elInt = this->getIntegrand();
-    if (mVec.empty()) {
-      static LinIsotropic defaultMat;
-      elInt->setMaterial(&defaultMat);
-    }
-
+    this->getIntegrand();
     this->printProblem();
 
     if (!Dim::mySol) return;
@@ -181,22 +179,18 @@ protected:
     {
       nmat = atoi(keyWord+10);
       IFEM::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
-
+      Elasticity* elInt = this->getIntegrand();
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
         int code = atoi(strtok(cline," "));
+        IFEM::cout <<"\tMaterial code "<< code <<": ";
         if (code > 0)
           this->setPropertyType(code,Property::MATERIAL,mVec.size());
-
-        double E   = atof(strtok(nullptr," "));
-        double nu  = atof(strtok(nullptr," "));
-        double rho = atof(strtok(nullptr," "));
         if (Dim::dimension == 2)
-          mVec.push_back(new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry));
+          mVec.push_back(elInt->parseMatProp((char*)nullptr,planeStrain));
         else
-          mVec.push_back(new LinIsotropic(E,nu,rho));
-        IFEM::cout <<"\tMaterial code "<< code <<": "
-                   << E <<" "<< nu <<" "<< rho << std::endl;
+          mVec.push_back(elInt->parseMatProp((char*)nullptr));
+        IFEM::cout << std::endl;
       }
     }
 
@@ -282,22 +276,18 @@ protected:
     {
       nmat = atoi(keyWord+8);
       IFEM::cout <<"\nNumber of materials: "<< nmat << std::endl;
+      Elasticity* elInt = this->getIntegrand();
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
-        double E   = atof(strtok(cline," "));
-        double nu  = atof(strtok(nullptr," "));
-        double rho = atof(strtok(nullptr," "));
+        IFEM::cout <<"\tMaterial data: ";
+        if (Dim::dimension == 2)
+          mVec.push_back(elInt->parseMatProp(cline,planeStrain));
+        else
+          mVec.push_back(elInt->parseMatProp(cline));
+
         while ((cline = strtok(nullptr," ")))
           if (!strncasecmp(cline,"ALL",3))
-          {
-            IFEM::cout <<"\tMaterial for all patches: "
-                       << E <<" "<< nu <<" "<< rho << std::endl;
-            if (Dim::dimension == 2)
-              mVec.push_back(new LinIsotropic(E,nu,rho,
-                                              !planeStrain,axiSymmetry));
-            else
-              mVec.push_back(new LinIsotropic(E,nu,rho));
-          }
+            IFEM::cout <<" (for all patches)"<< std::endl;
           else
           {
             int patch = atoi(cline);
@@ -305,15 +295,9 @@ protected:
             if (pid < 0) return false;
             if (pid < 1) continue;
 
-            IFEM::cout <<"\tMaterial for P"<< patch
-                       <<": "<< E <<" "<< nu <<" "<< rho << std::endl;
+            IFEM::cout <<" (for P"<< patch <<")"<< std::endl;
             Dim::myProps.push_back(Property(Property::MATERIAL,
-                                            mVec.size(),pid,3));
-            if (Dim::dimension == 2)
-              mVec.push_back(new LinIsotropic(E,nu,rho,
-                                              !planeStrain,axiSymmetry));
-            else
-              mVec.push_back(new LinIsotropic(E,nu,rho));
+                                            mVec.size()-1,pid,3));
           }
       }
     }
@@ -352,9 +336,6 @@ protected:
       }
     }
 
-    if (nmat > 0 && !mVec.empty())
-      this->getIntegrand()->setMaterial(mVec.front());
-
     return true;
   }
 
@@ -362,8 +343,7 @@ protected:
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem)
   {
-    if (strcasecmp(elem->Value(),"elasticity") &&
-        strcasecmp(elem->Value(),"thermoelasticity"))
+    if (strcasecmp(elem->Value(),myContext.c_str()))
       return this->Dim::parse(elem);
 
     const TiXmlElement* child = elem->FirstChildElement();
@@ -375,23 +355,9 @@ protected:
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";
         if (Dim::dimension == 2)
-          mVec.push_back(new LinIsotropic(!planeStrain,axiSymmetry));
+          mVec.push_back(this->getIntegrand()->parseMatProp(child,planeStrain));
         else
-          mVec.push_back(new LinIsotropic(false,false));
-        mVec.back()->parse(child);
-      }
-
-      else if (!strcasecmp(child->Value(),"gravity")) {
-        double gx = 0.0, gy = 0.0, gz = 0.0;
-        utl::getAttribute(child,"x",gx);
-        utl::getAttribute(child,"y",gy);
-        if (Dim::dimension == 3)
-          utl::getAttribute(child,"z",gz);
-        this->getIntegrand()->setGravity(gx,gy,gz);
-
-        IFEM::cout <<"\tGravitation vector: "<< gx <<" "<< gy;
-        if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
-        IFEM::cout << std::endl;
+          mVec.push_back(this->getIntegrand()->parseMatProp(child));
       }
 
       else if (!strcasecmp(child->Value(),"bodyforce")) {
@@ -409,24 +375,8 @@ protected:
         }
       }
 
-      else if (!strcasecmp(child->Value(),"stabilization")) {
-        double gamma = 1.0;
-        utl::getAttribute(child,"gamma",gamma);
-        IFEM::cout <<"\tStabilization parameter "<< gamma << std::endl;
-        this->getIntegrand()->setStabilizationPrm(gamma);
-      }
-
-      else if (!strcasecmp(child->Value(),"localsystem"))
-        this->getIntegrand()->parseLocalSystem(child);
-
-      else
-      {
-        this->getIntegrand()->parse(child);
+      else if (!this->getIntegrand()->parse(child))
         this->Dim::parse(child);
-      }
-
-    if (!mVec.empty())
-      this->getIntegrand()->setMaterial(mVec.front());
 
     return true;
   }
@@ -476,7 +426,8 @@ protected:
   }
 
 protected:
-  std::vector<Material*> mVec; //!< Material data
+  MaterialVec mVec;      //!< Material data
+  std::string myContext; //!< XML-tag to search for problem inputs within
 
 private:
   int aCode; //!< Analytical BC code (used by destructor)

@@ -12,7 +12,7 @@
 //==============================================================================
 
 #include "Elasticity.h"
-#include "MaterialBase.h"
+#include "LinIsotropic.h"
 #include "FiniteElement.h"
 #include "HHTMats.h"
 #include "BDFMats.h"
@@ -23,6 +23,7 @@
 #include "Utilities.h"
 #include "VTF.h"
 #include "IFEM.h"
+#include "tinyxml.h"
 #include <iomanip>
 
 #ifndef epsR
@@ -39,12 +40,16 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   nDF = axiSymmetry ? 3 : nsd;
   npv = nsd; // Number of primary unknowns per node
 
-  material = nullptr;
-  locSys = nullptr;
+  // Assign default material properties, in case of no user-input
+  static LinIsotropic defaultMat;
+  material = &defaultMat;
+
+  locSys  = nullptr;
   tracFld = nullptr;
   fluxFld = nullptr;
   bodyFld = nullptr;
   pDirBuf = nullptr;
+
   gamma = 1.0;
 }
 
@@ -53,6 +58,53 @@ Elasticity::~Elasticity ()
 {
   if (locSys) delete locSys;
   if (pDirBuf) delete pDirBuf;
+}
+
+
+bool Elasticity::parse (const TiXmlElement* elem)
+{
+  if (!strcasecmp(elem->Value(),"gravity"))
+  {
+    utl::getAttribute(elem,"x",gravity.x);
+    utl::getAttribute(elem,"y",gravity.y);
+    IFEM::cout <<"\tGravitation vector: "<< gravity.x <<" "<< gravity.y;
+    if (nsd == 3)
+    {
+      utl::getAttribute(elem,"z",gravity.z);
+      IFEM::cout <<" "<< gravity.z;
+    }
+    IFEM::cout << std::endl;
+  }
+  else if (!strcasecmp(elem->Value(),"stabilization"))
+  {
+    utl::getAttribute(elem,"gamma",gamma);
+    IFEM::cout <<"\tStabilization parameter "<< gamma << std::endl;
+  }
+  else if (!strcasecmp(elem->Value(),"localsystem"))
+    this->parseLocalSystem(elem);
+  else
+    return false;
+
+  return true;
+}
+
+
+Material* Elasticity::parseMatProp (char* cline, bool planeStrain)
+{
+  double E   = atof(strtok(cline," "));
+  double nu  = atof(strtok(nullptr," "));
+  double rho = atof(strtok(nullptr," "));
+  IFEM::cout << E <<" "<< nu <<" "<< rho << std::endl;
+  material = new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry);
+  return material;
+}
+
+
+Material* Elasticity::parseMatProp (const TiXmlElement* elem, bool planeStrain)
+{
+  material = new LinIsotropic(!planeStrain,axiSymmetry);
+  material->parse(elem);
+  return material;
 }
 
 
@@ -67,8 +119,7 @@ void Elasticity::printLog () const
     os <<" "<< gravity[d];
   os << std::endl;
 
-  if (material)
-    material->printLog();
+  material->printLog();
 }
 
 
@@ -159,8 +210,7 @@ bool Elasticity::haveLoads () const
 
   for (unsigned short int i = 0; i < nsd; i++)
     if (gravity[i] != 0.0)
-      if (material)
-	return material->getMassDensity(Vec3()) != 0.0;
+      return material->getMassDensity(Vec3()) != 0.0;
 
   return false;
 }
@@ -723,13 +773,14 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
   else if (comp > 0)
     i1 = i2 = comp;
 
+  std::string blank(":                ");
   utl::LogStream& os = IFEM::cout;
   for (size_t i = i1-1; i < i2; i++)
   {
     if (maxVal[i].second == 0.0) continue; // no value
     std::string name = this->getField2Name(i);
-    os <<"  Max "<< name <<":";
-    for (size_t j = name.size(); j < 16; j++) std::cout <<' ';
+    os <<"  Max "<< name
+       << blank.substr(0, name.size() < 16 ? 17-name.size() : 1);
     std::streamsize flWidth = 8 + precision;
     std::streamsize oldPrec = os.precision(precision);
     std::ios::fmtflags oldF = os.flags(std::ios::scientific | std::ios::right);
