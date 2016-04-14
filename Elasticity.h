@@ -44,10 +44,19 @@ public:
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~Elasticity();
 
+  //! \brief Parses material properties from a character string.
+  virtual Material* parseMatProp(char* cline, bool planeStrain = true);
+  //! \brief Parses material properties from an XML-element.
+  virtual Material* parseMatProp(const TiXmlElement* elem,
+                                 bool planeStrain = true);
+
   //! \brief Parses local coordinate system definition from a character string.
   bool parseLocalSystem(const char* cline);
   //! \brief Parses local coordinate system definition from an XML-element.
   bool parseLocalSystem(const TiXmlElement* elem);
+
+  //! \brief Parses a data section from an XML-element.
+  virtual bool parse(const TiXmlElement* elem);
 
   //! \brief Prints out the problem definition to the log stream.
   virtual void printLog() const;
@@ -60,12 +69,9 @@ public:
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
 
   //! \brief Defines the material properties.
-  virtual void setMaterial(Material* mat) { material = mat; }
-
+  void setMaterial(Material* mat) { material = mat; }
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
-  //! \brief Defines the numeric stabilization parameter.
-  void setStabilizationPrm(double gam) { gamma = gam; }
 
   using ElasticBase::initIntegration;
   //! \brief Initializes the integrand with the number of integration points.
@@ -75,7 +81,7 @@ public:
 
   //! \brief Initializes the integrand for a new result point loop.
   //! \param[in] lambda Load parameter
-  //! \param[in] prinDir If \e true, compute/store principal directions
+  //! \param[in] prinDirs If \e true, compute/store principal directions
   virtual void initResultPoints(double lambda, bool prinDirs);
 
   using ElasticBase::getLocalIntegral;

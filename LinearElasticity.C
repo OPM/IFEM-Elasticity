@@ -20,6 +20,7 @@
 #include "Functions.h"
 #include "Utilities.h"
 #include "VTF.h"
+#include "IFEM.h"
 #include "tinyxml.h"
 
 
@@ -34,26 +35,25 @@ LinearElasticity::LinearElasticity (unsigned short int n, bool axS, bool GPout)
 bool LinearElasticity::parse (const TiXmlElement* elem)
 {
   bool initT = !strcasecmp(elem->Value(),"initialtemperature");
-  if (initT || !strcasecmp(elem->Value(),"temperature"))
+  if (!initT && strcasecmp(elem->Value(),"temperature"))
+    return this->Elasticity::parse(elem);
+
+  std::string type;
+  utl::getAttribute(elem,"type",type,true);
+  const TiXmlNode* tval = elem->FirstChild();
+  if (!tval) return true;
+
+  if (initT)
   {
-    std::string type;
-    utl::getAttribute(elem,"type",type,true);
-    const TiXmlNode* tval = elem->FirstChild();
-    if (tval)
-    {
-      if (initT)
-      {
-        std::cout <<"\tInitial temperature";
-        myTemp0 = utl::parseRealFunc(tval->Value(),type);
-      }
-      else
-      {
-        std::cout <<"\tTemperature";
-        myTemp = utl::parseRealFunc(tval->Value(),type);
-      }
-      std::cout << std::endl;
-    }
+    IFEM::cout <<"\tInitial temperature";
+    myTemp0 = utl::parseRealFunc(tval->Value(),type);
   }
+  else
+  {
+    IFEM::cout <<"\tTemperature";
+    myTemp = utl::parseRealFunc(tval->Value(),type);
+  }
+  IFEM::cout << std::endl;
 
   return true;
 }
