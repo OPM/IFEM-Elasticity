@@ -182,43 +182,6 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 }
 
 
-bool LinearElasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
-                                const Vec3& X, const Vec3& normal) const
-{
-  if (!tracFld && !fluxFld)
-  {
-    std::cerr <<" *** LinearElasticity::evalBou: No tractions."<< std::endl;
-    return false;
-  }
-  else if (!eS)
-  {
-    std::cerr <<" *** LinearElasticity::evalBou: No load vector."<< std::endl;
-    return false;
-  }
-
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
-  // Evaluate the surface traction
-  Vec3 T = this->getTraction(X,normal);
-
-  // Store traction value for visualization
-  if (fe.iGP < tracVal.size() && !T.isZero())
-  {
-    tracVal[fe.iGP].first = X;
-    tracVal[fe.iGP].second += T;
-  }
-
-  // Integrate the force vector
-  Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
-  for (size_t a = 1; a <= fe.N.size(); a++)
-    for (unsigned short int i = 1; i <= nsd; i++)
-      ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
-
-  return true;
-}
-
-
 /*!
   This method evaluates the stabilization term used in immersed boundary
   simulations. According to Mats Larsons suggestion.
