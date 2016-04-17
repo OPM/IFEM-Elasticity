@@ -28,7 +28,7 @@ class TiXmlElement;
   \details Implements common features for linear and nonlinear elasticity
   problems. This class is used for continuum problems only (2D and 3D domains
   with the same number of unknowns per node as the number of space dimensions.
-  None of the \a evalInt and \a evalBou methods are implemented by this class.
+  Note that the \a evalInt method is not implemented by this class.
   Thus, it is regarded as an abstract base class with a protected constructor.
 */
 
@@ -93,6 +93,14 @@ public:
 
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return true; }
+
+  //! \brief Evaluates the integrand at a boundary point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] X Cartesian coordinates of current integration point
+  //! \param[in] normal Boundary normal vector at current integration point
+  virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
+                       const Vec3& X, const Vec3& normal) const;
 
   using ElasticBase::evalSol;
   //! \brief Evaluates the secondary solution at a result point.
@@ -251,6 +259,9 @@ protected:
   bool evalSol2(Vector& s, const Vectors& eV,
                 const FiniteElement& fe, const Vec3& X) const;
 
+  //! \brief Performs pull-back of traction (interface for nonlinear problems).
+  virtual bool pullBackTraction(Vec3&) const { return true; }
+
 public:
   //! \brief Sets up the inverse constitutive matrix at current point.
   //! \param[out] Cinv \f$6\times6\f$-matrix (in 3D) or \f$3\times3\f$-matrix
@@ -261,6 +272,9 @@ public:
 
   //! \brief Returns \e true if this is an axial-symmetric problem.
   bool isAxiSymmetric() const { return axiSymmetry; }
+
+  //! \brief Returns the tensile energy array (interface for fracture problems).
+  virtual const RealArray* getTensileEnergy() const { return nullptr; }
 
 protected:
   // Physical properties

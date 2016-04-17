@@ -20,8 +20,8 @@
 /*!
   \brief Class representing the integrand of the linear elasticity problem.
   \details Most methods of this class are inherited form the base class.
-  Only the \a evalInt and \a evalBou methods, which are specific for linear
-  elasticity problems (and not used in nonlinear problems) are implemented here.
+  Only the \a evalInt method, which is specific for linear elasticity problems
+  (and not used in nonlinear problems) is implemented here.
 */
 
 class LinearElasticity : public Elasticity
@@ -69,14 +69,6 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   //! \param[in] normal Interface normal vector at current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
-                       const Vec3& X, const Vec3& normal) const;
-
-  //! \brief Evaluates the integrand at a boundary point.
-  //! \param elmInt The local integral object to receive the contributions
-  //! \param[in] fe Finite element data of current integration point
-  //! \param[in] X Cartesian coordinates of current integration point
-  //! \param[in] normal Boundary normal vector at current integration point
-  virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X, const Vec3& normal) const;
 
   //! \brief Returns which integrand to be used.

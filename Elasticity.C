@@ -498,6 +498,47 @@ void Elasticity::formBodyForce (Vector& ES, const Vector& N,
 }
 
 
+bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
+                          const Vec3& X, const Vec3& normal) const
+{
+  if (!tracFld && !fluxFld)
+  {
+    std::cerr <<" *** Elasticity::evalBou: No tractions."<< std::endl;
+    return false;
+  }
+  else if (!eS)
+  {
+    std::cerr <<" *** Elasticity::evalBou: No load vector."<< std::endl;
+    return false;
+  }
+
+  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
+  const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
+
+  // Evaluate the surface traction
+  Vec3 T = this->getTraction(X,normal);
+
+  // Store traction value for visualization
+  if (fe.iGP < tracVal.size() && !T.isZero())
+  {
+    tracVal[fe.iGP].first = X;
+    tracVal[fe.iGP].second += T;
+  }
+
+  // Pull-back traction to reference configuration
+  if (!this->pullBackTraction(T))
+    return false;
+
+  // Integrate the force vector
+  Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
+  for (size_t a = 1; a <= fe.N.size(); a++)
+    for (unsigned short int i = 1; i <= nsd; i++)
+      ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+
+  return true;
+}
+
+
 Vec3 Elasticity::evalSol (const Vector& eV, const Vector& N) const
 {
   Vec3 u;
