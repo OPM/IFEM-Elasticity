@@ -69,7 +69,7 @@ public:
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
 
   //! \brief Defines the material properties.
-  void setMaterial(Material* mat) { material = mat; }
+  virtual void setMaterial(Material* mat) { material = mat; }
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 
