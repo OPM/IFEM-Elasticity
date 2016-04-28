@@ -415,6 +415,48 @@ bool Elasticity::formBmatrix (Matrix& Bmat, const Vector& N, const Matrix& dNdX,
 }
 
 
+bool Elasticity::formDefGradient (const Vector& eV, const Vector& N,
+                                  const Matrix& dNdX, double r, Tensor& F,
+                                  bool gradOnly) const
+{
+  F = gradOnly ? 0.0 : 1.0;
+  if (eV.empty())
+    return true; // Initial state, deformation gradient is identity tensor
+
+  const size_t nenod = dNdX.rows();
+  if (eV.size() != nenod*nsd || dNdX.cols() < nsd)
+  {
+    std::cerr <<" *** Elasticity::formDefGradient: Invalid dimension,"
+              <<" dNdX("<< nenod <<","<< dNdX.cols() <<")"<< std::endl;
+    return false;
+  }
+
+  // Compute the deformation gradient, [F] = [I] + [dudX] = [I] + [dNdX]*[u].
+  // Notice that the matrix multiplication method used here treats the element
+  // displacement vector, *eV, as a matrix whose number of columns equals the
+  // number of rows in the matrix dNdX.
+  Matrix dUdX;
+  if (!dUdX.multiplyMat(eV,dNdX)) // dUdX = Grad{u} = eV*dNdX
+    return false;
+
+  // Cannot use operator= here, in case F is of higher dimension than dUdX
+  for (size_t i = 1; i <= dUdX.rows(); i++)
+    for (size_t j = 1; j <= dUdX.cols(); j++)
+      F(i,j) += dUdX(i,j);
+
+  // Add the dU/r term to the F(3,3)-term for axisymmetric problems
+  if (axiSymmetry && r > epsR && !gradOnly)
+    F(3,3) += eV.dot(N,0,nsd)/r;
+
+#if INT_DEBUG > 0
+  std::cout <<"Elasticity::eV ="<< eV
+            <<"Elasticity::F =\n"<< F;
+#endif
+
+  return true;
+}
+
+
 bool Elasticity::kinematics (const Vector& eV,
 			     const Vector& N, const Matrix& dNdX, double r,
 			     Matrix& B, Tensor&, SymmTensor& eps) const

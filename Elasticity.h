@@ -247,6 +247,16 @@ protected:
   bool formBmatrix(Matrix& Bmat, const Vector& N, const Matrix& dNdX,
 		   double r) const;
 
+  //! \brief Calculates the deformation gradient at current point.
+  //! \param[in] eV Element solution vector
+  //! \param[in] N Basis function values at current point
+  //! \param[in] dNdX Basis function gradients at current point
+  //! \param[in] r Radial coordinate of current point
+  //! \param[out] F Deformation gradient (or dUdX) at current point
+  //! \param[in] gradOnly If \e true, only evaluate the gradient tensor dUdX
+  bool formDefGradient(const Vector& eV, const Vector& N, const Matrix& dNdX,
+                       double r, Tensor& F, bool gradOnly = false) const;
+
   //! \brief Evaluates the thermal strain at current integration point.
   virtual double getThermalStrain(const Vector&, const Vector&,
                                   const Vec3&) const { return 0.0; }
@@ -307,7 +317,7 @@ public:
   //! \brief The only constructor initializes its data members.
   //! \param[in] p The linear elasticity problem to evaluate norms for
   //! \param[in] a The analytical stress field (optional)
-  ElasticityNorm(Elasticity& p, STensorFunc* a = 0);
+  ElasticityNorm(Elasticity& p, STensorFunc* a = nullptr);
   //! \brief Empty destructor.
   virtual ~ElasticityNorm() {}
 
@@ -371,11 +381,12 @@ public:
   //! \param[in] p The Elasticity problem to evaluate forces for
   //! \param[in] x Reference point for torque calculation
   //! \param[in] a The analytical velocity and pressure fields
-  ElasticityForce(Elasticity& p, const Vec3* x, AnaSol* a = 0)
+  ElasticityForce(Elasticity& p, const Vec3* x, AnaSol* a = nullptr)
     : ForceBase(p), X0(x), anasol(a), nodal(false) {}
   //! \brief Constructor for global nodal force integration.
   //! \param[in] p The Elasticity problem to evaluate nodal forces for
-  ElasticityForce(Elasticity& p) : ForceBase(p), X0(0), anasol(0), nodal(true) {}
+  ElasticityForce(Elasticity& p)
+    : ForceBase(p), X0(nullptr), anasol(nullptr), nodal(true) {}
 
   //! \brief Empty destructor.
   virtual ~ElasticityForce() {}
