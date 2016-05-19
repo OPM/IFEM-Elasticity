@@ -233,7 +233,8 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
   if (!R || itg->getIntegrationPrm(4) != 1.0)
   {
     R = myEqSys->getVector(0); // System right-hand-side vector
-    scale = itg->getIntegrationPrm(2) + 1.0; // alphaH + 1.0
+    if (itg->getIntegrationPrm(3) <= 0.0) // HHT is used
+      scale = itg->getIntegrationPrm(2) + 1.0; // alphaH + 1.0
   }
   if (!R) return true; // Silently ignore, if no right-hand-side vector
 

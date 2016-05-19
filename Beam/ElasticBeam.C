@@ -284,6 +284,7 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t, bool) const
   switch (m_mode)
   {
     case SIM::STATIC:
+    case SIM::MASS_ONLY:
       result->resize(1,1);
       break;
 
