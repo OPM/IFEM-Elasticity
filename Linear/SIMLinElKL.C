@@ -13,7 +13,7 @@
 
 #include "SIMLinElKL.h"
 #include "KirchhoffLovePlate.h"
-#include "../LinIsotropic.h"
+#include "LinIsotropic.h"
 #include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
 #include "ASMbase.h"
@@ -324,6 +324,7 @@ void SIMLinElKL::preprocessA ()
   // Define analytical boundary condition fields (for rotations)
   for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); p++)
     if (p->pcode == Property::DIRICHLET_ANASOL)
+    {
       if (abs(p->pindx) >= 200)
       {
         if (aCode[2] == abs(p->pindx))
@@ -336,7 +337,7 @@ void SIMLinElKL::preprocessA ()
         }
         else
           p->pcode = Property::UNDEFINED;
-        }
+      }
       else if (abs(p->pindx) >= 100)
       {
         if (aCode[1] == abs(p->pindx))
@@ -363,6 +364,7 @@ void SIMLinElKL::preprocessA ()
         else
           p->pcode = Property::UNDEFINED;
       }
+    }
 }
 
 
