@@ -38,6 +38,8 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
     case SIM::STATIC:
       eKm = eKg = 1;
       eS  = iS  = 1;
+      if (intPrm[3] > 0.0)
+        eKg = 0; // Linear analysis, no geometric stiffness
       break;
 
     case SIM::DYNAMIC:
