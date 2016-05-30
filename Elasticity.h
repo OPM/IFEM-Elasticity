@@ -70,6 +70,9 @@ public:
 
   //! \brief Defines the material properties.
   virtual void setMaterial(Material* mat) { material = mat; }
+  //! \brief Returns the current material object.
+  Material* getMaterial() const { return material; }
+
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 

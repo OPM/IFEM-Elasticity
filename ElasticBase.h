@@ -38,6 +38,8 @@ public:
   //! \brief Defines the gravitation vector.
   void setGravity(double gx, double gy = 0.0, double gz = 0.0)
   { gravity.x = gx; gravity.y = gy; gravity.z = gz; }
+  //! \brief Returns the gravitation vector.
+  const Vec3& getGravity() const { return gravity; }
 
   //! \brief Defines the number solution vectors.
   void setNoSolutions(size_t n) { nSV = n; }
