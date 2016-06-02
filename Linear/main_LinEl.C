@@ -368,14 +368,6 @@ int main (int argc, char** argv)
                      <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
                      <<"\nExact relative error (%) : "
                      << norm(4)/norm(3)*100.0;
-        IFEM::cout <<"Energy norm |u^h| = a(u^h,u^h)^0.5   : "<< norm(1);
-        if (norm(2) != 0.0)
-          IFEM::cout <<"\nExternal energy ((f,u^h)+(t,u^h)^0.5 : "<< norm(2);
-        if (model->haveAnaSol() && norm.size() >= 4)
-          IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< norm(3)
-                     <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
-                     <<"\nExact relative error (%) : "
-                     << norm(4)/norm(3)*100.0;
       }
       size_t j = 1;
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
