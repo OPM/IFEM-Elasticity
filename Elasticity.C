@@ -127,15 +127,15 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 					     bool neumann) const
 {
   ElmMats* result;
-  if (m_mode != SIM::DYNAMIC)
+  if (m_mode != SIM::DYNAMIC) // linear or nonlinear (quasi-)static analysis
     result = new ElmMats();
   else if (!intPrm[0] && !intPrm[1] && !intPrm[2] && !intPrm[3])
     result = new BDFMats(bdf);
-  else if (intPrm[3] > 0.0)
-    result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3],
+  else if (intPrm[3] > 0.0) // linear dynamic analysis
+    result = new NewmarkMats(intPrm[0], intPrm[1], intPrm[2], intPrm[3],
                              intPrm[4] == 2.0);
-  else
-    result = new HHTMats(intPrm[2],intPrm[0],intPrm[1],true);
+  else // nonlinear dynamic analysis
+    result = new HHTMats(intPrm[2], intPrm[0], intPrm[1], intPrm[4] != 1.0);
 
   switch (m_mode)
   {
@@ -150,7 +150,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
       result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
-                     neumann || intPrm[3] > 0.0 ? 1 : 2);
+                     intPrm[4] == 1.0 ? 3 : (neumann || intPrm[3] > 0.0 ? 1:2));
       break;
 
     case SIM::VIBRATION:
