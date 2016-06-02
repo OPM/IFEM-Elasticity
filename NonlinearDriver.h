@@ -43,7 +43,6 @@ protected:
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from
   virtual bool parse(char* keyWord, std::istream& is);
-
   //! \brief Parses a data section from an XML document.
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem);
@@ -76,13 +75,13 @@ public:
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
   //! \brief Flag calculation of solution energy norms.
-  void calculateEnergy(bool flag) { calcEn = flag; }
+  void calculateEnergy(char flag) { calcEn = flag; }
   //! \brief Flag that we are doing a linear analysis only.
   void setLinear() { iteNorm = NONE; }
 
 private:
   TimeStep params; //!< Time stepping parameters
-  bool     calcEn; //!< Flag for calculation of solution energy norm
+  char     calcEn; //!< Flag for calculation of solution energy norm
   Matrix   proSol; //!< Projected secondary solution
 };
 

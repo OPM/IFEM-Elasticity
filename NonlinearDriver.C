@@ -31,8 +31,14 @@ bool NonlinearDriver::parse (char* keyWord, std::istream& is)
 {
   if (!strncasecmp(keyWord,"TIME_STEPPING",13))
     return params.parse(keyWord,is);
+  else if (!strncasecmp(keyWord,"NO_ENERGY",9))
+    calcEn = false; // switch off energy norm calculation
+  else if (!strncasecmp(keyWord,"ENERGY2",7))
+    calcEn = 2; // also print the square of the global norm values
+  else
+    return this->NonLinSIM::parse(keyWord,is);
 
-  return this->NonLinSIM::parse(keyWord,is);
+  return true;
 }
 
 
@@ -44,6 +50,8 @@ bool NonlinearDriver::parse (const TiXmlElement* elem)
     for (; child; child = child->NextSiblingElement())
       if (!strncasecmp(child->Value(),"noEnergy",8))
         calcEn = false; // switch off energy norm calculation
+      else if (!strncasecmp(child->Value(),"energy2",7))
+        calcEn = 2; // also print the square of the global norm values
       else
         params.parse(child);
   }
@@ -116,16 +124,22 @@ void NonlinearDriver::printNorms (const Vector& norm, utl::LogStream& os) const
   if (norm.size() > 0)
   {
     os <<"\n  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : "<< utl::trunc(norm(1));
-    std::streamsize oldPrec = os.precision(10);
-    os <<"\t a(u^h,u^h) = "<< utl::trunc(norm(1)*norm(1));
-    os.precision(oldPrec);
+    if (calcEn == 2)
+    {
+      std::streamsize oldPrec = os.precision(10);
+      os <<"\t a(u^h,u^h) = "<< utl::trunc(norm(1)*norm(1));
+      os.precision(oldPrec);
+    }
   }
   if (norm.size() > 1 && utl::trunc(norm(2)) != 0.0)
   {
     os <<"\n  External energy: ((f,u^h)+(t,u^h))^0.5 : "<< norm(2);
-    std::streamsize oldPrec = os.precision(10);
-    os <<"\t(f,u)+(t,u) = "<< norm(2)*norm(2);
-    os.precision(oldPrec);
+    if (calcEn == 2)
+    {
+      std::streamsize oldPrec = os.precision(10);
+      os <<"\t(f,u)+(t,u) = "<< norm(2)*norm(2);
+      os.precision(oldPrec);
+    }
   }
   if (norm.size() > 2)
     os <<"\n  Stress norm, L2: (sigma^h,sigma^h)^0.5 : "<< norm(3);
