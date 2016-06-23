@@ -99,7 +99,7 @@ int main (int argc, char** argv)
   char* infile = NULL;
   Elasticity::wantPrincipalStress = true;
 
-  int myPid = IFEM::Init(argc,argv);
+  int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
 
   for (i = 1; i < argc; i++)
     if (SIMoptions::ignoreOldOptions(argc,argv,i))
@@ -175,11 +175,7 @@ int main (int argc, char** argv)
   else if (isC1 && IFEM::getOptions().discretization != ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::SplineC1;
 
-  IFEM::cout <<"\n >>> IFEM Linear Elasticity solver <<<"
-             <<"\n =====================================\n"
-             <<"\n Executing command:\n";
-  for (i = 0; i < argc; i++) IFEM::cout <<" "<< argv[i];
-  IFEM::cout <<"\n\nInput file: "<< infile;
+  IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
   if (SIMbase::ignoreDirichlet)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
