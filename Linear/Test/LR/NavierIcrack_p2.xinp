@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported rectangular plate with internal crack.
+     Uniform pressure load.
+     Quadratic spline Kirchhoff-Love thin plate elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry>
+    <patchfile>coarse.lr</patchfile>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+      <set name="plate" type="face">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <kirchhofflove>
+    <isotropic E="2.1e11" nu="0.3" rho="1.0e3" thickness="0.01"/>
+    <pressure set="plate">1.0e3</pressure>
+  </kirchhofflove>
+
+  <!-- General - result output !-->
+  <postprocessing>
+    <vtfformat>BINARY</vtfformat>
+    <projection>
+      <cgl2/>
+    </projection>
+  </postprocessing>
+
+  <!-- General - adaptive control !-->
+  <adaptive>
+    <maxstep value="2"/>
+    <beta value="10"/>
+    <maxdof value="100000"/>
+    <errtol value="0.1"/>
+    <symmetry value="2"/>
+    <knot_mult value="1"/>
+    <use_norm value="1"/>
+    <scheme maxAspectRatio="2.0" maxTjoints="1" closeGaps="True" value="isotropic_function"/>
+  </adaptive>
+
+</simulation>

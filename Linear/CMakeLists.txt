@@ -44,9 +44,13 @@ configure_file(${IFEM_REGTEST_SCRIPT} regtest.sh)
 if(IFEM_USE_PARALLEL_PETSC)
   # Add parallel tests here
 else(IFEM_USE_PARALLEL_PETSC)
-  file(GLOB_RECURSE LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
-                                    ${PROJECT_SOURCE_DIR}/Test/*.reg)
-  foreach(TESTFILE ${LINEL_TESTFILES})
+  file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                     ${PROJECT_SOURCE_DIR}/Test/*.reg)
+  if(IFEM_USE_LRSPLINES)
+    file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                     ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
+  endif()
+  foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
     ifem_add_test(${TESTFILE} LinEl)
   endforeach()
 endif()

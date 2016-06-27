@@ -1,0 +1,112 @@
+NavierIcrack_p2.xinp -2DKL -adap
+
+Input file: NavierCrack_p2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Parsing input file NavierCrack_p2.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file coarse.lr
+	Reading patch 1
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+	               plate (1,0,2D)
+  Parsing <patchfile>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 2.1e+11 0.3 1000 0.01
+	Pressure code 1000001: 1000
+Parsing <postprocessing>
+  Parsing <vtfformat>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Problem definition:
+KirchhoffLovePlate: thickness = 0.01, gravity = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    144
+Number of nodes       200
+Number of dofs        200
+Number of unknowns    148
+ >>> Starting adaptive simulation based on
+     Continuous global L2-projection error estimates (norm group 1) <<<
+Adaptive step 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+L2-norm            : 0.000103514
+Max displacement   : 0.000238937
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(w^h,w^h)^0.5 : 0.30394
+External energy          (p,w^h)^0.5 : 0.30394
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.0253899
+Relative error (%) : 8.32462
+Root mean square (RMS) of error      : 0.962011
+Min element error                    : 0.000305001
+Max element error                    : 0.00821485
+Average element error                : 0.0015248
+Refining 20 basis functions with errors in range \[0.0251636,0.0383327] 10% of all basis functions
+Refined mesh: 276 elements 312 nodes.
+Adaptive step 2
+Parsing input file NavierCrack_p2.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+	               plate (1,0,2D)
+  Parsing <patchfile>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 2.1e+11 0.3 1000 0.01
+	Pressure code 1000001: 1000
+Parsing <postprocessing>
+  Parsing <vtfformat>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+KirchhoffLovePlate: thickness = 0.01, gravity = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    276
+Number of nodes       312
+Number of dofs        312
+Number of unknowns    260
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+L2-norm            : 0.000145153
+Max displacement   : 0.000249133
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(w^h,w^h)^0.5 : 0.3073
+External energy          (p,w^h)^0.5 : 0.3073
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.0238133
+Relative error (%) : 7.72605
+Root mean square (RMS) of error      : 1.15673
+Min element error                    : 6.81292e-05
+Max element error                    : 0.00736095
+Average element error                : 0.000937435

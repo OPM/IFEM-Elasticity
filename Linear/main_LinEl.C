@@ -213,7 +213,7 @@ int main (int argc, char** argv)
   SIMinput* theSim = model;
   AdaptiveSIM* aSim = NULL;
   if (iop == 10)
-    theSim = aSim = new AdaptiveSIM(model);
+    theSim = aSim = new AdaptiveSIM(*model);
 
   // Read in model definitions
   if (!theSim->read(infile))
@@ -543,7 +543,8 @@ int main (int argc, char** argv)
   }
 
   utl::profiler->stop("Postprocessing");
-  delete theSim;
+  delete aSim;
+  delete model;
   delete exporter;
   return 0;
 }
