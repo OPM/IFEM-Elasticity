@@ -17,6 +17,7 @@
 #include "IFEM.h"
 #include "LinearElasticity.h"
 #include "MaterialBase.h"
+#include "ForceIntegrator.h"
 #include "Property.h"
 #include "TimeStep.h"
 #include "AnaSol.h"
@@ -42,7 +43,7 @@ public:
   SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,checkRHS)
   {
     myContext = "elasticity";
-    aCode = 0;
+    aCode = bCode = 0;
   }
 
   //! \brief The destructor frees the dynamically allocated material properties.
@@ -91,6 +92,23 @@ public:
     mVec.clear();
 
     this->Dim::clearProperties();
+  }
+
+  //! \brief Calculates the traction resultant associated with a given boundary.
+  //! \param[out] f Calculated traction resultant
+  //! \param[in] sol Primary solution vectors
+  //! \param[in] tp Time stepping parameters
+  //!
+  //! \details The boundary for which the traction is calculated is identified
+  //! by the property set code \a bCode which is assigned value by parsing
+  //! the <boundaryforce> tag in the input file.
+  bool getBoundaryForce(Vector& f, const Vectors& sol, const TimeStep& tp)
+  {
+    if (bCode == 0) return false;
+
+    f = SIM::getBoundaryForce(sol,this,bCode,tp.time);
+    Dim::adm.allReduceAsSum(f);
+    return true;
   }
 
 protected:
@@ -351,7 +369,8 @@ protected:
       if (this->parseDimSpecific(child))
         continue;
 
-      else if (!strcasecmp(child->Value(),"isotropic")) {
+      else if (!strcasecmp(child->Value(),"isotropic"))
+      {
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";
         if (Dim::dimension == 2)
@@ -359,13 +378,14 @@ protected:
         else
           mVec.push_back(this->getIntegrand()->parseMatProp(child));
       }
-
-      else if (!strcasecmp(child->Value(),"bodyforce")) {
+      else if (!strcasecmp(child->Value(),"bodyforce"))
+      {
         std::string set, type;
         utl::getAttribute(child,"set",set);
         int code = this->getUniquePropertyCode(set,Dim::dimension==3?123:12);
         if (code == 0) utl::getAttribute(child,"code",code);
-        if (child->FirstChild() && code > 0) {
+        if (child->FirstChild() && code > 0)
+        {
           utl::getAttribute(child,"type",type,true);
           IFEM::cout <<"\tBodyforce code "<< code;
           if (!type.empty()) IFEM::cout <<" ("<< type <<")";
@@ -373,6 +393,18 @@ protected:
           if (f) this->setVecProperty(code,Property::BODYLOAD,f);
           IFEM::cout << std::endl;
         }
+      }
+      else if (!strcasecmp(child->Value(),"boundaryforce"))
+      {
+        std::string set;
+        if (utl::getAttribute(child,"set",set))
+          bCode = this->getUniquePropertyCode(set);
+        else if (!utl::getAttribute(child,"code",bCode) || bCode == 0)
+          continue;
+
+        IFEM::cout <<"\tBoundary force ";
+        if (!set.empty()) IFEM::cout <<"\""<< set <<"\" ";
+        IFEM::cout <<"code "<< bCode << std::endl;
       }
 
       else if (!this->getIntegrand()->parse(child))
@@ -431,6 +463,7 @@ protected:
 
 private:
   int aCode; //!< Analytical BC code (used by destructor)
+  int bCode; //!< Property set code for boundary traction resultant calculation
 };
 
 #endif
