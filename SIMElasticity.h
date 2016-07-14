@@ -111,6 +111,21 @@ public:
     return true;
   }
 
+  //! \brief Extracts the reaction forces associated with a given boundary.
+  //! \param[out] rf Reaction force resultant for specified boundary
+  //!
+  //! \details The boundary for which the reaction force is returned
+  //! is identified by the property set code \a bCode which is assigned value
+  //! by parsing the <boundaryforce> tag in the input file.
+  bool getBoundaryReactions(Vector& rf)
+  {
+    if (bCode == 0) return false;
+
+    bool ok = this->getCurrentReactions(rf,bCode);
+    Dim::adm.allReduceAsSum(rf);
+    return ok;
+  }
+
 protected:
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented inserting a call to \a getIntegrand.
