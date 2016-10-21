@@ -386,6 +386,7 @@ protected:
 
       else if (!strcasecmp(child->Value(),"isotropic"))
       {
+        IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";
         if (Dim::dimension == 2)
@@ -395,6 +396,7 @@ protected:
       }
       else if (!strcasecmp(child->Value(),"bodyforce"))
       {
+        IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         std::string set, type;
         utl::getAttribute(child,"set",set);
         int code = this->getUniquePropertyCode(set,Dim::dimension==3?123:12);
@@ -411,6 +413,7 @@ protected:
       }
       else if (!strcasecmp(child->Value(),"boundaryforce"))
       {
+        IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         std::string set;
         if (utl::getAttribute(child,"set",set))
           bCode = this->getUniquePropertyCode(set);
@@ -420,6 +423,7 @@ protected:
         IFEM::cout <<"\tBoundary force ";
         if (!set.empty()) IFEM::cout <<"\""<< set <<"\" ";
         IFEM::cout <<"code "<< bCode << std::endl;
+        this->setPropertyType(bCode,Property::OTHER);
       }
 
       else if (!this->getIntegrand()->parse(child))
