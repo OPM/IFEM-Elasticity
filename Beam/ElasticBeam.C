@@ -302,6 +302,7 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t, bool) const
       break;
 
     case SIM::RHS_ONLY:
+    case SIM::INT_FORCES:
       result->resize(0,1);
       result->rhsOnly = true;
       result->withLHS = false;

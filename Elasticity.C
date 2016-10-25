@@ -163,6 +163,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
       break;
 
     case SIM::RHS_ONLY:
+    case SIM::INT_FORCES:
       result->resize(neumann ? 0 : 1, 1);
 
     case SIM::RECOVERY:

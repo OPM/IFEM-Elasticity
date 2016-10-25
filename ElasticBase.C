@@ -71,7 +71,9 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::RHS_ONLY:
-      eS = iS = 1;
+      eS = 1;
+    case SIM::INT_FORCES:
+      iS = 1;
       break;
 
     default:
@@ -90,6 +92,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 
     case SIM::BUCKLING:
     case SIM::RHS_ONLY:
+    case SIM::INT_FORCES:
     case SIM::RECOVERY:
       primsol.resize(1);
       break;
