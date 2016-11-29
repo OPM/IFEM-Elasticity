@@ -877,7 +877,7 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
 
 NormBase* Elasticity::getNormIntegrand (AnaSol* asol) const
 {
-  if (asol)
+  if (asol && sol->getStressSol())
     return new ElasticityNorm(*const_cast<Elasticity*>(this),
 			      asol->getStressSol());
   else
