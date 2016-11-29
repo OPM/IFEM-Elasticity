@@ -1,0 +1,13 @@
+exact_p2.xinp -2D
+
+Analytical solution: Expression
+LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 0, alpha = 1.2e-07
+Number of elements    64
+Number of nodes       100
+Number of dofs        200
+Number of constraints 72
+Number of unknowns    128
+Number of quadrature points 1024
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.6692
+External energy ((f,u^h)+(t,u^h)^0.5 : 41.5203
+Exact norm  |u|   = a(u,u)^0.5       : 49.6692
