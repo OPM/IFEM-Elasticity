@@ -379,6 +379,7 @@ protected:
     if (strcasecmp(elem->Value(),myContext.c_str()))
       return this->Dim::parse(elem);
 
+    bool result = true;
     const TiXmlElement* child = elem->FirstChildElement();
     for (; child; child = child->NextSiblingElement())
       if (this->parseDimSpecific(child))
@@ -427,9 +428,9 @@ protected:
       }
 
       else if (!this->getIntegrand()->parse(child))
-        this->Dim::parse(child);
+        result &= this->Dim::parse(child);
 
-    return true;
+    return result;
   }
 
   //! \brief Initializes material properties for integration of interior terms.
