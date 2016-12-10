@@ -6,7 +6,6 @@ Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Parsing input file Cantilever-Cable3p.xinp
 Parsing <geometry>
-  Using default linear geometry basis on unit domain \[0,1]
   Parsing <raiseorder>
   Parsing <refine>
   Parsing <topologysets>

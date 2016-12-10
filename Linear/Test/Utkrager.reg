@@ -5,7 +5,6 @@ Equation solver: 2
 Number of Gauss points: 4
 Parsing input file Utkrager.xinp
 Parsing <geometry>
-  Using default linear geometry basis on unit domain \[0,1]
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: end1 (1,1,0D)
