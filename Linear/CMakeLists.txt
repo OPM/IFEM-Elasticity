@@ -46,7 +46,7 @@ if(IFEM_USE_PARALLEL_PETSC)
 else(IFEM_USE_PARALLEL_PETSC)
   file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                      ${PROJECT_SOURCE_DIR}/Test/*.reg)
-  if(IFEM_USE_LRSPLINES)
+  if(IFEM_USE_LRSPLINES AND LRSpline_FOUND)
     file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                      ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
   endif()
