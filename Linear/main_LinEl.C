@@ -210,7 +210,7 @@ int main (int argc, char** argv)
   else
     model = new SIMLinEl3D(checkRHS);
 
-  SIMinput* theSim = model;
+  SIMadmin* theSim = model;
   AdaptiveSIM* aSim = NULL;
   if (iop == 10)
     theSim = aSim = new AdaptiveSIM(*model);
