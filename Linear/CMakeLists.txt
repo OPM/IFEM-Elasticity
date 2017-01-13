@@ -41,9 +41,9 @@ include(IFEMTesting)
 # Generate regtest script with correct paths
 configure_file(${IFEM_REGTEST_SCRIPT} regtest.sh)
 
-if(IFEM_USE_PARALLEL_PETSC)
+if(MPI_FOUND)
   # Add parallel tests here
-else(IFEM_USE_PARALLEL_PETSC)
+else()
   file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                      ${PROJECT_SOURCE_DIR}/Test/*.reg)
   if(IFEM_USE_LRSPLINES AND LRSpline_FOUND)
