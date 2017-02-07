@@ -315,7 +315,7 @@ int main (int argc, char** argv)
     // Static solution: Assemble [Km] and {R}
     model->setMode(SIM::STATIC);
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
-    model->initSystem(model->opt.solver);
+    model->initSystem(model->opt.solver,1,1,0,true);
     if (!model->assembleSystem())
       return 2;
     else if (vizRHS)
