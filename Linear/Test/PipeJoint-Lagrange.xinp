@@ -10,17 +10,44 @@
 
   <geometry>
     <patchfile>pipe_bifurcation.g2</patchfile>
-    <nodefile>pipe_bifurcation.gno</nodefile>
+    <topology>
+      <connection master="1" mface="2" slave="6" sface="2" orient="1"/>
+      <connection master="1" mface="3" slave="2" sface="4"/>
+      <connection master="1" mface="4" slave="3" sface="3"/>
+      <connection master="2" mface="3" slave="3" sface="4"/>
+      <connection master="2" mface="2" slave="7" sface="2" orient="2"/>
+      <connection master="3" mface="2" slave="9" sface="2" orient="2"/>
+      <connection master="4" mface="4" slave="5" sface="3"/>
+      <connection master="4" mface="3" slave="6" sface="4"/>
+      <connection master="4" mface="2" slave="8" sface="2" orient="1"/>
+      <connection master="5" mface="4" slave="6" sface="3"/>
+      <connection master="5" mface="2" slave="10" sface="2" orient="1"/>
+      <connection master="7" mface="4" slave="9" sface="3"/>
+      <connection master="7" mface="3" slave="10" sface="4"/>
+      <connection master="8" mface="4" slave="10" sface="3"/>
+      <connection master="8" mface="3" slave="9" sface="4"/>
+    </topology>
+    <topologysets>
+      <set name="major-pipe-endface" type="face">
+        <item patch="1"> 1 </item>
+        <item patch="2"> 1 </item>
+        <item patch="3"> 1 </item>
+        <item patch="4"> 1 </item>
+        <item patch="5"> 1 </item>
+        <item patch="6"> 1 </item>
+      </set>
+      <set name="minor-pipe-endface" type="face">
+        <item patch="7"> 1 </item>
+        <item patch="8"> 1 </item>
+        <item patch="9"> 1 </item>
+        <item patch="10">1 </item>
+      </set>
+    </topologysets>
   </geometry>
 
   <boundaryconditions>
-    <propertyfile>pipe_bifurcation.prc</propertyfile>
-    <dirichlet code="123"/>
-    <neumann code="1001" direction="1">1.0e8</neumann>
+    <dirichlet set="major-pipe-endface" comp="123"/>
+    <neumann set="minor-pipe-endface" type="constant" direction="1">1.0e8</neumann>
   </boundaryconditions>
-
-  <postprocessing>
-    <vtfformat>BINARY</vtfformat>
-  </postprocessing>
 
 </simulation>

@@ -1,10 +1,10 @@
-PipeJoint-Lagrange.inp -lagrange
+PipeJoint-Lagrange.xinp
 
-Input file: PipeJoint-Lagrange.inp
+Input file: PipeJoint-Lagrange.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Lagrangian basis functions are used
-Reading input file PipeJoint-Lagrange.inp
+Reading input file PipeJoint-Lagrange.xinp
 Reading data file pipe_bifurcation.g2
 Reading patch 1
 Reading patch 2
@@ -16,17 +16,10 @@ Reading patch 7
 Reading patch 8
 Reading patch 9
 Reading patch 10
-Reading data file pipe_bifurcation.gno
-Reading data file pipe_bifurcation.prc
-Number of Dirichlet properties: 1
-	Dirichlet code 123: (fixed)
-Number of pressures: 1
-	Pressure code 1001 direction 1: 1e+08
 Reading input file succeeded.
 Problem definition:
 Elasticity: 3D, gravity = 0 0 0
 LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850
-Renumbered 246 nodes
 Resolving Dirichlet boundary conditions
 	Constraining P1 F1 in direction(s) 123
 	Constraining P2 F1 in direction(s) 123

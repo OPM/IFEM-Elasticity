@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <!-- $Id$ !-->
 <!-- Pipe joint with shear-loaded brace !-->
 <!-- Static linear-elastic analysis !-->
@@ -7,10 +9,27 @@
 
   <geometry>
     <patchfile>pipe_bifurcation.g2</patchfile>
-    <nodefile>pipe_bifurcation.gno</nodefile>
+    <topology>
+      <connection master="1" mface="2" slave="6" sface="2" orient="1"/>
+      <connection master="1" mface="3" slave="2" sface="4"/>
+      <connection master="1" mface="4" slave="3" sface="3"/>
+      <connection master="2" mface="3" slave="3" sface="4"/>
+      <connection master="2" mface="2" slave="7" sface="2" orient="2"/>
+      <connection master="3" mface="2" slave="9" sface="2" orient="2"/>
+      <connection master="4" mface="4" slave="5" sface="3"/>
+      <connection master="4" mface="3" slave="6" sface="4"/>
+      <connection master="4" mface="2" slave="8" sface="2" orient="1"/>
+      <connection master="5" mface="4" slave="6" sface="3"/>
+      <connection master="5" mface="2" slave="10" sface="2" orient="1"/>
+      <connection master="7" mface="4" slave="9" sface="3"/>
+      <connection master="7" mface="3" slave="10" sface="4"/>
+      <connection master="8" mface="4" slave="10" sface="3"/>
+      <connection master="8" mface="3" slave="9" sface="4"/>
+    </topology>
   </geometry>
 
-  <eigensolver mode="4">
+  <eigensolver>
+    <mode>4</mode>
     <nev>16</nev>
     <ncv>32</ncv>
   </eigensolver>

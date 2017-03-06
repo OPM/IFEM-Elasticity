@@ -1,14 +1,13 @@
-PipeJoint-vibration.inp -free -eig 4 -nev 16 -ncv 32
+PipeJoint-vibration.xinp
 
-Input file: PipeJoint-vibration.inp
+Input file: PipeJoint-vibration.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Eigenproblem solver: 4
 Number of eigenvalues: 16
 Number of Arnoldi vectors: 32
 Shift value: 0
-Specified boundary conditions are ignored
-Reading input file PipeJoint-vibration.inp
+Reading input file PipeJoint-vibration.xinp
 Reading data file pipe_bifurcation.g2
 Reading patch 1
 Reading patch 2
@@ -20,15 +19,10 @@ Reading patch 7
 Reading patch 8
 Reading patch 9
 Reading patch 10
-Reading data file pipe_bifurcation.gno
-Reading data file pipe_bifurcation.prc
-Number of pressures: 1
-	Pressure code 1001 direction 1: 1e+08
 Reading input file succeeded.
 Problem definition:
 Elasticity: 3D, gravity = 0 0 0
 LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850
-Renumbered 246 nodes
 Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
 Number of elements    12
