@@ -1,11 +1,11 @@
-Cylinder-Spectral.inp -checkRHS -spectral
+Cylinder-p4.inp -checkRHS -spectral
 
-Input file: Cylinder-Spectral.inp
+Input file: Cylinder-p4.inp
 Equation solver: 2
 Number of Gauss points: 4
 Spectral basis functions are used
 Check that each patch has a right-hand coordinate system
-Reading input file Cylinder-Spectral.inp
+Reading input file Cylinder-p4.inp
 Number of patches: 1
 Reading patch file cylinder.g2
 	Swapped.

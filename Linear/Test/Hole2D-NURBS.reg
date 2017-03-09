@@ -1,9 +1,9 @@
-Hole2D-NURBS.inp -2Dpstrain
+Hole2D-p3.inp -2Dpstrain
 
-Input file: Hole2D-NURBS.inp
+Input file: Hole2D-p3.inp
 Equation solver: 2
 Number of Gauss points: 4
-Reading input file Hole2D-NURBS.inp
+Reading input file Hole2D-p3.inp
 Number of patches: 1
 Reading patch file hole2D.g2
 Number of patch refinements: 1

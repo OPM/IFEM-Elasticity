@@ -1,6 +1,6 @@
-PipeJoint-vibration.inp -free -eig 4 -nev 16 -ncv 32
+PipeJoint.inp -free -eig 4 -nev 16 -ncv 32
 
-Input file: PipeJoint-vibration.inp
+Input file: PipeJoint.inp
 Equation solver: 2
 Number of Gauss points: 4
 Eigenproblem solver: 4
@@ -8,7 +8,7 @@ Number of eigenvalues: 16
 Number of Arnoldi vectors: 32
 Shift value: 0
 Specified boundary conditions are ignored
-Reading input file PipeJoint-vibration.inp
+Reading input file PipeJoint.inp
 Reading data file pipe_bifurcation.g2
 Reading patch 1
 Reading patch 2

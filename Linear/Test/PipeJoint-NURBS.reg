@@ -1,9 +1,9 @@
-PipeJoint-NURBS.inp
+PipeJoint.inp
 
-Input file: PipeJoint-NURBS.inp
+Input file: PipeJoint.inp
 Equation solver: 2
 Number of Gauss points: 4
-Reading input file PipeJoint-NURBS.inp
+Reading input file PipeJoint.inp
 Reading data file pipe_bifurcation.g2
 Reading patch 1
 Reading patch 2

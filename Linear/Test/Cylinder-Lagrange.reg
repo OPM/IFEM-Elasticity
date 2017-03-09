@@ -1,11 +1,11 @@
-Cylinder-Lagrange.inp -checkRHS -lagrange -nGauss 5
+Cylinder-p4.inp -checkRHS -lagrange -nGauss 5
 
-Input file: Cylinder-Lagrange.inp
+Input file: Cylinder-p4.inp
 Equation solver: 2
 Number of Gauss points: 5
 Lagrangian basis functions are used
 Check that each patch has a right-hand coordinate system
-Reading input file Cylinder-Lagrange.inp
+Reading input file Cylinder-p4.inp
 Number of patches: 1
 Reading patch file cylinder.g2
 	Swapped.

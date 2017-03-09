@@ -1,13 +1,13 @@
-SquarePlate-Splines.inp -eig 5 -nev 20 -ncv 40 -shift 2.0e-4 -nGauss 3
+SquarePlate-p2.inp -eig 5 -nev 20 -ncv 40 -shift 2.0e-4 -nGauss 3
 
-Input file: SquarePlate-Splines.inp
+Input file: SquarePlate-p2.inp
 Equation solver: 2
 Number of Gauss points: 3
 Eigenproblem solver: 5
 Number of eigenvalues: 20
 Number of Arnoldi vectors: 40
 Shift value: 0.0002
-Reading input file SquarePlate-Splines.inp
+Reading input file SquarePlate-p2.inp
 Number of patches: 1
 Reading patch file plate_10x10x01.g2
 Number of order raise: 1

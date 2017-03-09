@@ -1,10 +1,10 @@
-Hole2D-Lagrange.inp -2Dpstrain -lagrange
+Hole2D-p3.inp -2Dpstrain -lagrange
 
-Input file: Hole2D-Lagrange.inp
+Input file: Hole2D-p3.inp
 Equation solver: 2
 Number of Gauss points: 4
 Lagrangian basis functions are used
-Reading input file Hole2D-Lagrange.inp
+Reading input file Hole2D-p3.inp
 Number of patches: 1
 Reading patch file hole2D.g2
 Number of patch refinements: 1
