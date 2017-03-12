@@ -137,6 +137,10 @@ protected:
     this->getIntegrand();
     this->printProblem();
 
+    // Deactivate principal stress ouput for Lagrange/Spectral interpolations
+    if (Dim::opt.discretization < ASM::Spline)
+      Elasticity::wantPrincipalStress = false;
+
     if (!Dim::mySol) return;
 
     // Define analytical boundary condition fields
