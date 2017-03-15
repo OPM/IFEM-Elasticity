@@ -129,8 +129,8 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   ElmMats* result;
   if (m_mode != SIM::DYNAMIC) // linear or nonlinear (quasi-)static analysis
     result = new ElmMats();
-  else if (!intPrm[0] && !intPrm[1] && !intPrm[2] && !intPrm[3])
-    result = new BDFMats(bdf);
+  else if (bdf)
+    result = new BDFMats(*bdf);
   else if (intPrm[3] > 0.0) // linear dynamic analysis
     result = new NewmarkMats(intPrm[0], intPrm[1], intPrm[2], intPrm[3],
                              intPrm[4] == 2.0);

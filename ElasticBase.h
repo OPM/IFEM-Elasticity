@@ -16,7 +16,8 @@
 
 #include "IntegrandBase.h"
 #include "Vec3.h"
-#include "BDF.h"
+
+namespace TimeIntegration { class BDFD2; }
 
 
 /*!
@@ -30,8 +31,8 @@ protected:
   ElasticBase();
 
 public:
-  //! \brief Empty destructor.
-  virtual ~ElasticBase() {}
+  //! \brief The destructor deletes the BDF object, if any.
+  virtual ~ElasticBase();
 
   //! \brief Defines the gravitation vector.
   void setGravity(const Vec3& g) { gravity = g; }
@@ -57,7 +58,7 @@ public:
   virtual double getIntegrationPrm(unsigned short int i) const;
 
   //! \brief Advances the BDF time step scheme one step forward.
-  void advanceStep(double dt, double dtn) { bdf.advanceStep(dt,dtn); }
+  void advanceStep(double dt, double dtn);
 
   //! \brief Returns whether this integrand has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return false; }
@@ -95,8 +96,6 @@ protected:
   unsigned short int iS;  //!< Index to element internal force vector
   unsigned short int nSV; //!< Number of consequtive solution vectors in core
 
-  TimeIntegration::BDFD2 bdf; //!< BDF time discretization parameters
-
   //! \brief Newmark time integration parameters.
   //! \details The interpretation of each parameter
   //! depends on the actual simulator drivers, as follows: <UL>
@@ -114,6 +113,8 @@ protected:
   //! damping (if any), depending on material stiffness only.
   //! <LI> 4: 1.0 if HHTSIM is used, 2.0 if GenAlphaSIM is used, otherwise 0.0.
   double intPrm[5]; //!< </UL>
+
+  TimeIntegration::BDFD2* bdf; //!< BDF time discretization parameters
 };
 
 #endif

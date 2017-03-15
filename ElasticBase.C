@@ -12,8 +12,9 @@
 //==============================================================================
 
 #include "ElasticBase.h"
-#include "TimeDomain.h"
 #include "NewmarkMats.h"
+#include "TimeDomain.h"
+#include "BDF.h"
 
 
 ElasticBase::ElasticBase ()
@@ -24,6 +25,14 @@ ElasticBase::ElasticBase ()
   eS = iS = 0;
 
   memset(intPrm,0,sizeof(intPrm));
+
+  bdf = nullptr;
+}
+
+
+ElasticBase::~ElasticBase ()
+{
+  delete bdf;
 }
 
 
@@ -105,7 +114,10 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 
 void ElasticBase::setIntegrationPrm (unsigned short int i, double prm)
 {
-  if (i < sizeof(intPrm)/sizeof(double)) intPrm[i] = prm;
+  if (i < sizeof(intPrm)/sizeof(double))
+    intPrm[i] = prm;
+  else if (!bdf) // Using a Backward Difference Formula for time discretization
+    bdf = new TimeIntegration::BDFD2(2,prm);
 }
 
 
@@ -115,6 +127,12 @@ double ElasticBase::getIntegrationPrm (unsigned short int i) const
     return intPrm[i];
   else
     return 0.0;
+}
+
+
+void ElasticBase::advanceStep (double dt, double dtn)
+{
+  if (bdf) bdf->advanceStep(dt,dtn);
 }
 
 
