@@ -101,7 +101,7 @@ public:
   //!
   //! \details The boundary for which the traction is calculated is identified
   //! by the property set code \a bCode which is assigned value by parsing
-  //! the <boundaryforce> tag in the input file.
+  //! the `<boundaryforce>` tag in the input file.
   bool getBoundaryForce(Vector& f, const Vectors& sol, const TimeStep& tp)
   {
     if (bCode == 0) return false;
@@ -116,7 +116,7 @@ public:
   //!
   //! \details The boundary for which the reaction force is returned
   //! is identified by the property set code \a bCode which is assigned value
-  //! by parsing the <boundaryforce> tag in the input file.
+  //! by parsing the `<boundaryforce>` tag in the input file.
   bool getBoundaryReactions(Vector& rf)
   {
     if (bCode == 0) return false;
