@@ -22,7 +22,11 @@ downstreams=(IFEM-BeamEx
              IFEM-FiniteDeformation
              IFEM-ThermoElasticity
              IFEM-PoroElasticity
-             IFEM-OpenFrac)
+             IFEM-OpenFrac
+             IFEM-AdvectionDiffusion
+             IFEM-Stokes
+             IFEM-NavierStokes
+             IFEM-FSI)
 
 declare -A downstreamRev
 downstreamRev[IFEM-BeamEx]=master
@@ -30,6 +34,10 @@ downstreamRev[IFEM-FiniteDeformation]=master
 downstreamRev[IFEM-ThermoElasticity]=master
 downstreamRev[IFEM-PoroElasticity]=master
 downstreamRev[IFEM-OpenFrac]=master
+downstreamRev[IFEM-AdvectionDiffusion]=master
+downstreamRev[IFEM-Stokes]=master
+downstreamRev[IFEM-NavierStokes]=master
+downstreamRev[IFEM-FSI]=master
 
 IFEM_REVISION=master
 if grep -qi "ifem=" <<< $ghprbCommentBody
