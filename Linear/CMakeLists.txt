@@ -35,9 +35,9 @@ target_link_libraries(LinEl Beam Elasticity ${IFEM_LIBRARIES})
 install(TARGETS LinEl DESTINATION bin COMPONENT bin)
 
 # For generating the doxy
-set(EXTRA_DOXY_PATHS "${PROJECT_SOURCE_DIR} \
-                      ${PROJECT_BINARY_DIR} \
-                      ${PROJECT_SOURCE_DIR}/.. \
+set(EXTRA_DOXY_PATHS "${PROJECT_SOURCE_DIR} \\
+                      ${PROJECT_BINARY_DIR} \\
+                      ${PROJECT_SOURCE_DIR}/.. \\
                       ${PROJECT_SOURCE_DIR}/../Beam")
 add_doc_target(LinEl LinEl)
 
