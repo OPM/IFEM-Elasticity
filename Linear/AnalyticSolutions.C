@@ -252,7 +252,7 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
   alpha = M_PI/a;
   beta  = M_PI/b;
 
-  scalSol = &w;
+  scalSol.push_back(&w);
   stressSol = this;
 
   // Calculate and print the maximum displacement (at the centre x=a/2, y=b/2)
@@ -277,7 +277,7 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
   c2    = type == 1 ? a : 0.5*c;
   d2    = type == 1 ? b : 0.5*d;
 
-  scalSol = &w;
+  scalSol.push_back(&w);
   stressSol = this;
 
   // Calculate and print the displacement at the centre x=a/2, y=b/2
@@ -291,7 +291,7 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 NavierPlate::~NavierPlate ()
 {
   // Avoid that the base class AnaSol tries to deallocate these
-  scalSol = NULL;
+  scalSol.clear();
   stressSol = NULL;
 }
 
