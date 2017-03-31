@@ -77,7 +77,7 @@ public:
   //! \param[in] fe Finite element data of current integration point
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X) const;
+                       const Vec3& X) const;
 
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
@@ -85,7 +85,7 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
-		       const Vec3& X, const Vec3& normal) const;
+                       const Vec3& X, const Vec3& normal) const;
 
   using IntegrandBase::evalSol;
   //! \brief Evaluates the secondary solution at a result point.
@@ -99,12 +99,12 @@ public:
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress resultant values at current point
   //! \param[in] eV Element solution vector
-  //! \param[in] d2NdX2 Basis function 2nd derivatives at current point
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
   bool evalSol(Vector& s, const Vector& eV,
-	       const Matrix3D& d2NdX2, const Vec3& X,
-	       bool toLocal = false) const;
+               const FiniteElement& fe, const Vec3& X,
+               bool toLocal = false) const;
 
   //! \brief Evaluates the pressure field (if any) at specified point.
   virtual double getPressure(const Vec3& X) const;
@@ -168,9 +168,11 @@ protected:
 public:
   //! \brief Sets up the constitutive matrix at current point.
   //! \param[out] C \f$3\times3\f$-matrix, representing the constitutive tensor
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] invers If \e true, the inverse matrix is establised instead
-  bool formCmatrix(Matrix& C, const Vec3& X, bool invers = false) const;
+  bool formCmatrix(Matrix& C, const FiniteElement& fe, const Vec3& X,
+                   bool invers = false) const;
 
 protected:
   // Finite element quantities, i.e., indices into element matrices and vectors.

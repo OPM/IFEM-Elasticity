@@ -219,11 +219,11 @@ bool KirchhoffLovePlate::formBmatrix (Matrix& Bmat,
 }
 
 
-bool KirchhoffLovePlate::formCmatrix (Matrix& C, const Vec3& X,
-				      bool invers) const
+bool KirchhoffLovePlate::formCmatrix (Matrix& C, const FiniteElement& fe,
+                                      const Vec3& X, bool invers) const
 {
   SymmTensor dummy(nsd); double U;
-  if (!material->evaluate(C,dummy,U,0,X,dummy,dummy, invers ? -1 : 1))
+  if (!material->evaluate(C,dummy,U,fe,X,dummy,dummy, invers ? -1 : 1))
     return false;
 
   double factor = thickness*thickness*thickness/12.0;
@@ -270,7 +270,7 @@ bool KirchhoffLovePlate::evalInt (LocalIntegral& elmInt,
 
     // Evaluate the constitutive matrix at this point
     Matrix Cmat;
-    if (!this->formCmatrix(Cmat,X)) return false;
+    if (!this->formCmatrix(Cmat,fe,X)) return false;
 
     // Integrate the stiffness matrix
     Matrix CB;
@@ -299,9 +299,9 @@ bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 }
 
 
-bool KirchhoffLovePlate::evalSol (Vector& s, const FiniteElement& fe,
-				  const Vec3& X,
-				  const std::vector<int>& MNPC) const
+bool KirchhoffLovePlate::evalSol (Vector& s,
+                                  const FiniteElement& fe, const Vec3& X,
+                                  const std::vector<int>& MNPC) const
 {
   // Extract element displacements
   int ierr = 0;
@@ -315,13 +315,13 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const FiniteElement& fe,
     }
 
   // Evaluate the stress resultant tensor
-  return this->evalSol(s,eV,fe.d2NdX2,X,true);
+  return this->evalSol(s,eV,fe,X,true);
 }
 
 
 bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
-				  const Matrix3D& d2NdX2, const Vec3& X,
-				  bool toLocal) const
+                                  const FiniteElement& fe, const Vec3& X,
+                                  bool toLocal) const
 {
   if (eV.empty())
   {
@@ -329,22 +329,23 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
 	      << std::endl;
     return false;
   }
-  else if (eV.size() != d2NdX2.dim(1))
+  else if (eV.size() != fe.d2NdX2.dim(1))
   {
     std::cerr <<" *** KirchhoffLovePlate::evalSol: Invalid displacement vector."
-	      <<"\n     size(eV) = "<< eV.size() <<"   size(d2NdX2) = "
-	      << d2NdX2.dim(1) <<","<< d2NdX2.dim(2)*d2NdX2.dim(3) << std::endl;
+              <<"\n     size(eV) = "<< eV.size() <<"   size(d2NdX2) = "
+              << fe.d2NdX2.dim(1) <<","<< fe.d2NdX2.dim(2)*fe.d2NdX2.dim(3)
+              << std::endl;
     return false;
   }
 
   // Compute the strain-displacement matrix B from d2NdX2
   Matrix Bmat;
-  if (!this->formBmatrix(Bmat,d2NdX2))
+  if (!this->formBmatrix(Bmat,fe.d2NdX2))
     return false;
 
   // Evaluate the constitutive matrix at this point
   Matrix Cmat;
-  if (!this->formCmatrix(Cmat,X))
+  if (!this->formCmatrix(Cmat,fe,X))
     return false;
 
   // Evaluate the curvature tensor
@@ -425,12 +426,12 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
   // Evaluate the inverse constitutive matrix at this point
   Matrix Cinv;
-  if (!problem.formCmatrix(Cinv,X,true))
+  if (!problem.formCmatrix(Cinv,fe,X,true))
     return false;
 
   // Evaluate the finite element stress field
   Vector mh, m, error;
-  if (!problem.evalSol(mh,pnorm.vec.front(),fe.d2NdX2,X))
+  if (!problem.evalSol(mh,pnorm.vec.front(),fe,X))
     return false;
 
   size_t ip = 0;
@@ -467,7 +468,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       // Evaluate projected stress resultant field
       Vector mr(mh.size());
       for (j = 0; j < nrcmp; j++)
-	mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
+        mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
 
       // Integrate the energy norm a(w^r,w^r)
       pnorm[ip++] += mr.dot(Cinv*mr)*fe.detJxW;
