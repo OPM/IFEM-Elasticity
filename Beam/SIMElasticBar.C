@@ -25,10 +25,27 @@
 #include "tinyxml.h"
 
 
+SIMElasticBar::SIMElasticBar (unsigned char n) : SIM1D(3)
+{
+  nsd = 3;
+  nsv = n;
+  printed = false;
+}
+
+
 SIMElasticBar::~SIMElasticBar ()
 {
   for (LoadMap::iterator it = myLoads.begin(); it != myLoads.end(); ++it)
     delete it->second;
+}
+
+
+void SIMElasticBar::printProblem() const
+{
+  if (printed) return;
+
+  this->SIM1D::printProblem();
+  printed = true; // Avoid printing problem definition more than once
 }
 
 

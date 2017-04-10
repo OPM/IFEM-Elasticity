@@ -32,9 +32,12 @@ class SIMElasticBar : public SIM1D
 public:
   //! \brief Default constructor.
   //! \param[in] n Number of consequtive solution vectors in core
-  SIMElasticBar(unsigned char n = 1) : SIM1D(3) { nsd = 3; nsv = n; }
+  SIMElasticBar(unsigned char n = 1);
   //! \brief The destructor deletes the nodal point load functions.
   virtual ~SIMElasticBar();
+
+  //! \brief Prints out problem-specific data to the log stream.
+  virtual void printProblem() const;
 
   //! \brief Returns the current rotation tensor for the specified global node.
   Tensor getNodeRotation(int inod) const;
@@ -58,6 +61,8 @@ protected:
 
 private:
   LoadMap myLoads; //!< Nodal point loads
+
+  mutable bool printed; //!< If \e true, the problem definition as been printed
 
 protected:
   unsigned char nsv; //!< Number of consequtive solution vectors in core
