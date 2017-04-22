@@ -55,6 +55,10 @@ protected:
   //! \brief Preprocessing performed before the FEM model generation.
   virtual void preprocessA();
 
+  //! \brief Renumbers all global nodes number if the model.
+  //! \param[in] nodeMap Mapping from old to new node number
+  virtual bool renumberNodes(const std::map<int,int>& nodeMap);
+
   //! \brief Assembles the nodal point loads, if any.
   virtual bool assembleDiscreteTerms(const IntegrandBase* itg,
                                      const TimeDomain& time);

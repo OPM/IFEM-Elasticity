@@ -83,10 +83,19 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
     nf = 3;
   else if (!strcasecmp(elem->Value(),"beam"))
     nf = 6;
-  else if (!strcasecmp(elem->Value(),"anasol") && !mySol)
+  else if (!strcasecmp(elem->Value(),"anasol"))
   {
-    IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
-    mySol = new AnaSol(elem,false);
+    std::string type("expression");
+    utl::getAttribute(elem,"type",type,true);
+    if (type == "expression")
+    {
+      IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
+      if (!mySol) mySol = new AnaSol(elem,false);
+    }
+    else
+      std::cerr <<"  ** SIMElasticBar::parse: Invalid analytical solution "
+                << type <<" (ignored)"<< std::endl;
+    return true;
   }
   else
     return this->SIM1D::parse(elem);
@@ -198,19 +207,18 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
       utl::getAttribute(child,"type",type);
 
       Vec3 Xnod;
-      double xi, u;
+      double xi;
       if (utl::getAttribute(child,"u",xi) && xi >= 0.0 && xi <= 1.0)
       {
         for (PatchVec::iterator it = myModel.begin(); it != myModel.end(); ++it)
           (*it)->setNoFields(nf);
         if (this->createFEMmodel())
-          if ((patch = this->getLocalPatchIndex(patch)) > 0)
-            node = myModel[patch-1]->evalPoint(&xi,&u,Xnod);
+          node = this->evalPoint(&xi,Xnod,&xi,patch,true);
       }
 
       if (child->FirstChild() && node > 0 && dof > 0 && dof <= nf)
       {
-        ScalarFunc*f = nullptr;
+        ScalarFunc* f = nullptr;
         IFEM::cout <<"\tNode "<< node <<" dof "<< dof <<" Load: ";
         if (type == "constant")
         {
@@ -223,6 +231,8 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
         myLoads[std::make_pair(node,dof)] = f;
       }
     }
+    else
+      myProblem->parse(child);
   }
 
   return true;
@@ -235,6 +245,25 @@ void SIMElasticBar::preprocessA ()
 
   for (PatchVec::iterator it = myModel.begin(); it != myModel.end(); ++it)
     (*it)->setNoFields(nf);
+}
+
+
+bool SIMElasticBar::renumberNodes (const std::map<int,int>& nodeMap)
+{
+  bool ok = this->SIM1D::renumberNodes(nodeMap);
+
+  LoadMap newLoads;
+  for (LoadMap::iterator it = myLoads.begin(); it != myLoads.end(); ++it)
+  {
+    int node = it->first.first;
+    if (utl::renumber(node,nodeMap,true))
+      newLoads[std::make_pair(node,it->first.second)] = it->second;
+    else
+      ok = false;
+  }
+
+  std::swap(myLoads,newLoads);
+  return ok;
 }
 
 

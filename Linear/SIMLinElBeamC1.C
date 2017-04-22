@@ -279,11 +279,7 @@ bool SIMLinElBeamC1::preprocessB ()
 {
   // Preprocess the nodal point loads
   for (PloadVec::iterator p = myLoads.begin(); p != myLoads.end();)
-  {
-    int pid = this->getLocalPatchIndex(p->patch);
-    if (pid < 1 || myModel[pid-1]->empty())
-      p = myLoads.erase(p);
-    else if ((p->inod = myModel[pid-1]->evalPoint(&p->xi,&p->xi,p->X)) < 1)
+    if ((p->inod = this->evalPoint(&p->xi,p->X,nullptr,p->patch,true)) < 1)
     {
       p = myLoads.erase(p);
       std::cerr <<"  ** SIMLinElBeamC1::preprocess: Load point ("<< p->xi
@@ -297,9 +293,8 @@ bool SIMLinElBeamC1::preprocessB ()
       std::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
 		<<" (u,v)=("<< p->xi <<"), node #"<< p->inod
 		<<", X = "<< p->X << std::endl;
-      p++;
+      ++p;
     }
-  }
 
   return true;
 }

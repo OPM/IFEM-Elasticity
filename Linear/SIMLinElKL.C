@@ -322,7 +322,7 @@ void SIMLinElKL::preprocessA ()
   if (!plSol) return;
 
   // Define analytical boundary condition fields (for rotations)
-  for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); p++)
+  for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); ++p)
     if (p->pcode == Property::DIRICHLET_ANASOL)
     {
       if (abs(p->pindx) >= 200)
@@ -372,11 +372,7 @@ bool SIMLinElKL::preprocessB ()
 {
   // Preprocess the nodal point loads
   for (PloadVec::iterator p = myLoads.begin(); p != myLoads.end();)
-  {
-    int pid = this->getLocalPatchIndex(p->patch);
-    if (pid < 1 || myModel[pid-1]->empty())
-      p = myLoads.erase(p);
-    else if ((p->inod = myModel[pid-1]->evalPoint(p->xi,p->xi,p->X)) < 1)
+    if ((p->inod = this->evalPoint(p->xi,p->X,nullptr,p->patch,true)) < 1)
     {
       p = myLoads.erase(p);
       std::cerr <<"  ** SIMLinElKL::preprocess: Load point ("
@@ -391,9 +387,8 @@ bool SIMLinElKL::preprocessB ()
       IFEM::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
                  <<" (u,v)=("<< p->xi[0] <<','<< p->xi[1]
                  <<"), node #"<< p->inod <<", X = "<< p->X << std::endl;
-      p++;
+      ++p;
     }
-  }
 
   return true;
 }
