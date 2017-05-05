@@ -97,6 +97,7 @@ public:
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return true; }
 
+  using ElasticBase::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -327,6 +328,7 @@ public:
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return true; }
 
+  using NormBase::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -334,6 +336,7 @@ public:
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
 
+  using NormBase::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -394,9 +397,11 @@ public:
   //! \brief Empty destructor.
   virtual ~ElasticityForce() {}
 
+  using ForceBase::getLocalIntegral;
   //! \brief Returns a local integral container for the element \a iEl.
   virtual LocalIntegral* getLocalIntegral(size_t, size_t iEl, bool) const;
 
+  using ForceBase::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point

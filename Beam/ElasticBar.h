@@ -58,10 +58,12 @@ public:
   virtual int getIntegrandType() const
   { return NO_DERIVATIVES | ELEMENT_CORNERS; }
 
+  using ElasticBase::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
   //! \param[in] nen Number of nodes on element
   virtual LocalIntegral* getLocalIntegral(size_t nen, size_t, bool) const;
 
+  using ElasticBase::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point

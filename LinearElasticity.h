@@ -42,6 +42,7 @@ public:
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
 
+  using Elasticity::initIntegration;
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
   //! \param[in] nBp Total number of boundary integration points
@@ -56,6 +57,7 @@ public:
   //! \param nBlock Running result block counter
   virtual bool writeGlvT(VTF* vtf, int iStep, int& geoBlk, int& nBlock) const;
 
+  using Elasticity::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point

@@ -35,6 +35,7 @@ public:
   virtual ~NewmarkDriver() {}
 
 protected:
+  using Newmark::parse;
   //! \brief Parses a data section from an XML document.
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem)

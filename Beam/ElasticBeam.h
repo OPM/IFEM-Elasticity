@@ -57,6 +57,7 @@ public:
   virtual int getIntegrandType() const
   { return NO_DERIVATIVES | ELEMENT_CORNERS | NODAL_ROTATIONS; }
 
+  using ElasticBase::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
   //! \param[in] nen Number of nodes on element
   virtual LocalIntegral* getLocalIntegral(size_t nen, size_t, bool) const;
@@ -70,6 +71,7 @@ public:
                            const FiniteElement& fe, const Vec3&, size_t,
                            LocalIntegral& elmInt);
 
+  using ElasticBase::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -168,6 +170,7 @@ public:
   //! \brief Returns the number of reduced-order integration points.
   virtual int getReducedIntegration(int) const { return 0; }
 
+  using NormBase::initElement;
   //! \brief Initializes current element for numerical integration.
   //! \param[in] MNPC Matrix of nodal point correspondance for current element
   //! \param elmInt The local integral object for current element
@@ -175,6 +178,7 @@ public:
                            const FiniteElement&, const Vec3&, size_t,
                            LocalIntegral& elmInt);
 
+  using NormBase::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point

@@ -46,6 +46,7 @@ public:
   //! \brief Defines which FE quantities are needed by the integrand.
   virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
 
+  using ElasticBar::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -53,7 +54,7 @@ public:
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
 
-  using IntegrandBase::evalSol;
+  using ElasticBar::evalSol;
   //! \brief Evaluates the secondary solution at a result point.
   //! \param[out] s The solution field values at current point
   //! \param[in] fe Finite element data at current point
