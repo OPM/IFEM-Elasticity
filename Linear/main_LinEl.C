@@ -345,7 +345,7 @@ int main (int argc, char** argv)
     if (!gNorm.empty())
     {
       const Vector& norm = gNorm.front();
-      if (oneD)
+      if (oneD && !KLp)
       {
         IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
         if (norm.size() > 2)
@@ -364,25 +364,27 @@ int main (int argc, char** argv)
                      << norm(4)/norm(3)*100.0;
       }
       size_t j = 1;
+      const char* uRef = model->haveAnaSol() ? "|u|)   : " : "|u^r|) : ";
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
       {
-        IFEM::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<";
-        IFEM::cout <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1);
-        IFEM::cout <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2);
-        IFEM::cout <<"\n- relative error (% of |u^r|) : "
-                   << gNorm[j](2)/gNorm[j](1)*100.0;
-        if (j == 0) continue;
+        double Rel = 100.0/(model->haveAnaSol() ? norm(3) : gNorm[j](1));
+        IFEM::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<"
+                   <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1)
+                   <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2)
+                   <<"\n- relative error (% of "<< uRef << gNorm[j](2)*Rel;
 
         if (model->haveAnaSol())
-          IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< gNorm[j](5)
-                     <<"\n- relative error (% of |u|)   : "
-                     << gNorm[j](5)/norm(3)*100.0
+        {
+          double exaErr = gNorm[j](gNorm[j].size()-1);
+          IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< exaErr
+                     <<"\n- relative error (% of "<< uRef << exaErr*Rel
                      <<"\nEffectivity index             : "
                      << gNorm[j](2)/norm(4);
+        }
 
-        IFEM::cout <<"\nL2-norm |s^r| =(s^r,s^r)^0.5         : "<< gNorm[j](3);
-        IFEM::cout <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4);
-        IFEM::cout <<"\n- relative error (% of |s^r|) : "
+        IFEM::cout <<"\nL2-norm |s^r| = (s^r,s^r)^0.5        : "<< gNorm[j](3)
+                   <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4)
+                   <<"\n- relative error (% of |s^r|) : "
                    << gNorm[j](4)/gNorm[j](3)*100.0;
       }
       IFEM::cout << std::endl;

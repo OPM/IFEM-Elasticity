@@ -45,7 +45,7 @@ Exact error a(e,e)^0.5, e=u-u^h      : 0.99864
 Exact relative error (%) : 15.203
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 6.45206
 Error norm a(e,e)^0.5, e=u^r-u^h     : 0.51988
- relative error (% of |u^r|) : 8.0576
+ relative error (% of |u|)   : 7.9149
 Exact error a(e,e)^0.5, e=u-u^r      : 0.77931
  relative error (% of |u|)   : 11.864
   Point #1:	sol1 =  1.258638e-03

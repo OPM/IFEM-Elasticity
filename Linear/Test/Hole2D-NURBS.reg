@@ -41,6 +41,6 @@ Exact error a(e,e)^0.5, e=u-u^h      : 0.0197653
 Exact relative error (%) : 1.59341
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 1.24178
 Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0384595
- relative error (% of |u^r|) : 3.09712
+ relative error (% of |u|)   : 3.1004
 Exact error a(e,e)^0.5, e=u-u^r      : 0.0424255
  relative error (% of |u|)   : 3.4202

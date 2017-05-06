@@ -73,6 +73,6 @@ External energy ((f,u^h)+(t,u^h)^0.5 : 138475
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 131734
 Error norm a(e,e)^0.5, e=u^r-u^h     : 1218.15
  relative error (% of |u^r|) : 0.924711
-L2-norm |s^r| =(s^r,s^r)^0.5         : 6.00616e+10
+L2-norm |s^r| = (s^r,s^r)^0.5        : 6.00616e+10
 L2-error (e,e)^0.5, e=s^r-s^h        : 6.53109e+08
  relative error (% of |s^r|) : 1.0874
