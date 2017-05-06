@@ -31,9 +31,9 @@ KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : nsd(n)
   gravity = 0.0;
   thickness = 0.1;
 
-  material = NULL;
-  locSys = NULL;
-  presFld = NULL;
+  material = nullptr;
+  locSys = nullptr;
+  presFld = nullptr;
   eM = eK = 0;
   eS = 0;
 }
@@ -158,7 +158,8 @@ bool KirchhoffLovePlate::haveLoads () const
 
 void KirchhoffLovePlate::initIntegration (size_t nGp, size_t)
 {
-  presVal.resize(nGp,std::make_pair(Vec3(),Vec3()));
+  if (this->haveLoads())
+    presVal.resize(nGp,std::make_pair(Vec3(),Vec3()));
 }
 
 
@@ -383,19 +384,12 @@ std::string KirchhoffLovePlate::getField1Name (size_t,
 std::string KirchhoffLovePlate::getField2Name (size_t i,
 					       const char* prefix) const
 {
-  if (i >= 3) return NULL;
+  if (i >= 3) return "";
 
-  static const char* s[6] = { "m_xx", "m_yy", "m_xy" };
+  static const char* s[3] = { "m_xx", "m_yy", "m_xy" };
+  if (!prefix) return s[i];
 
-  std::string name;
-  if (prefix)
-    name = std::string(prefix) + " ";
-  else
-    name.clear();
-
-  name += s[i];
-
-  return name;
+  return prefix + std::string(" ") + s[i];
 }
 
 
@@ -414,6 +408,7 @@ KirchhoffLovePlateNorm::KirchhoffLovePlateNorm (KirchhoffLovePlate& p,
   : NormBase(p), anasol(a)
 {
   nrcmp = myProblem.getNoFields(2);
+  projBou = true;
 }
 
 
@@ -434,20 +429,23 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
   if (!problem.evalSol(mh,pnorm.vec.front(),fe,X))
     return false;
 
+  double hk4 = fe.h*fe.h*fe.h*fe.h;
+  double Res = 0.0;
   size_t ip = 0;
+
   // Integrate the energy norm a(w^h,w^h)
   pnorm[ip++] += mh.dot(Cinv*mh)*fe.detJxW;
 
-  if (problem.haveLoads())
-  {
-    // Evaluate the body load
-    double p = problem.getPressure(X);
-    // Evaluate the displacement field
-    double w = pnorm.vec.front().dot(fe.N);
-    // Integrate the external energy (p,w^h)
-    pnorm[ip] += p*w*fe.detJxW;
-  }
-  ip++;
+  // Evaluate the body load
+  double p = problem.getPressure(X);
+  // Evaluate the displacement field
+  double w = pnorm.vec.front().dot(fe.N);
+  // Integrate the external energy (p,w^h)
+  pnorm[ip++] += p*w*fe.detJxW;
+
+#if INT_DEBUG > 3
+  std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X <<"):";
+#endif
 
   if (anasol)
   {
@@ -461,12 +459,12 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
   }
 
-  size_t i, j;
+  size_t i, j, nen = fe.N.size();
   for (i = 0; i < pnorm.psol.size(); i++)
     if (!pnorm.psol[i].empty())
     {
       // Evaluate projected stress resultant field
-      Vector mr(mh.size());
+      Vector mr(nrcmp);
       for (j = 0; j < nrcmp; j++)
         mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
 
@@ -481,12 +479,29 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       // Integrate the error in L2-norm (m^r-m^h,m^r-m^h)
       pnorm[ip++] += error.dot(error)*fe.detJxW;
 
+      // Evaluate the interior residual of the projected solution
+      if (nrcmp == 1)
+        Res = pnorm.psol[i].dot(fe.d2NdX2) + p;
+      else
+      {
+        double d2mxxdx2 = pnorm.psol[i].dot(fe.d2NdX2,0,3);
+        double d2myydy2 = pnorm.psol[i].dot(fe.d2NdX2,1,3,nen*3);
+        double d2mxydxy = pnorm.psol[i].dot(fe.d2NdX2,2,3,nen);
+        Res = d2mxxdx2 + d2mxydxy + d2mxydxy + d2myydy2 + p;
+      }
+      // Integrate the residual error in the projected solution
+#if INT_DEBUG > 3
+      std::cout <<"\n\tResidual h^4*|Laplace{m^r}-p|^2 = "
+                << hk4*Res*Res << std::endl;
+#endif
+      pnorm[ip++] += hk4*Res*Res*fe.detJxW;
+
       if (anasol)
       {
         // Integrate the error in the projected solution a(w-w^r,w-w^r)
         error = m - mr;
         pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
-        ip++; // Make room for the local effectivity index here
+        ip += 2; // Make room for the local effectivity indices here
       }
     }
 
@@ -510,11 +525,21 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
 
   // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
-  // with e^r = w^r - w^h  and  e = w - w^h
-  for (size_t ip = 9; ip < pnorm.size(); ip += 6)
-    pnorm[ip] = sqrt(pnorm[ip-4] / pnorm[3]);
+  // with e^r = w^r - w^h  and  e = w - w^h,
+  // and sqrt((a(e^r,e^r)+res(w^r))/a(e,e))
+  for (size_t ip = 11; ip < pnorm.size(); ip += 8)
+  {
+    pnorm[ip-1] = sqrt(pnorm[ip-6] / pnorm[3]);
+    pnorm[ip] = sqrt((pnorm[ip-6]+pnorm[ip-3]) / pnorm[3]);
+  }
 
   return true;
+}
+
+
+int KirchhoffLovePlateNorm::getIntegrandType () const
+{
+  return SECOND_DERIVATIVES | ELEMENT_CORNERS;
 }
 
 
@@ -525,14 +550,14 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
   else if (group == 1)
     return anasol ? 4 : 2;
   else
-    return anasol ? 6 : 4;
+    return anasol ? 8 : 5;
 }
 
 
 std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
                                              const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 4))
+  if (i == 0 || j == 0 || j > 8 || (i == 1 && j > 4))
     return this->NormBase::getName(i,j,prefix);
 
   static const char* u[4] = {
@@ -542,19 +567,18 @@ std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
     "a(e,e)^0.5, e=w-w^h"
   };
 
-  static const char* p[6] = {
+  static const char* p[8] = {
     "a(w^r,w^r)^0.5",
     "a(e,e)^0.5, e=w^r-w^h",
     "(w^r,w^r)^0.5",
     "(e,e)^0.5, e=w^r-w^h",
+    "res(w^r)^0.5",
     "a(e,e)^0.5, e=w-w^r",
-    "effectivity index"
+    "effectivity index^*",
+    "effectivity index^RES"
   };
 
-  const char** s = i > 1 ? p : u;
+  std::string name(i > 1 ? p[j-1] : u[j-1]);
 
-  if (!prefix)
-    return s[j-1];
-
-  return prefix + std::string(" ") + s[j-1];
+  return prefix ? prefix + std::string(" ") + name : name;
 }

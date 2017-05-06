@@ -132,18 +132,18 @@ public:
   //! manually when leaving the scope of the pointer variable receiving the
   //! returned pointer value.
   //! \param[in] asol Pointer to analytical solution fields (optional)
-  virtual NormBase* getNormIntegrand(AnaSol* asol = 0) const;
+  virtual NormBase* getNormIntegrand(AnaSol* asol = nullptr) const;
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
   virtual size_t getNoFields(int fld = 2) const;
   //! \brief Returns the name of the primary solution field.
   //! \param[in] prefix Name prefix
-  virtual std::string getField1Name(size_t, const char* prefix = 0) const;
+  virtual std::string getField1Name(size_t, const char* prefix) const;
   //! \brief Returns the name of a secondary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField2Name(size_t i, const char* prefix = 0) const;
+  virtual std::string getField2Name(size_t i, const char* prefix) const;
 
 protected:
   //! \brief Calculates integration point mass matrix contributions.
@@ -211,7 +211,7 @@ public:
   //! \brief The only constructor initializes its data members.
   //! \param[in] p The linear elasticity problem to evaluate norms for
   //! \param[in] a The analytical stress resultant field (optional)
-  KirchhoffLovePlateNorm(KirchhoffLovePlate& p, STensorFunc* a = 0);
+  KirchhoffLovePlateNorm(KirchhoffLovePlate& p, STensorFunc* a = nullptr);
   //! \brief Empty destructor.
   virtual ~KirchhoffLovePlateNorm() {}
 
@@ -238,6 +238,12 @@ public:
   //!
   //! \details This method is used to compute effectivity indices.
   virtual bool finalizeElement(LocalIntegral& elmInt);
+
+  //! \brief Defines which FE quantities are needed by the integrand.
+  virtual int getIntegrandType() const;
+
+  //! \brief Returns whether this norm has explicit boundary contributions.
+  virtual bool hasBoundaryTerms() const { return true; }
 
   //! \brief Returns the number of norm groups or size of a specified group.
   //! \param[in] group The norm group to return the size of

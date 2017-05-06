@@ -376,18 +376,27 @@ int main (int argc, char** argv)
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
       {
         double Rel = 100.0/(model->haveAnaSol() ? norm(3) : gNorm[j](1));
+        bool haveResErr = gNorm[j].size() >= (model->haveAnaSol() ? 8 : 5);
         IFEM::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<"
                    <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1)
                    <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2)
                    <<"\n- relative error (% of "<< uRef << gNorm[j](2)*Rel;
+        if (haveResErr)
+          IFEM::cout <<"\nResidual error (r(u^r) + J(u^r))^0.5 : "<< gNorm[j](5)
+                     <<"\n- relative error (% of "<< uRef << gNorm[j](5)*Rel;
 
         if (model->haveAnaSol())
         {
-          double exaErr = gNorm[j](gNorm[j].size()-1);
+          double exaErr = gNorm[j](gNorm[j].size() - (haveResErr ? 2 : 1));
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< exaErr
                      <<"\n- relative error (% of "<< uRef << exaErr*Rel
                      <<"\nEffectivity index             : "
                      << gNorm[j](2)/norm(4);
+          if (haveResErr)
+            IFEM::cout <<"\nEffectivity index, theta^EX          : "
+                       << (gNorm[j](2)+exaErr)/norm(4)
+                       <<"\nEffectivity index, theta^RES         : "
+                       << (gNorm[j](2)+gNorm[j](5))/norm(4);
         }
         if (j < xNorm.size() && !xNorm[j].empty())
         {
@@ -395,7 +404,10 @@ int main (int argc, char** argv)
           IFEM::cout <<"\nEnergy norm |u^rr| = a(u^rr,u^rr)^0.5: "<< xnor(1)
                      <<"\nError norm a(e,e)^0.5, e=u^rr-u^h    : "<< xnor(2)
                      <<"\n- relative error (% of "<< uRef << xnor(2)*Rel;
-          double exaErr = xnor(xnor.size()-1);
+          if (haveResErr)
+            IFEM::cout <<"\nResidual error (r(u^rr) + J(u^rr))^0.5 : "<< xnor(5)
+                       <<"\n- relative error (% of "<< uRef << xnor(5)*Rel;
+          double exaErr = xnor(xnor.size() - (haveResErr ? 2 : 1));
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^rr     : "<< exaErr
                      <<"\n- relative error (% of "<< uRef << exaErr*Rel;
         }
