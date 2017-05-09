@@ -1,0 +1,251 @@
+% $Id$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+\usepackage{eqalign}
+\topmargin    -13mm
+\oddsidemargin  0mm
+\evensidemargin 0mm
+\textheight   247mm
+\textwidth    160mm
+\def\R{{\rm I\mkern-4muR}}
+\def\deriv#1#2{\frac{\partial#1}{\partial#2}}
+\def\dderiv#1#2{\frac{\partial^2#1}{\partial#2^2}}
+\def\dxderiv#1#2#3{\frac{\partial^2#1}{\partial#2\partial#3}}
+\def\dV{\:{\rm d}A}
+\def\dA{\:{\rm d}S}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{The Kirchhoff-Love thin plate problem}
+\author{\sl Knut Morten Okstad, SINTEF Digital}
+\begin{document}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+This document describes the strong- and associated weak form of the linear
+thin plate problem based on Kirchhoff-Love plate theory, which is included
+in the linear elasticity application of {\sl IFEM}.
+Refer to the class {\tt KirchhoffLovePlate} of the source code for the actual
+integrand implementation.
+
+\section{Strong form}
+
+Given a distributed transverse load $p(x,y)$
+defined over a domain $\Omega\subset\R^2$,
+a bending moment $\bar{M}(x,y)$ and twist moment $\bar{T}(x,y)$
+defined over the boundary $\partial\Omega_m$,
+a transverse shear force $\bar{Q}(x,y)$
+defined over the boundary $\partial\Omega_q$, and
+two functions $\bar{w}(x,y)$ and $\bar{\theta}(x,y)$ defined over the boundaries
+$\partial\Omega_w=\partial\Omega\setminus\partial\Omega_q$ and
+$\partial\Omega_\theta=\partial\Omega\setminus\partial\Omega_m$, respectively,
+find the scalar function $w(x,y)\in{\cal W}(\Omega)$ satisfying
+%
+\begin{eqnarray}
+  \label{eq:strong}
+  \left.\eqalign{
+    \dderiv{m_{xx}}{x} + 2\dxderiv{m_{xy}}{x}{y} + \dderiv{m_{yy}}{y} &\;=\;-p \cr
+    m_{xx} &\;=\; -D\left(\dderiv{w}{x} + \nu\dderiv{w}{y}\right) \cr
+    m_{yy} &\;=\; -D\left(\dderiv{w}{y} + \nu\dderiv{w}{x}\right) \cr
+    m_{xy} &\;=\; -D(1-\nu)\dxderiv{w}{x}{y}}
+  \right\} &\forall& \{x,y\}\in\overline{\Omega} \\[2mm]
+  \label{eq:neumannI}
+  \left.\eqalign{
+    m_{xx}n_x + m_{xy}n_y &\;=\; \bar{M} \cr
+    m_{xy}n_x + m_{yy}n_y &\;=\; \bar{T}}
+  \right\} &\forall& \{x,y\}\in\partial\Omega_m \\[2mm]
+  \label{eq:neumannII}
+  \left(\deriv{m_{xx}}{x} + \deriv{m_{xy}}{y}\right)n_x +
+  \left(\deriv{m_{xy}}{x} + \deriv{m_{yy}}{y}\right)n_y \;=\;
+  \bar{Q} &\forall& \{x,y\}\in\partial\Omega_q \\[2mm]
+  w \;\;=\; \bar{w} &\forall& \{x,y\}\in\partial\Omega_w \\
+  \deriv{w}{x}n_x + \deriv{w}{y}n_y \;=\;\; \bar{\theta}
+  &\forall& \{x,y\}\in\partial\Omega_\theta
+\end{eqnarray}
+%
+where $D=\frac{Et^3}{12(1-\nu^2)}$ is the plate stiffness parameter composed of
+the Young's modulus $E$, the Poisson's ratio $\nu$, and the plate thickness $t$.
+The two terms inside the parentheses of Equation~(\ref{eq:neumannII}) equals the
+transverse shear forces, $q_x$ and $q_y$, respectively, and $n_x$ and $n_y$ are
+the components of the outward-directed unit normal vector on $\partial\Omega$.
+The solution space ${\cal W}(\Omega)$ defines the set of all admissible solution
+functions $w$ on the domain $\Omega$, with the additional constraints
+$w=\bar{w}(x,y)\;\forall\{x,y\}\in\partial\Omega_w$ and
+$\deriv{w}{x}n_x+\deriv{w}{y}n_y=\bar{\theta}(x,y)
+\;\forall\{x,y\}\in\partial\Omega_\theta$.
+Assuming the plate stiffness $D$ is constant, the Equations~(\ref{eq:strong})
+can be combined into the following fourth-order partial differential equation
+%
+\begin{equation}
+  \label{eq:strong-constD}
+  \frac{\partial^4w}{\partial x^4} +
+ 2\frac{\partial^4w}{\partial x^2\partial y^2} +
+  \frac{\partial^4w}{\partial y^4} = \frac{p}{D}
+  \quad\forall\quad\{x,y\}\in\overline{\Omega}
+\end{equation}
+%
+Similarly, Equation~(\ref{eq:neumannII}) can be transformed by substituting the
+expressions for $m_{xx}$, $m_{yy}$ and $m_{xy}$ from Equation~(\ref{eq:strong}),
+resulting in
+%
+\begin{equation}
+  \label{eq:neumann-shear}
+  \deriv{}{x}\left(\dderiv{w}{x} + \dderiv{w}{y}\right)n_x +
+  \deriv{}{y}\left(\dderiv{w}{x} + \dderiv{w}{y}\right)n_y = -\frac{\bar{Q}}{D}
+  \quad\forall\quad\{x,y\}\in\partial\Omega_q
+\end{equation}
+
+\section{Weak form}
+
+To develop the weak form, it is convenient to introduce the shortened notation
+for partial differentiation $(\cdot)_{,\alpha}:=\deriv{(\cdot)}{x_\alpha}$, where
+$\alpha$ is a running index over the coordinate directions ($\alpha=1\ldots2$),
+and assuming Einsteins summation convention over repetitive indices,
+e.g., $a_{\alpha\alpha} := a_{11} + a_{22}$.
+With $\bar{M}_1:=\bar{M}$ and $\bar{M}_2:=\bar{T}$,
+the Equations~(\ref{eq:strong-constD}), (\ref{eq:neumannI})
+and~(\ref{eq:neumann-shear}), respectively,
+can then be written in the following compact form
+
+%
+\begin{eqnarray}
+  \label{eq:strong-omega}
+  D\,w_{,\alpha\alpha\beta\beta} \;=\; p \quad
+  &\forall&x_\alpha\in\overline{\Omega} \\[2mm]
+  \label{eq:neumann-m}
+  m_{\alpha\beta}n_\beta \;=\; \bar{M}_\alpha
+  &\forall&x_\alpha\in\partial\Omega_m \\[2mm]
+  \label{eq:neumann-q}
+  D\,w_{,\alpha\alpha\beta}n_\beta \;=\: -\bar{Q}
+  &\forall&x_\alpha\in\partial\Omega_q
+\end{eqnarray}
+
+The weak form is obtained by multiplying Equation~(\ref{eq:strong-omega}) by
+a test function $v(x_\alpha)\in{\cal V}(x_\alpha)$ and then integrating over
+the domain $\Omega$, viz.
+%
+\begin{equation}
+  \label{eq:tested}
+  D\int_\Omega w_{,\alpha\alpha\beta\beta}\,v\dV = \int_\Omega p\,v\dV
+\end{equation}
+%
+The test space ${\cal V}(x_\alpha)$ is the same as ${\cal W}(x_\alpha)$,
+except that their functions $v(x_\alpha)$ have the constraint
+$v=0\;\forall\;x_\alpha\in\Omega_w$ and
+$v_{,\alpha}n_\alpha=0\;\forall\;x_\alpha\in\partial\Omega_\theta$
+instead of those of ${\cal W}(x_\alpha)$.
+
+By applying the Green's identity (integration by parts),
+Equation~(\ref{eq:tested}) is transformed to
+%
+\begin{equation}
+  -D\int\limits_\Omega w_{,\alpha\alpha\beta}\,v_{,\beta}\dV +
+   D\int\limits_{\partial\Omega} w_{,\alpha\alpha\beta}\,n_\beta\,v\dA =
+   \int\limits_\Omega p\,v\dV
+\end{equation}
+%
+The boundary integral of the second term can be further transformed by using
+that $v(x_\alpha)=0\;\forall\;x_\alpha\in\Omega_q$ and substituting
+Equation~(\ref{eq:neumann-q}), resulting in
+%
+\begin{equation}
+  -D\int\limits_\Omega w_{,\alpha\alpha\beta}\,v_{,\beta}\dV =
+  \int\limits_\Omega p\,v\dV +
+  \int\limits_{\partial\Omega_q} \bar{Q}\,v\dA
+\end{equation}
+%
+The left-hand-side term is next transformed by applying Green's identity a
+a second time, resulting in
+%
+\begin{equation}
+  D\int\limits_\Omega w_{,\alpha\beta}\,v_{,\alpha\beta}\dV -
+  D\int\limits_{\partial\Omega} w_{,\alpha\beta}\,n_\alpha\,v_{,\beta}\dA =
+  \int\limits_\Omega p\,v\dV +
+  \int\limits_{\partial\Omega_q} \bar{Q}\,v\dA
+\end{equation}
+%
+or simply
+%
+\begin{equation}
+  a(w,v) \;=\; l(v)
+\end{equation}
+%
+where we introduce the bilinear form $a(w,v)$
+and the linear functional $l(v)$ as
+%
+\begin{eqnarray}
+  \label{eq:bilinear form}
+  a(w,v) &:=& D\int\limits_\Omega w_{,\alpha\beta}\,v_{,\alpha\beta}\dV
+         \;=\;-\int\limits_\Omega m_{\alpha\beta}\,v_{,\alpha\beta}\dV \\
+  l(v)   &:=& \int\limits_\Omega p\,v\dV +
+              \int\limits_{\partial\Omega_q} \bar{Q}\,v\dA +
+              \int\limits_{\partial\Omega_m} \bar{M}_\alpha\,v_{,\alpha}\dA
+\end{eqnarray}
+
+\section{Energy norms}
+
+The computed finite element (FE) solution can be assessed by evaluating norm.
+For a given FE solution $w^h$, we therefore define its energy norm as
+%
+\begin{equation}
+  \label{eq:internal energy}
+  U^h = \|w^h\|_E := \sqrt{a(w^h,w^h)}
+\end{equation}
+%
+and the corresponding external energy is
+%
+\begin{equation}
+  U_{ext}^h = \sqrt{l(w^h)}
+\end{equation}
+%
+The FE implementation can therefore be verified by always asserting that
+$U^h=U_{ext}^h$ for any problem setup.
+Notice that in the evaluation of Equation~(\ref{eq:internal energy}),
+we do not use the primary solution, $w^h$,
+but only the secondary solution, $m_{\alpha\beta}^h$,
+through Equation~(\ref{eq:bilinear form}).
+
+\section{Error estimates}
+
+An estimate of the discretization error in the FE solution can be obtained by
+projecting the discontinuous secondary solution, $m_{\alpha\beta}^h$ onto a
+continuous basis of higher order (or same order as the primary solution, $w^h$),
+resulting in the recovered solution, $m_{\alpha\beta}^*$.
+In {\sl IFEM}, several projection methods for obtaining $m_{\alpha\beta}^*$ are
+available, e.g., discrete and continuous global $L_2$-projection.
+
+With $m_{\alpha\beta}^*$ available, the discretization error is estimated by
+%
+\begin{equation}
+  \label{eq:error estimate}
+  \eta^{RES} = \|w^*-w^h\|_E +
+  \sqrt{\sum_{k=1}^{n_{\rm el}}\left\{h_k^2\|R^*\|_{L_2(\Omega_k)}^2 +
+    \frac{h_k}{2}\left(\|J_m^*\|_{L_2(\partial{\Omega_m}_k)}^2 +
+                       \|J_q^*\|_{L_2(\partial{\Omega_q}_k)}^2\right)\right\}}
+\end{equation}
+%
+where $h_k$ denotes some characteristic size of element $k$ (typically the
+length of the longest diagonal). $R^*$, $J_m^*$, $J_q^*$ are, respectively,
+the interior residual of the recovered solution $m_{\alpha\beta}^*$,
+and the jump (boundary residual) between the recovered solution and the
+prescribed edge moment $\bar{M}_\alpha$ and shear force $\bar{Q}$.
+The notation $\|\cdot\|_{L_2(\Omega_k)}$ denotes the $L_2$-norm of the quantity
+$(\cdot)$ over the sub-domain $\Omega_k$ of element $k$, i.e.
+%
+\begin{equation}
+  \|\cdot\|_{L_2(\Omega_k)}^2 := \int\limits_{\Omega_k} (\cdot)^2\dV
+  \quad\mbox{and}\quad
+  \|\cdot\|_{L_2(\partial\Omega_k)}^2 := \int\limits_{\partial\Omega_k} (\cdot)^2\dA
+\end{equation}
+
+The interior residual is computed by inserting $m_{\alpha\beta}^*$ into
+Equation~(\ref{eq:strong})$_1$:
+%
+\begin{equation}
+  R^* = m_{\alpha\beta,\alpha\beta}^* - p
+\end{equation}
+%
+The jump terms are computed from the Neumann boundary conditions,
+Equations~(\ref{eq:neumann-m}) and~(\ref{eq:neumann-q}), respectively:
+
+\end{document}

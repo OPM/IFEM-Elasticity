@@ -23,8 +23,13 @@ class Material;
 
 /*!
   \brief Class representing the integrand of thin plate problems.
-  \details The formulation is based on Kirchhoff-Love plate theory and therefore
-  requires second-derivatives of the basis functions.
+
+  \details The formulation is based on Kirchhoff-Love plate theory
+  and therefore requires second-derivatives of the basis functions.
+
+  See the document doc/Integrands/KirchhoffLove.pdf
+  for the theoretical foundation of the integrand implemented in
+  the evalInt() and evalBou() methods.
 */
 
 class KirchhoffLovePlate : public IntegrandBase
