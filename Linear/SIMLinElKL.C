@@ -247,6 +247,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
       if (type == "navierplate") {
         double a = 0.0, b = 0.0, c = 0.0, d = 0.0, t = 0.0;
         double E = 10000.0, nu = 0.3, pz = 1.0, xi = 0.0, eta = 0.0;
+        int max_mn = 100;
         utl::getAttribute(child,"a",a);
         utl::getAttribute(child,"b",b);
         utl::getAttribute(child,"c",c);
@@ -257,6 +258,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         utl::getAttribute(child,"pz",pz);
         utl::getAttribute(child,"xi",xi);
         utl::getAttribute(child,"eta",eta);
+        utl::getAttribute(child,"nTerm",max_mn);
         IFEM::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
                    <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
         if (xi != 0.0 && eta != 0.0) {
@@ -264,13 +266,13 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
           if (c != 0.0 && d != 0.0) {
             IFEM::cout <<" c="<< c <<" d="<< d;
             if (!mySol)
-              mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d);
+              mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,c,d,max_mn);
           }
           else if (!mySol)
-            mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta);
+            mySol = new NavierPlate(a,b,t,E,nu,pz,xi,eta,0.0,0.0,max_mn);
         }
         else if (!mySol)
-          mySol = new NavierPlate(a,b,t,E,nu,pz);
+          mySol = new NavierPlate(a,b,t,E,nu,pz,max_mn);
       }
       else if (type == "expression") {
         IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;

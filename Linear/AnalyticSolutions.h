@@ -127,7 +127,7 @@ class CurvedBeam : public STensorFunc
 public:
   //! \brief Constructor with some default parameters.
   CurvedBeam(double u0 = 0.1, double Ri = 1.0, double Ro = 2.0,
-	     double E = 2.1e7, bool use3D = false);
+             double E = 2.1e7, bool use3D = false);
   //! \brief Empty destructor.
   virtual ~CurvedBeam() {}
 
@@ -190,14 +190,11 @@ public:
   virtual ~ThinPlateSol() {}
 
   //! \brief Returns the rotation field thetaX = dw/dx.
-  virtual RealFunc* thetaX() { return NULL; }
+  virtual RealFunc* thetaX() { return nullptr; }
   //! \brief Returns the rotation field thetaY = dw/dy.
-  virtual RealFunc* thetaY() { return NULL; }
+  virtual RealFunc* thetaY() { return nullptr; }
 
 protected:
-  //! \brief Enum defining the solution derivatives.
-  enum Derivative { W, dWdx, dWdy, d2Wdx2, d2Wdy2, d2Wdxdy };
-
   double D;  //!< Plate stiffness
   double nu; //!< Poisson's ratio
 };
@@ -217,9 +214,9 @@ class NavierPlate : public ThinPlateSol, private STensorFunc
   public:
     //! \brief The constructor initializes the member references.
     Displ(double& p, double& d, double& a, double& b, double& x, double& y,
-	  double& cc, double& dd, char& t, int& i) :
+          double& cc, double& dd, char& t, int n, int& i) :
       pz(p), D(d), alpha(a), beta(b), xi(x), eta(y), c2(cc), d2(dd),
-      type(t), inc(i) {}
+      type(t), inc(i) { mn = type > 0 ? n : n-1; }
     //! \brief Empty destructor.
     virtual ~Displ() {}
 
@@ -238,24 +235,35 @@ class NavierPlate : public ThinPlateSol, private STensorFunc
     double& c2;   //!< Partial load extension in X-direction
     double& d2;   //!< Partial load extension in Y-direction
     char&   type; //!< Load type parameter (0, 1, or 2)
+    int     mn;   //!< Number of terms in Fourier series in each direction
     int&    inc;  //!< Increment in Fourier term summation (1 or 2)
   };
 
 public:
   //! \brief Constructor for plate with constant pressure load.
-  NavierPlate(double a, double b, double t, double E, double Poiss, double P);
+  NavierPlate(double a, double b, double t, double E, double Poiss, double P,
+              int max_mn = 100);
   //! \brief Constructor for plate with partial pressure or point load.
   NavierPlate(double a, double b, double t, double E, double Poiss, double P,
-	      double xi_, double eta_, double c = 0.0, double d = 0.0);
+              double xi_, double eta_, double c = 0.0, double d = 0.0,
+              int max_mn = 100);
   //! \brief The destructor clears pointers to internal function members.
   virtual ~NavierPlate();
+
+  //! \brief Evaluates a first derivative at the point \a X.
+  virtual SymmTensor deriv(const Vec3& X, int dir) const;
+  //! \brief Evaluates a second derivative at the pointSymmTensor \a X.
+  virtual SymmTensor dderiv(const Vec3& X, int dir1, int dir2) const;
 
 protected:
   //! \brief Evaluates the analytic stress resultant tensor at the point \a x.
   virtual SymmTensor evaluate(const Vec3& x) const;
+  //! \brief Evaluates the solution/derivative at the point \a X.
+  SymmTensor evaluate(const Vec3& X, int deriv) const;
 
   //! \brief Adds the m'th and n'th terms of the plate solution to the moments.
-  void addTerms(std::vector<double>& M, double x, double y, int m, int n) const;
+  void addTerms(std::vector<double>& M, double x, double y,
+                int m, int n, int deriv) const;
 
 private:
   Displ  w; //!< The analytical displacement field
@@ -269,6 +277,7 @@ private:
   double eta;  //!< Y-position of point/partial load
   double c2;   //!< Partial load extension in X-direction
   double d2;   //!< Partial load extension in Y-direction
+  int    mxmn; //!< Max number of terms in Fourier series in each direction
   int    inc;  //!< Increment in Fourier term summation (1 or 2)
 };
 

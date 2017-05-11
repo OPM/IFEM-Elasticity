@@ -229,9 +229,14 @@ SymmTensor Pipe::evaluate (const Vec3& X) const
 }
 
 
+//! \brief Enum defining thin-plate solution derivatives.
+enum Derivative { W = 0, dWdx = 1, dWdy = 2,
+                  d2Wdx2 = 11, d2Wdxdy = 12, d2Wdydx = 21, d2Wdy2 = 22 };
+
+
 ThinPlateSol::ThinPlateSol (double E, double v, double t) : nu(v)
 {
-  D = E*t*t*t / (12.0 - 12*nu*nu);
+  D = E*t*t*t / (12.0 - 12.0*nu*nu);
 }
 
 
@@ -245,9 +250,10 @@ ThinPlateSol::ThinPlateSol (double E, double v, double t) : nu(v)
 */
 
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
-			  double P)
-  : ThinPlateSol(E,Poiss,t), w(pz,D,alpha,beta,xi,eta,c2,d2,type,inc),
-    pz(P), type(0), xi(0.0), eta(0.0), c2(0.0), d2(0.0), inc(2)
+                          double P, int max_mn)
+  : ThinPlateSol(E,Poiss,t),
+    w(pz,D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc),
+    pz(P), type(0), xi(0.0), eta(0.0), c2(0.0), d2(0.0), mxmn(max_mn), inc(2)
 {
   alpha = M_PI/a;
   beta  = M_PI/b;
@@ -257,16 +263,19 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 
   // Calculate and print the maximum displacement (at the centre x=a/2, y=b/2)
   std::streamsize oldPrec = std::cout.precision(10);
-  std::cout <<"\nNavierPlate: w_max = "
-	    << w(Vec3(0.5*a,0.5*b,0.0)) << std::endl;
+  std::cout <<"\nNavierPlate: w_max = " << w(Vec3(0.5*a,0.5*b,0.0))
+            <<"\n             Max. number of terms in Fourier series = "
+            << max_mn << std::endl;
   std::cout.precision(oldPrec);
 }
 
 
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
-			  double P, double xi_, double eta_, double c, double d)
-  : ThinPlateSol(E,Poiss,t), w(pz,D,alpha,beta,xi,eta,c2,d2,type,inc),
-    pz(P), type(2), inc(1)
+                          double P, double xi_, double eta_,
+                          double c, double d, int max_mn)
+  : ThinPlateSol(E,Poiss,t),
+    w(pz,D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc),
+    pz(P), type(2), mxmn(max_mn), inc(1)
 {
   alpha = M_PI/a;
   beta  = M_PI/b;
@@ -282,8 +291,9 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 
   // Calculate and print the displacement at the centre x=a/2, y=b/2
   std::streamsize oldPrec = std::cout.precision(10);
-  std::cout <<"\nNavierPlate: w_centre = "
-	    << w(Vec3(0.5*a,0.5*b,0.0)) << std::endl;
+  std::cout <<"\nNavierPlate: w_centre = "<< w(Vec3(0.5*a,0.5*b,0.0))
+            <<"\n             Max. number of terms in Fourier series: "<< max_mn
+            << std::endl;
   std::cout.precision(oldPrec);
 }
 
@@ -298,11 +308,9 @@ NavierPlate::~NavierPlate ()
 
 double NavierPlate::Displ::evaluate (const Vec3& X) const
 {
-  const int max_mn = type > 0 ? 100 : 99;
-
   double w = 0.0;
-  for (int m = 1; m <= max_mn; m += inc)
-    for (int n = 1; n <= max_mn; n += inc)
+  for (int m = 1; m <= mn; m += inc)
+    for (int n = 1; n <= mn; n += inc)
     {
       double am   = alpha*m;
       double bn   = beta*n;
@@ -330,7 +338,7 @@ double NavierPlate::Displ::evaluate (const Vec3& X) const
 
 
 void NavierPlate::addTerms (std::vector<double>& M,
-			    double x, double y, int m, int n) const
+                            double x, double y, int m, int n, int deriv) const
 {
   double am  = alpha*m;
   double bn  = beta*n;
@@ -352,53 +360,81 @@ void NavierPlate::addTerms (std::vector<double>& M,
   }
 
   pzmn /= (am2+bn2)*(am2+bn2);
-  M[0] += pzmn*(am2 + nu*bn2)*sin(am*x)*sin(bn*y);
-  M[1] += pzmn*(bn2 + nu*am2)*sin(am*x)*sin(bn*y);
-  M[2] += pzmn*(nu - 1.0)*am*bn*cos(am*x)*cos(bn*y);
+  switch (deriv) {
+  case W:
+    M[0] += pzmn*(am2 + nu*bn2)*sin(am*x)*sin(bn*y);
+    M[1] += pzmn*(bn2 + nu*am2)*sin(am*x)*sin(bn*y);
+    M[2] += pzmn*(nu - 1.0)*am*bn*cos(am*x)*cos(bn*y);
+    break;
+  case dWdx:
+    M[0] += pzmn*(am2 + nu*bn2)*am*cos(am*x)*sin(bn*y);
+    M[1] += pzmn*(bn2 + nu*am2)*am*cos(am*x)*sin(bn*y);
+    M[2] += pzmn*(1.0 - nu)*am2*bn*sin(am*x)*cos(bn*y);
+    break;
+  case dWdy:
+    M[0] += pzmn*(am2 + nu*bn2)*bn*sin(am*x)*cos(bn*y);
+    M[1] += pzmn*(bn2 + nu*am2)*bn*sin(am*x)*cos(bn*y);
+    M[2] += pzmn*(1.0 - nu)*am*bn2*cos(am*x)*sin(bn*y);
+    break;
+  case d2Wdx2:
+    M[0] -= pzmn*(am2 + nu*bn2)*am2*sin(am*x)*sin(bn*y);
+    M[1] -= pzmn*(bn2 + nu*am2)*am2*sin(am*x)*sin(bn*y);
+    M[2] += pzmn*(1.0 - nu)*am2*am*bn*cos(am*x)*cos(bn*y);
+    break;
+  case d2Wdy2:
+    M[0] -= pzmn*(am2 + nu*bn2)*bn2*sin(am*x)*sin(bn*y);
+    M[1] -= pzmn*(bn2 + nu*am2)*bn2*sin(am*x)*sin(bn*y);
+    M[2] += pzmn*(1.0 - nu)*am*bn2*bn*cos(am*x)*cos(bn*y);
+    break;
+  case d2Wdxdy:
+  case d2Wdydx:
+    M[0] += pzmn*(am2 + nu*bn2)*am*bn*cos(am*x)*cos(bn*y);
+    M[1] += pzmn*(bn2 + nu*am2)*am*bn*cos(am*x)*cos(bn*y);
+    M[2] += pzmn*(nu - 1.0)*am2*bn2*sin(am*x)*sin(bn*y);
+    break;
+  }
 }
 
 
-SymmTensor NavierPlate::evaluate (const Vec3& X) const
+SymmTensor NavierPlate::evaluate (const Vec3& X, int deriv) const
 {
-  const int max_mn = 100;
-  const double eps = 1.0e-8;
-
   SymmTensor M(2);
 
-  double prev = 0.0;
 #ifdef REVERSED_SUMMATION
-  cont maxMN = max_mn - (inc-1);
+  const maxMN = mxmn - (inc-1);
   for (int i = maxMN; i > 0; i -= inc)
   {
-    this->addTerms(M,X.x,X.y,i,i);
+    this->addTerms(M,X.x,X.y,i,i,deriv);
     for (int j = i-inc; j > 0; j -= inc)
     {
-      this->addTerms(M,X.x,X.y,i,j);
-      this->addTerms(M,X.x,X.y,j,i);
+      this->addTerms(M,X.x,X.y,i,j,deriv);
+      this->addTerms(M,X.x,X.y,j,i,deriv);
     }
   }
 #else
-  for (int i = 1; i <= max_mn; i += inc)
+  const double eps = 1.0e-8;
+  double prev = 0.0;
+  for (int i = 1; i <= mxmn; i += inc)
   {
     for (int j = 1; j < i; j += inc)
     {
-      this->addTerms(M,X.x,X.y,i,j);
-      this->addTerms(M,X.x,X.y,j,i);
+      this->addTerms(M,X.x,X.y,i,j,deriv);
+      this->addTerms(M,X.x,X.y,j,i,deriv);
     }
-    this->addTerms(M,X.x,X.y,i,i);
+    this->addTerms(M,X.x,X.y,i,i,deriv);
 
     double norm = M.L2norm();
 #if SP_DEBUG > 3
     if (i == 1) std::cout <<"\nNavierPlate, X = "<< X.x <<" "<< X.y <<"\n";
     std::cout << i <<": "<< M(1,1) <<" "<< M(2,2) <<" "<< M(1,2)
-	      <<" -> "<< norm <<" "<< fabs(norm-prev)/norm << std::endl;
+              <<" -> "<< norm <<" "<< fabs(norm-prev)/norm << std::endl;
 #endif
     if (i%2)
     {
       if (fabs(norm-prev) < eps*norm)
         break;
       else
-	prev = norm;
+        prev = norm;
     }
   }
 #endif
@@ -409,4 +445,22 @@ SymmTensor NavierPlate::evaluate (const Vec3& X) const
     M *= 16.0*pz / (M_PI*M_PI);
 
   return M;
+}
+
+
+SymmTensor NavierPlate::evaluate (const Vec3& X) const
+{
+  return this->evaluate(X,0);
+}
+
+
+SymmTensor NavierPlate::deriv (const Vec3& X, int dir) const
+{
+  return this->evaluate(X,dir);
+}
+
+
+SymmTensor NavierPlate::dderiv (const Vec3& X, int dir1, int dir2) const
+{
+  return this->evaluate(X,10*dir1+dir2);
 }
