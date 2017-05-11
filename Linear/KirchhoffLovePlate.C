@@ -457,6 +457,19 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     // Integrate the error in energy norm a(w-w^h,w-w^h)
     error = m - mh;
     pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
+
+    // Residual of analytical solution (should be zero)
+    if (nrcmp == 1)
+      Res = anasol->dderiv(X,1,1)(1,1) + p;
+    else
+    {
+      double d2MxxdX2 = anasol->dderiv(X,1,1)(1,1);
+      double d2MyydY2 = anasol->dderiv(X,2,2)(2,2);
+      double d2MxydXY = anasol->dderiv(X,1,2)(1,2);
+      Res = d2MxxdX2 + d2MxydXY + d2MxydXY + d2MyydY2 + p;
+    }
+    // Integrate the residual error in the analytical solution
+    pnorm[ip++] += hk4*Res*Res*fe.detJxW;
   }
 
   size_t i, j, nen = fe.N.size();
@@ -527,7 +540,7 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
   // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
   // with e^r = w^r - w^h  and  e = w - w^h,
   // and sqrt((a(e^r,e^r)+res(w^r))/a(e,e))
-  for (size_t ip = 11; ip < pnorm.size(); ip += 8)
+  for (size_t ip = 12; ip < pnorm.size(); ip += 8)
   {
     pnorm[ip-1] = sqrt(pnorm[ip-6] / pnorm[3]);
     pnorm[ip] = sqrt((pnorm[ip-6]+pnorm[ip-3]) / pnorm[3]);
@@ -548,7 +561,7 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
   if (group < 1)
     return this->NormBase::getNoFields();
   else if (group == 1)
-    return anasol ? 4 : 2;
+    return anasol ? 5 : 2;
   else
     return anasol ? 8 : 5;
 }
@@ -557,14 +570,15 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
 std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
                                              const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 8 || (i == 1 && j > 4))
+  if (i == 0 || j == 0 || j > 8 || (i == 1 && j > 5))
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[4] = {
+  static const char* u[5] = {
     "a(w^h,w^h)^0.5",
     "(p,w^h)^0.5",
     "a(w,w)^0.5",
-    "a(e,e)^0.5, e=w-w^h"
+    "a(e,e)^0.5, e=w-w^h",
+    "res(w)^0.5"
   };
 
   static const char* p[8] = {

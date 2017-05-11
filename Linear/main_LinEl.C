@@ -370,6 +370,10 @@ int main (int argc, char** argv)
                      <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
                      <<"\nExact relative error (%) : "
                      << norm(4)/norm(3)*100.0;
+        if (model->haveAnaSol() && norm.size() >= 5)
+          IFEM::cout <<"\nResidual error (r(u) + J(u))^0.5 : "<< norm(5)
+                     <<"\n- relative error (% of |u|) : "
+                     << norm(5)/norm(3)*100.0;
       }
       size_t j = 1;
       const char* uRef = model->haveAnaSol() ? "|u|)   : " : "|u^r|) : ";
