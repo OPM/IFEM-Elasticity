@@ -14,8 +14,7 @@
 #ifndef _ANALYTIC_SOLUTIONS_H
 #define _ANALYTIC_SOLUTIONS_H
 
-#include "Function.h"
-#include "Tensor.h"
+#include "TensorFunction.h"
 #include "AnaSol.h"
 
 

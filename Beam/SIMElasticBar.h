@@ -15,9 +15,11 @@
 #define _SIM_ELASTIC_BAR_H
 
 #include "SIM1D.h"
+#include "Function.h"
 
 class ElasticBar;
 class ElasticBeam;
+class Tensor;
 
 
 /*!

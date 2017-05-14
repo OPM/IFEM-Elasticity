@@ -20,6 +20,9 @@ class LocalSystem;
 class Material;
 class ElmNorm;
 class ElmMats;
+class Tensor;
+class SymmTensor;
+class TractionFunc;
 class TiXmlElement;
 
 

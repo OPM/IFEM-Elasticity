@@ -18,7 +18,7 @@
 #include "BDFMats.h"
 #include "ElmNorm.h"
 #include "AnaSol.h"
-#include "Tensor.h"
+#include "TensorFunction.h"
 #include "Vec3Oper.h"
 #include "Utilities.h"
 #include "VTF.h"

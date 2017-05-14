@@ -17,7 +17,7 @@
 #include "Utilities.h"
 #include "ElmMats.h"
 #include "ElmNorm.h"
-#include "Tensor.h"
+#include "TensorFunction.h"
 #include "Vec3Oper.h"
 #include "AnaSol.h"
 #include "VTF.h"
