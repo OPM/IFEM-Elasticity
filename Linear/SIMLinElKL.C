@@ -29,7 +29,6 @@
 SIMLinElKL::SIMLinElKL ()
 {
   nf[0] = 1;
-  myProblem = new KirchhoffLovePlate();
   aCode[0] = aCode[1] = aCode[2] = 0;
 }
 
@@ -44,6 +43,9 @@ SIMLinElKL::~SIMLinElKL ()
 
 bool SIMLinElKL::parse (char* keyWord, std::istream& is)
 {
+  if (!myProblem)
+    myProblem = new KirchhoffLovePlate();
+
   char* cline = 0;
   KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
   if (!klp) return false;
@@ -51,8 +53,7 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
   if (!strncasecmp(keyWord,"GRAVITY",7))
   {
     double g = atof(strtok(keyWord+7," "));
-    if (klp)
-      klp->setGravity(g);
+    klp->setGravity(g);
     IFEM::cout <<"\nGravitation constant: "<< g << std::endl;
   }
 
@@ -65,7 +66,7 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
     {
       int code = atoi(strtok(cline," "));
       if (code > 0)
-	this->setPropertyType(code,Property::MATERIAL,mVec.size());
+        this->setPropertyType(code,Property::MATERIAL,mVec.size());
 
       double E   = atof(strtok(NULL," "));
       double nu  = atof(strtok(NULL," "));
@@ -115,7 +116,7 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
       myScalars[code] = const_cast<RealFunc*>(utl::parseRealFunc(cline,p));
       IFEM::cout << std::endl;
       if (code > 0)
-	this->setPropertyType(code,Property::BODYLOAD);
+        this->setPropertyType(code,Property::BODYLOAD);
     }
   }
 
@@ -156,12 +157,12 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
       IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;
       int lines = (cline = strtok(NULL," ")) ? atoi(cline) : 0;
       if (!mySol)
-	mySol = new AnaSol(is,lines,false);
+        mySol = new AnaSol(is,lines,false);
     }
     else
     {
       std::cerr <<"  ** SIMLinElKL::parse: Unknown analytical solution "
-		<< cline <<" (ignored)"<< std::endl;
+                << cline <<" (ignored)"<< std::endl;
       return true;
     }
   }
@@ -179,7 +180,8 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
     return this->SIM2D::parse(elem);
 
   KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
-  if (!klp) return false;
+  if (!klp)
+    myProblem = klp = new KirchhoffLovePlate();
 
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
@@ -203,7 +205,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
       mVec.push_back(new LinIsotropic(E,nu,rho,true));
       tVec.push_back(thk);
       IFEM::cout <<"\tMaterial code "<< code <<": "
-                 << E <<" "<< nu <<" "<< rho <<" " << thk << std::endl;
+                 << E <<" "<< nu <<" "<< rho <<" "<< thk << std::endl;
       klp->setMaterial(mVec.front());
       if (tVec.front() != 0.0)
         klp->setThickness(tVec.front());
@@ -316,6 +318,9 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 
 void SIMLinElKL::preprocessA ()
 {
+  if (!myProblem)
+    myProblem = new KirchhoffLovePlate();
+
   this->printProblem();
 
   ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
@@ -376,9 +381,8 @@ bool SIMLinElKL::preprocessB ()
     {
       p = myLoads.erase(p);
       std::cerr <<"  ** SIMLinElKL::preprocess: Load point ("
-		<< p->xi[0] <<','<< p->xi[1]
-		<<") on patch #"<< p->patch <<" is not a nodal point"
-		<<" (ignored)." << std::endl;
+                << p->xi[0] <<','<< p->xi[1] <<") on patch #"<< p->patch
+                <<" is not a nodal point (ignored)."<< std::endl;
     }
     else
     {

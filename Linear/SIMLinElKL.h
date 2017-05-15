@@ -14,33 +14,32 @@
 #ifndef _SIM_LIN_EL_KL_H
 #define _SIM_LIN_EL_KL_H
 
-#include "SIMLinEl.h"
-
-
-/*!
-  \brief Struct defining a nodal point load.
-*/
-
-struct PointLoad
-{
-  size_t patch; //!< Patch index [0,nPatch>
-  int    inod;  //!< Local node number of the closest node
-  double xi[2]; //!< Parameters of the point (u,v)
-  Vec3   X;     //!< Spatial coordinates of the point
-  double pload; //!< Load magnitude
-  // \brief Default constructor.
-  PointLoad() : patch(0), inod(0) { xi[0] = xi[1] = pload = 0.0; }
-};
-
-typedef std::vector<PointLoad> PloadVec; //!< Point load container
+#include "SIMElasticity.h"
+#include "SIM2D.h"
 
 
 /*!
   \brief Driver class for isogeometric FEM analysis of Kirchhoff-Love plates.
 */
 
-class SIMLinElKL : public SIMLinEl2D
+class SIMLinElKL : public SIMElasticity<SIM2D>
 {
+  /*!
+    \brief Struct defining a nodal point load.
+  */
+  struct PointLoad
+  {
+    size_t patch; //!< Patch index [0,nPatch>
+    int    inod;  //!< Local node number of the closest node
+    double xi[2]; //!< Parameters of the point (u,v)
+    Vec3   X;     //!< Spatial coordinates of the point
+    double pload; //!< Load magnitude
+    // \brief Default constructor.
+    PointLoad() : patch(0), inod(0) { xi[0] = xi[1] = pload = 0.0; }
+  };
+
+  typedef std::vector<PointLoad> PloadVec; //!< Point load container
+
 public:
   //! \brief Default constructor.
   SIMLinElKL();

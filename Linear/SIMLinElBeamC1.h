@@ -25,8 +25,6 @@ class Material;
 
 class SIMLinElBeamC1 : public SIM1D
 {
-public:
-
   /*!
     \brief Struct defining a nodal point load.
   */
@@ -43,13 +41,11 @@ public:
 
   typedef std::vector<PointLoad> PloadVec; //!< Point load container
 
+public:
   //! \brief Default constructor.
-  SIMLinElBeamC1();
+  SIMLinElBeamC1() : SIM1D(1) {}
   //! \brief Empty destructor.
   virtual ~SIMLinElBeamC1() {}
-
-  //! \brief Performs some pre-processing tasks on the FE model.
-  virtual bool preprocessB();
 
 protected:
   //! \brief Parses a data section from the input stream.
@@ -59,6 +55,9 @@ protected:
   //! \brief Parses a data section from an XML element.
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem);
+
+  //! \brief Performs some pre-processing tasks on the FE model.
+  virtual bool preprocessB();
 
   //! \brief Initializes material properties for integration of interior terms.
   //! \param[in] propInd Physical property index
@@ -70,7 +69,7 @@ protected:
   //! \brief Assembles the nodal point loads, if any.
   virtual bool assembleDiscreteTerms(const IntegrandBase*, const TimeDomain&);
 
-  //! \brief Computes problem-dependet external energy contributions.
+  //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& psol) const;
 
 private:
