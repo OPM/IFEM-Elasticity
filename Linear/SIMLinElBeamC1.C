@@ -135,7 +135,11 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
 
   KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
   if (!klp)
-    myProblem = klp = new KirchhoffLovePlate(1);
+  {
+    int version = 1;
+    utl::getAttribute(elem,"version",version);
+    myProblem = klp = new KirchhoffLovePlate(1,version);
+  }
 
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())

@@ -61,6 +61,8 @@ public:
 
   //! \brief Evaluates the stiffness at current point.
   virtual double getStiffness(const Vec3&) const { return 1.0; }
+  //! \brief Evaluates the plate stiffness parameter at current point.
+  virtual double getPlateStiffness(const Vec3&, double) const { return 0.0; }
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
   //! \brief Evaluates the heat capacity for given temperature.

@@ -19,6 +19,9 @@
 
 class LocalSystem;
 class Material;
+class RealFunc;
+class VecFunc;
+class STensorFunc;
 
 
 /*!
@@ -37,7 +40,8 @@ class KirchhoffLovePlate : public IntegrandBase
 public:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions (1=beam, 2=plate)
-  KirchhoffLovePlate(unsigned short int n = 2);
+  //! \param[in] v Integrand version (1: B-matrix, 2: Tensor form)
+  KirchhoffLovePlate(unsigned short int n = 2, short int v = 1);
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~KirchhoffLovePlate();
 
@@ -65,6 +69,8 @@ public:
 
   //! \brief Defines which FE quantities are needed by the integrand.
   virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
+  //! \brief Returns the integrand version flag.
+  short int getVersion() const { return version; }
 
   using IntegrandBase::initIntegration;
   //! \brief Initializes the integrand with the number of integration points.
@@ -114,6 +120,9 @@ public:
   bool evalSol(Vector& s, const Vector& eV,
                const FiniteElement& fe, const Vec3& X,
                bool toLocal = false) const;
+
+  //! \brief Returns the plate stiffness parameter at the specified point \a X.
+  double getStiffness(const Vec3& X) const;
 
   //! \brief Evaluates the pressure field (if any) at specified point.
   virtual double getPressure(const Vec3& X) const;
@@ -174,6 +183,17 @@ protected:
   //! \param[in] d2NdX2 Basis function 2nd derivatives at current point
   bool formBmatrix(Matrix& Bmat, const Matrix3D& d2NdX2) const;
 
+  //! \brief Evaluates the stiffness matrix integrand, version 1.
+  //! \param EK The element stiffness matrix to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] X Cartesian coordinates of current integration point
+  bool evalK1(Matrix& EK, const FiniteElement& fe, const Vec3& X) const;
+  //! \brief Evaluates the stiffness matrix integrand, version 2.
+  //! \param EK The element stiffness matrix to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] X Cartesian coordinates of current integration point
+  bool evalK2(Matrix& EK, const FiniteElement& fe, const Vec3& X) const;
+
 public:
   //! \brief Sets up the constitutive matrix at current point.
   //! \param[out] C \f$3\times3\f$-matrix, representing the constitutive tensor
@@ -202,7 +222,7 @@ protected:
 
   mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values
 
-  unsigned short int nsd; //!< Number of space dimensions (1, 2 or, 3)
+  short int version; //!< Integrand version flag
 };
 
 
@@ -213,10 +233,14 @@ protected:
 class KirchhoffLovePlateNorm : public NormBase
 {
 public:
-  //! \brief The only constructor initializes its data members.
-  //! \param[in] p The linear elasticity problem to evaluate norms for
+  //! \brief The constructor initializes its data members.
+  //! \param[in] p The thin plate problem to evaluate norms for
   //! \param[in] a The analytical stress resultant field (optional)
   KirchhoffLovePlateNorm(KirchhoffLovePlate& p, STensorFunc* a = nullptr);
+  //! \brief This constructor also initializes its data members.
+  //! \param[in] p The thin plate problem to evaluate norms for
+  //! \param[in] a The analytical 2nd derivatives of the displacement field
+  KirchhoffLovePlateNorm(KirchhoffLovePlate& p, VecFunc* a);
   //! \brief Empty destructor.
   virtual ~KirchhoffLovePlateNorm() {}
 
@@ -263,6 +287,7 @@ public:
 
 private:
   STensorFunc* anasol; //!< Analytical stress resultant field
+  VecFunc*     ana2nd; //!< Analytical 2nd derivatives of primary solution
 };
 
 #endif

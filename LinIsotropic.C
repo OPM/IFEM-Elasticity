@@ -298,6 +298,13 @@ double LinIsotropic::getStiffness (const Vec3& X) const
 }
 
 
+double LinIsotropic::getPlateStiffness (const Vec3& X, double t) const
+{
+  double E = Efunc ? (*Efunc)(X) : Emod;
+  return E*t*t*t / (12.0 - 12.0*nu*nu);
+}
+
+
 double LinIsotropic::getThermalExpansion (double T) const
 {
   return Afunc ? (*Afunc)(T) : alpha;
