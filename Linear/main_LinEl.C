@@ -163,7 +163,7 @@ int main (int argc, char** argv)
               <<"       [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL]]"
               <<" [-nGauss <n>]\n       [-hdf5] [-vtf <format> [-nviz <nviz>]"
               <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]]"
-              <<" [-DGL2] [-CGL2] [-SCR] [-VDLSA] [-LSQ] [-QUASI]\n      "
+              <<" [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
               <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
               <<"\n       [-ignore <p1> <p2> ...] [-fixDup]"
               <<" [-checkRHS] [-check] [-dumpASC]\n";
@@ -260,14 +260,14 @@ int main (int argc, char** argv)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
       prefix[i] = pit->second.c_str();
 
-  Matrix eNorm, ssol;
+  Matrix eNorm;
   Vector displ, load;
   Vectors projs(pOpt.size()), gNorm;
   std::vector<Mode> modes;
   std::vector<Mode>::const_iterator it;
 
-  if (aSim)
-    aSim->setupProjections();
+  if (aSim && !aSim->initAdaptor(adaptor))
+    return 1;
 
   DataExporter* exporter = NULL;
   if (model->opt.dumpHDF5(infile))
@@ -328,10 +328,8 @@ int main (int argc, char** argv)
     // Project the FE stresses onto the splines basis
     model->setMode(SIM::RECOVERY);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
-      if (!model->project(ssol,displ,pit->first))
+      if (!model->project(projs[i],displ,pit->first))
         return 4;
-      else
-        projs[i] = ssol;
 
     if (!pOpt.empty())
       IFEM::cout << std::endl;
@@ -420,16 +418,10 @@ int main (int argc, char** argv)
 
   case 10:
     // Adaptive simulation
-    if (!aSim->initAdaptor(adaptor,4))
-      break;
-
-    if (exporter)
-      exporter->setNormPrefixes(aSim->getNormPrefixes());
-
     for (int iStep = 1; aSim->adaptMesh(iStep); iStep++)
       if (!aSim->solveStep(infile,iStep))
         return 5;
-      else if (!aSim->writeGlv(infile,iStep,4))
+      else if (!aSim->writeGlv(infile,iStep))
         return 6;
       else if (exporter)
         exporter->dumpTimeLevel(NULL,true);
