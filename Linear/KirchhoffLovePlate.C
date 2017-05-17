@@ -682,11 +682,115 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
 
 bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
-				      const FiniteElement& fe,
-				      const Vec3& X, const Vec3& normal) const
+                                      const FiniteElement& fe,
+                                      const Vec3& X, const Vec3& normal) const
 {
-  std::cerr <<" *** KirchhoffLovePlateNorm::evalBou not included."<< std::endl;
-  return false;
+  if (nrcmp <= 1) return true; // Nothing for 1D problems (beams)
+
+  ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
+  int version = static_cast<KirchhoffLovePlate&>(myProblem).getVersion();
+
+  double Jmp, m1, m2, hk3 = fe.h*fe.h*fe.h;
+
+  size_t ip = 2;
+  if (version == 1 && anasol)
+  {
+    ip += 3;
+    Vector mx, my;
+    if (nOrder%2)
+    {
+      // Evaluate the analytical moment field
+      mx = (*anasol)(X);
+
+      // Jump in the analytical moment (should be zero)
+      m1 = mx[0]*normal.x + mx[2]*normal.y;
+      m2 = mx[2]*normal.x + mx[1]*normal.y;
+      Jmp = m1*m1 + m2*m2;
+
+      // Integrate the edge jump in the analytical solution
+      pnorm[ip-1] += fe.h*Jmp*fe.detJxW;
+    }
+    if (nOrder/2)
+    {
+      // Evaluate the analytical shear force field, q = {n}*grad{m}
+      mx = anasol->deriv(X,1);
+      my = anasol->deriv(X,2);
+      Jmp = (mx[0]+my[2])*normal.x + (mx[2]+my[1])*normal.y;
+
+      // Integrate the edge jump in the analytical solution
+      pnorm[ip-1] += hk3*Jmp*Jmp*fe.detJxW;
+    }
+  }
+  else if (version > 1 && ana2nd)
+  {
+    ip += 3;
+    if (nOrder%2)
+    {
+      // Evaluate the analytical Laplacian components
+      Vec3 wxx = (*ana2nd)(X);
+      Jmp = wxx.x*wxx.x + wxx.y*wxx.y;
+
+      // Integrate the edge jump in the analytical solution
+      pnorm[ip-1] += fe.h*Jmp*fe.detJxW;
+    }
+    if (nOrder/2)
+    {
+      // Evaluate the gradient of the analytical Laplacian components
+      Vec3 wxxx = ana2nd->deriv(X,1);
+      Vec3 wxxy = ana2nd->deriv(X,2);
+      Jmp = (wxxx.x+wxxy.x)*normal.x + (wxxx.y+wxxy.y)*normal.y;
+
+      // Integrate the edge jump in the analytical solution
+      pnorm[ip-1] += hk3*Jmp*Jmp*fe.detJxW;
+    }
+  }
+
+  for (size_t i = 0; i < pnorm.psol.size(); i++)
+    if (!pnorm.psol[i].empty())
+    {
+      ip += 5;
+      if (nOrder%2)
+      {
+        // Evaluate the projected solution
+        Vector mr(nrcmp);
+        for (size_t j = 0; j < nrcmp; j++)
+          mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
+
+        // Jump in the projected solution
+        if (version == 1)
+        {
+          m1 = mr[0]*normal.x + mr[2]*normal.y;
+          m2 = mr[2]*normal.x + mr[1]*normal.y;
+          Jmp = m1*m1 + m2*m2;
+        }
+        else
+          Jmp = mr[0]*normal.x + mr[1]*normal.y;
+
+        // Integrate the edge jump in the projected solution
+        pnorm[ip] += fe.h*Jmp*fe.detJxW;
+      }
+      if (nOrder/2)
+      {
+        // Evaluate the gradient of the projected solution.
+        // Notice that the matrix multiplication method used here treats
+        // the element vector, pnorm.psol[i], as a matrix whose number
+        // of columns equals the number of rows in the matrix fe.dNdX.
+        Matrix dmdX;
+        if (!dmdX.multiplyMat(pnorm.psol[i],fe.dNdX)) // dmdX = psol*dNdX
+          return false;
+
+        if (version == 1) // Shear force q^r = {n}*grad{m^r}
+          Jmp = (dmdX(1,1)+dmdX(3,2))*normal.x + (dmdX(3,1)+dmdX(2,2))*normal.y;
+        else // {n}*grad{Laplace{w^r}}
+          Jmp = (dmdX(1,1)+dmdX(2,1))*normal.x + (dmdX(1,2)+dmdX(2,2))*normal.y;
+
+        // Integrate the residual error in the analytical solution
+        pnorm[ip] += hk3*Jmp*Jmp*fe.detJxW;
+      }
+      if (anasol) ip += 3;
+    }
+
+  return true;
 }
 
 

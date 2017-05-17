@@ -322,6 +322,15 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 }
 
 
+bool SIMLinElKL::initNeumann (size_t propInd)
+{
+  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  if (!klp) return false;
+
+  return true;
+}
+
+
 void SIMLinElKL::preprocessA ()
 {
   if (!myProblem)

@@ -52,6 +52,9 @@ public:
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
 
+  //! \brief Defines the Neumann order that is the subject of integration.
+  virtual void setNeumannOrder(char flag) { nOrder = flag; }
+
   //! \brief Defines the gravitation constant.
   void setGravity(double g) { gravity = g; }
 
@@ -223,6 +226,7 @@ protected:
   mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values
 
   short int version; //!< Integrand version flag
+  short int nOrder;  //!< Neumann order flag, 1 = moments, 2 = shear forces
 };
 
 
@@ -243,6 +247,9 @@ public:
   KirchhoffLovePlateNorm(KirchhoffLovePlate& p, VecFunc* a);
   //! \brief Empty destructor.
   virtual ~KirchhoffLovePlateNorm() {}
+
+  //! \brief Defines the Neumann order that is the subject of integration.
+  virtual void setNeumannOrder(char flag) { nOrder = flag; }
 
   using NormBase::evalInt;
   //! \brief Evaluates the integrand at an interior point.
@@ -288,6 +295,7 @@ public:
 private:
   STensorFunc* anasol; //!< Analytical stress resultant field
   VecFunc*     ana2nd; //!< Analytical 2nd derivatives of primary solution
+  short int    nOrder; //!< Neumann order flag, 1 = moments, 2 = shear forces
 };
 
 #endif

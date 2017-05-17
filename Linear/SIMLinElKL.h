@@ -66,6 +66,9 @@ protected:
   //! \brief Initializes the body load properties for current patch.
   //! \param[in] patchInd 1-based patch index
   virtual bool initBodyLoad(size_t patchInd);
+  //! \brief Initializes for integration of Neumann terms for a given property.
+  //! \param[in] propInd Physical property index
+  virtual bool initNeumann(size_t propInd);
 
   //! \brief Assembles the nodal point loads, if any.
   virtual bool assembleDiscreteTerms(const IntegrandBase*, const TimeDomain&);
