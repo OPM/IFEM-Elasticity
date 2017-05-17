@@ -70,7 +70,7 @@ SymmTensor Hole::evaluate (const Vec3& X) const
 */
 
 Lshape::Lshape (double r, double f, double P, bool use3D)
-  : a(r), F0(f), nu(P), is3D(use3D), T(2)
+  : STensorFunc(use3D ? 3 : 2, true), a(r), F0(f), nu(P), is3D(use3D), T(2)
 {
   // Set up the local-to-global transformation tensor
   T(1,1) = T(2,2) = T(2,1) = -sqrt(0.5);
@@ -145,7 +145,7 @@ SymmTensor CanTM::evaluate (const Vec3& X) const
 */
 
 CurvedBeam::CurvedBeam (double u0, double Ri, double Ro, double E, bool use3D)
-  : a(Ri), b(Ro), is3D(use3D)
+  : STensorFunc(use3D ? 3 : 2), a(Ri), b(Ro), is3D(use3D)
 {
   PN = -u0*E/(M_PI*(a*a+b*b));
 }
@@ -190,7 +190,8 @@ SymmTensor CurvedBeam::evaluate (const Vec3& X) const
 
 Pipe::Pipe (double Ri, double Ro, double Ti, double To, double T0,
             double E, double ny, double alpha, bool use3D, bool usePolar)
-  : is3D(use3D), polar(usePolar), Tin(Ti), Tex(To), ra(Ri), rb(Ro), nu(ny)
+  : STensorFunc(use3D ? 3 : 2, true), is3D(use3D), polar(usePolar),
+    Tin(Ti), Tex(To), ra(Ri), rb(Ro), nu(ny)
 {
   double r = rb/ra;
   ln_rb_ra = log(r);
@@ -251,7 +252,7 @@ ThinPlateSol::ThinPlateSol (double E, double v, double t) : nu(v)
 
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
                           double P, int max_mn)
-  : ThinPlateSol(E,Poiss,t),
+  : ThinPlateSol(E,Poiss,t), STensorFunc(2),
     w(pz,D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc),
     pz(P), type(0), xi(0.0), eta(0.0), c2(0.0), d2(0.0), mxmn(max_mn), inc(2)
 {
@@ -273,7 +274,7 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
                           double P, double xi_, double eta_,
                           double c, double d, int max_mn)
-  : ThinPlateSol(E,Poiss,t),
+  : ThinPlateSol(E,Poiss,t), STensorFunc(2),
     w(pz,D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc),
     pz(P), type(2), mxmn(max_mn), inc(1)
 {

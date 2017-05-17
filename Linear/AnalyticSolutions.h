@@ -27,7 +27,7 @@ class Hole : public STensorFunc
 public:
   //! \brief Constructor with some default parameters.
   Hole(double r = 1.0, double f = 1.0, double P = 0.3, bool use3D = false)
-    : a(r), F0(f), nu(P), is3D(use3D) {}
+    : STensorFunc(use3D ? 3 : 2, true), a(r), F0(f), nu(P), is3D(use3D) {}
   //! \brief Empty destructor.
   virtual ~Hole() {}
 
@@ -78,7 +78,7 @@ class CanTS : public STensorFunc
 public:
   //! \brief Constructor with some default parameters.
   CanTS(double l, double h, double f = 1.0, bool use3D = false)
-    : L(l), H(h), F0(f), is3D(use3D) {}
+    : STensorFunc(use3D ? 3 : 2), L(l), H(h), F0(f), is3D(use3D) {}
   //! \brief Empty destructor.
   virtual ~CanTS() {}
 
@@ -103,7 +103,7 @@ class CanTM : public STensorFunc
 public:
   //! \brief Constructor with some default parameters.
   CanTM(double h, double m = 1.0, bool use3D = false)
-    : H(h), M0(m), is3D(use3D) {}
+    : STensorFunc(use3D ? 3 : 2), H(h), M0(m), is3D(use3D) {}
   //! \brief Empty destructor.
   virtual ~CanTM() {}
 
