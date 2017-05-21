@@ -328,9 +328,17 @@ bool KirchhoffLovePlate::evalK2 (Matrix& EK,
     return true;
 
   Vector d2NdY2 = fe.d2NdX2.getColumn(2,2);
-  Vector d2NdXY = fe.d2NdX2.getColumn(1,2);
   EK.outer_product(d2NdY2,d2NdY2*DdJxW,true); // EK += N,yy*N,yy^t*|J|*w
-  EK.outer_product(d2NdXY,d2NdXY*DdJxW*2.0,true); // EK += 2*N,xy*N,xy^2*|J|*w
+  if (version == 2)
+  {
+    Vector d2NdXY = fe.d2NdX2.getColumn(1,2);
+    EK.outer_product(d2NdXY,d2NdXY*DdJxW*2.0,true); // EK += 2*N,xy*N,xy^2*|J|*w
+  }
+  else
+  {
+    EK.outer_product(d2NdX2,d2NdY2*DdJxW,true); // EK += N,xx*N,yy^t*|J|*w
+    EK.outer_product(d2NdY2,d2NdX2*DdJxW,true); // EK += N,yy*N,xx^t*|J|*w
+  }
 
   return true;
 }
@@ -431,7 +439,7 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
 
 size_t KirchhoffLovePlate::getNoFields (int fld) const
 {
-  return fld < 2 ? 1 : nsd*(nsd+1)/2;
+  return fld < 2 ? 1 : (version > 2 ? nsd : nsd*(nsd+1)/2);
 }
 
 
