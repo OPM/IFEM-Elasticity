@@ -46,6 +46,9 @@ public:
   //! \brief Destructor.
   virtual ~SIMLinElKL();
 
+  //! \brief Returns whether an analytical solution is available or not.
+  virtual bool haveAnaSol() const;
+
 protected:
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read

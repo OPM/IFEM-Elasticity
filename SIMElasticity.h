@@ -126,6 +126,12 @@ public:
     return ok;
   }
 
+  //! \brief Returns whether an analytical solution is available or not.
+  virtual bool haveAnaSol() const
+  {
+    return (Dim::mySol && Dim::mySol->getStressSol());
+  }
+
 protected:
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented inserting a call to \a getIntegrand.

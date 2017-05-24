@@ -434,3 +434,17 @@ double SIMLinElKL::externalEnergy (const Vectors& psol) const
 
   return energy;
 }
+
+
+bool SIMLinElKL::haveAnaSol () const
+{
+  if (!mySol) return false;
+
+  short int version = static_cast<KirchhoffLovePlate*>(myProblem)->getVersion();
+  if (version == 1 && mySol->getStressSol())
+    return true;
+  else if (version > 1 && mySol->getScalarSecSol())
+    return true;
+  else
+    return false;
+}
