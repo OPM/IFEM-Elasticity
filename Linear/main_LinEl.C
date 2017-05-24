@@ -386,9 +386,13 @@ int main (int argc, char** argv)
                    <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2)
                    <<"\n- relative error (% of "<< uRef << gNorm[j](2)*Rel;
         if (haveResErr)
+        {
           IFEM::cout <<"\nResidual error (r(u^r) + J(u^r))^0.5 : "<< gNorm[j](5)
                      <<"\n- relative error (% of "<< uRef << gNorm[j](5)*Rel;
-
+          if (gNorm[j].size() >= 9)
+            IFEM::cout <<"\nJump term J(u^r)^0.5          : "<< gNorm[j](6)
+                       <<"\n- relative error (% of "<< uRef << gNorm[j](6)*Rel;
+        }
         if (model->haveAnaSol())
         {
           double exaErr = gNorm[j](gNorm[j].size() - (haveResErr ? 2 : 1));

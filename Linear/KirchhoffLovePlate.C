@@ -663,6 +663,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
                 << hk4*Res*Res << std::endl;
 #endif
       pnorm[ip++] += hk4*Res*Res*fe.detJxW;
+      ip++; // Make room for Jump contributions here
 
       if (version == 1 && anasol)
       {
@@ -756,7 +757,7 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
   for (size_t i = 0; i < pnorm.psol.size(); i++)
     if (!pnorm.psol[i].empty())
     {
-      ip += 5;
+      ip += 6;
       if (nOrder%2)
       {
         // Evaluate the projected solution
@@ -774,8 +775,9 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
         else
           Jmp = mr[0]*normal.x + mr[1]*normal.y;
 
-        // Integrate the edge jump in the projected solution
-        pnorm[ip] += fe.h*Jmp*fe.detJxW;
+        // Integrate the edge jump in the recovered solution
+        pnorm[ip-1] += fe.h*Jmp*fe.detJxW;
+        pnorm[ip]   += fe.h*Jmp*fe.detJxW;
       }
       if (nOrder/2)
       {
@@ -793,7 +795,8 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
           Jmp = (dmdX(1,1)+dmdX(2,1))*normal.x + (dmdX(1,2)+dmdX(2,2))*normal.y;
 
         // Integrate the residual error in the analytical solution
-        pnorm[ip] += hk3*Jmp*Jmp*fe.detJxW;
+        pnorm[ip-1] += hk3*Jmp*Jmp*fe.detJxW;
+        pnorm[ip]   += hk3*Jmp*Jmp*fe.detJxW;
       }
       if (anasol) ip += 3;
     }
@@ -812,10 +815,10 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
   // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
   // with e^r = w^r - w^h  and  e = w - w^h,
   // and sqrt((a(e^r,e^r)+res(w^r))/a(e,e))
-  for (size_t ip = 12; ip < pnorm.size(); ip += 8)
+  for (size_t ip = 13; ip < pnorm.size(); ip += 9)
   {
-    pnorm[ip-1] = sqrt(pnorm[ip-6] / pnorm[3]);
-    pnorm[ip] = sqrt((pnorm[ip-6]+pnorm[ip-3]) / pnorm[3]);
+    pnorm[ip-1] = sqrt(pnorm[ip-7] / pnorm[3]);
+    pnorm[ip] = sqrt((pnorm[ip-7]+pnorm[ip-4]) / pnorm[3]);
   }
 
   return true;
@@ -835,14 +838,14 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
   else if (group == 1)
     return anasol || ana2nd ? 5 : 2;
   else
-    return anasol || ana2nd ? 8 : 5;
+    return anasol || ana2nd ? 9 : 6;
 }
 
 
 std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
                                              const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 8 || (i == 1 && j > 5))
+  if (i == 0 || j == 0 || j > 9 || (i == 1 && j > 5))
     return this->NormBase::getName(i,j,prefix);
 
   static const char* u[5] = {
@@ -853,12 +856,13 @@ std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
     "res(w)^0.5"
   };
 
-  static const char* p[8] = {
+  static const char* p[9] = {
     "a(w^r,w^r)^0.5",
     "a(e,e)^0.5, e=w^r-w^h",
     "(w^r,w^r)^0.5",
     "(e,e)^0.5, e=w^r-w^h",
     "res(w^r)^0.5",
+    "jump(w^r)^0.5",
     "a(e,e)^0.5, e=w-w^r",
     "effectivity index^*",
     "effectivity index^RES"
