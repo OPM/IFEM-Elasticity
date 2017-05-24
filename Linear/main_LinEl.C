@@ -391,6 +391,8 @@ int main (int argc, char** argv)
     }
 
     model->dumpResults(displ,0.0,IFEM::cout,true,6);
+    if (!projs.empty())
+      model->dumpVector(projs.front(),nullptr,IFEM::cout,6);
 
     if (model->opt.eig == 0) break;
 
