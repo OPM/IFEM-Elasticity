@@ -31,6 +31,8 @@ file(GLOB LinEl_SRCS *.C)
 add_executable(LinEl ${LinEl_SRCS})
 target_link_libraries(LinEl Beam Elasticity ${IFEM_LIBRARIES})
 
+list(APPEND CHECK_SOURCES ${LinEl_SRCS})
+
 # Installation
 install(TARGETS LinEl DESTINATION bin COMPONENT bin)
 
@@ -52,9 +54,6 @@ endif(IFEM_INSTALL_DOXY)
 # Regression tests
 enable_testing()
 include(IFEMTesting)
-
-# Generate regtest script with correct paths
-configure_file(${IFEM_REGTEST_SCRIPT} regtest.sh)
 
 if(MPI_FOUND)
   # Add parallel tests here
