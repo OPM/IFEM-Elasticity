@@ -263,6 +263,7 @@ int main (int argc, char** argv)
   Matrix eNorm;
   Vector displ, load;
   Vectors projs(pOpt.size()), gNorm;
+  Vectors projx(pOpt.size()), xNorm;
   std::vector<Mode> modes;
   std::vector<Mode>::const_iterator it;
 
@@ -330,6 +331,8 @@ int main (int argc, char** argv)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
       if (!model->project(projs[i],displ,pit->first))
         return 4;
+      else if (!model->projectAnaSol(projx[i],pit->first))
+        projx[i].clear();
 
     if (!pOpt.empty())
       IFEM::cout << std::endl;
@@ -339,6 +342,11 @@ int main (int argc, char** argv)
       // Evaluate solution norms
       model->setQuadratureRule(model->opt.nGauss[1]);
       if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
+        return 4;
+
+      // Evaluate norms of the projected analytical solution, if any
+      Elasticity::asolProject = true;
+      if (!model->solutionNorms(TimeDomain(),Vectors(1,displ),projx,xNorm))
         return 4;
     }
 
@@ -380,6 +388,16 @@ int main (int argc, char** argv)
                      <<"\n- relative error (% of "<< uRef << exaErr*Rel
                      <<"\nEffectivity index             : "
                      << gNorm[j](2)/norm(4);
+        }
+        if (j < xNorm.size() && !xNorm[j].empty())
+        {
+          const Vector& xnor = xNorm[j];
+          IFEM::cout <<"\nEnergy norm |u^rr| = a(u^rr,u^rr)^0.5: "<< xnor(1)
+                     <<"\nError norm a(e,e)^0.5, e=u^rr-u^h    : "<< xnor(2)
+                     <<"\n- relative error (% of "<< uRef << xnor(2)*Rel;
+          double exaErr = xnor(xnor.size()-1);
+          IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^rr     : "<< exaErr
+                     <<"\n- relative error (% of "<< uRef << exaErr*Rel;
         }
 
         IFEM::cout <<"\nL2-norm |s^r| = (s^r,s^r)^0.5        : "<< gNorm[j](3)

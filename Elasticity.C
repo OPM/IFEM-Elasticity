@@ -32,6 +32,7 @@
 #endif
 
 bool Elasticity::wantPrincipalStress = false;
+bool Elasticity::asolProject         = false;
 
 
 Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
@@ -880,7 +881,7 @@ NormBase* Elasticity::getNormIntegrand (AnaSol* asol) const
 {
   if (asol && asol->getStressSol())
     return new ElasticityNorm(*const_cast<Elasticity*>(this),
-                              asol->getStressSol());
+                              asol->getStressSol(), asolProject ? 3 : 2);
   else
     return new ElasticityNorm(*const_cast<Elasticity*>(this));
 }
@@ -898,10 +899,10 @@ ForceBase* Elasticity::getForceIntegrand () const
 }
 
 
-ElasticityNorm::ElasticityNorm (Elasticity& p, STensorFunc* a)
+ElasticityNorm::ElasticityNorm (Elasticity& p, STensorFunc* a, int fld)
   : NormBase(p), anasol(a)
 {
-  nrcmp = myProblem.getNoFields(2);
+  nrcmp = myProblem.getNoFields(fld);
 }
 
 

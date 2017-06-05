@@ -311,6 +311,7 @@ protected:
 
 public:
   static bool wantPrincipalStress; //!< Option for principal stress calculation
+  static bool asolProject;         //!< Analytical solution projection flag
 };
 
 
@@ -324,7 +325,8 @@ public:
   //! \brief The only constructor initializes its data members.
   //! \param[in] p The linear elasticity problem to evaluate norms for
   //! \param[in] a The analytical stress field (optional)
-  ElasticityNorm(Elasticity& p, STensorFunc* a = nullptr);
+  //! \param[in] fld which field set to consider (2=all, 3=stress comps. only)
+  ElasticityNorm(Elasticity& p, STensorFunc* a = nullptr, int fld = 2);
   //! \brief Empty destructor.
   virtual ~ElasticityNorm() {}
 
