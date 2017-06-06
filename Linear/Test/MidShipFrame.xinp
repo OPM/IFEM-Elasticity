@@ -74,7 +74,7 @@
 
   <postprocessing>
     <projection>
-      <CGL2/>
+      <CGL2 version="2"/>
     </projection>
   </postprocessing>
 
