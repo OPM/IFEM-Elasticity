@@ -519,12 +519,13 @@ int main (int argc, char** argv)
       return 8;
 
     // Write temperature field, if specified
-    const RealFunc* temp;
     const LinearElasticity* lelp;
     if ((lelp = dynamic_cast<const LinearElasticity*>(model->getProblem())))
-      if ((temp = lelp->getTemperature()))
-        if (!model->writeGlvF(*temp,"Temperature",1,nBlock))
-          return 9;
+    {
+      const RealFunc* temp = lelp->getTemperature();
+      if (temp && !model->writeGlvF(*temp,"Temperature",1,nBlock))
+        return 9;
+    }
 
     // Write load vector to VTF-file
     if (!model->writeGlvV(load,"Load vector",1,nBlock))
