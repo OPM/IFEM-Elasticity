@@ -32,7 +32,7 @@ class ElasticCable : public ElasticBar
 public:
   //! \brief Default constructor.
   //! \param[in] n Number of consequtive solution vectors to reside in core
-  ElasticCable(unsigned short int n = 1) : ElasticBar('G',3,n),
+  explicit ElasticCable(unsigned short int n = 1) : ElasticBar('G',3,n),
     EA(stiffness), EI(0.0) {}
   //! \brief Empty destructor.
   virtual ~ElasticCable() {}
