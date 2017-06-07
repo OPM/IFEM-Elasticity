@@ -196,8 +196,6 @@ protected:
   RealFunc*    presFld; //!< Pointer to pressure field
 
   mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values
-
-  unsigned short int nsd; //!< Number of space dimensions (1, 2 or, 3)
 };
 
 

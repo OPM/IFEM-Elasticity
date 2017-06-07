@@ -24,7 +24,7 @@
 #include "IFEM.h"
 
 
-KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : nsd(n)
+KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : IntegrandBase(n)
 {
   npv = 1; // Number of primary unknowns per node
 
