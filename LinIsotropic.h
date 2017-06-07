@@ -39,7 +39,8 @@ public:
   LinIsotropic(double E, double v = 0.0, double densty = 0.0,
                bool ps = false, bool ax = false)
     : Efunc(nullptr), Efield(nullptr), Emod(E), nu(v), rho(densty),
-      Afunc(nullptr), alpha(0.0), planeStress(ps), axiSymmetry(ax) {}
+      Cpfunc(nullptr), heatcapacity(0.0), Afunc(nullptr), alpha(0.0),
+      condFunc(nullptr), conductivity(0.0), planeStress(ps), axiSymmetry(ax) {}
   //! \brief Constructor initializing the material parameters.
   //! \param[in] E Young's modulus (spatial function)
   //! \param[in] v Poisson's ratio
