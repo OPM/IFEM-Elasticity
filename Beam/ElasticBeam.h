@@ -29,7 +29,7 @@ class ElasticBeam : public ElasticBase
 public:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of consequtive solution vectors to reside in core
-  ElasticBeam(unsigned short int n = 1);
+  explicit ElasticBeam(unsigned short int n = 1);
   //! \brief The destructor deallocates the load and property functions.
   virtual ~ElasticBeam();
 

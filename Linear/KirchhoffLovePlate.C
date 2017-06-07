@@ -24,7 +24,7 @@
 #include "IFEM.h"
 
 
-KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : nsd(n)
+KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n) : IntegrandBase(n)
 {
   npv = 1; // Number of primary unknowns per node
 
@@ -304,15 +304,16 @@ bool KirchhoffLovePlate::evalSol (Vector& s,
                                   const std::vector<int>& MNPC) const
 {
   // Extract element displacements
-  int ierr = 0;
   Vector eV;
-  if (!primsol.empty() && !primsol.front().empty())
+  if (!primsol.empty() && !primsol.front().empty()) {
+    int ierr;
     if ((ierr = utl::gather(MNPC,1,primsol.front(),eV)))
     {
       std::cerr <<" *** KirchhoffLovePlate::evalSol: Detected "
 		<< ierr <<" node numbers out of range."<< std::endl;
       return false;
     }
+  }
 
   // Evaluate the stress resultant tensor
   return this->evalSol(s,eV,fe,X,true);

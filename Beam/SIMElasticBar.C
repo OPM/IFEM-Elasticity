@@ -295,10 +295,11 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
 
 Tensor SIMElasticBar::getNodeRotation (int inod) const
 {
-  size_t node = 0;
-  for (PatchVec::const_iterator it = myModel.begin(); it != myModel.end(); ++it)
+  for (PatchVec::const_iterator it = myModel.begin(); it != myModel.end(); ++it) {
+    size_t node;
     if ((node = (*it)->getNodeIndex(inod,true)))
       return static_cast<const ASMs1D*>(*it)->getRotation(node);
+  }
 
   return Tensor(nsd,true);
 }
