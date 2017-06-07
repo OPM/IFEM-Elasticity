@@ -257,7 +257,7 @@ int main (int argc, char** argv)
 
   const char* prefix[pOpt.size()];
   if (model->opt.format >= 0 || model->opt.dumpHDF5(infile))
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       prefix[i] = pit->second.c_str();
 
   Matrix eNorm;
@@ -289,7 +289,7 @@ int main (int argc, char** argv)
     {
       exporter->registerField("u", "solution", DataExporter::SIM, results);
       exporter->setFieldValue("u", model, aSim ? &aSim->getSolution() : &displ);
-      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
+      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit) {
         exporter->registerField(prefix[i], "projected", DataExporter::SIM,
                                 DataExporter::SECONDARY, prefix[i]);
         exporter->setFieldValue(prefix[i], model,
@@ -327,7 +327,7 @@ int main (int argc, char** argv)
 
     // Project the FE stresses onto the splines basis
     model->setMode(SIM::RECOVERY);
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       if (!model->project(projs[i],displ,pit->first))
         return 4;
 
@@ -364,7 +364,7 @@ int main (int argc, char** argv)
                      << norm(4)/norm(3)*100.0;
       }
       size_t j = 1;
-      for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
+      for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); ++pit, j++)
       {
         IFEM::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<";
         IFEM::cout <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1);
@@ -479,13 +479,13 @@ int main (int argc, char** argv)
     // Write projected solution fields to VTF-file
     size_t i = 0;
     int iBlk = 100;
-    for (pit = pOpt.begin(); pit != pOpt.end(); pit++, i++, iBlk += 10)
+    for (pit = pOpt.begin(); pit != pOpt.end(); ++pit, i++, iBlk += 10)
       if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str()))
         return 12;
 
     // Write eigenmodes
     bool isFreq = model->opt.eig==3 || model->opt.eig==4 || model->opt.eig==6;
-    for (it = modes.begin(); it != modes.end(); it++)
+    for (it = modes.begin(); it != modes.end(); ++it)
       if (!model->writeGlvM(*it,isFreq,nBlock))
         return 13;
 
@@ -527,7 +527,7 @@ int main (int argc, char** argv)
       ose.precision(18);
       IFEM::cout <<"\nWriting eigenvectors to file "<< infile << std::endl;
       utl::LogStream log(ose);
-      for (it = modes.begin(); it != modes.end(); it++)
+      for (it = modes.begin(); it != modes.end(); ++it)
       {
         ose <<"# Eigenvector_"<< it->eigNo <<" Eigenvalue="<< it->eigVal <<"\n";
         model->dumpPrimSol(it->eigVec,log,false);
