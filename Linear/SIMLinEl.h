@@ -28,7 +28,7 @@ template<class Dim> class SIMLinEl : public SIMElasticity<Dim>
 public:
   //! \brief Default constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMLinEl(bool checkRHS = false) : SIMElasticity<Dim>(checkRHS) {}
+  explicit SIMLinEl(bool checkRHS = false) : SIMElasticity<Dim>(checkRHS) {}
   //! \brief Empty destructor.
   virtual ~SIMLinEl() {}
 
