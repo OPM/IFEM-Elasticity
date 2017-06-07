@@ -187,10 +187,11 @@ bool ElasticBar::evalInt (LocalIntegral& elmInt,
 #endif
 
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
-  int i, j;
+  int i;
 
   if (eKm)
   {
+    int j;
     Matrix& Km = elMat.A[eKm-1];
     Matrix& Kg = elMat.A[eKg ? eKg-1 : eKm-1];
 
