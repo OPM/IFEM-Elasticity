@@ -448,14 +448,16 @@ bool ElasticCable::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 {
   // Extract element displacements
   Vector eV;
-  int ierr = 0;
   if (!primsol.empty() && !primsol.front().empty())
-    if ((ierr = utl::gather(MNPC,3,primsol.front(),eV)))
+  {
+    int ierr = utl::gather(MNPC,3,primsol.front(),eV);
+    if (ierr > 0)
     {
       std::cerr <<" *** ElasticCable::evalSol: Detected "<< ierr
                 <<" node numbers out of range."<< std::endl;
       return false;
     }
+  }
 
   // Set up reference and current configuration
 

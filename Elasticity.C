@@ -441,7 +441,7 @@ bool Elasticity::formDefGradient (const Vector& eV, const Vector& N,
     return true; // Initial state, deformation gradient is identity tensor
 
   const size_t nenod = dNdX.rows();
-  if (eV.size() != nenod*nsd || dNdX.cols() < nsd)
+  if (eV.size() != nsd*nenod || dNdX.cols() < nsd)
   {
     std::cerr <<" *** Elasticity::formDefGradient: Invalid dimension,"
               <<" dNdX("<< nenod <<","<< dNdX.cols() <<")"<< std::endl;
@@ -601,7 +601,7 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
 Vec3 Elasticity::evalSol (const Vector& eV, const Vector& N) const
 {
   Vec3 u;
-  if (eV.size() == N.size()*nsd)
+  if (eV.size() == nsd*N.size())
     for (unsigned short int i = 0; i < nsd; i++)
       u[i] = eV.dot(N,i,nsd);
 
@@ -622,14 +622,16 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 {
   // Extract element displacements
   Vectors eV(1);
-  int ierr = 0;
   if (!primsol.empty() && !primsol.front().empty())
-    if ((ierr = utl::gather(MNPC,nsd,primsol.front(),eV.front())))
+  {
+    int ierr = utl::gather(MNPC,nsd,primsol.front(),eV.front());
+    if (ierr > 0)
     {
       std::cerr <<" *** Elasticity::evalSol: Detected "<< ierr
 		<<" node numbers out of range."<< std::endl;
       return false;
     }
+  }
 
   return this->evalSol2(s,eV,fe,X);
 }
@@ -686,7 +688,7 @@ bool Elasticity::evalSol (Vector& s, const Vectors& eV, const FiniteElement& fe,
     std::cerr <<" *** Elasticity::evalSol: No solutions vector."<< std::endl;
     return false;
   }
-  else if (!eV.front().empty() && eV.front().size() != fe.dNdX.rows()*nsd)
+  else if (!eV.front().empty() && eV.front().size() != nsd*fe.dNdX.rows())
   {
     std::cerr <<" *** Elasticity::evalSol: Invalid displacement vector."
 	      <<"\n     size(eV) = "<< eV.front().size() <<"   size(dNdX) = "

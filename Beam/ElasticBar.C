@@ -187,12 +187,12 @@ bool ElasticBar::evalInt (LocalIntegral& elmInt,
 #endif
 
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
-  int i, j;
 
   if (eKm)
   {
     Matrix& Km = elMat.A[eKm-1];
     Matrix& Kg = elMat.A[eKg ? eKg-1 : eKm-1];
+    int i, j;
 
     // Evaluate the material stiffness matrix
     for (j = 1; j <= 3; j++)
@@ -247,12 +247,12 @@ bool ElasticBar::evalInt (LocalIntegral& elmInt,
   {
     Matrix& M = elMat.A[eM-1];
     if (lumpedMass)
-      for (i = 1; i <= 6; i++)
+      for (int i = 1; i <= 6; i++)
         M(i,i) = mass;
     else
     {
       M.fill(mass/3.0);
-      for (i = 1; i <= 6; i++)
+      for (int i = 1; i <= 6; i++)
         M(i,i) *= 2.0;
     }
   }
@@ -261,7 +261,7 @@ bool ElasticBar::evalInt (LocalIntegral& elmInt,
   {
     // External (gravitation) forces
     Vector& S = elMat.b[eS-1];
-    for (i = 1; i <= 3; i++)
+    for (int i = 1; i <= 3; i++)
       S(i) = S(3+i) = mass*gravity[i-1];
 #if INT_DEBUG > 1
     std::cout <<"ElasticBar: S_ext"<< S;
@@ -272,7 +272,7 @@ bool ElasticBar::evalInt (LocalIntegral& elmInt,
   {
     // Internal forces
     Vector& S = elMat.b[iS-1];
-    for (i = 1; i <= 3; i++)
+    for (int i = 1; i <= 3; i++)
       if (iS == eS)
       {
         S(i)   += F*X[i-1];
