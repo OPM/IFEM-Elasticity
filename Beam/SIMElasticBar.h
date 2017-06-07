@@ -34,7 +34,7 @@ class SIMElasticBar : public SIM1D
 public:
   //! \brief Default constructor.
   //! \param[in] n Number of consequtive solution vectors in core
-  SIMElasticBar(unsigned char n = 1);
+  explicit SIMElasticBar(unsigned char n = 1);
   //! \brief The destructor deletes the nodal point load functions.
   virtual ~SIMElasticBar();
 
