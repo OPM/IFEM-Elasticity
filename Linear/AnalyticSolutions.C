@@ -361,11 +361,9 @@ void NavierPlate::addTerms (std::vector<double>& M,
 SymmTensor NavierPlate::evaluate (const Vec3& X) const
 {
   const int max_mn = 100;
-  const double eps = 1.0e-8;
 
   SymmTensor M(2);
 
-  double prev = 0.0;
 #ifdef REVERSED_SUMMATION
   cont maxMN = max_mn - (inc-1);
   for (int i = maxMN; i > 0; i -= inc)
@@ -378,6 +376,8 @@ SymmTensor NavierPlate::evaluate (const Vec3& X) const
     }
   }
 #else
+  const double eps = 1.0e-8;
+  double prev = 0.0;
   for (int i = 1; i <= max_mn; i += inc)
   {
     for (int j = 1; j < i; j += inc)
