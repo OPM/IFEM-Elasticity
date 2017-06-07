@@ -391,7 +391,7 @@ public:
     : ForceBase(p), X0(x), anasol(a), nodal(false) {}
   //! \brief Constructor for global nodal force integration.
   //! \param[in] p The Elasticity problem to evaluate nodal forces for
-  ElasticityForce(Elasticity& p)
+  explicit ElasticityForce(Elasticity& p)
     : ForceBase(p), X0(nullptr), anasol(nullptr), nodal(true) {}
 
   //! \brief Empty destructor.

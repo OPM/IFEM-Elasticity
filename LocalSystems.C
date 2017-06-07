@@ -61,7 +61,7 @@ class CylinderSphereCS : public LocalSystem
 {
 public:
   //! \brief The constructor prints a message making user aware of its presense.
-  CylinderSphereCS(double H = 0.0) : h(H)
+  explicit CylinderSphereCS(double H = 0.0) : h(H)
   {
     IFEM::cout <<"\nLocal coordinate system: Cylindric with Spherical cap, h="
                << h << std::endl;

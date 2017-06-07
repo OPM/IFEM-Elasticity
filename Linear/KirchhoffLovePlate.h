@@ -41,7 +41,7 @@ public:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions (1=beam, 2=plate)
   //! \param[in] v Integrand version (1: B-matrix, 2: Tensor form)
-  KirchhoffLovePlate(unsigned short int n = 2, short int v = 1);
+  explicit KirchhoffLovePlate(unsigned short int n = 2, short int v = 1);
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~KirchhoffLovePlate();
 
