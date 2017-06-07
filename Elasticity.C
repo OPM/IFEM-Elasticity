@@ -606,14 +606,15 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
 {
   // Extract element displacements
   Vectors eV(1);
-  int ierr = 0;
-  if (!primsol.empty() && !primsol.front().empty())
+  if (!primsol.empty() && !primsol.front().empty()) {
+    int ierr;
     if ((ierr = utl::gather(MNPC,nsd,primsol.front(),eV.front())))
     {
       std::cerr <<" *** Elasticity::evalSol: Detected "<< ierr
 		<<" node numbers out of range."<< std::endl;
       return false;
     }
+  }
 
   return this->evalSol2(s,eV,fe,X);
 }
