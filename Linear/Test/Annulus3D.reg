@@ -68,7 +68,7 @@ Max Z-displacement : 0.0223644 node 359
 Projecting secondary solution ...
 	Greville point projection
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 132214
-External energy ((f,u^h)+(t,u^h)^0.5 : 138475
+External energy ((f,u^h)+(t,u^h)^0.5 : 132214
 >>> Error estimates based on Greville point projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 131734
 Error norm a(e,e)^0.5, e=u^r-u^h     : 1218.15

@@ -518,13 +518,6 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
 }
 
 
-void KirchhoffLovePlateNorm::addBoundaryTerms (Vectors& gNorm,
-					       double energy) const
-{
-  gNorm.front()(2) += energy;
-}
-
-
 size_t KirchhoffLovePlateNorm::getNoFields (int group) const
 {
   if (group < 1)

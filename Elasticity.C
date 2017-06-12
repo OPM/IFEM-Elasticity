@@ -1035,12 +1035,6 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
 }
 
 
-void ElasticityNorm::addBoundaryTerms (Vectors& gNorm, double energy) const
-{
-  gNorm.front()(2) += energy;
-}
-
-
 size_t ElasticityNorm::getNoFields (int group) const
 {
   if (group < 1)

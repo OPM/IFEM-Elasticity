@@ -56,7 +56,7 @@ Max Y-displacement : 1.22735
 Projecting secondary solution ...
 	Greville point projection
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 145174
-External energy ((f,u^h)+(t,u^h)^0.5 : 150150
+External energy ((f,u^h)+(t,u^h)^0.5 : 145174
 >>> Error estimates based on Greville point projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 144766
 Error norm a(e,e)^0.5, e=u^r-u^h     : 1266.18

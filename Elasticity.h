@@ -355,11 +355,6 @@ public:
   //! \details This method is used to compute effectivity indices.
   virtual bool finalizeElement(LocalIntegral& elmInt);
 
-  //! \brief Adds external energy terms to relevant norms.
-  //! \param gNorm Global norm quantities
-  //! \param[in] energy Global external energy
-  virtual void addBoundaryTerms(Vectors& gNorm, double energy) const;
-
   //! \brief Returns the number of norm groups or size of a specified group.
   //! \param[in] group The norm group to return the size of
   //! (if zero, return the number of groups)

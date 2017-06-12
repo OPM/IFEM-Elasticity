@@ -423,7 +423,7 @@ int main (int argc, char** argv)
   case 10:
     // Adaptive simulation
     for (int iStep = 1; aSim->adaptMesh(iStep); iStep++)
-      if (!aSim->solveStep(infile,iStep))
+      if (!aSim->solveStep(infile,iStep,true))
         return 5;
       else if (!aSim->writeGlv(infile,iStep))
         return 6;
