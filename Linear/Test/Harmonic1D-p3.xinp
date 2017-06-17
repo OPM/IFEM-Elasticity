@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic harmonic equation test in 1D for p=2 !-->
+
+<simulation>
+
+  <geometry X0="-2.0" L="3.0" modelSize="3.0">
+    <raiseorder patch="1" u="2"/>
+    <refine patch="1" u="15"/>
+    <topologysets>
+      <set name="boundary" type="vertex">
+        <item patch="1">1 2</item>
+      </set>
+      <set name="line" type="curve">
+        <item>1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1001"/>
+  </boundaryconditions>
+
+  <EulerBernoulli version="2">
+    <isotropic E="1.2e7" thickness="0.01"/>
+    <pressure set="line" type="expression">120*x+24</pressure>
+    <anasol type="expression">
+      <primary>(x-1)^3*(x+2)^2</primary>
+      <secondary>(x-1)*(20*x^2+32*x+2)
+        <derivative d1="1" d2="1">120*x+24</derivative>
+      </secondary>
+    </anasol>
+  </EulerBernoulli>
+
+  <discretization>
+    <nGauss>3 5</nGauss>
+  </discretization>
+
+  <postprocessing>
+    <projection>
+      <CGL2/>
+    </projection>
+    <resultpoints>
+      <point patch="1" u="0.5"/>
+    </resultpoints>
+    <resultpoints file="Harmonic1D-p3.dat">
+      <line u0="0.0" u1="1.0">100</line>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

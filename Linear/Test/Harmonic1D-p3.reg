@@ -1,0 +1,88 @@
+Harmonic1D-p3.xinp -1DKL
+
+Input file: Harmonic1D-p3.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file Harmonic1D-p3.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+	X0 = -2.0
+	Length = 3
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,0D) (1,2,0D)
+	               line (1,0,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2
+  Parsing <refine>
+	Refining P1 15
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1001: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2e+07 1 0.01
+	Pressure code 1 (expression): 120\*x+24
+Analytical solution: Expression
+	Primary=(x-1)^3\*(x+2)^2
+	Secondary=(x-1)\*(20\*x^2+32\*x+2)
+	Derivative_11=120\*x+24
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+  Parsing <resultpoints>
+	Line 1: P1 npt = 100 xi = 0-1 0 0
+	Output file: Harmonic1D-p3.dat
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3 5
+Spline basis with C1-continuous patch interfaces is used
+Enabled projection(s): Continuous global L2-projection
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1001
+	Constraining P1 V2 in direction(s) 1001
+ >>> SAM model summary <<<
+Number of elements    16
+Number of nodes       19
+Number of dofs        19
+Number of unknowns    15
+Number of quadrature points 48
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 1051.16
+ >>> Solution summary <<<
+L2-norm            : 4.68507
+Max displacement   : 8.46155
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 27.3819
+External energy ((f,u^h)+(t,u^h)^0.5 : 27.3819
+Exact norm  |u|   = a(u,u)^0.5       : 27.383
+Exact error a(e,e)^0.5, e=u-u^h      : 0.250527
+Exact relative error (%) : 0.914901
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 27.3809
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.230746
+ relative error (% of |u|)   : 0.842661
+Residual error (r(u^r) + J(u^r))^0.5 : 2.65654
+ relative error (% of |u|)   : 9.70144
+Exact error a(e,e)^0.5, e=u-u^r      : 0.0975721
+ relative error (% of |u|)   : 0.356324
+Effectivity index             : 0.92104
+Effectivity index, theta^EX          : 1.31051
+Effectivity index, theta^RES         : 11.5248
+Energy norm |u^rr| = a(u^rr,u^rr)^0.5: 27.383
+Error norm a(e,e)^0.5, e=u^rr-u^h    : 0.250527
+ relative error (% of |u|)   : 0.914901
+L2-norm |s^r| = (s^r,s^r)^0.5        : 27.3809
+L2-error (e,e)^0.5, e=s^r-s^h        : 0.230746
+ relative error (% of |s^r|) : 0.842726
+  Node #10:	sol1 = -7.593750e+00
+		exact1 -7.593750e+00
+		sol2 =  1.360547e+01
+		exact2  1.350000e+01
