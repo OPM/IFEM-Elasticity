@@ -13,6 +13,7 @@
 
 #include "SIMLinElBeamC1.h"
 #include "KirchhoffLovePlate.h"
+#include "ElasticityUtils.h"
 #include "LinIsotropic.h"
 #include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
@@ -289,4 +290,11 @@ double SIMLinElBeamC1::externalEnergy (const Vectors& psol) const
     energy += myLoads[i].pload * psol.front()(myLoads[i].inod);
 
   return energy;
+}
+
+
+void SIMLinElBeamC1::printNormGroup (const Vector& gNorm, const Vector& rNorm,
+                                     const std::string& prjName) const
+{
+  ElasticityUtils::printNorms(gNorm,rNorm,prjName,this);
 }

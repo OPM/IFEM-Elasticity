@@ -257,7 +257,7 @@ int main (int argc, char** argv)
 
   const char* prefix[pOpt.size()];
   if (model->opt.format >= 0 || model->opt.dumpHDF5(infile))
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       prefix[i] = pit->second.c_str();
 
   Matrix eNorm;
@@ -265,7 +265,6 @@ int main (int argc, char** argv)
   Vectors projs(pOpt.size()), gNorm;
   Vectors projx(pOpt.size()), xNorm;
   std::vector<Mode> modes;
-  std::vector<Mode>::const_iterator it;
 
   if (aSim && !aSim->initAdaptor(adaptor))
     return 1;
@@ -290,7 +289,7 @@ int main (int argc, char** argv)
     {
       exporter->registerField("u", "solution", DataExporter::SIM, results);
       exporter->setFieldValue("u", model, aSim ? &aSim->getSolution() : &displ);
-      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++) {
+      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit) {
         exporter->registerField(prefix[i], "projected", DataExporter::SIM,
                                 DataExporter::SECONDARY, prefix[i]);
         exporter->setFieldValue(prefix[i], model,
@@ -328,7 +327,7 @@ int main (int argc, char** argv)
 
     // Project the FE stresses onto the splines basis
     model->setMode(SIM::RECOVERY);
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, pit++)
+    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       if (!model->project(projs[i],displ,pit->first))
         return 4;
       else if (!model->projectAnaSol(projx[i],pit->first))
@@ -353,6 +352,7 @@ int main (int argc, char** argv)
     if (!gNorm.empty())
     {
       const Vector& norm = gNorm.front();
+      double Rel = norm.size() > 2 ? 100.0/norm(3) : 0.0;
       if (oneD && !KLp)
       {
         IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
@@ -368,58 +368,29 @@ int main (int argc, char** argv)
         if (model->haveAnaSol() && norm.size() >= 4)
           IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< norm(3)
                      <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
-                     <<"\nExact relative error (%) : "
-                     << norm(4)/norm(3)*100.0;
+                     <<"\nExact relative error (%) : "<< norm(4)*Rel;
         if (model->haveAnaSol() && norm.size() >= 5)
           IFEM::cout <<"\nResidual error (r(u) + J(u))^0.5 : "<< norm(5)
-                     <<"\n- relative error (% of |u|) : "
-                     << norm(5)/norm(3)*100.0;
+                     <<"\n- relative error (% of |u|) : "<< norm(5)*Rel;
       }
+
       size_t j = 1;
-      const char* uRef = model->haveAnaSol() ? "|u|)   : " : "|u^r|) : ";
-      for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); pit++,j++)
+      for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); ++pit,j++)
       {
-        double Rel = 100.0/(model->haveAnaSol() ? norm(3) : gNorm[j](1));
-        bool haveResErr = gNorm[j].size() >= (model->haveAnaSol() ? 8 : 5);
-        IFEM::cout <<"\n\n>>> Error estimates based on "<< pit->second <<" <<<"
-                   <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< gNorm[j](1)
-                   <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< gNorm[j](2)
-                   <<"\n- relative error (% of "<< uRef << gNorm[j](2)*Rel;
-        if (haveResErr)
-        {
-          IFEM::cout <<"\nResidual error (r(u^r) + J(u^r))^0.5 : "<< gNorm[j](5)
-                     <<"\n- relative error (% of "<< uRef << gNorm[j](5)*Rel;
-          if (gNorm[j].size() >= 9)
-            IFEM::cout <<"\nJump term J(u^r)^0.5          : "<< gNorm[j](6)
-                       <<"\n- relative error (% of "<< uRef << gNorm[j](6)*Rel;
-        }
-        if (model->haveAnaSol())
-        {
-          double exaErr = gNorm[j](gNorm[j].size() - (haveResErr ? 2 : 1));
-          IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^r      : "<< exaErr
-                     <<"\n- relative error (% of "<< uRef << exaErr*Rel
-                     <<"\nEffectivity index             : "
-                     << gNorm[j](2)/norm(4);
-          if (haveResErr)
-            IFEM::cout <<"\nEffectivity index, theta^EX          : "
-                       << (gNorm[j](2)+exaErr)/norm(4)
-                       <<"\nEffectivity index, theta^RES         : "
-                       << (gNorm[j](2)+gNorm[j](5))/norm(4);
-        }
+        model->printNormGroup(gNorm[j],norm,pit->second);
         if (j < xNorm.size() && !xNorm[j].empty())
         {
           const Vector& xnor = xNorm[j];
           IFEM::cout <<"\nEnergy norm |u^rr| = a(u^rr,u^rr)^0.5: "<< xnor(1)
                      <<"\nError norm a(e,e)^0.5, e=u^rr-u^h    : "<< xnor(2)
-                     <<"\n- relative error (% of "<< uRef << xnor(2)*Rel;
-          if (haveResErr)
+                     <<"\n- relative error (% of |u|)   : "<< xnor(2)*Rel;
+          if (xnor.size() >= 8)
             IFEM::cout <<"\nResidual error (r(u^rr) + J(u^rr))^0.5 : "<< xnor(5)
-                       <<"\n- relative error (% of "<< uRef << xnor(5)*Rel;
-          double exaErr = xnor(xnor.size() - (haveResErr ? 2 : 1));
+                       <<"\n- relative error (% of |u|)   : "<< xnor(5)*Rel;
+          double exaErr = xnor(xnor.size() - (xnor.size() >= 8 ? 2 : 1));
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^rr     : "<< exaErr
-                     <<"\n- relative error (% of "<< uRef << exaErr*Rel;
+                     <<"\n- relative error (% of |u|)   : "<< exaErr*Rel;
         }
-
         IFEM::cout <<"\nL2-norm |s^r| = (s^r,s^r)^0.5        : "<< gNorm[j](3)
                    <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4)
                    <<"\n- relative error (% of |s^r|) : "
@@ -520,14 +491,14 @@ int main (int argc, char** argv)
     // Write projected solution fields to VTF-file
     size_t i = 0;
     int iBlk = 100;
-    for (pit = pOpt.begin(); pit != pOpt.end(); pit++, i++, iBlk += 10)
+    for (pit = pOpt.begin(); pit != pOpt.end(); ++pit, i++, iBlk += 10)
       if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str()))
         return 12;
 
     // Write eigenmodes
     bool isFreq = model->opt.eig==3 || model->opt.eig==4 || model->opt.eig==6;
-    for (it = modes.begin(); it != modes.end(); it++)
-      if (!model->writeGlvM(*it,isFreq,nBlock))
+    for (const Mode& mode : modes)
+      if (!model->writeGlvM(mode,isFreq,nBlock))
         return 13;
 
     // Write element norms
@@ -568,10 +539,10 @@ int main (int argc, char** argv)
       ose.precision(18);
       IFEM::cout <<"\nWriting eigenvectors to file "<< infile << std::endl;
       utl::LogStream log(ose);
-      for (it = modes.begin(); it != modes.end(); it++)
+      for (const Mode& it : modes)
       {
-        ose <<"# Eigenvector_"<< it->eigNo <<" Eigenvalue="<< it->eigVal <<"\n";
-        model->dumpPrimSol(it->eigVec,log,false);
+        ose <<"# Eigenvector_"<< it.eigNo <<" Eigenvalue="<< it.eigVal <<"\n";
+        model->dumpPrimSol(it.eigVec,log,false);
       }
     }
   }

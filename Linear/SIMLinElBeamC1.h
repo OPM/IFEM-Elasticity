@@ -72,6 +72,14 @@ protected:
   //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& psol) const;
 
+public:
+  //! \brief Prints a norm group to the log stream.
+  //! \param[in] gNorm The norm values to print
+  //! \param[in] rNorm Reference norms for the first norm group
+  //! \param[in] prjName Projection name associated with this norm group
+  virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
+                               const std::string& prjName) const;
+
 private:
   std::vector<Material*> mVec;    //!< Material data
   RealArray              tVec;    //!< Beam thickness data

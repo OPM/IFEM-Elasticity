@@ -16,6 +16,7 @@
 
 #include "IFEM.h"
 #include "LinearElasticity.h"
+#include "ElasticityUtils.h"
 #include "MaterialBase.h"
 #include "ForceIntegrator.h"
 #include "Property.h"
@@ -485,6 +486,17 @@ protected:
       return false;
 
     return true;
+  }
+
+public:
+  //! \brief Prints a norm group to the log stream.
+  //! \param[in] gNorm The norm values to print
+  //! \param[in] rNorm Reference norms for the first norm group
+  //! \param[in] prjName Projection name associated with this norm group
+  virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
+                               const std::string& prjName) const
+  {
+    ElasticityUtils::printNorms(gNorm,rNorm,prjName,this);
   }
 
 protected:
