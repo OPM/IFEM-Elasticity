@@ -455,3 +455,51 @@ SymmTensor NavierPlate::dderiv (const Vec3& X, int dir1, int dir2) const
 {
   return this->evaluate(X,10*dir1+dir2);
 }
+
+
+CircularPlate::CircularPlate (double r, double t, double E, double n, double P)
+  : ThinPlateSol(E,n,t), STensorFunc(2), R(r)
+{
+  M0 = 0.25*P/M_PI;
+  scalSol.push_back(new Displ(P,R,D,nu));
+  stressSol = this;
+}
+
+
+CircularPlate::Displ::Displ (double P, double r, double D, double nu) : R(r)
+{
+  U0 = -P*R*R/(16.0*M_PI*D);
+  C0 = (3.0+nu)/(1.0+nu);
+}
+
+
+double CircularPlate::Displ::evaluate (const Vec3& X) const
+{
+  double rR = hypot(X.x,X.y)/R;
+  if (rR < 0.0001) rR = 0.0001;
+
+  double r2 = rR*rR;
+  return U0*(C0*(1.0-r2) - 2.0*r2*log10(rR));
+}
+
+
+SymmTensor CircularPlate::evaluate (const Vec3& X) const
+{
+  double r = hypot(X.x,X.y);
+  if (r < 0.0001*R) r = 0.0001*R;
+
+  // Bending moments in polar coordinates
+  SymmTensor M(2);
+  M(1,1) = M0*(1+nu)*log10(r/R);
+  M(2,2) = M(1,1) + M0*(1.0-nu);
+
+  // Local-to-global transformation
+  Tensor T(2);
+  T(1,1) =  X.x/r;
+  T(2,1) =  X.y/r;
+  T(1,2) = -T(2,1);
+  T(2,2) =  T(1,1);
+
+  // Transform to global Cartesian coordinates
+  return M.transform(T);
+}

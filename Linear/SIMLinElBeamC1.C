@@ -149,7 +149,7 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
       double g = 0.0;
       utl::getAttribute(child,"g",g);
       klp->setGravity(g);
-      IFEM::cout <<"\nGravitation constant: "<< g << std::endl;
+      IFEM::cout <<"\tGravitation constant: "<< g << std::endl;
     }
 
     else if (!strcasecmp(child->Value(),"isotropic")) {
@@ -176,8 +176,8 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
         load.patch = patch;
         load.pload = atof(child->FirstChild()->Value());
         utl::getAttribute(child,"xi",load.xi);
-        IFEM::cout <<"\n\tPoint: P"<< load.patch <<" xi = "<< load.xi
-                   <<" load = "<< load.pload;
+        IFEM::cout <<"\tPoint: P"<< load.patch <<" xi = "<< load.xi
+                   <<" load = "<< load.pload << std::endl;
         myLoads.push_back(load);
       }
     }
@@ -194,6 +194,7 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
         if (!type.empty()) IFEM::cout <<" ("<< type <<")";
         myScalars[code] = utl::parseRealFunc(child->FirstChild()->Value(),type);
         this->setPropertyType(code,Property::BODYLOAD);
+        IFEM::cout << std::endl;
       }
     }
 
@@ -201,7 +202,7 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
       std::string type;
       utl::getAttribute(child,"type",type,true);
       if (type == "expression") {
-        IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;
+        IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
         if (!mySol)
           mySol = new AnaSol(child);
       }

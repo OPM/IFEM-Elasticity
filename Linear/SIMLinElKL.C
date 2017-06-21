@@ -194,7 +194,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
       double g = 0.0;
       utl::getAttribute(child,"g",g);
       klp->setGravity(g);
-      IFEM::cout <<"\nGravitation constant: "<< g << std::endl;
+      IFEM::cout <<"\tGravitation constant: "<< g << std::endl;
     }
 
     else if (!strcasecmp(child->Value(),"isotropic")) {
@@ -223,9 +223,9 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         load.pload = atof(child->FirstChild()->Value());
         utl::getAttribute(child,"xi",load.xi[0]);
         utl::getAttribute(child,"eta",load.xi[1]);
-        IFEM::cout <<"\n\tPoint: P"<< load.patch
+        IFEM::cout <<"\tPoint: P"<< load.patch
                    <<" xi = "<< load.xi[0] <<" "<< load.xi[1]
-                   <<" load = "<< load.pload;
+                   <<" load = "<< load.pload << std::endl;
         myLoads.push_back(load);
       }
     }
@@ -242,6 +242,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         if (!type.empty()) IFEM::cout <<" ("<< type <<")";
         myScalars[code] = utl::parseRealFunc(child->FirstChild()->Value(),type);
         this->setPropertyType(code,Property::BODYLOAD);
+        IFEM::cout << std::endl;
       }
     }
 
@@ -263,7 +264,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         utl::getAttribute(child,"xi",xi);
         utl::getAttribute(child,"eta",eta);
         utl::getAttribute(child,"nTerm",max_mn);
-        IFEM::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
+        IFEM::cout <<"\tAnalytic solution: NavierPlate a="<< a <<" b="<< b
                    <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
         if (xi != 0.0 && eta != 0.0) {
           IFEM::cout <<" xi="<< xi <<" eta="<< eta;
@@ -278,8 +279,20 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         else if (!mySol)
           mySol = new NavierPlate(a,b,t,E,nu,pz,max_mn);
       }
+      else if (type == "circularplate") {
+        double R = 0.0, t = 0.0, E = 10000.0, nu = 0.3, P = 1000000.0;
+        utl::getAttribute(child,"R",R);
+        utl::getAttribute(child,"t",t);
+        utl::getAttribute(child,"E",E);
+        utl::getAttribute(child,"nu",nu);
+        utl::getAttribute(child,"P",P);
+        IFEM::cout <<"\tAnalytic solution: CircularPlate R="<< R <<" t="<< t
+                   <<" E="<< E <<" nu="<< nu <<" P="<< P << std::endl;
+        if (!mySol)
+          mySol = new CircularPlate(R,t,E,nu,P);
+      }
       else if (type == "expression") {
-        IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;
+        IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
         if (!mySol)
           mySol = new AnaSol(child);
       }

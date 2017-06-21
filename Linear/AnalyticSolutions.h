@@ -278,4 +278,47 @@ private:
   int    inc;  //!< Increment in Fourier term summation (1 or 2)
 };
 
+
+/*!
+  \brief Analytic solution for the simply supported circular thin plate.
+*/
+
+class CircularPlate : public ThinPlateSol, private STensorFunc
+{
+  /*!
+    \brief Nested class representing the analytic displacement field.
+  */
+  class Displ : public RealFunc
+  {
+  public:
+    //! \brief The constructor initializes the problem parameters.
+    Displ(double P, double r, double D, double nu);
+    //! \brief Empty destructor.
+    virtual ~Displ() {}
+
+  protected:
+    //! \brief Evaluates the displacement field at the point \a X.
+    virtual double evaluate(const Vec3& X) const;
+
+  private:
+    double R;  //!< Plate radius
+    double U0; //!< Reference displacement
+    double C0; //!< Constant depending on Poisson's ratio
+  };
+
+public:
+  //! \brief Constructor for plate with constant pressure load.
+  CircularPlate(double r, double t, double E, double n, double P);
+  //! \brief Empty destructor.
+  virtual ~CircularPlate() {}
+
+protected:
+  //! \brief Evaluates the analytic stress resultant tensor at the point \a x.
+  virtual SymmTensor evaluate(const Vec3& x) const;
+
+private:
+  double R;  //!< Plate radius
+  double M0; //!< Reference moment
+};
+
 #endif
