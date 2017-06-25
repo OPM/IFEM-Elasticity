@@ -186,8 +186,8 @@ class ThinPlateSol : public AnaSol
 public:
   //! \brief The constructor initializes the material properties.
   ThinPlateSol(double E, double v, double t);
-  //! \brief Empty destructor.
-  virtual ~ThinPlateSol() {}
+  //! \brief The destructor clears the internal pointer to the stress function.
+  virtual ~ThinPlateSol() { stressSol = nullptr; }
 
   //! \brief Returns the rotation field thetaX = dw/dx.
   virtual RealFunc* thetaX() { return nullptr; }
@@ -212,11 +212,11 @@ class NavierPlate : public ThinPlateSol, private STensorFunc
   class Displ : public RealFunc
   {
   public:
-    //! \brief The constructor initializes the member references.
-    Displ(double& p, double& d, double& a, double& b, double& x, double& y,
-          double& cc, double& dd, char& t, int n, int& i) :
-      pz(p), D(d), alpha(a), beta(b), xi(x), eta(y), c2(cc), d2(dd),
-      type(t), inc(i) { mn = type > 0 ? n : n-1; }
+    //! \brief The constructor initializes the problem parameters.
+    Displ(double p, double a, double b, double x, double y,
+          double c, double d, char t, int n, int i)
+      : pzD(p), alpha(a), beta(b), xi(x), eta(y), c2(c), d2(d),
+        type(t), mn(t > 0 ? n : n-1), inc(i) {}
     //! \brief Empty destructor.
     virtual ~Displ() {}
 
@@ -225,18 +225,17 @@ class NavierPlate : public ThinPlateSol, private STensorFunc
     virtual double evaluate(const Vec3& X) const;
 
   private:
-    double& pz;    //!< Load parameter
-    double& D;     //!< Plate stiffness
-    double& alpha; //!< pi/(plate length)
-    double& beta;  //!< pi/(plate width)
+    double pzD;   //!< Load parameter (pz/D)
+    double alpha; //!< pi/(plate length)
+    double beta;  //!< pi/(plate width)
 
-    double& xi;   //!< X-position of point/partial load
-    double& eta;  //!< Y-position of point/partial load
-    double& c2;   //!< Partial load extension in X-direction
-    double& d2;   //!< Partial load extension in Y-direction
-    char&   type; //!< Load type parameter (0, 1, or 2)
-    int     mn;   //!< Number of terms in Fourier series in each direction
-    int&    inc;  //!< Increment in Fourier term summation (1 or 2)
+    double xi;   //!< X-position of point/partial load
+    double eta;  //!< Y-position of point/partial load
+    double c2;   //!< Partial load extension in X-direction
+    double d2;   //!< Partial load extension in Y-direction
+    char   type; //!< Load type parameter (0, 1, or 2)
+    int    mn;   //!< Number of terms in Fourier series in each direction
+    int    inc;  //!< Increment in Fourier term summation (1 or 2)
   };
 
 public:
@@ -247,8 +246,8 @@ public:
   NavierPlate(double a, double b, double t, double E, double Poiss, double P,
               double xi_, double eta_, double c = 0.0, double d = 0.0,
               int max_mn = 100);
-  //! \brief The destructor clears pointers to internal function members.
-  virtual ~NavierPlate();
+  //! \brief Empty destructor.
+  virtual ~NavierPlate() {}
 
   //! \brief Evaluates a first derivative at the point \a X.
   virtual SymmTensor deriv(const Vec3& X, int dir) const;
@@ -266,8 +265,6 @@ protected:
                 int m, int n, int deriv) const;
 
 private:
-  Displ  w; //!< The analytical displacement field
-
   double alpha; //!< pi/(plate length)
   double beta;  //!< pi/(plate width)
   double pz;    //!< Load parameter

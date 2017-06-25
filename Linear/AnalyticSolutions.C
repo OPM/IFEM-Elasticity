@@ -253,18 +253,18 @@ ThinPlateSol::ThinPlateSol (double E, double v, double t) : nu(v)
 NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
                           double P, int max_mn)
   : ThinPlateSol(E,Poiss,t), STensorFunc(2),
-    w(pz,D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc),
     pz(P), type(0), xi(0.0), eta(0.0), c2(0.0), d2(0.0), mxmn(max_mn), inc(2)
 {
   alpha = M_PI/a;
   beta  = M_PI/b;
 
-  scalSol.push_back(&w);
+  scalSol.push_back(new Displ(pz/D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc));
   stressSol = this;
 
   // Calculate and print the maximum displacement (at the centre x=a/2, y=b/2)
   std::streamsize oldPrec = std::cout.precision(10);
-  std::cout <<"\nNavierPlate: w_max = " << w(Vec3(0.5*a,0.5*b,0.0))
+  std::cout <<"\n\nNavierPlate: w_max = "
+            << (*scalSol.front())(Vec3(0.5*a,0.5*b,0.0))
             <<"\n             Max. number of terms in Fourier series = "
             << max_mn << std::endl;
   std::cout.precision(oldPrec);
@@ -275,7 +275,6 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
                           double P, double xi_, double eta_,
                           double c, double d, int max_mn)
   : ThinPlateSol(E,Poiss,t), STensorFunc(2),
-    w(pz,D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc),
     pz(P), type(2), mxmn(max_mn), inc(1)
 {
   alpha = M_PI/a;
@@ -287,23 +286,16 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
   c2    = type == 1 ? a : 0.5*c;
   d2    = type == 1 ? b : 0.5*d;
 
-  scalSol.push_back(&w);
+  scalSol.push_back(new Displ(pz/D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc));
   stressSol = this;
 
   // Calculate and print the displacement at the centre x=a/2, y=b/2
   std::streamsize oldPrec = std::cout.precision(10);
-  std::cout <<"\nNavierPlate: w_centre = "<< w(Vec3(0.5*a,0.5*b,0.0))
-            <<"\n             Max. number of terms in Fourier series: "<< max_mn
-            << std::endl;
+  std::cout <<"\n\nNavierPlate: w_centre = "
+            << (*scalSol.front())(Vec3(0.5*a,0.5*b,0.0))
+            <<"\n             Max. number of terms in Fourier series = "
+            << max_mn << std::endl;
   std::cout.precision(oldPrec);
-}
-
-
-NavierPlate::~NavierPlate ()
-{
-  // Avoid that the base class AnaSol tries to deallocate these
-  scalSol.clear();
-  stressSol = NULL;
 }
 
 
@@ -327,12 +319,10 @@ double NavierPlate::Displ::evaluate (const Vec3& X) const
       }
     }
 
-  if (type == 0)
-    w *= 16.0*pz / (D*M_PI*M_PI);
-  else if (type == 1)
-    w *= 4.0*pz / (D*c2*d2);
+  if (type == 1)
+    w *=  4.0*pzD / (c2*d2);
   else
-    w *= 16.0*pz / (D*M_PI*M_PI);
+    w *= 16.0*pzD / (M_PI*M_PI);
 
   return w;
 }
