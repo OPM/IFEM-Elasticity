@@ -343,10 +343,13 @@ int main (int argc, char** argv)
       if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
         return 4;
 
-      // Evaluate norms of the projected analytical solution, if any
-      Elasticity::asolProject = true;
-      if (!model->solutionNorms(TimeDomain(),Vectors(1,displ),projx,xNorm))
-        return 4;
+      if (model->haveAnaSol())
+      {
+        // Evaluate norms of the projected analytical solution
+        Elasticity::asolProject = true;
+        if (!model->solutionNorms(TimeDomain(),Vectors(1,displ),projx,xNorm))
+          return 4;
+      }
     }
 
     if (!gNorm.empty())

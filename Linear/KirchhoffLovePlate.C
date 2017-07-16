@@ -833,12 +833,14 @@ int KirchhoffLovePlateNorm::getIntegrandType () const
 
 size_t KirchhoffLovePlateNorm::getNoFields (int group) const
 {
-  if (group < 1)
+  if (group == 0)
     return this->NormBase::getNoFields();
-  else if (group == 1)
+  else if (group == 1 || group == -1)
     return anasol || ana2nd ? 5 : 2;
-  else
+  else if (group > 0 || !prjsol[-group-2].empty())
     return anasol || ana2nd ? 9 : 6;
+  else
+    return 0;
 }
 
 

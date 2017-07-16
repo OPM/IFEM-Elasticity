@@ -1038,12 +1038,14 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
 
 size_t ElasticityNorm::getNoFields (int group) const
 {
-  if (group < 1)
+  if (group == 0)
     return this->NormBase::getNoFields();
-  else if (group == 1)
+  else if (group == 1 || group == -1)
     return anasol ? 5 : 3;
-  else
+  else if (group > 0 || !prjsol[-group-2].empty())
     return anasol ? 6 : 4;
+  else
+    return 0;
 }
 
 
