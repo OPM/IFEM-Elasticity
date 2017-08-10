@@ -1,0 +1,50 @@
+disc-stair-adap.xinp -adap
+
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Number of elements    24
+Number of nodes       160
+Number of dofs        480
+Number of unknowns    432
+L2-norm            : 3.76684e-05
+Energy norm           a(u^h,u^h)^0.5 : 2.65303
+External energy((f,u^h)+(t,u^h))^0.5 : 2.65303
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.191652
+Relative error (%) : 7.20513
+Root mean square (RMS) of error      : 0.712202
+Min element error                    : 0.00248256
+Max element error                    : 0.0744186
+Average element error                : 0.0318653
+Refining 2 basis functions
+Refined mesh: 36 elements 120 nodes.
+Refined mesh: 36 elements 120 nodes.
+Adaptive step 2
+Number of elements    94
+Number of nodes       264
+Number of dofs        792
+Number of unknowns    744
+L2-norm            : 3.33528e-05
+Energy norm           a(u^h,u^h)^0.5 : 2.66155
+External energy((f,u^h)+(t,u^h))^0.5 : 2.66155
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.139361
+Relative error (%) : 5.2289
+Root mean square (RMS) of error      : 0.894209
+Min element error                    : 0.00181218
+Max element error                    : 0.0512776
+Average element error                : 0.0107149
+Refining 3 basis functions 
+Refined mesh: 64 elements 216 nodes.
+Adaptive step 3
+Number of elements    122
+Number of nodes       360
+Number of dofs        1080
+Number of unknowns    972
+L2-norm            : 2.91039e-05
+Energy norm           a(u^h,u^h)^0.5 : 2.68087
+External energy((f,u^h)+(t,u^h))^0.5 : 2.68087
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.11665
+Relative error (%) : 4.34711
+Root mean square (RMS) of error      : 0.706328
+Min element error                    : 0.0018052
+Max element error                    : 0.0277379
+Average element error                : 0.00862621

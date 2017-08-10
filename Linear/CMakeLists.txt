@@ -55,19 +55,15 @@ endif(IFEM_INSTALL_DOXY)
 enable_testing()
 include(IFEMTesting)
 
-if(MPI_FOUND)
-  # Add parallel tests here
-else()
-  file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
-                                     ${PROJECT_SOURCE_DIR}/Test/*.reg)
-  if(IFEM_USE_LRSPLINES AND LRSpline_FOUND)
-    file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
-                                     ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
-  endif()
-  foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
-    ifem_add_test(${TESTFILE} LinEl)
-  endforeach()
+file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/*.reg)
+if(LRSpline_FOUND OR LRSPLINE_FOUND)
+  file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
 endif()
+foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
+  ifem_add_test(${TESTFILE} LinEl)
+endforeach()
 
 list(APPEND TEST_APPS LinEl)
 if(IFEM_COMMON_APP_BUILD)
