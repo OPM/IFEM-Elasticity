@@ -83,6 +83,7 @@ int main (int argc, char** argv)
   Profiler prof(argv[0]);
   utl::profiler->start("Initialization");
 
+  std::vector<std::string> topSets;
   std::vector<int> ignoredPatches;
   size_t adaptor = 0;
   int  i, iop = 0;
@@ -90,13 +91,14 @@ int main (int argc, char** argv)
   bool vizRHS = false;
   bool fixDup = false;
   bool dumpASCII = false;
+  bool dumpMatlab = false;
   bool twoD = false;
   bool KLp = false;
   bool oneD = false;
   bool isC1 = false;
   bool noProj = false;
   bool noError = false;
-  char* infile = NULL;
+  char* infile = nullptr;
   Elasticity::wantPrincipalStress = true;
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
@@ -106,6 +108,12 @@ int main (int argc, char** argv)
       ; // ignore the obsolete option
     else if (!strcmp(argv[i],"-dumpASC"))
       dumpASCII = myPid == 0; // not for parallel runs
+    else if (!strcmp(argv[i],"-dumpMatlab"))
+    {
+      dumpMatlab = true;
+      while (i < argc-1 && argv[i+1][0] != '-')
+        topSets.push_back(argv[++i]);
+    }
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
         utl::parseIntegers(ignoredPatches,argv[++i]);
@@ -166,7 +174,8 @@ int main (int argc, char** argv)
               <<" [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
               <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
               <<"\n       [-ignore <p1> <p2> ...] [-fixDup]"
-              <<" [-checkRHS] [-check] [-dumpASC]\n";
+              <<" [-checkRHS] [-check] [-dumpASC]\n"
+              <<"       [-dumpMatlab [<setnames>]]\n";
     return 0;
   }
 
@@ -211,7 +220,7 @@ int main (int argc, char** argv)
     model = new SIMLinEl3D(checkRHS);
 
   SIMadmin* theSim = model;
-  AdaptiveSIM* aSim = NULL;
+  AdaptiveSIM* aSim = nullptr;
   if (iop == 10)
     theSim = aSim = new AdaptiveSIM(*model);
 
@@ -269,7 +278,7 @@ int main (int argc, char** argv)
   if (aSim && !aSim->initAdaptor(adaptor))
     return 1;
 
-  DataExporter* exporter = NULL;
+  DataExporter* exporter = nullptr;
   if (model->opt.dumpHDF5(infile))
   {
     IFEM::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
@@ -440,7 +449,7 @@ int main (int argc, char** argv)
       else if (!aSim->writeGlv(infile,iStep))
         return 6;
       else if (exporter)
-        exporter->dumpTimeLevel(NULL,true);
+        exporter->dumpTimeLevel(nullptr,true);
 
   case 100:
     break; // Model check
@@ -548,6 +557,13 @@ int main (int argc, char** argv)
         model->dumpPrimSol(it.eigVec,log,false);
       }
     }
+  }
+
+  if (dumpMatlab)
+  {
+    std::ofstream osm(strcat(strtok(infile,"."),".m"));
+    IFEM::cout <<"\nDumping grid to Matlab file "<< infile << std::endl;
+    model->dumpMatlabGrid(osm,"IFEM_mesh",topSets);
   }
 
   utl::profiler->stop("Postprocessing");
