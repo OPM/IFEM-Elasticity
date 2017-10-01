@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!-- Basic harmonic equation test in 1D for p=2 !-->
+<!-- Basic harmonic equation test in 1D for p=3 !-->
 
 <simulation>
 
@@ -43,9 +43,11 @@
     <resultpoints>
       <point patch="1" u="0.5"/>
     </resultpoints>
+<!-- Activate this to plot the deflection along the entire line using a file
     <resultpoints file="Harmonic1D-p3.dat">
       <line u0="0.0" u1="1.0">100</line>
     </resultpoints>
+!-->
   </postprocessing>
 
 </simulation>
