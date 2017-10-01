@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<--! Made-up exact polynomial solution (p=2)
+<--! Made-up exact polynomial solution (p=1)
      with non-homogenuous Dirichlet boundary conditions !-->
 
 <simulation>
 
   <!-- General - geometry definitions !-->
   <geometry>
-    <raiseorder patch="1" u="1" v="1"/>
     <refine patch="1" u="7" v="7"/>
     <topologysets>
       <set name="model" type="surface">
@@ -25,7 +24,7 @@
   </boundaryconditions>
 
   <discretization>
-    <nGauss>3 4</nGauss>
+    <nGauss>2 3</nGauss>
   </discretization>
 
   <!-- Problem specific block !-->

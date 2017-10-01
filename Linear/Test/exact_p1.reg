@@ -1,0 +1,97 @@
+exact_p1.xinp -2D -grvl -cgl2
+
+Input file: exact_p1.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Enabled projection(s): Greville point projection
+                       Continuous global L2-projection
+Parsing input file exact_p1.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: edges (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+	               model (1,0,2D)
+  Parsing <refine>
+	Refining P1 7 7
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (analytic)
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 1000 0.3 0
+  Parsing <bodyforce>
+	Bodyforce code 1000012 (expression): 1000/(1-0.3^2)\*(-2\*y^2 - x^2 + 0.3\*x\*(x - 2\*y) - 2\*x\*y + 3 - 0.3) | 1000/(1-0.3^2)\*(-2\*x^2 - y^2 + 0.3\*y\*(y - 2\*x) - 2\*x\*y + 3 - 0.3)
+	Analytical solution: Expression
+	Variables=Emod=1000;v=0.3;
+	Primary=(1-x^2)\*(1-y^2)|(1-x^2)\*(1-y^2)
+	Stress=Emod/(1-v^2) \* 2\*( x\*(y^2-1) + v\*y\*(x^2-1)) | Emod/(1-v^2) \* 2\*(v\*x\*(y^2-1) + y\*(x^2-1)) | Emod/(1-v^2) \* (1-v)/2\*(2\*x\*(y^2-1) + 2\*y\*(x^2-1))
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 2 3
+Enabled projection(s): Greville point projection
+                       Continuous global L2-projection
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 0, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 12 code = 12
+	Constraining P1 E2 in direction(s) 12 code = 12
+	Constraining P1 E3 in direction(s) 12 code = 12
+	Constraining P1 E4 in direction(s) 12 code = 12
+ >>> SAM model summary <<<
+Number of elements    64
+Number of nodes       81
+Number of dofs        162
+Number of constraints 64
+Number of unknowns    98
+Number of quadrature points 256
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 40.8568
+ >>> Solution summary <<<
+L2-norm            : 0.529895
+Max X-displacement : 1
+Max Y-displacement : 1
+Projecting secondary solution ...
+	Greville point projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.4682
+External energy ((f,u^h)+(t,u^h)^0.5 : 38.5013
+Exact norm  |u|   = a(u,u)^0.5       : 49.6692
+Exact error a(e,e)^0.5, e=u-u^h      : 2.8788
+Exact relative error (%) : 5.79595
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 53.8529
+Error norm a(e,e)^0.5, e=u^r-u^h     : 6.1531
+ relative error (% of |u|)   : 12.3882
+Exact error a(e,e)^0.5, e=u-u^r      : 5.5381
+ relative error (% of |u|)   : 11.15
+Effectivity index             : 2.13738
+Energy norm |u^rr| = a(u^rr,u^rr)^0.5: 49.4935
+Error norm a(e,e)^0.5, e=u^rr-u^h    : 2.86419
+ relative error (% of |u|)   : 5.76652
+Exact error a(e,e)^0.5, e=u-u^rr     : 0.204652
+ relative error (% of |u|)   : 0.41203
+L2-norm |s^r| = (s^r,s^r)^0.5        : 1724.69
+L2-error (e,e)^0.5, e=s^r-s^h        : 198.689
+ relative error (% of |s^r|) : 11.5203
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 49.3908
+Error norm a(e,e)^0.5, e=u^r-u^h     : 2.76506
+ relative error (% of |u|)   : 5.56694
+Exact error a(e,e)^0.5, e=u-u^r      : 0.801228
+ relative error (% of |u|)   : 1.61313
+Effectivity index             : 0.960488
+Energy norm |u^rr| = a(u^rr,u^rr)^0.5: 49.6692
+Error norm a(e,e)^0.5, e=u^rr-u^h    : 2.87787
+ relative error (% of |u|)   : 5.79407
+Exact error a(e,e)^0.5, e=u-u^rr     : 0.0732511
+ relative error (% of |u|)   : 0.147478
+L2-norm |s^r| = (s^r,s^r)^0.5        : 1578.35
+L2-error (e,e)^0.5, e=s^r-s^h        : 86.8601
+ relative error (% of |s^r|) : 5.50323

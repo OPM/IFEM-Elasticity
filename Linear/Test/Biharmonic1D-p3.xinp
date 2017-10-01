@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!-- Basic biharmonic equation test in 2D for p=2.
+<!-- Basic biharmonic equation test in 2D for p=3.
 Square clamped plate with varying load satisfying the manufactored solution:
 w(x,y) = wx(x)*wy(y) = (x-1)*(x^2-1)^2*(y^2-1)^2
 
