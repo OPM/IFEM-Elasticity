@@ -961,15 +961,15 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   // Integrate the volume
   pnorm[ip++] += detJW;
 
-  size_t i, j, k;
-  for (i = 0; i < pnorm.psol.size(); i++)
-    if (!pnorm.psol[i].empty())
+  size_t j, k;
+  for (const Vector& psol : pnorm.psol)
+    if (!psol.empty())
     {
       // Evaluate projected stress field
       Vector sigmar(sigmah.size());
       for (j = k = 0; j < nrcmp && k < sigmar.size(); j++)
 	if (!planeStrain || j != 2)
-	  sigmar[k++] = pnorm.psol[i].dot(fe.N,j,nrcmp);
+	  sigmar[k++] = psol.dot(fe.N,j,nrcmp);
 
       // Integrate the energy norm a(u^r,u^r)
       pnorm[ip++] += sigmar.dot(Cinv*sigmar)*detJW;
@@ -1073,7 +1073,7 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
   };
 
   const char** s = i > 1 ? p : u;
-  if (!anasol && j == 3) j = 5;
+  if (!anasol && i == 1 && j == 3) j = 5;
 
   if (!prefix)
     return s[j-1];
