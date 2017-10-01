@@ -332,7 +332,7 @@ bool KirchhoffLovePlate::evalK2 (Matrix& EK,
   if (version == 2)
   {
     Vector d2NdXY = fe.d2NdX2.getColumn(1,2);
-    EK.outer_product(d2NdXY,d2NdXY*DdJxW*2.0,true); // EK += 2*N,xy*N,xy^2*|J|*w
+    EK.outer_product(d2NdXY,d2NdXY*DdJxW*2.0,true); // EK += 2*N,xy*N,xy*|J|*w
   }
   else
   {
@@ -591,20 +591,23 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     pnorm[ip++] += hk4*Res*Res*fe.detJxW;
   }
 
-  size_t i, j, nen = fe.N.size();
-  for (i = 0; i < pnorm.psol.size(); i++)
-    if (!pnorm.psol[i].empty())
+  // Integrate the area
+  pnorm[ip++] += fe.detJxW;
+
+  size_t nen = fe.N.size();
+  for (const Vector& psol : pnorm.psol)
+    if (!psol.empty())
     {
       // Evaluate the projected solution
       Vector mr(nrcmp);
-      for (j = 0; j < nrcmp; j++)
-        mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
+      for (unsigned short int j = 0; j < nrcmp; j++)
+        mr[j] = psol.dot(fe.N,j,nrcmp);
       if (nrcmp == 3 && version > 1)
         mr.push_back(mr(3));
 
 #if INT_DEBUG > 3
       std::cout <<"\n\t"<< (version > 1 ? "Laplace{w^r} =" : "m^r =");
-      for (j = 0; j < nrcmp; j++) std::cout <<" "<< mr[j];
+      for (double  v : mr) std::cout <<" "<< v;
 #endif
 
       // Integrate the energy norm a(w^r,w^r)
@@ -628,16 +631,16 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       // Evaluate the interior residual of the projected solution
       if (nrcmp == 1)
       {
-        Res = pnorm.psol[i].dot(fe.d2NdX2) + p;
+        Res = psol.dot(fe.d2NdX2) + p;
 #if INT_DEBUG > 3
         if (version > 1) std::cout <<"\n\tw,xxxx^r = "<< Res-p;
 #endif
       }
       else if (version == 1)
       {
-        double d2mxxdx2 = pnorm.psol[i].dot(fe.d2NdX2,0,3);
-        double d2myydy2 = pnorm.psol[i].dot(fe.d2NdX2,1,3,nen*3);
-        double d2mxydxy = pnorm.psol[i].dot(fe.d2NdX2,2,3,nen);
+        double d2mxxdx2 = psol.dot(fe.d2NdX2,0,3);
+        double d2myydy2 = psol.dot(fe.d2NdX2,1,3,nen*3);
+        double d2mxydxy = psol.dot(fe.d2NdX2,2,3,nen);
         Res = d2mxxdx2 + d2mxydxy + d2mxydxy + d2myydy2 + p;
 #if INT_DEBUG > 3
         std::cout <<"\n\tmxx,xx^r = "<< d2mxxdx2
@@ -647,9 +650,9 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       }
       else
       {
-        double wxxxx = pnorm.psol[i].dot(fe.d2NdX2,0,nrcmp);
-        double wyyyy = pnorm.psol[i].dot(fe.d2NdX2,1,nrcmp,nen*3);
-        double wxxyy = pnorm.psol[i].dot(fe.d2NdX2,0,nrcmp,nen*3);
+        double wxxxx = psol.dot(fe.d2NdX2,0,nrcmp);
+        double wyyyy = psol.dot(fe.d2NdX2,1,nrcmp,nen*3);
+        double wxxyy = psol.dot(fe.d2NdX2,0,nrcmp,nen*3);
 #if INT_DEBUG > 3
         std::cout <<"\n\tw,xxxx^r = "<< wxxxx
                   <<"\n\tw,yyyy^r = "<< wyyyy
@@ -754,16 +757,16 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
     }
   }
 
-  for (size_t i = 0; i < pnorm.psol.size(); i++)
-    if (!pnorm.psol[i].empty())
+  for (const Vector& psol : pnorm.psol)
+    if (!psol.empty())
     {
       ip += 6;
       if (nOrder%2)
       {
         // Evaluate the projected solution
         Vector mr(nrcmp);
-        for (size_t j = 0; j < nrcmp; j++)
-          mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
+        for (unsigned short int j = 0; j < nrcmp; j++)
+          mr[j] = psol.dot(fe.N,j,nrcmp);
 
         // Jump in the projected solution
         if (version == 1)
@@ -783,10 +786,10 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
       {
         // Evaluate the gradient of the projected solution.
         // Notice that the matrix multiplication method used here treats
-        // the element vector, pnorm.psol[i], as a matrix whose number
+        // the element vector, psol, as a matrix whose number
         // of columns equals the number of rows in the matrix fe.dNdX.
         Matrix dmdX;
-        if (!dmdX.multiplyMat(pnorm.psol[i],fe.dNdX)) // dmdX = psol*dNdX
+        if (!dmdX.multiplyMat(psol,fe.dNdX)) // dmdX = psol*dNdX
           return false;
 
         if (version == 1) // Shear force q^r = {n}*grad{m^r}
@@ -815,7 +818,7 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
   // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
   // with e^r = w^r - w^h  and  e = w - w^h,
   // and sqrt((a(e^r,e^r)+res(w^r))/a(e,e))
-  for (size_t ip = 13; ip < pnorm.size(); ip += 9)
+  for (size_t ip = 14; ip < pnorm.size(); ip += 9)
   {
     pnorm[ip-1] = sqrt(pnorm[ip-7] / pnorm[3]);
     pnorm[ip] = sqrt((pnorm[ip-7]+pnorm[ip-4]) / pnorm[3]);
@@ -836,7 +839,7 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
   if (group == 0)
     return this->NormBase::getNoFields();
   else if (group == 1 || group == -1)
-    return anasol || ana2nd ? 5 : 2;
+    return anasol || ana2nd ? 6 : 3;
   else if (group > 0 || !prjsol[-group-2].empty())
     return anasol || ana2nd ? 9 : 6;
   else
@@ -847,15 +850,16 @@ size_t KirchhoffLovePlateNorm::getNoFields (int group) const
 std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
                                              const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 9 || (i == 1 && j > 5))
+  if (i == 0 || j == 0 || j > 9 || (i == 1 && j > 6))
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[5] = {
+  static const char* u[6] = {
     "a(w^h,w^h)^0.5",
     "(p,w^h)^0.5",
     "a(w,w)^0.5",
     "a(e,e)^0.5, e=w-w^h",
-    "res(w)^0.5"
+    "res(w)^0.5",
+    "area"
   };
 
   static const char* p[9] = {
@@ -870,6 +874,7 @@ std::string KirchhoffLovePlateNorm::getName (size_t i, size_t j,
     "effectivity index^RES"
   };
 
+  if (!anasol && !ana2nd && i == 1 && j == 3) j = 6;
   std::string name(i > 1 ? p[j-1] : u[j-1]);
 
   return prefix ? prefix + std::string(" ") + name : name;

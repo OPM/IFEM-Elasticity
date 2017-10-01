@@ -26,6 +26,7 @@ namespace ElasticityUtils //! Dimension-independent utilities for Elasticity
   //! \param[in] gNorm The norm values to print
   //! \param[in] rNorm Reference norms for the first norm group
   //! \param[in] name Projection name associated with this norm group
+  //! \param[in] model The FE model associated with the norm values to print
   void printNorms(const Vector& gNorm, const Vector& rNorm,
                   const std::string& name, const SIMbase* model);
 }
