@@ -1030,7 +1030,7 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
   // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
   // with e^r = u^r - u^h  and  e = u - u^h
   for (size_t ip = 10; ip < pnorm.size(); ip += 6)
-    pnorm[ip] = sqrt(pnorm[ip-4] / pnorm[3]);
+    pnorm[ip] = pnorm[ip-4] / pnorm[3];
 
   return true;
 }
