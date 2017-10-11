@@ -340,8 +340,8 @@ bool Elasticity::formBmatrix (Matrix& Bmat, const Matrix& dNdX) const
     //         |  0    d/dy   0   |
     //   [B] = |  0     0    d/dz | * [N]
     //         | d/dy  d/dx   0   |
-    //         | d/dz   0    d/dx |
     //         |  0    d/dz  d/dy |
+    //         | d/dz   0    d/dx |
 
     for (size_t i = 1; i <= nenod; i++)
     {
@@ -1042,10 +1042,10 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
 
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
 
-  // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
+  // Evaluate local effectivity indices as a(e^r,e^r)/a(e,e)
   // with e^r = u^r - u^h  and  e = u - u^h
   for (size_t ip = 10; ip < pnorm.size(); ip += 6)
-    pnorm[ip] = sqrt(pnorm[ip-4] / pnorm[3]);
+    pnorm[ip] = pnorm[ip-4] / pnorm[3];
 
   return true;
 }

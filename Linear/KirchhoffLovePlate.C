@@ -815,13 +815,13 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
 
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
 
-  // Evaluate local effectivity indices as sqrt(a(e^r,e^r)/a(e,e))
+  // Evaluate local effectivity indices as a(e^r,e^r)/a(e,e)
   // with e^r = w^r - w^h  and  e = w - w^h,
-  // and sqrt((a(e^r,e^r)+res(w^r))/a(e,e))
+  // and (a(e^r,e^r)+res(w^r))/a(e,e)
   for (size_t ip = 14; ip < pnorm.size(); ip += 9)
   {
-    pnorm[ip-1] = sqrt(pnorm[ip-7] / pnorm[3]);
-    pnorm[ip] = sqrt((pnorm[ip-7]+pnorm[ip-4]) / pnorm[3]);
+    pnorm[ip-1] = pnorm[ip-7] / pnorm[3];
+    pnorm[ip] = (pnorm[ip-7]+pnorm[ip-4]) / pnorm[3];
   }
 
   return true;
