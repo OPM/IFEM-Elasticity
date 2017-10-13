@@ -63,6 +63,7 @@
   \arg -checkRHS : Check that the patches are modelled in a right-hand system
   \arg -vizRHS : Save the right-hand-side load vector on the VTF-file
   \arg -fixDup : Resolve co-located nodes by merging them into a single node
+  \arg -3D : Use three-parametric simulation driver
   \arg -2D : Use two-parametric simulation driver (plane stress)
   \arg -2Dpstrain : Use two-parametric simulation driver (plane strain)
   \arg -2Daxisymm : Use two-parametric simulation driver (axi-symmetric solid)
@@ -102,9 +103,10 @@ int main (int argc, char** argv)
   Elasticity::wantPrincipalStress = true;
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
+  int inputfile_idx = -1;
 
   for (i = 1; i < argc; i++)
-    if (SIMoptions::ignoreOldOptions(argc,argv,i))
+    if (i == inputfile_idx || SIMoptions::ignoreOldOptions(argc,argv,i))
       ; // ignore the obsolete option
     else if (!strcmp(argv[i],"-dumpASC"))
       dumpASCII = myPid == 0; // not for parallel runs
@@ -158,6 +160,8 @@ int main (int argc, char** argv)
     }
     else if (!strncmp(argv[i],"-2D",3))
       args.dim = 2;
+    else if (!strncmp(argv[i],"-3D",3))
+      args.dim = 3;
     else if (!strncmp(argv[i],"-noP",4))
       noProj = true;
     else if (!strncmp(argv[i],"-noE",4))
@@ -171,9 +175,14 @@ int main (int argc, char** argv)
     else if (!infile)
     {
       infile = argv[i];
+      inputfile_idx = i;
       if (strcasestr(infile,".xinp"))
+      {
         if (!args.readXML(infile,false))
           return 1;
+        // start from scratch and let commandline parameters override inputfile ones
+        i = 0;
+      }
     }
     else
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
@@ -182,7 +191,7 @@ int main (int argc, char** argv)
   {
     std::cout <<"usage: "<< argv[0]
               <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n"
-              <<"       [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL]]"
+              <<"       [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL]|-3D]"
               <<" [-nGauss <n>]\n       [-hdf5] [-vtf <format> [-nviz <nviz>]"
               <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]]"
               <<" [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
