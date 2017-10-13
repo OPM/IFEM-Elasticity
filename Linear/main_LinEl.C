@@ -11,6 +11,7 @@
 //!
 //==============================================================================
 
+#include "AppCommon.h"
 #include "IFEM.h"
 #include "SIMLinEl.h"
 #include "SIMLinElKL.h"
@@ -99,6 +100,7 @@ int main (int argc, char** argv)
   bool noProj = false;
   bool noError = false;
   char* infile = nullptr;
+  SIM::AppXMLInputBase args;
   Elasticity::wantPrincipalStress = true;
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
@@ -160,9 +162,20 @@ int main (int argc, char** argv)
         adaptor = atoi(argv[i]+5);
     }
     else if (!infile)
+    {
       infile = argv[i];
+      if (strcasestr(infile,".xinp"))
+        if (!args.readXML(infile,false))
+          return 1;
+      if(args.dim == 1)
+        oneD = true;
+      else if(args.dim == 1)
+        twoD = true;
+    }
     else
+    {
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
+    }
 
   if (!infile)
   {
