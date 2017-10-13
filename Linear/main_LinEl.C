@@ -93,9 +93,7 @@ int main (int argc, char** argv)
   bool fixDup = false;
   bool dumpASCII = false;
   bool dumpMatlab = false;
-  bool twoD = false;
   bool KLp = false;
-  bool oneD = false;
   bool isC1 = false;
   bool noProj = false;
   bool noError = false;
@@ -138,19 +136,28 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
     else if (!strcmp(argv[i],"-1DC1"))
-      oneD = isC1 = true;
+      args.dim = isC1 = true;
     else if (!strcmp(argv[i],"-1DKL"))
-      oneD = isC1 = KLp = true;
+      args.dim = isC1 = KLp = true;
     else if (!strncmp(argv[i],"-1D",3))
-      oneD = true;
+      args.dim = 1;
     else if (!strcmp(argv[i],"-2DKL"))
-      twoD = isC1 = KLp = true;
+    {
+      args.dim = 2;
+      isC1 = KLp = true;
+    }
     else if (!strncmp(argv[i],"-2Dpstra",8))
-      twoD = SIMLinEl2D::planeStrain = true;
+    {
+      args.dim = 2;
+      SIMLinEl2D::planeStrain = true;
+    }
     else if (!strncmp(argv[i],"-2Daxi",6))
-      twoD = SIMLinEl2D::axiSymmetry = true;
+    {
+      args.dim = 2;
+      SIMLinEl2D::axiSymmetry = true;
+    }
     else if (!strncmp(argv[i],"-2D",3))
-      twoD = true;
+      args.dim = 2;
     else if (!strncmp(argv[i],"-noP",4))
       noProj = true;
     else if (!strncmp(argv[i],"-noE",4))
@@ -167,15 +174,9 @@ int main (int argc, char** argv)
       if (strcasestr(infile,".xinp"))
         if (!args.readXML(infile,false))
           return 1;
-      if(args.dim == 1)
-        oneD = true;
-      else if(args.dim == 1)
-        twoD = true;
     }
     else
-    {
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
-    }
 
   if (!infile)
   {
@@ -203,7 +204,7 @@ int main (int argc, char** argv)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
   if (fixDup)
     IFEM::cout <<"\nCo-located nodes will be merged";
-  if (checkRHS && !oneD && !KLp)
+  if (checkRHS && args.dim!=1 && !KLp)
     IFEM::cout <<"\nCheck that each patch has a right-hand coordinate system";
   if (!ignoredPatches.empty())
   {
@@ -218,7 +219,7 @@ int main (int argc, char** argv)
 
   // Create the simulation model
   SIMoutput* model;
-  if (oneD)
+  if (args.dim == 1)
   {
     if (KLp)
       model = new SIMLinElBeamC1();
@@ -227,7 +228,7 @@ int main (int argc, char** argv)
   }
   else if (KLp)
     model = new SIMLinElKL();
-  else if (twoD)
+  else if (args.dim == 2)
     model = new SIMLinEl2D(checkRHS);
   else
     model = new SIMLinEl3D(checkRHS);
@@ -245,8 +246,8 @@ int main (int argc, char** argv)
   if (model->opt.eig != 4 && model->opt.eig != 6)
     SIMbase::ignoreDirichlet = false;
 
-  if (oneD) model->opt.nViz[1] = model->opt.nViz[2] = 1;
-  if (twoD) model->opt.nViz[2] = 1;
+  if (args.dim == 1) model->opt.nViz[1] = model->opt.nViz[2] = 1;
+  if (args.dim == 2) model->opt.nViz[2] = 1;
 
   // Load vector visualization is not available when using additional viz-points
   if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
@@ -267,7 +268,7 @@ int main (int argc, char** argv)
   bool staticSol = iop + model->opt.eig%5 == 0 || iop == 10;
   if (model->opt.discretization < ASM::Spline || !staticSol || noProj)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
-  else if (model->opt.discretization == ASM::Spline && pOpt.empty() && !oneD)
+  else if (model->opt.discretization == ASM::Spline && pOpt.empty() && args.dim != 1)
     pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
@@ -378,7 +379,7 @@ int main (int argc, char** argv)
     {
       const Vector& norm = gNorm.front();
       double Rel = norm.size() > 2 ? 100.0/norm(3) : 0.0;
-      if (oneD && !KLp)
+      if (args.dim == 1 && !KLp)
       {
         IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
         if (norm.size() > 2)
