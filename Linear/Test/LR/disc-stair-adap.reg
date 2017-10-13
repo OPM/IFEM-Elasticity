@@ -16,35 +16,40 @@ Min element error                    : 0.00248256
 Max element error                    : 0.0744186
 Average element error                : 0.0318653
 Refining 2 basis functions
-Refined mesh: 36 elements 120 nodes.
-Refined mesh: 36 elements 120 nodes.
-Adaptive step 2
-Number of elements    94
-Number of nodes       264
-Number of dofs        792
-Number of unknowns    744
-L2-norm            : 3.33528e-05
-Energy norm           a(u^h,u^h)^0.5 : 2.66155
-External energy((f,u^h)+(t,u^h))^0.5 : 2.66155
-Error estimate a(e,e)^0.5, e=u^r-u^h : 0.139361
-Relative error (%) : 5.2289
-Root mean square (RMS) of error      : 0.894209
-Min element error                    : 0.00181218
-Max element error                    : 0.0512776
-Average element error                : 0.0107149
-Refining 3 basis functions 
 Refined mesh: 64 elements 216 nodes.
+Refined mesh: 64 elements 216 nodes.
+Refined mesh: 64 elements 216 nodes.
+Adaptive step 2
+Number of elements    192
+Number of nodes       576
+Number of dofs        1728
+Number of unknowns    1620
+L2-norm            : 3.78205e-05
+Energy norm           a(u^h,u^h)^0.5 : 2.68115
+External energy((f,u^h)+(t,u^h))^0.5 : 2.68115
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.113605
+Relative error (%) : 4.2334
+Root mean square (RMS) of error      : 1.11546
+Min element error                    : 0.000161387
+Max element error                    : 0.0272407
+Average element error                : 0.00547284
+Refining 6 basis functions
+Refined mesh: 484 elements 894 nodes.
+Refined mesh: 400 elements 708 nodes.
+Refined mesh: 316 elements 522 nodes.
 Adaptive step 3
-Number of elements    122
-Number of nodes       360
-Number of dofs        1080
-Number of unknowns    972
-L2-norm            : 2.91039e-05
-Energy norm           a(u^h,u^h)^0.5 : 2.68087
-External energy((f,u^h)+(t,u^h))^0.5 : 2.68087
-Error estimate a(e,e)^0.5, e=u^r-u^h : 0.11665
-Relative error (%) : 4.34711
-Root mean square (RMS) of error      : 0.706328
-Min element error                    : 0.0018052
-Max element error                    : 0.0277379
-Average element error                : 0.00862621
+Number of elements    1200
+Number of nodes       1946
+Number of dofs        5838
+Number of unknowns    5604
+L2-norm            : 3.12035e-05
+Energy norm           a(u^h,u^h)^0.5 : 2.68829
+External energy((f,u^h)+(t,u^h))^0.5 : 2.68829
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 2.68682
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0689166
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.0689166
+Relative error (%) : 2.56275
+Root mean square (RMS) of error      : 1.71521
+Min element error                    : 4.10512e-05
+Max element error                    : 0.0128574
+Average element error                : 0.00100202
