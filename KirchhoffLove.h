@@ -54,7 +54,7 @@ public:
   //! \brief Defines the material properties.
   void setMaterial(Material* mat) { material = mat; }
   //! \brief Defines the pressure field.
-  void setPressure(RealFunc* pf) { presFld = pf; }
+  void setPressure(RealFunc* pf = nullptr);
   //! \brief Defines the traction field to use in Neumann boundary conditions.
   void setTraction(TractionFunc* tf) { tracFld = tf; }
   //! \brief Defines the traction field to use in Neumann boundary conditions.
@@ -162,8 +162,9 @@ protected:
 
   VecFunc*      fluxFld; //!< Pointer to explicit boundary traction field
   TractionFunc* tracFld; //!< Pointer to implicit boundary traction field
-  RealFunc*     presFld; //!< Pointer to pressure field
   LocalSystem*  locSys;  //!< Local coordinate system for result output
+
+  std::vector<RealFunc*> presFld; //!< Pointers to pressure field functions
 
   mutable std::vector<Vec3Pair> tracVal; //!< Traction field point values
   mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values

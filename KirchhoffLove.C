@@ -31,7 +31,6 @@ KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
   material = nullptr;
   fluxFld = nullptr;
   tracFld = nullptr;
-  presFld = nullptr;
   locSys = nullptr;
 
   eK = eM = 0;
@@ -79,6 +78,15 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
     default:
       ;
     }
+}
+
+
+void KirchhoffLove::setPressure (RealFunc* pf)
+{
+  if (pf)
+    presFld.push_back(pf);
+  else
+    presFld.clear();
 }
 
 
@@ -147,12 +155,12 @@ Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n) const
   Vec3 p;
   p.z = material->getMassDensity(X)*gravity*thickness;
 
-  if (presFld)
+  for (RealFunc* pf : presFld)
   {
     if (n.isZero())
-      p.z += (*presFld)(X); // Assume pressure acts in global Z-direction
+      p.z += (*pf)(X); // Assume pressure acts in global Z-direction
     else
-      p += (*presFld)(X)*n;
+      p += (*pf)(X)*n;
   }
 
   return p;
@@ -163,7 +171,7 @@ bool KirchhoffLove::haveLoads (char type) const
 {
   if (type == 'A' || type == 'I')
   {
-    if (presFld)
+    if (!presFld.empty())
       return true;
 
     if (gravity != 0.0 && material)

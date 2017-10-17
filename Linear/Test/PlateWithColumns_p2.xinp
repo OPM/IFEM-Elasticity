@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<--! Simply supported rectangular plate with two columns loads near the corners.
+     Quadratic spline Kirchhoff-Love thin plate elements. -->
+
+<simulation>
+
+  <geometry Lx="5" Ly="4" modelsize="6.4031">
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="4" v="3"/>
+    <refine patch="1" u="1" v="1"/>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+      <set name="plate" type="surface">
+        <item>1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1"/>
+  </boundaryconditions>
+
+  <kirchhofflove>
+    <gravity g="-9.81"/>
+    <isotropic E="2.1e11" nu="0.3" rho="7850.0" thickness="0.1"/>
+    <pressure set="plate" type="stepXY">-1.0e9 4.0 3.0 to 4.25 3.25</pressure>
+    <pressure set="plate" type="stepXY"> 1.0e9 0.75 0.75 to 1.0 1.0</pressure>
+  </kirchhofflove>
+
+  <discretization>
+    <nGauss>8</nGauss>
+  </discretization>
+
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.825" v="0.775"/>
+      <point patch="1" u="0.175" v="0.225"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

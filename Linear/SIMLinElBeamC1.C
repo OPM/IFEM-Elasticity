@@ -242,12 +242,15 @@ bool SIMLinElBeamC1::initBodyLoad (size_t patchInd)
   KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
   if (!klp) return false;
 
+  klp->setPressure();
   SclFuncMap::const_iterator it = myScalars.find(0);
+  if (it != myScalars.end()) klp->setPressure(it->second);
+
   for (const Property& prop : myProps)
     if (prop.pcode == Property::BODYLOAD && prop.patch == patchInd)
-      if ((it = myScalars.find(prop.pindx)) != myScalars.end()) break;
+      if ((it = myScalars.find(prop.pindx)) != myScalars.end())
+        if (it->second) klp->setPressure(it->second);
 
-  klp->setPressure(it == myScalars.end() ? nullptr : it->second);
   return true;
 }
 
