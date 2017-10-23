@@ -49,6 +49,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   tracFld = nullptr;
   fluxFld = nullptr;
   bodyFld = nullptr;
+  dualFld = nullptr;
   pDirBuf = nullptr;
 
   gamma = 1.0;
@@ -142,6 +143,13 @@ void Elasticity::setMaterial (Material* mat)
 }
 
 
+void Elasticity::setExtrFunction (FunctionBase* extr)
+{
+  if ((dualFld = dynamic_cast<VecFunc*>(extr)))
+    this->setNoSolutions(2,true);
+}
+
+
 LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 					     bool neumann) const
 {
@@ -159,11 +167,16 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   switch (m_mode)
   {
     case SIM::STATIC:
-    case SIM::ARCLEN:
     case SIM::MASS_ONLY:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, m_mode == SIM::ARCLEN ? 2 : 1);
+      result->resize(neumann ? 0 : 1, neumann || dS == 0 ? 1 : dS);
+      break;
+
+    case SIM::ARCLEN:
+      result->rhsOnly = neumann;
+      result->withLHS = !neumann;
+      result->resize(neumann ? 0 : 1, 2);
       break;
 
     case SIM::DYNAMIC:
@@ -633,7 +646,7 @@ bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
     if (ierr > 0)
     {
       std::cerr <<" *** Elasticity::evalSol: Detected "<< ierr
-		<<" node numbers out of range."<< std::endl;
+                <<" node numbers out of range."<< std::endl;
       return false;
     }
   }
@@ -773,6 +786,34 @@ bool Elasticity::evalSol (Vector& s, const STensorFunc& asol,
       s.push_back(p.z);
   }
   return true;
+}
+
+
+bool Elasticity::evalEps (Vector& s, const Vector& eV, const FiniteElement& fe,
+                          const Vec3& X) const
+{
+  if (eV.size() != fe.dNdX.rows()*nsd)
+  {
+    std::cerr <<" *** Elasticity::evalEps: Invalid displacement vector."
+	      <<"\n     size(eV) = "<< eV.size() <<"   size(dNdX) = "
+	      << fe.dNdX.rows() <<","<< fe.dNdX.cols() << std::endl;
+    return false;
+  }
+
+  // Evaluate the strain tensor
+  Matrix Bmat;
+  SymmTensor eps(nsd,axiSymmetry);
+  if (!this->kinematics(eV,fe.N,fe.dNdX,X.x,Bmat,eps,eps))
+    return false;
+
+  s = eps;
+  return true;
+}
+
+
+Vector* Elasticity::getExtractionField ()
+{
+  return dS && primsol.size() > 1 ? &primsol[1] : nullptr;
 }
 
 
@@ -944,6 +985,12 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (!problem.evalSol(sigmah,pnorm.vec,fe,X))
     return false;
 
+  // Evaluate the dual strain field
+  Vector epsz;
+  if (problem.getExtractionField() && pnorm.vec.size() > 1)
+    if (!problem.evalEps(epsz,pnorm.vec[1],fe,X))
+      return false;
+
   bool planeStrain = sigmah.size() == 4 && Cinv.rows() == 3;
   if (planeStrain) sigmah.erase(sigmah.begin()+2); // Remove the sigma_zz
 
@@ -980,8 +1027,20 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     pnorm[ip++] += error.dot(Cinv*error)*detJW;
   }
 
+  if (problem.getExtractionField())
+    // Evaluate the variational-consistent postprocessing quantity, a(u^h,w)
+    // (typically a sectional force component)
+    pnorm[ip++] += sigmah.dot(epsz)*detJW;
+
   // Integrate the volume
   pnorm[ip++] += detJW;
+
+#if INT_DEBUG > 3
+  std::cout <<"\nElasticityNorm::evalInt(X = "<< X <<")\nsigma^h ="<< sigmah;
+  if (anasol) std::cout <<"sigma ="<< sigma;
+  if (problem.getExtractionField())
+    std::cout <<"epsz ="<< epsz <<"a(u^,w): "<< pnorm[ip-2] << std::endl;
+#endif
 
   size_t j, k;
   for (const Vector& psol : pnorm.psol)
@@ -1051,8 +1110,8 @@ bool ElasticityNorm::finalizeElement (LocalIntegral& elmInt)
 
   // Evaluate local effectivity indices as a(e^r,e^r)/a(e,e)
   // with e^r = u^r - u^h  and  e = u - u^h
-  for (size_t ip = 10; ip < pnorm.size(); ip += 6)
-    pnorm[ip] = pnorm[ip-4] / pnorm[3];
+  for (size_t ip = this->getNoFields(1); ip+5 < pnorm.size(); ip += 6)
+    pnorm[ip+5] = pnorm[ip+1] / pnorm[3];
 
   return true;
 }
@@ -1063,7 +1122,12 @@ size_t ElasticityNorm::getNoFields (int group) const
   if (group == 0)
     return this->NormBase::getNoFields();
   else if (group == 1 || group == -1)
-    return anasol ? 5 : 3;
+  {
+    size_t nfld = anasol ? 5 : 3;
+    if (static_cast<Elasticity&>(myProblem).getExtrFunction())
+      nfld++;
+    return nfld;
+  }
   else if (group > 0 || !prjsol[-group-2].empty())
     return anasol ? 6 : 4;
   else
@@ -1074,14 +1138,15 @@ size_t ElasticityNorm::getNoFields (int group) const
 std::string ElasticityNorm::getName (size_t i, size_t j,
                                      const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 5))
+  if (i == 0 || j == 0 || j > 6)
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[5] = {
+  static const char* u[6] = {
     "a(u^h,u^h)^0.5",
     "((f,u^h)+(t,u^h))^0.5",
     "a(u,u)^0.5",
     "a(e,e)^0.5, e=u-u^h",
+    "a(u^h,w)",
     "volume"
   };
 
@@ -1095,8 +1160,13 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
   };
 
   const char** s = i > 1 ? p : u;
-  if (!anasol && i == 1 && j == 3) j = 5;
-
+  if (i == 1)
+  {
+    if (!anasol)
+      if (j > 2 && j < 5) j += 2;
+    if (!static_cast<Elasticity&>(myProblem).getExtrFunction())
+      if (j > 4 && j < 6) j++;
+  }
   if (!prefix)
     return s[j-1];
 

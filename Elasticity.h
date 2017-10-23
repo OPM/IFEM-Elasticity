@@ -70,6 +70,10 @@ public:
   void setTraction(VecFunc* tf) { fluxFld = tf; }
   //! \brief Defines the body force field.
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
+  //! \brief Defines the extraction function of the dual problem.
+  void setExtrFunction(FunctionBase* exf);
+  //! \brief Returns the current extraction function.
+  const VecFunc* getExtrFunction() const { return dualFld; }
 
   //! \brief Defines the material properties.
   virtual void setMaterial(Material* mat);
@@ -138,6 +142,14 @@ public:
   //! \param[in] X Cartesian coordinates of current point
   virtual bool evalSol(Vector& s, const STensorFunc& asol, const Vec3& X) const;
 
+  //! \brief Evaluates the finite element (FE) strain at an integration point.
+  //! \param[out] s The FE strans values at current point
+  //! \param[in] eV Element displacement vector
+  //! \param[in] fe Finite element data at current point
+  //! \param[in] X Cartesian coordinates of current point
+  bool evalEps(Vector& s, const Vector& eV, const FiniteElement& fe,
+               const Vec3& X) const;
+
   //! \brief Evaluates the primary solution at a result point.
   //! \param[in] eV Element solution vector
   //! \param[in] N Basis function values at current point
@@ -166,6 +178,9 @@ public:
 
   //! \brief Returns whether there are any traction values to write to VTF.
   virtual bool hasTractionValues() const { return !tracVal.empty(); }
+
+  //! \brief Returns the patch-wise extraction function field, if any.
+  virtual Vector* getExtractionField();
 
   //! \brief Returns a pointer to an Integrand for solution norm evaluation.
   //! \note The Integrand object is allocated dynamically and has to be deleted
@@ -303,6 +318,7 @@ protected:
   TractionFunc* tracFld;  //!< Pointer to implicit boundary traction field
   VecFunc*      fluxFld;  //!< Pointer to explicit boundary traction field
   VecFunc*      bodyFld;  //!< Pointer to body force field
+  VecFunc*      dualFld;  //!< Pointer to extraction function
   Vec3Vec*      pDirBuf;  //!< Principal stress directions buffer
 
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values

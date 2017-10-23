@@ -445,7 +445,10 @@ int main (int argc, char** argv)
           IFEM::cout <<"\nExact norm  |u|   = a(u,u)^0.5       : "<< norm(3)
                      <<"\nExact error a(e,e)^0.5, e=u-u^h      : "<< norm(4)
                      <<"\nExact relative error (%) : "<< norm(4)*Rel;
-        if (model->haveAnaSol() && norm.size() >= 6)
+        size_t iSec = model->getVCPindex();
+        if (iSec && norm.size() >= iSec)
+          IFEM::cout <<"\nRecovered section force a(u^h,w)     : "<< norm(iSec);
+        else if (model->haveAnaSol() && norm.size() >= 6)
           IFEM::cout <<"\nResidual error (r(u) + J(u))^0.5 : "<< norm(5)
                      <<"\n- relative error (% of |u|) : "<< norm(5)*Rel;
       }

@@ -48,6 +48,14 @@ public:
   //! \param[in] nBp Total number of boundary integration points
   virtual void initIntegration(size_t nGp, size_t nBp);
 
+  using Elasticity::initElement;
+  //! \brief Initializes current element for numerical integration.
+  //! \param[in] MNPC Matrix of nodal point correspondance for current element
+  //! \param[in] X0 Cartesian coordinates of the element center
+  //! \param elmInt Local integral for element
+  virtual bool initElement(const std::vector<int>& MNPC, const FiniteElement&,
+                           const Vec3& X0, size_t, LocalIntegral& elmInt);
+
   //! \brief Returns whether there are any traction values to write to VTF.
   virtual bool hasTractionValues() const;
   //! \brief Writes the surface tractions for a given time step to VTF-file.

@@ -43,7 +43,7 @@ public:
   const Vec3& getGravity() const { return gravity; }
 
   //! \brief Defines the number solution vectors.
-  void setNoSolutions(size_t n) { nSV = n; }
+  void setNoSolutions(size_t n, bool dual = false) { nSV = n; dS = dual; }
 
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use
@@ -103,6 +103,7 @@ protected:
   unsigned short int eM;  //!< Index to element mass matrix
   unsigned short int eS;  //!< Index to element load vector
   unsigned short int iS;  //!< Index to element internal force vector
+  unsigned short int dS;  //!< Index to element dual force vector
   unsigned short int nSV; //!< Number of consequtive solution vectors in core
 
   //! \brief Newmark time integration parameters.

@@ -23,7 +23,7 @@ ElasticBase::ElasticBase () : IntegrandBase(0)
   nSV = 1; // Default number of solution vectors in core
 
   eM = eKm = eKg = 0;
-  eS = iS = 0;
+  eS = iS  = dS  = 0;
 
   memset(intPrm,0,sizeof(intPrm));
 
@@ -95,6 +95,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
     {
     case SIM::STATIC:
     case SIM::ARCLEN:
+    case SIM::NORMS:
       primsol.resize(nSV);
       break;
 
@@ -106,7 +107,6 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
     case SIM::RHS_ONLY:
     case SIM::INT_FORCES:
     case SIM::RECOVERY:
-    case SIM::NORMS:
       primsol.resize(1);
       break;
 

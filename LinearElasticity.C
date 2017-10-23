@@ -61,7 +61,7 @@ bool LinearElasticity::parse (const TiXmlElement* elem)
 
 void LinearElasticity::setMode (SIM::SolutionMode mode)
 {
-  if (mode == SIM::RECOVERY && m_mode != mode)
+  if (mode >= SIM::RECOVERY && m_mode != mode)
   {
     maxVal.resize(this->getNoFields(2));
     std::fill(maxVal.begin(),maxVal.end(),PointValue(Vec3(),0.0));
@@ -79,6 +79,17 @@ void LinearElasticity::initIntegration (size_t nGp, size_t nBp)
 {
   this->Elasticity::initIntegration(nGp,nBp);
   if (myItgPts) myItgPts->resize(nGp);
+}
+
+
+bool LinearElasticity::initElement (const std::vector<int>& MNPC,
+                                    const FiniteElement&, const Vec3& XC,
+                                    size_t, LocalIntegral& elmInt)
+{
+  if (!dualFld || dualFld->inDomain(XC))
+    return this->Elasticity::initElement(MNPC,elmInt);
+  else // the extraction function is zero in this element
+    return this->initElement1(MNPC,elmInt.vec);
 }
 
 
@@ -256,7 +267,9 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
 int LinearElasticity::getIntegrandType () const
 {
-  return INTERFACE_TERMS | ELEMENT_CORNERS | NORMAL_DERIVS;
+  int itgType = dualFld ? ELEMENT_CENTER : STANDARD;
+
+  return itgType | INTERFACE_TERMS | ELEMENT_CORNERS | NORMAL_DERIVS;
 }
 
 

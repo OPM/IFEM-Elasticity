@@ -388,6 +388,7 @@ protected:
     for (; child; child = child->NextSiblingElement())
       if (this->parseDimSpecific(child))
         continue;
+
       else if (!strcasecmp(child->Value(),"isotropic") ||
                !strcasecmp(child->Value(),"texturematerial"))
       {
@@ -412,6 +413,7 @@ protected:
         bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
         mVec.push_back(this->getIntegrand()->parseMatProp(child,planeStrain));
       }
+
       else if (!strcasecmp(child->Value(),"bodyforce"))
       {
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
@@ -429,6 +431,7 @@ protected:
           IFEM::cout << std::endl;
         }
       }
+
       else if (!strcasecmp(child->Value(),"boundaryforce"))
       {
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
@@ -443,6 +446,9 @@ protected:
         IFEM::cout <<"code "<< bCode << std::endl;
         this->setPropertyType(bCode,Property::OTHER);
       }
+
+      else if (!strcasecmp(child->Value(),"dualfield"))
+        this->getIntegrand()->setExtrFunction(this->parseDualTag(child,2));
 
       else if (!this->getIntegrand()->parse(child))
         result &= this->Dim::parse(child);
@@ -490,6 +496,33 @@ protected:
       elp->setTraction(tit->second);
     else
       return false;
+
+    return true;
+  }
+
+  //! \brief Reverts the square-root operation on the VCP quantity.
+  virtual bool postProcessNorms(Vectors& gNorm, Matrix* eNorm)
+  {
+    if (gNorm.empty())
+      return false;
+
+    Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
+    if (!(elp && elp->getExtrFunction()))
+      return true;
+
+    size_t i = this->haveAnaSol() ? 5 : 3;
+    if (i <= gNorm.front().size())
+    {
+      double& vcpq = gNorm.front()(i);
+      vcpq = copysign(vcpq*vcpq,vcpq);
+    }
+
+    if (eNorm && i <= eNorm->rows())
+      for (size_t j = 1; j <= eNorm->cols(); j++)
+      {
+        double& vcpq = (*eNorm)(i,j);
+        vcpq = copysign(vcpq*vcpq,vcpq);
+      }
 
     return true;
   }
