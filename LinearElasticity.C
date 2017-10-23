@@ -69,6 +69,8 @@ void LinearElasticity::setMode (SIM::SolutionMode mode)
 
   this->ElasticBase::setMode(mode);
 
+  if (dS > 0) dS = mode == SIM::STATIC || mode == SIM::NORMS ? 2 : 1;
+
   // These quantities are not needed in linear problems
   if (mode != SIM::BUCKLING) eKg = 0;
   if (mode != SIM::DYNAMIC)  iS  = 0;
@@ -123,6 +125,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   bool lHaveStrains = false;
   SymmTensor eps(nsd,axiSymmetry), sigma(nsd,axiSymmetry);
 
+  double U = 0.0;
   Matrix Bmat, Cmat;
   if (eKm || eKg || iS || (eS && myTemp))
   {
@@ -134,7 +137,6 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
       lHaveStrains = true;
 
     // Evaluate the constitutive matrix and the stress tensor at this point
-    double U;
     if (!material->evaluate(Cmat,sigma,U,fe,X,eps,eps))
       return false;
 
@@ -191,7 +193,24 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (myItgPts && fe.iGP < myItgPts->size())
     myItgPts->at(fe.iGP) = X;
 
-  return true;
+  if (dS <= 1 || elMat.vec.size() <= 1)
+    return true;
+
+  // Calculate the dual strains and stresses
+  if (!this->kinematics(elMat.vec[1],fe.N,fe.dNdX,X.x,Bmat,eps,eps))
+    return false;
+  else if (eps.isZero(1.0e-16))
+    return true; // the extraction function is zero in this element
+  else if (!material->evaluate(Cmat,sigma,U,fe,X,eps,eps))
+    return false;
+
+#if INT_DEBUG > 3
+  std::cout <<"Dual eps =\n"<< eps <<"Dual sigma =\n"<< sigma;
+#endif
+
+  // Integrate the dual load vector
+  sigma *= detJW;
+  return Bmat.multiply(sigma,elMat.b[dS-1],true,true);
 }
 
 

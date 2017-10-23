@@ -1146,13 +1146,15 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
   if (i == 0 || j == 0 || j > 5+nx)
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[6] = {
+  static const char* u[8] = {
     "a(u^h,u^h)^0.5",
     "((f,u^h)+(t,u^h))^0.5",
     "a(u,u)^0.5",
     "a(e,e)^0.5, e=u-u^h",
     "a(u^h,w)",
-    "volume"
+    "volume",
+    "a(z^h,z^h)^0.5",
+    "(E(u)*E(z))^0.5, E(v)=a(e,e), e=v^r-v^h"
   };
 
   static const char* p[6] = {
@@ -1177,6 +1179,9 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
       sprintf(comp,"a(u^h,w%zu)",j-4);
       return comp;
     }
+    else if (j <= 2 && prefix)
+      if (!strncmp(prefix,"Dual",4))
+        return s[5+j];
   }
   if (!prefix)
     return s[j-1];

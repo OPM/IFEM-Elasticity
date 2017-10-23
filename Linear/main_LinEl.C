@@ -75,6 +75,8 @@
   \arg -1DKL : Use one-parametric simulation driver for C1-continous beam
   \arg -1DC1 : Use one-parametric simulation driver for C1-continous cable
   \arg -adap : Use adaptive simulation driver with LR-splines discretization
+  \arg -dualadap : Perform adaptive simulation based on dual solution
+  \arg -dual : Also solve the dual problem if defined
   \arg -DGL2 : Estimate error using discrete global L2 projection
   \arg -CGL2 : Estimate error using continuous global L2 projection
   \arg -SCR : Estimate error using Superconvergent recovery at Greville points
@@ -90,7 +92,6 @@ int main (int argc, char** argv)
 
   std::vector<std::string> topSets;
   std::vector<int> ignoredPatches;
-  size_t adaptor = 0;
   int  i, iop = 0;
   int  outPrec = 6;
   double zero_tol = -1.0;
@@ -105,6 +106,7 @@ int main (int argc, char** argv)
   bool shell = false;
   bool noProj = false;
   bool noError = false;
+  bool dualSol = false;
   char* infile = nullptr;
   Elasticity::wantPrincipalStress = true;
   SIMargsBase args("elasticity");
@@ -175,11 +177,10 @@ int main (int argc, char** argv)
       noProj = true;
     else if (!strncmp(argv[i],"-noE",4))
       noError = true;
-    else if (!strncmp(argv[i],"-adap",5))
-    {
-      args.adap = true;
-      adaptor = atoi(argv[i]+5);
-    }
+    else if (!strncmp(argv[i],"-dualadap",9))
+      args.adap = -2;
+    else if (!strncmp(argv[i],"-dual",5))
+      dualSol = true;
     else if (!infile)
     {
       infile = argv[i];
@@ -199,11 +200,11 @@ int main (int argc, char** argv)
               <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n      "
               <<" [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]"
               <<" [-nGauss <n>]\n       [-hdf5] [-vtf <format> [-nviz <nviz>]"
-              <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]]"
-              <<" [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
+              <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]|-dual"
+              <<"adap] [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
               <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
               <<"\n       [-ignore <p1> <p2> ...] [-fixDup]"
-              <<" [-checkRHS] [-check] [-printMax] [-dumpASC]\n      "
+              <<" [-dual] [-checkRHS] [-check] [-printMax] [-dumpASC]\n      "
               <<" [-dumpMatlab [<setnames>]] [-outPrec <nd>] [-ztol <eps>]\n";
     return 0;
   }
@@ -246,18 +247,30 @@ int main (int argc, char** argv)
   else if (KLp)
     model = new SIMLinElKL(shell);
   else if (args.dim == 2)
-    model = new SIMLinEl2D(checkRHS);
+    model = new SIMLinEl2D(checkRHS, dualSol || args.adap < 0);
   else
-    model = new SIMLinEl3D(checkRHS);
+    model = new SIMLinEl3D(checkRHS, dualSol || args.adap < 0);
 
   SIMadmin* theSim = model;
   AdaptiveSIM* aSim = nullptr;
   if (args.adap)
     theSim = aSim = new AdaptiveSIM(*model);
 
+  DataExporter* exporter = nullptr;
+
+  // Lambda function for cleaning the heap-allocated objects on termination.
+  // To ensure that their destructors are invoked also on simulation failure.
+  auto&& terminate = [aSim,model,exporter](int status)
+  {
+    delete aSim;
+    delete model;
+    delete exporter;
+    return status;
+  };
+
   // Read in model definitions
   if (!theSim->read(infile))
-    return 1;
+    return terminate(1);
 
   // Boundary conditions can be ignored only in generalized eigenvalue analysis
   if (model->opt.eig != 4 && model->opt.eig != 6)
@@ -275,7 +288,7 @@ int main (int argc, char** argv)
 
   // Establish the FE data structures
   if (!model->preprocess(ignoredPatches,fixDup))
-    return 1;
+    return terminate(2);
 
   SIMoptions::ProjectionMap& pOpt = model->opt.project;
   SIMoptions::ProjectionMap::const_iterator pit;
@@ -299,16 +312,17 @@ int main (int argc, char** argv)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       prefix[i] = pit->second;
 
-  Matrix eNorm;
-  Vector displ, load;
+  Matrix eNorm, fNorm;
+  Vectors displ(model->getNoRHS());
+  Vectors load(vizRHS ? displ.size() : 0);
   Vectors projs(pOpt.size()), gNorm;
   Vectors projx(pOpt.size()), xNorm;
+  Vectors projd(model->haveDualSol() ? pOpt.size() : 0), dNorm;
   std::vector<Mode> modes;
 
-  if (aSim && !aSim->initAdaptor(adaptor))
-    return 1;
+  if (aSim && !aSim->initAdaptor(abs(args.adap)-1))
+    return terminate(3);
 
-  DataExporter* exporter = nullptr;
   if (model->opt.dumpHDF5(infile))
   {
     IFEM::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
@@ -329,9 +343,17 @@ int main (int argc, char** argv)
     if (staticSol)
     {
       exporter->registerField("u", "solution", DataExporter::SIM, results);
-      exporter->setFieldValue("u", model, aSim ? &aSim->getSolution() : &displ,
+      exporter->setFieldValue("u", model,
+                              aSim ? &aSim->getSolution() : &displ.front(),
                               projs.empty() ? nullptr : &projs,
                               results & DataExporter::NORMS ? &eNorm : nullptr);
+      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
+      {
+        exporter->registerField(prefix[i], "projected", DataExporter::SIM,
+                                DataExporter::SECONDARY, prefix[i]);
+        exporter->setFieldValue(prefix[i], model,
+                                aSim ? &aSim->getProjection(i) : &projs[i]);
+      }
       exporter->setNormPrefixes(prefix);
     }
     if (model->opt.eig > 0)
@@ -372,25 +394,30 @@ int main (int argc, char** argv)
     // Static solution: Assemble [Km] and {R}
     model->setMode(SIM::STATIC);
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
-    model->initSystem(model->opt.solver,1,1);
+    model->initSystem(model->opt.solver,1,displ.size());
     if (!model->assembleSystem())
-      return 2;
-    else if (vizRHS)
-      model->extractLoadVec(load);
+      return terminate(4);
+
+    // Extract the right-hand-size vector (R) for visualization
+    for (size_t j = 0; j < load.size(); j++)
+      model->extractLoadVec(load[j],j);
 
     // Solve the linear system of equations
     if (!model->solveSystem(displ,1))
-      return 3;
+      return terminate(5);
 
     // Project the FE stresses onto the splines basis
     noProj = true;
     model->setMode(SIM::RECOVERY);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
     {
-      if (!model->project(projs[i],displ,pit->first))
-        return 4;
+      if (!model->project(projs[i],displ[0],pit->first))
+        return terminate(6);
       if (i == 0 && printMax)
         printMaxStress("Maximum stresses in Gauss points");
+      if (!projd.empty() && displ.size() > 1)
+        if (!model->project(projd[i],displ[1],pit->first))
+          return terminate(6);
       if (!model->projectAnaSol(projx[i],pit->first))
         projx[i].clear();
       else if (KLp && projx[i].size() < projs[i].size())
@@ -412,15 +439,35 @@ int main (int argc, char** argv)
       // Evaluate solution norms
       model->setMode(SIM::NORMS);
       model->setQuadratureRule(model->opt.nGauss[1]);
-      if (!model->solutionNorms(displ,projs,eNorm,gNorm,"FE solution"))
-        return 4;
+      if (!model->solutionNorms(displ[0],projs,eNorm,gNorm,"FE solution"))
+        return terminate(7);
+
+      if (displ.size() > 1)
+      {
+        // Evaluate norms of the projected dual solution
+        if (!model->solutionNorms(displ[1],projd,fNorm,dNorm,"dual solution"))
+          return terminate(7);
+
+        if (dNorm.size() > 1)
+        {
+          // Calculate error estimate of the VCP-recovered quantities
+          size_t eRow = 2 + dNorm.front().size();
+          double dErr = 0.0;
+          for (size_t j = 1; j <= eNorm.cols() && j <= fNorm.cols(); j++)
+          {
+            fNorm(2,j) = eNorm(eRow,j)*fNorm(eRow,j);
+            dErr += fNorm(2,j)*fNorm(2,j);
+          }
+          dNorm.front()(2) = sqrt(dErr);
+        }
+      }
 
       if (!noProj)
       {
         // Evaluate norms of the projected analytical solution
         Elasticity::asolProject = true;
-        if (!model->solutionNorms(displ,projx,xNorm,"reference solution"))
-          return 4;
+        if (!model->solutionNorms(displ[0],projx,xNorm,"reference solution"))
+          return terminate(7);
       }
     }
 
@@ -455,6 +502,9 @@ int main (int argc, char** argv)
           if (norm.size() >= iSec)
             IFEM::cout <<"\nRecovered section force a(u^h,w"<< i <<")    : "
                        << norm(iSec);
+        if (!dNorm.empty())
+          IFEM::cout <<"\nEnergy norm |z^h| = a(z^h,z^h)^0.5   : "
+                     << dNorm.front()(1);
       }
 
       size_t j = 1;
@@ -479,6 +529,16 @@ int main (int argc, char** argv)
                      <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4)
                      <<"\n- relative error (% of |s^r|) : "
                      << gNorm[j](4)/gNorm[j](3)*100.0;
+        if (j < dNorm.size() && !dNorm[j].empty())
+        {
+          const Vector& dn = dNorm[j];
+          IFEM::cout <<"\nEnergy norm |z^r| = a(z^r,z^r)^0.5   : "<< dn(1)
+                     <<"\nError norm a(e,e)^0.5, e=z^r-z^h     : "<< dn(2)
+                     <<"\n- relative error (% of |z^r|) : "<< 100.0*dn(2)/dn(1);
+        }
+        if (j == 1 && dNorm.size() > 1)
+          IFEM::cout <<"\nError estimate E(u)*E(z), E(v)=a(v^r-v^h,v^r-v^h) : "
+                     << dNorm.front()(2);
       }
       IFEM::cout << std::endl;
       IFEM::cout.precision(oldPrec);
@@ -489,7 +549,7 @@ int main (int argc, char** argv)
       double old_tol = utl::zero_print_tol;
       if (zero_tol > 0.0) utl::zero_print_tol = zero_tol;
       model->setMode(SIM::RECOVERY);
-      model->dumpResults(displ,0.0,IFEM::cout,true,outPrec);
+      model->dumpResults(displ.front(),0.0,IFEM::cout,true,outPrec);
       if (!projs.empty())
         model->dumpVector(projs.front(),nullptr,IFEM::cout,outPrec);
       utl::zero_print_tol = old_tol;
@@ -500,12 +560,12 @@ int main (int argc, char** argv)
     // Linearized buckling: Assemble [Km] and [Kg]
     model->setMode(SIM::BUCKLING);
     model->initSystem(model->opt.solver,2,0);
-    if (!model->assembleSystem(Vectors(1,displ)))
-      return 5;
+    if (!model->assembleSystem(displ))
+      return terminate(8);
 
     // Solve the generalized eigenvalue problem
     if (!model->systemModes(modes))
-      return 6;
+      return terminate(9);
     break;
 
   case 1:
@@ -515,19 +575,19 @@ int main (int argc, char** argv)
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
     model->initSystem(model->opt.solver,1,0);
     if (!model->assembleSystem())
-      return 5;
+      return terminate(8);
 
     if (!model->systemModes(modes))
-      return 6;
+      return terminate(9);
     break;
 
   case 10:
     // Adaptive simulation
     for (int iStep = 1; aSim && aSim->adaptMesh(iStep,outPrec); iStep++)
       if (!aSim->solveStep(infile,iStep,true,outPrec))
-        return 5;
+        return terminate(10);
       else if (!aSim->writeGlv(infile,iStep))
-        return 6;
+        return terminate(11);
       else if (exporter)
         exporter->dumpTimeLevel(nullptr,true);
 
@@ -540,10 +600,10 @@ int main (int argc, char** argv)
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
     model->initSystem(model->opt.solver,2,0);
     if (!model->assembleSystem())
-      return 5;
+      return terminate(8);
 
     if (!model->systemModes(modes))
-      return 6;
+      return terminate(9);
   }
 
   utl::profiler->start("Postprocessing");
@@ -554,29 +614,35 @@ int main (int argc, char** argv)
 
     // Write VTF-file with model geometry
     if (!model->writeGlvG(geoBlk,infile))
-      return 7;
+      return terminate(12);
 
     // Write boundary tractions, if any
     if (!model->writeGlvT(1,geoBlk,nBlock))
-      return 8;
+      return terminate(13);
 
     // Write Dirichlet boundary conditions
     if (!model->writeGlvBC(nBlock))
-      return 8;
+      return terminate(13);
 
     // Write temperature field, if specified
     const RealFunc* temp = lelp ? lelp->getTemperature() : nullptr;
     if (temp && !model->writeGlvF(*temp,"Temperature",1,nBlock))
-      return 9;
+      return terminate(14);
 
-    // Write load vector to VTF-file
-    if (!model->writeGlvV(load,"Load vector",1,nBlock))
-      return 10;
+    // Write load vector(s) to VTF-file
+    const char* loadName[2] = { "Load vector", "Dual load vector" };
+    for (size_t i = 0; i < load.size() && i < 2; i++)
+      if (!model->writeGlvV(load[i],loadName[i],1,nBlock,2+i))
+        return terminate(15);
 
     // Write solution fields to VTF-file
     model->setMode(SIM::RECOVERY);
-    if (!model->writeGlvS(displ,1,nBlock))
-      return 11;
+    if (!model->writeGlvS(displ[0],1,nBlock))
+      return terminate(16);
+
+    if (displ.size() > 1)
+      if (!model->writeGlvS1(displ[1],1,nBlock,0.0,"Dual solution",90,-1))
+        return terminate(16);
 
     std::vector<PointValue>* maxVals = lelp ? lelp->getMaxVals() : nullptr;
     if (printMax)
@@ -590,7 +656,7 @@ int main (int argc, char** argv)
     int iBlk = 100;
     for (pit = pOpt.begin(); pit != pOpt.end(); ++pit, i++, iBlk += 10)
       if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str(),maxVals))
-        return 12;
+        return terminate(17);
 
     if (printMax)
       printMaxStress("Maximum projected stresses in visualization points");
@@ -599,11 +665,18 @@ int main (int argc, char** argv)
     bool isFreq = model->opt.eig==3 || model->opt.eig==4 || model->opt.eig==6;
     for (const Mode& mode : modes)
       if (!model->writeGlvM(mode,isFreq,nBlock))
-        return 13;
+        return terminate(18);
 
     // Write element norms
     if (!model->writeGlvN(eNorm,1,nBlock,prefix))
-      return 14;
+      return terminate(19);
+
+    if (!fNorm.empty())
+    {
+      std::vector<std::string> prefix = { "Dual projected" };
+      if (!model->writeGlvN(fNorm,1,nBlock,prefix,300,"Dual"))
+        return false;
+    }
 
     model->writeGlvStep(1);
   }
@@ -619,7 +692,7 @@ int main (int argc, char** argv)
     osg.precision(18);
     IFEM::cout <<"\nWriting updated geometry file "<< infile << std::endl;
     model->dumpGeometry(osg);
-    const Vector& deformation = aSim ? aSim->getSolution() : displ;
+    const Vector& deformation = aSim ? aSim->getSolution() : displ.front();
     if (!deformation.empty())
     {
       // Write solution (control point values) to ASCII files
@@ -658,8 +731,5 @@ int main (int argc, char** argv)
   }
 
   utl::profiler->stop("Postprocessing");
-  delete aSim;
-  delete model;
-  delete exporter;
-  return 0;
+  return terminate(0);
 }

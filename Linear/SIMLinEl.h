@@ -27,9 +27,10 @@
 template<class Dim> class SIMLinEl : public SIMElasticity<Dim>
 {
 public:
-  //! \brief Default constructor.
+  //! \brief The constructor forwards to the parent class constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  explicit SIMLinEl(bool checkRHS = false) : SIMElasticity<Dim>(checkRHS) {}
+  //! \param[in] ds If \e true, also solve the dual problem
+  SIMLinEl(bool checkRHS, bool ds) : SIMElasticity<Dim>(checkRHS), dualS(ds) {}
   //! \brief Empty destructor.
   virtual ~SIMLinEl() {}
 
@@ -56,6 +57,13 @@ protected:
   //! while still reusing as much code as possible.
   //! Only put dimension-specific code in here.
   virtual bool parseDimSpecific(const TiXmlElement* elem);
+
+public:
+  //! \brief Returns whether a dual solution is available or not.
+  virtual bool haveDualSol() const { return dualS && Dim::dualField; }
+
+private:
+  bool dualS; //!< If \e true, also solve the dual problem
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver

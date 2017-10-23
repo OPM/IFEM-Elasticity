@@ -275,7 +275,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
         return 9;
 
       IFEM::cout << std::endl;
-      adap->printNorms(gNorm,eNorm);
+      adap->printNorms(gNorm,Vectors(),eNorm);
     }
 
     // Print solution components at the user-defined points
