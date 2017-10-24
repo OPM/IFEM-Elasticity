@@ -72,7 +72,7 @@ public:
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
 
   //! \brief Defines the material properties.
-  virtual void setMaterial(Material* mat) { material = mat; }
+  virtual void setMaterial(Material* mat);
   //! \brief Returns the current material object.
   Material* getMaterial() const { return material; }
 

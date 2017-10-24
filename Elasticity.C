@@ -124,6 +124,21 @@ void Elasticity::printLog () const
 }
 
 
+void Elasticity::setMaterial (Material* mat)
+{
+  if (mat == material) return;
+
+#ifdef INT_DEBUG
+  if (mat && material)
+  {
+    IFEM::cout <<"\nElasticity::setMaterial: Switching material properties:\n";
+    mat->printLog();
+  }
+#endif
+  material = mat;
+}
+
+
 LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
 					     bool neumann) const
 {
@@ -486,9 +501,9 @@ bool Elasticity::kinematics (const Vector& eV,
 void Elasticity::formKG (Matrix& EM, const Vector& N, const Matrix& dNdX,
 			 double r, const Tensor& sigma, double detJW) const
 {
-#if SP_DEBUG > 3
-  std::cout <<"Elasticity::sigma =\n"<< sigma;
-  std::cout <<"Elasticity::kg =";
+#if INT_DEBUG > 3
+  std::cout <<"Elasticity::sigma =\n"<< sigma
+            <<"Elasticity::kg =";
 #endif
 
   unsigned short int i, j;
@@ -500,7 +515,7 @@ void Elasticity::formKG (Matrix& EM, const Vector& N, const Matrix& dNdX,
       for (i = 1; i <= nsd; i++)
 	for (j = 1; j <= nsd; j++)
 	  kg += dNdX(a,i)*sigma(i,j)*dNdX(b,j);
-#if SP_DEBUG > 3
+#if INT_DEBUG > 3
       std::cout << (b == 1 ? '\n' : ' ') << kg;
 #endif
 
@@ -510,7 +525,7 @@ void Elasticity::formKG (Matrix& EM, const Vector& N, const Matrix& dNdX,
       if (kgrr > 0.0)
 	EM(nsd*(a-1)+1,nsd*(b-1)+1) += N(a)*kgrr*N(b)*detJW;
     }
-#if SP_DEBUG > 3
+#if INT_DEBUG > 3
   std::cout << std::endl;
 #endif
 }
@@ -641,7 +656,7 @@ bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
   }
   else if (!this->evalSol(s,eV,fe,X,true,pBuf))
     return false;
-#if SP_DEBUG > 2
+#if INT_DEBUG > 2
   else if (pBuf)
     std::cout <<"Elasticity::evalSol2("<< X <<"): "
 	      <<" Pdir1 = "<< pBuf[0] <<", Pdir2 = "<< pBuf[1] << std::endl;
@@ -790,7 +805,7 @@ size_t Elasticity::getNoFields (int fld) const
       nf += nsd; // Include principal stress components
   }
 
-#ifdef SP_DEBUG
+#ifdef INT_DEBUG
   std::cout <<"Elasticity::getNoFields: "<< nf << std::endl;
 #endif
   return nf;
