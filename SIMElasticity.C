@@ -19,15 +19,11 @@
 template<> bool SIMElasticity<SIM2D>::planeStrain = false;
 //! Axisymmtry option for 2D problems.
 template<> bool SIMElasticity<SIM2D>::axiSymmetry = false;
-//! Option for output of Gauss points to VTF for 2D problems.
-template<> bool SIMElasticity<SIM2D>::GIpointsVTF = false;
 
 //! Dummy option for 3D problems.
 template<> bool SIMElasticity<SIM3D>::planeStrain = false;
 //! Dummy option for 3D problems.
 template<> bool SIMElasticity<SIM3D>::axiSymmetry = false;
-//! Option for output of Gauss points to VTF for 3D problems.
-template<> bool SIMElasticity<SIM3D>::GIpointsVTF = false;
 
 
 void ElasticityUtils::printNorms (const Vector& gNorm, const Vector& rNorm,

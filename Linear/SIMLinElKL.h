@@ -50,6 +50,8 @@ public:
   virtual bool haveAnaSol() const;
 
 protected:
+  //! \brief Returns the actual integrand.
+  virtual Elasticity* getIntegrand();
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from

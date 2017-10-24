@@ -41,6 +41,12 @@ SIMLinElKL::~SIMLinElKL ()
 }
 
 
+Elasticity* SIMLinElKL::getIntegrand ()
+{
+  return dynamic_cast<Elasticity*>(myProblem);
+}
+
+
 bool SIMLinElKL::parse (char* keyWord, std::istream& is)
 {
   if (!myProblem)

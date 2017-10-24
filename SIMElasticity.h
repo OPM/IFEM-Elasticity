@@ -15,7 +15,7 @@
 #define _SIM_ELASTICITY_H
 
 #include "IFEM.h"
-#include "LinearElasticity.h"
+#include "Elasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
 #include "ForceIntegrator.h"
@@ -185,22 +185,10 @@ protected:
 public:
   static bool planeStrain; //!< Plane strain/stress option - 2D only
   static bool axiSymmetry; //!< Axisymmtry option - 2D only
-  static bool GIpointsVTF; //!< Gauss point output to VTF option - 2D only
 
 protected:
   //! \brief Returns the actual integrand.
-  virtual Elasticity* getIntegrand()
-  {
-    if (!Dim::myProblem)
-    {
-      if (Dim::dimension == 2)
-        Dim::myProblem = new LinearElasticity(2,axiSymmetry,GIpointsVTF);
-      else
-        Dim::myProblem = new LinearElasticity(Dim::dimension);
-    }
-    return dynamic_cast<Elasticity*>(Dim::myProblem);
-  }
-
+  virtual Elasticity* getIntegrand() = 0;
   //! \brief Parses a dimension-specific data section from an input file.
   virtual bool parseDimSpecific(char*, std::istream&) { return false; }
   //! \brief Parses a dimension-specific data section from an XML element.

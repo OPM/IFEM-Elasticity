@@ -15,6 +15,7 @@
 #define _SIM_LIN_EL_H
 
 #include "SIMElasticity.h"
+#include "LinearElasticity.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
 
@@ -33,6 +34,17 @@ public:
   virtual ~SIMLinEl() {}
 
 protected:
+  //! \brief Returns the actual integrand.
+  virtual Elasticity* getIntegrand()
+  {
+    if (!Dim::myProblem)
+      Dim::myProblem = new LinearElasticity(Dim::dimension,
+                                            SIMElasticity<Dim>::axiSymmetry,
+                                            GIpointsVTF);
+
+    return dynamic_cast<Elasticity*>(Dim::myProblem);
+  }
+
   //! \brief Parses a data section from an input file.
   //! \details This function allows for specialization of the template
   //! while still reusing as much code as possible.
@@ -44,6 +56,9 @@ protected:
   //! while still reusing as much code as possible.
   //! Only put dimension-specific code in here.
   virtual bool parseDimSpecific(const TiXmlElement* elem);
+
+public:
+  static bool GIpointsVTF; //!< Gauss point output to VTF option
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
