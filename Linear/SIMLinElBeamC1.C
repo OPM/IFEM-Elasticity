@@ -29,7 +29,20 @@
 
 void SIMLinElBeamC1::clearProperties ()
 {
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
+  if (klp)
+  {
+    klp->setMaterial(nullptr);
+    klp->setPressure(nullptr);
+  }
+
+  for (Material* mat : mVec)
+    delete mat;
+
+  tVec.clear();
+  mVec.clear();
   myLoads.clear();
+
   this->SIM1D::clearProperties();
 }
 

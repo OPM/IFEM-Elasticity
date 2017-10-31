@@ -62,12 +62,29 @@ Elasticity* SIMKLShell::getIntegrand ()
 
 void SIMKLShell::clearProperties()
 {
+  // To prevent SIMbase::clearProperties deleting the analytical solution
+  for (int i = 0; i < 3; i++)
+    if (aCode[i] > 0) myScalars.erase(aCode[i]);
+
+  aCode[0] = aCode[1] = aCode[2] = 0;
+
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
+  if (klp)
+  {
+    klp->setMaterial(nullptr);
+    klp->setPressure(nullptr);
+  }
+
+  for (Material* mat : mVec)
+    delete mat;
   for (PointLoad& load : myLoads)
     delete load.p;
 
+  tVec.clear();
+  mVec.clear();
   myLoads.clear();
 
-  this->SIMElasticity<SIM2D>::clearProperties();
+  this->SIM2D::clearProperties();
 }
 
 
