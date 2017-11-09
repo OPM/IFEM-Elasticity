@@ -6,50 +6,66 @@ Number of elements    24
 Number of nodes       160
 Number of dofs        480
 Number of unknowns    432
+ >>> Starting adaptive simulation based on
+     Continuous global L2-projection error estimates (norm group 1) <<<
+Adaptive step 1
 L2-norm            : 3.76684e-05
+Max X-displacement : 2.4769e-05 node 145
+Max Y-displacement : 3.59352e-05 node 159
+Max Z-displacement : 0.000119122 node 160
 Energy norm           a(u^h,u^h)^0.5 : 2.65303
 External energy((f,u^h)+(t,u^h))^0.5 : 2.65303
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 2.63822
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.191652
+relative error (% of |u^r|) : 7.26446
 Error estimate a(e,e)^0.5, e=u^r-u^h : 0.191652
 Relative error (%) : 7.20513
 Root mean square (RMS) of error      : 0.712202
 Min element error                    : 0.00248256
 Max element error                    : 0.0744186
 Average element error                : 0.0318653
-Refining 2 basis functions
-Refined mesh: 64 elements 216 nodes.
-Refined mesh: 64 elements 216 nodes.
-Refined mesh: 64 elements 216 nodes.
+Refining 2 basis functions with errors in range \[0.409682,0.409682\] 1% of all basis functions
 Adaptive step 2
 Number of elements    192
 Number of nodes       576
 Number of dofs        1728
 Number of unknowns    1620
 L2-norm            : 3.78205e-05
+Max X-displacement : 2.53261e-05 node 469
+Max Y-displacement : 3.66331e-05 node 490
+Max Z-displacement : 0.000121591 node 263
 Energy norm           a(u^h,u^h)^0.5 : 2.68115
 External energy((f,u^h)+(t,u^h))^0.5 : 2.68115
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 2.67672
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.113605
+relative error (% of |u^r|) : 4.2442
 Error estimate a(e,e)^0.5, e=u^r-u^h : 0.113605
 Relative error (%) : 4.2334
 Root mean square (RMS) of error      : 1.11546
 Min element error                    : 0.000161387
 Max element error                    : 0.0272407
 Average element error                : 0.00547284
-Refining 6 basis functions
-Refined mesh: 484 elements 894 nodes.
-Refined mesh: 400 elements 708 nodes.
-Refined mesh: 316 elements 522 nodes.
+Refining 6 basis functions with errors in range \[0.223782,0.262065\] 1% of all basis functions
 Adaptive step 3
-Number of elements    1200
-Number of nodes       1946
-Number of dofs        5838
-Number of unknowns    5604
-L2-norm            : 3.12035e-05
-Energy norm           a(u^h,u^h)^0.5 : 2.68829
-External energy((f,u^h)+(t,u^h))^0.5 : 2.68829
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 2.68682
-Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0689166
-Error estimate a(e,e)^0.5, e=u^r-u^h : 0.0689166
-Relative error (%) : 2.56275
-Root mean square (RMS) of error      : 1.71521
-Min element error                    : 4.10512e-05
-Max element error                    : 0.0128574
-Average element error                : 0.00100202
+Number of elements    1074
+Number of nodes       1644
+Number of dofs        4932
+Number of unknowns    4698
+L2-norm            : 3.14206e-05
+Max X-displacement : 2.54906e-05 node 1357
+Max Y-displacement : 3.68079e-05 node 1378
+Max Z-displacement : 0.000122217 node 791
+Energy norm           a(u^h,u^h)^0.5 : 2.68803
+External energy((f,u^h)+(t,u^h))^0.5 : 2.68803
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 2.68642
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0729441
+relative error (% of |u^r|) : 2.71529
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.0729441
+Relative error (%) : 2.71266
+Root mean square (RMS) of error      : 1.54408
+Min element error                    : 4.39113e-05
+Max element error                    : 0.012879
+Average element error                : 0.00120993
