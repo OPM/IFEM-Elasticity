@@ -155,6 +155,12 @@ public:
     return ok;
   }
 
+  //! \brief Returns whether reaction forces are to be computed or not.
+  bool haveBoundaryReactions() const
+  {
+    return bCode.empty() ? false : this->haveReactions(bCode.begin()->first);
+  }
+
   //! \brief Returns whether an analytical solution is available or not.
   virtual bool haveAnaSol() const
   {

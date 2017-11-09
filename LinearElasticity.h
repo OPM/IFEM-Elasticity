@@ -15,6 +15,9 @@
 #define _LINEAR_ELASTICITY_H
 
 #include "Elasticity.h"
+#include "GlobalIntegral.h"
+
+class RealFunc;
 
 
 /*!
@@ -55,6 +58,11 @@ public:
   //! \param elmInt Local integral for element
   virtual bool initElement(const std::vector<int>& MNPC, const FiniteElement&,
                            const Vec3& X0, size_t, LocalIntegral& elmInt);
+
+  //! \brief Defines the global integral for calculating reaction forces only.
+  void setReactionIntegral(GlobalIntegral* q) { delete myReacIt; myReacIt = q; }
+  //! \brief Returns the system quantity to be integrated by \a *this.
+  virtual GlobalIntegral& getGlobalInt(GlobalIntegral* gq) const;
 
   //! \brief Returns whether there are any traction values to write to VTF.
   virtual bool hasTractionValues() const;
@@ -110,6 +118,7 @@ protected:
   RealFunc* myTemp;  //!< Explicit stationary temperature field
 
 private:
+  GlobalIntegral*  myReacIt; //!< Reaction-forces-only integral
   mutable Vec3Vec* myItgPts; //!< Global Gauss point coordinates
 };
 

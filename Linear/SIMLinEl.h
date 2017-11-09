@@ -16,6 +16,7 @@
 
 #include "SIMElasticity.h"
 #include "LinearElasticity.h"
+#include "ReactionsOnly.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
 
@@ -33,6 +34,61 @@ public:
   SIMLinEl(bool checkRHS, bool ds) : SIMElasticity<Dim>(checkRHS), dualS(ds) {}
   //! \brief Empty destructor.
   virtual ~SIMLinEl() {}
+
+  using SIMElasticity<Dim>::solveSystem;
+  //! \brief Solves the assembled linear system of equations for a given load.
+  //! \param[out] solution Global primary solution vector
+  //! \param[in] printSol Print solution if its size is less than \a printSol
+  //! \param[out] rCond Reciprocal condition number
+  //! \param[in] compName Solution name to be used in norm output
+  //! \param[in] newLHS If \e false, reuse the LHS-matrix from previous call
+  //! \param[in] idxRHS Index to the right-hand-side vector to solve for
+  //!
+  //! This overloaded version also computes the reaction forces along a given
+  //! boundary. This requires an additional assembly loop calculating the
+  //! internal forces only, since we only are doing a linear solve here.
+  virtual bool solveSystem(Vector& solution, int printSol, double* rCond,
+                           const char* compName, bool newLHS, size_t idxRHS)
+  {
+    if (!this->Dim::solveSystem(solution,printSol,rCond,compName,newLHS,idxRHS))
+      return false;
+    else if (idxRHS > 0 || !this->haveBoundaryReactions())
+      return true;
+
+    LinearElasticity* prob = dynamic_cast<LinearElasticity*>(Dim::myProblem);
+    if (!prob) return true;
+
+    // Assemble the reaction forces. Strictly, we only need to assemble those
+    // elements that have nodes on the Dirichlet boundaries, but...
+    prob->setReactionIntegral(new ReactionsOnly(myReact,Dim::mySam));
+    AlgEqSystem* tmpEqSys = Dim::myEqSys;
+    Dim::myEqSys = nullptr;
+    int oldlevel = Dim::msgLevel;
+    Dim::msgLevel = 1;
+    this->setMode(SIM::RHS_ONLY);
+    bool ok = this->assembleSystem(Vectors(1,solution));
+
+    // Print out the reaction forces
+    Vector Rforce;
+    if (ok && this->getBoundaryReactions(Rforce))
+    {
+      IFEM::cout <<"Reaction force     :";
+      for (double f : Rforce) IFEM::cout <<" "<< f;
+      IFEM::cout << std::endl;
+    }
+
+    Dim::msgLevel = oldlevel;
+    Dim::myEqSys = tmpEqSys;
+    prob->setReactionIntegral(nullptr);
+
+    return ok;
+  }
+
+  //! \brief Returns current reaction force vector.
+  virtual const Vector* getReactionForces() const
+  {
+    return myReact.empty() ? nullptr : &myReact;
+  }
 
 protected:
   //! \brief Returns the actual integrand.
@@ -64,6 +120,8 @@ public:
 
 private:
   bool dualS; //!< If \e true, also solve the dual problem
+
+  Vector myReact; //!< Nodal reaction forces
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver

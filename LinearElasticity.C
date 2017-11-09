@@ -27,8 +27,9 @@
 LinearElasticity::LinearElasticity (unsigned short int n, bool axS, bool GPout)
   : Elasticity(n,axS)
 {
-  myTemp0 = myTemp = NULL;
-  myItgPts = n == 2 && GPout ? new Vec3Vec() : NULL;
+  myTemp0  = myTemp = nullptr;
+  myReacIt = nullptr;
+  myItgPts = n == 2 && GPout ? new Vec3Vec() : nullptr;
 }
 
 
@@ -70,7 +71,7 @@ void LinearElasticity::setMode (SIM::SolutionMode mode)
 
   // These quantities are not needed in linear problems
   if (mode != SIM::BUCKLING) eKg = 0;
-  if (mode != SIM::DYNAMIC)  iS  = 0;
+  if (mode == SIM::STATIC)   iS  = 0;
 }
 
 
@@ -112,6 +113,15 @@ bool LinearElasticity::initElement (const std::vector<int>& MNPC,
   std::cerr <<" *** LinearElasticity::initElement: Detected "
             << ierr <<" node numbers out of range."<< std::endl;
   return false;
+}
+
+
+GlobalIntegral& LinearElasticity::getGlobalInt (GlobalIntegral* gq) const
+{
+  if (m_mode == SIM::RHS_ONLY && myReacIt)
+    return *myReacIt;
+
+  return this->Elasticity::getGlobalInt(gq);
 }
 
 
@@ -307,6 +317,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 int LinearElasticity::getIntegrandType () const
 {
   int itgType = dualFld.empty() ? STANDARD : ELEMENT_CENTER;
+  if (m_mode == SIM::RHS_ONLY) return itgType;
 
   return itgType | INTERFACE_TERMS | ELEMENT_CORNERS | NORMAL_DERIVS;
 }
