@@ -61,9 +61,12 @@ if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
 endif()
-foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
-  ifem_add_test(${TESTFILE} LinEl)
-endforeach()
+
+if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
+  foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
+    ifem_add_test(${TESTFILE} LinEl)
+  endforeach()
+endif()
 
 list(APPEND TEST_APPS LinEl)
 if(IFEM_COMMON_APP_BUILD)
