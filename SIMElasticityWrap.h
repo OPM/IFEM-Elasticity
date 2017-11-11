@@ -15,6 +15,7 @@
 #define _SIM_ELASTICITY_WRAP_H_
 
 #include "SIMElasticity.h"
+#include "SIMsolution.h"
 #include "DataExporter.h"
 
 
@@ -25,7 +26,8 @@
   used as class template argument to a SIMSolver instance for coupled solvers.
 */
 
-template<class Dim> class SIMElasticityWrap : public SIMElasticity<Dim>
+template<class Dim>
+class SIMElasticityWrap : public SIMElasticity<Dim>, public SIMsolution
 {
 protected:
   //! \brief The default constructor is protected as this is an interface class.
@@ -76,17 +78,38 @@ public:
     return this->writeGlvStep(iDump,tp.time.t);
   }
 
-  //! \brief Initializes the solution vectors.
-  //! \param[in] tp Time stepping parameters
-  virtual bool init(const TimeStep& tp) = 0;
+  //! \brief Serializes current internal state for restarting purposes.
+  virtual bool serialize(SerializeMap& data) const
+  {
+    return this->saveSolution(data,this->getName());
+  }
+
+  //! \brief Restores the internal state from serialized data.
+  virtual bool deSerialize(const SerializeMap& data)
+  {
+    return this->restoreSolution(data,this->getName());
+  }
+
+  //! \brief Initializes the linear equation solver and solution vectors.
+  //! \param[in] withRF If \e true, reaction forces will be calculated
+  virtual bool init(const TimeStep&, bool withRF = false)
+  {
+    return (this->initSystem(Dim::opt.solver,1,1,0,withRF) &&
+            this->initSolution(this->getNoDOFs(),this->getNoSolutions()) &&
+            this->setMode(SIM::INIT));
+  }
+
+  //! \brief Advances the time step one step forward.
+  virtual bool advanceStep(TimeStep& tp)
+  {
+    this->pushSolution(); // Update solution vectors between time steps
+    return this->SIMElasticity<Dim>::advanceStep(tp);
+  }
 
   //! \brief Computes the solution for the current time step.
-  //! \param tp Time stepping parameters
   virtual bool solveStep(TimeStep& tp) = 0;
 
-protected:
-  //! \brief Returns a const reference to current solution vector.
-  virtual const Vector& getSolution(int = 0) const = 0;
+  using SIMsolution::getSolution;
 };
 
 #endif
