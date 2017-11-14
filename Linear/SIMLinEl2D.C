@@ -179,8 +179,9 @@ template<> bool SIMLinEl2D::parseDimSpecific (const TiXmlElement* child)
       if (!mySol)
         mySol = new AnaSol(new Pipe(Ri,Ro,Ti,To,T0,E,nu,alpha,false,polar));
     }
-    else if (type == "expression") {
-      IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
+    else if (type == "expression" || type == "fields") {
+      type[0] = toupper(type[0]);
+      IFEM::cout <<"\tAnalytical solution: "<< type << std::endl;
       if (!mySol)
         mySol = new AnaSol(child,false);
     }

@@ -1,0 +1,85 @@
+CanTS2D-fields-p2.xinp -2D -cgl2
+
+Input file: CanTS2D-fields-p2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Enabled projection(s): Continuous global L2-projection
+Parsing input file CanTS2D-fields-p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+	Length in Y = 0.4
+  Parsing <refine>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <refine>
+	Refining P1 0 1
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 9 0
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <propertycodes>
+  Parsing <neumann>
+	Neumann code 1001 direction 1 (expression): F0=-1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; -F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 1002 direction 2 (expression): F0=-1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Constraining P1 point at 0 0.5 with code 12
+	Constraining P1 point at 0 1 with code 1
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+	Analytical solution: Fields
+	Stress=s_xx|s_yy|s_xy
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3 4
+Enabled projection(s): Continuous global L2-projection
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    20
+Number of nodes       60
+Number of dofs        120
+Number of unknowns    116
+Number of quadrature points 270 18
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Solving the equation system ...
+	Condition number: 110352
+ >>> Solution summary <<<
+L2-norm            : 0.000938776
+Max X-displacement : 0.000362669
+Max Y-displacement : 0.00248364
+Projecting secondary solution ...
+	Continuous global L2-projection
+Integrating solution norms (FE solution) ...
+Integrating solution norms (reference solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.9192
+External energy ((f,u^h)+(t,u^h)^0.5 : 49.9192
+Exact norm  |u|   = a(u,u)^0.5       : 49.9264
+Exact error a(e,e)^0.5, e=u-u^h      : 0.852634
+Exact relative error (%) : 1.70778
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 49.918
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.340613
+ relative error (% of |u|)   : 0.68223
+Exact error a(e,e)^0.5, e=u-u^r      : 0.781644
+ relative error (% of |u|)   : 1.56559
+Effectivity index             : 0.399483
+Energy norm |u^rr| = a(u^rr,u^rr)^0.5: 49.9264
+Error norm a(e,e)^0.5, e=u^rr-u^h    : 0.852634
+ relative error (% of |u|)   : 1.70778
+L2-norm |s^r| = (s^r,s^r)^0.5        : 2.2492e+07
+L2-error (e,e)^0.5, e=s^r-s^h        : 97576.6
+ relative error (% of |s^r|) : 0.433828
