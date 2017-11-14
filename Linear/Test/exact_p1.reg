@@ -61,7 +61,7 @@ Projecting secondary solution ...
 Projecting secondary solution ...
 	Continuous global L2-projection
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.4682
-External energy ((f,u^h)+(t,u^h)^0.5 : 38.5013
+External energy ((f,u^h)+(t,u^h)^0.5 : 41.7416
 Exact norm  |u|   = a(u,u)^0.5       : 49.6692
 Exact error a(e,e)^0.5, e=u-u^h      : 2.8788
 Exact relative error (%) : 5.79595

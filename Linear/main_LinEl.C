@@ -195,8 +195,7 @@ int main (int argc, char** argv)
   if (!ignoredPatches.empty())
   {
     IFEM::cout <<"\nIgnored patches:";
-    for (size_t i = 0; i < ignoredPatches.size(); i++)
-      IFEM::cout <<" "<< ignoredPatches[i];
+    for (int ip : ignoredPatches) IFEM::cout <<" "<< ip;
   }
   IFEM::cout << std::endl;
 
@@ -324,7 +323,7 @@ int main (int argc, char** argv)
     // Static solution: Assemble [Km] and {R}
     model->setMode(SIM::STATIC);
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
-    model->initSystem(model->opt.solver,1,1,0,true);
+    model->initSystem(model->opt.solver,1,1);
     if (!model->assembleSystem())
       return 2;
     else if (vizRHS)
@@ -349,14 +348,14 @@ int main (int argc, char** argv)
     {
       // Evaluate solution norms
       model->setQuadratureRule(model->opt.nGauss[1]);
-      if (!model->solutionNorms(Vectors(1,displ),projs,eNorm,gNorm))
+      if (!model->solutionNorms(displ,projs,eNorm,gNorm,"FE solution"))
         return 4;
 
       if (model->haveAnaSol())
       {
         // Evaluate norms of the projected analytical solution
         Elasticity::asolProject = true;
-        if (!model->solutionNorms(TimeDomain(),Vectors(1,displ),projx,xNorm))
+        if (!model->solutionNorms(displ,projx,xNorm,"reference solution"))
           return 4;
       }
     }
