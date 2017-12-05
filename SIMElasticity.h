@@ -54,8 +54,8 @@ public:
     if (aCode > 0)
       Dim::myVectors.erase(aCode);
 
-    for (size_t i = 0; i < mVec.size(); i++)
-      delete mVec[i];
+    for (Material* mat : mVec)
+      delete mat;
   }
 
   //! \brief Returns the name of this simulator (for use in the HDF5 export).
@@ -88,8 +88,8 @@ public:
       elp->setTraction((TractionFunc*)nullptr);
     }
 
-    for (size_t i = 0; i < mVec.size(); i++)
-      delete mVec[i];
+    for (Material* mat : mVec)
+      delete mat;
     mVec.clear();
 
     this->Dim::clearProperties();
@@ -151,35 +151,48 @@ protected:
     if (!Dim::mySol) return;
 
     // Define analytical boundary condition fields
-    PropertyVec::iterator p;
-    for (p = Dim::myProps.begin(); p != Dim::myProps.end(); ++p)
-      if (p->pcode == Property::DIRICHLET_ANASOL)
+    for (Property& p : Dim::myProps)
+      if (p.pcode == Property::DIRICHLET_ANASOL)
       {
         VecFunc* vecField = Dim::mySol->getVectorSol();
         if (!vecField)
-          p->pcode = Property::UNDEFINED;
-        else if (aCode == abs(p->pindx))
-          p->pcode = Property::DIRICHLET_INHOM;
+          p.pcode = Property::UNDEFINED;
+        else if (aCode == abs(p.pindx))
+          p.pcode = Property::DIRICHLET_INHOM;
         else if (aCode == 0)
         {
-          aCode = abs(p->pindx);
+          aCode = abs(p.pindx);
           Dim::myVectors[aCode] = vecField;
-          p->pcode = Property::DIRICHLET_INHOM;
+          p.pcode = Property::DIRICHLET_INHOM;
         }
         else
-          p->pcode = Property::UNDEFINED;
+          p.pcode = Property::UNDEFINED;
       }
-      else if (p->pcode == Property::NEUMANN_ANASOL)
+      else if (p.pcode == Property::NEUMANN_ANASOL)
       {
         STensorFunc* stressField = Dim::mySol->getStressSol();
         if (stressField)
         {
-          p->pcode = Property::NEUMANN;
-          Dim::myTracs[p->pindx] = new TractionField(*stressField);
+          p.pcode = Property::NEUMANN;
+          Dim::myTracs[p.pindx] = new TractionField(*stressField);
         }
         else
-          p->pcode = Property::UNDEFINED;
+          p.pcode = Property::UNDEFINED;
       }
+  }
+
+  //! \brief Performs some pre-processing tasks on the FE model.
+  //! \details This method is reimplemented to ensure that threading groups are
+  //! established for the patch faces subjected to boundary force integration.
+  virtual bool preprocessB()
+  {
+    if (bCode == 0) return true;
+
+    for (const Property& p : Dim::myProps)
+      if (bCode == p.pindx)
+        this->generateThreadGroups(p,Dim::msgLevel < 2);
+
+    return true;
   }
 
 public:
