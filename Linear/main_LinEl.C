@@ -11,6 +11,7 @@
 //!
 //==============================================================================
 
+#include "AppCommon.h"
 #include "IFEM.h"
 #include "SIMLinEl.h"
 #include "SIMLinElKL.h"
@@ -62,6 +63,7 @@
   \arg -checkRHS : Check that the patches are modelled in a right-hand system
   \arg -vizRHS : Save the right-hand-side load vector on the VTF-file
   \arg -fixDup : Resolve co-located nodes by merging them into a single node
+  \arg -3D : Use three-parametric simulation driver
   \arg -2D : Use two-parametric simulation driver (plane stress)
   \arg -2Dpstrain : Use two-parametric simulation driver (plane strain)
   \arg -2Daxisymm : Use two-parametric simulation driver (axi-symmetric solid)
@@ -92,19 +94,19 @@ int main (int argc, char** argv)
   bool fixDup = false;
   bool dumpASCII = false;
   bool dumpMatlab = false;
-  bool twoD = false;
   bool KLp = false;
-  bool oneD = false;
   bool isC1 = false;
   bool noProj = false;
   bool noError = false;
   char* infile = nullptr;
+  SIM::AppXMLInputBase args;
   Elasticity::wantPrincipalStress = true;
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
+  int inputfile_idx = -1;
 
   for (i = 1; i < argc; i++)
-    if (SIMoptions::ignoreOldOptions(argc,argv,i))
+    if (i == inputfile_idx || SIMoptions::ignoreOldOptions(argc,argv,i))
       ; // ignore the obsolete option
     else if (!strcmp(argv[i],"-dumpASC"))
       dumpASCII = myPid == 0; // not for parallel runs
@@ -136,19 +138,30 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
     else if (!strcmp(argv[i],"-1DC1"))
-      oneD = isC1 = true;
+      args.dim = isC1 = true;
     else if (!strcmp(argv[i],"-1DKL"))
-      oneD = isC1 = KLp = true;
+      args.dim = isC1 = KLp = true;
     else if (!strncmp(argv[i],"-1D",3))
-      oneD = true;
+      args.dim = 1;
     else if (!strcmp(argv[i],"-2DKL"))
-      twoD = isC1 = KLp = true;
+    {
+      args.dim = 2;
+      isC1 = KLp = true;
+    }
     else if (!strncmp(argv[i],"-2Dpstra",8))
-      twoD = SIMLinEl2D::planeStrain = true;
+    {
+      args.dim = 2;
+      SIMLinEl2D::planeStrain = true;
+    }
     else if (!strncmp(argv[i],"-2Daxi",6))
-      twoD = SIMLinEl2D::axiSymmetry = true;
+    {
+      args.dim = 2;
+      SIMLinEl2D::axiSymmetry = true;
+    }
     else if (!strncmp(argv[i],"-2D",3))
-      twoD = true;
+      args.dim = 2;
+    else if (!strncmp(argv[i],"-3D",3))
+      args.dim = 3;
     else if (!strncmp(argv[i],"-noP",4))
       noProj = true;
     else if (!strncmp(argv[i],"-noE",4))
@@ -160,7 +173,17 @@ int main (int argc, char** argv)
         adaptor = atoi(argv[i]+5);
     }
     else if (!infile)
+    {
       infile = argv[i];
+      inputfile_idx = i;
+      if (strcasestr(infile,".xinp"))
+      {
+        if (!args.readXML(infile,false))
+          return 1;
+        // start from scratch and let commandline parameters override inputfile ones
+        i = 0;
+      }
+    }
     else
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
 
@@ -168,7 +191,7 @@ int main (int argc, char** argv)
   {
     std::cout <<"usage: "<< argv[0]
               <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n"
-              <<"       [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL]]"
+              <<"       [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL]|-3D]"
               <<" [-nGauss <n>]\n       [-hdf5] [-vtf <format> [-nviz <nviz>]"
               <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]]"
               <<" [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
@@ -190,7 +213,7 @@ int main (int argc, char** argv)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
   if (fixDup)
     IFEM::cout <<"\nCo-located nodes will be merged";
-  if (checkRHS && !oneD && !KLp)
+  if (checkRHS && args.dim!=1 && !KLp)
     IFEM::cout <<"\nCheck that each patch has a right-hand coordinate system";
   if (!ignoredPatches.empty())
   {
@@ -204,7 +227,7 @@ int main (int argc, char** argv)
 
   // Create the simulation model
   SIMoutput* model;
-  if (oneD)
+  if (args.dim == 1)
   {
     if (KLp)
       model = new SIMLinElBeamC1();
@@ -213,7 +236,7 @@ int main (int argc, char** argv)
   }
   else if (KLp)
     model = new SIMLinElKL();
-  else if (twoD)
+  else if (args.dim == 2)
     model = new SIMLinEl2D(checkRHS);
   else
     model = new SIMLinEl3D(checkRHS);
@@ -231,8 +254,8 @@ int main (int argc, char** argv)
   if (model->opt.eig != 4 && model->opt.eig != 6)
     SIMbase::ignoreDirichlet = false;
 
-  if (oneD) model->opt.nViz[1] = model->opt.nViz[2] = 1;
-  if (twoD) model->opt.nViz[2] = 1;
+  if (args.dim == 1) model->opt.nViz[1] = model->opt.nViz[2] = 1;
+  if (args.dim == 2) model->opt.nViz[2] = 1;
 
   // Load vector visualization is not available when using additional viz-points
   if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
@@ -253,7 +276,7 @@ int main (int argc, char** argv)
   bool staticSol = iop + model->opt.eig%5 == 0 || iop == 10;
   if (model->opt.discretization < ASM::Spline || !staticSol || noProj)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
-  else if (model->opt.discretization == ASM::Spline && pOpt.empty() && !oneD)
+  else if (model->opt.discretization == ASM::Spline && pOpt.empty() && args.dim != 1)
     pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
@@ -364,7 +387,7 @@ int main (int argc, char** argv)
     {
       const Vector& norm = gNorm.front();
       double Rel = norm.size() > 2 ? 100.0/norm(3) : 0.0;
-      if (oneD && !KLp)
+      if (args.dim == 1 && !KLp)
       {
         IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
         if (norm.size() > 2)

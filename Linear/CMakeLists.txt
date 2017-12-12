@@ -15,7 +15,8 @@ if(NOT IFEM_CONFIGURED)
 endif()
 
 include_directories(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
-                                     ${PROJECT_SOURCE_DIR}/../Beam)
+                                     ${PROJECT_SOURCE_DIR}/../Beam
+                                     ${PROJECT_SOURCE_DIR}/../../Common)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
@@ -29,7 +30,7 @@ endif()
 file(GLOB LinEl_SRCS *.C)
 
 add_executable(LinEl ${LinEl_SRCS})
-target_link_libraries(LinEl Beam Elasticity ${IFEM_LIBRARIES})
+target_link_libraries(LinEl Beam Elasticity IFEMAppCommon ${IFEM_LIBRARIES})
 
 list(APPEND CHECK_SOURCES ${LinEl_SRCS})
 
