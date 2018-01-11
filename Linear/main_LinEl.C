@@ -16,6 +16,7 @@
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"
 #include "SIMElasticBar.h"
+#include "SIMargsBase.h"
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
 #include "HDF5Writer.h"
@@ -92,19 +93,20 @@ int main (int argc, char** argv)
   bool fixDup = false;
   bool dumpASCII = false;
   bool dumpMatlab = false;
-  bool twoD = false;
   bool KLp = false;
-  bool oneD = false;
   bool isC1 = false;
   bool noProj = false;
   bool noError = false;
   char* infile = nullptr;
   Elasticity::wantPrincipalStress = true;
+  SIMargsBase args("elasticity");
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
 
   for (i = 1; i < argc; i++)
-    if (SIMoptions::ignoreOldOptions(argc,argv,i))
+    if (argv[i] == infile || args.parseArg(argv[i]))
+      ; // ignore the input file on the second pass
+    else if (SIMoptions::ignoreOldOptions(argc,argv,i))
       ; // ignore the obsolete option
     else if (!strcmp(argv[i],"-dumpASC"))
       dumpASCII = myPid == 0; // not for parallel runs
@@ -136,31 +138,43 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
     else if (!strcmp(argv[i],"-1DC1"))
-      oneD = isC1 = true;
+      args.dim = isC1 = true;
     else if (!strcmp(argv[i],"-1DKL"))
-      oneD = isC1 = KLp = true;
-    else if (!strncmp(argv[i],"-1D",3))
-      oneD = true;
+      args.dim = isC1 = KLp = true;
     else if (!strcmp(argv[i],"-2DKL"))
-      twoD = isC1 = KLp = true;
+    {
+      args.dim = 2;
+      isC1 = KLp = true;
+    }
     else if (!strncmp(argv[i],"-2Dpstra",8))
-      twoD = SIMLinEl2D::planeStrain = true;
+    {
+      args.dim = 2;
+      SIMLinEl2D::planeStrain = true;
+    }
     else if (!strncmp(argv[i],"-2Daxi",6))
-      twoD = SIMLinEl2D::axiSymmetry = true;
-    else if (!strncmp(argv[i],"-2D",3))
-      twoD = true;
+    {
+      args.dim = 2;
+      SIMLinEl2D::axiSymmetry = true;
+    }
     else if (!strncmp(argv[i],"-noP",4))
       noProj = true;
     else if (!strncmp(argv[i],"-noE",4))
       noError = true;
     else if (!strncmp(argv[i],"-adap",5))
     {
-      iop = 10;
-      if (strlen(argv[i]) > 5)
-        adaptor = atoi(argv[i]+5);
+      args.adap = true;
+      adaptor = atoi(argv[i]+5);
     }
     else if (!infile)
+    {
       infile = argv[i];
+      if (strcasestr(infile,".xinp"))
+      {
+        if (!args.readXML(infile,false))
+          return 1;
+        i = 0; // start over and let command-line options override input file
+      }
+    }
     else
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
 
@@ -179,7 +193,7 @@ int main (int argc, char** argv)
     return 0;
   }
 
-  if (iop == 10)
+  if (args.adap)
     IFEM::getOptions().discretization = ASM::LRSpline;
   else if (isC1 && IFEM::getOptions().discretization != ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::SplineC1;
@@ -190,7 +204,7 @@ int main (int argc, char** argv)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
   if (fixDup)
     IFEM::cout <<"\nCo-located nodes will be merged";
-  if (checkRHS && !oneD && !KLp)
+  if (checkRHS && args.dim > 1 && !KLp)
     IFEM::cout <<"\nCheck that each patch has a right-hand coordinate system";
   if (!ignoredPatches.empty())
   {
@@ -204,7 +218,7 @@ int main (int argc, char** argv)
 
   // Create the simulation model
   SIMoutput* model;
-  if (oneD)
+  if (args.dim == 1)
   {
     if (KLp)
       model = new SIMLinElBeamC1();
@@ -213,14 +227,14 @@ int main (int argc, char** argv)
   }
   else if (KLp)
     model = new SIMLinElKL();
-  else if (twoD)
+  else if (args.dim == 2)
     model = new SIMLinEl2D(checkRHS);
   else
     model = new SIMLinEl3D(checkRHS);
 
   SIMadmin* theSim = model;
   AdaptiveSIM* aSim = nullptr;
-  if (iop == 10)
+  if (args.adap)
     theSim = aSim = new AdaptiveSIM(*model);
 
   // Read in model definitions
@@ -231,8 +245,7 @@ int main (int argc, char** argv)
   if (model->opt.eig != 4 && model->opt.eig != 6)
     SIMbase::ignoreDirichlet = false;
 
-  if (oneD) model->opt.nViz[1] = model->opt.nViz[2] = 1;
-  if (twoD) model->opt.nViz[2] = 1;
+  for (i = args.dim; i < 3; i++) model->opt.nViz[i] = 1;
 
   // Load vector visualization is not available when using additional viz-points
   if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
@@ -250,11 +263,11 @@ int main (int argc, char** argv)
   SIMoptions::ProjectionMap::const_iterator pit;
 
   // Set default projection method (tensor splines only)
-  bool staticSol = iop + model->opt.eig%5 == 0 || iop == 10;
+  bool staticSol = iop + model->opt.eig%5 == 0 || args.adap;
   if (model->opt.discretization < ASM::Spline || !staticSol || noProj)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
-  else if (model->opt.discretization == ASM::Spline && pOpt.empty() && !oneD)
-    pOpt[SIMoptions::GLOBAL] = "Greville point projection";
+  else if (model->opt.discretization == ASM::Spline && pOpt.empty())
+    if (args.dim > 1) pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
   {
@@ -317,7 +330,7 @@ int main (int argc, char** argv)
                                            model->getProcessAdm()));
   }
 
-  switch (iop+model->opt.eig) {
+  switch (args.adap ? 10 : iop+model->opt.eig) {
   case 0:
   case 5:
     // Static solution: Assemble [Km] and {R}
@@ -364,7 +377,7 @@ int main (int argc, char** argv)
     {
       const Vector& norm = gNorm.front();
       double Rel = norm.size() > 2 ? 100.0/norm(3) : 0.0;
-      if (oneD && !KLp)
+      if (args.dim == 1 && !KLp)
       {
         IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
         if (norm.size() > 2)
@@ -467,7 +480,7 @@ int main (int argc, char** argv)
 
   utl::profiler->start("Postprocessing");
 
-  if (iop != 10 && model->opt.format >= 0)
+  if (model->opt.format >= 0 && !args.adap)
   {
     int geoBlk = 0, nBlock = 0;
 
@@ -519,7 +532,7 @@ int main (int argc, char** argv)
     model->writeGlvStep(1);
   }
   model->closeGlv();
-  if (exporter && iop != 10)
+  if (exporter && !args.adap)
     exporter->dumpTimeLevel();
 
   if (dumpASCII)
