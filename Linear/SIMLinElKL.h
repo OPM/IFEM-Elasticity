@@ -7,7 +7,7 @@
 //!
 //! \author Knut Morten Okstad / SINTEF
 //!
-//! \brief Solution driver for NURBS-based FE analysis of Kirchhoff-Love plates.
+//! \brief Solution driver for NURBS-based FE analysis of Kirchhoff-Love shells.
 //!
 //==============================================================================
 
@@ -19,7 +19,7 @@
 
 
 /*!
-  \brief Driver class for isogeometric FEM analysis of Kirchhoff-Love plates.
+  \brief Driver class for isogeometric FEM analysis of Kirchhoff-Love shells.
 */
 
 class SIMLinElKL : public SIMElasticity<SIM2D>
@@ -42,7 +42,7 @@ class SIMLinElKL : public SIMElasticity<SIM2D>
 
 public:
   //! \brief Default constructor.
-  SIMLinElKL();
+  SIMLinElKL(bool shell = false);
   //! \brief Destructor.
   virtual ~SIMLinElKL();
 
@@ -82,7 +82,7 @@ protected:
   virtual double externalEnergy(const Vectors& psol) const;
 
 private:
-  RealArray tVec;     //!< Plate thickness data
+  RealArray tVec;     //!< Shell thickness data
   PloadVec  myLoads;  //!< Nodal point loads
   int       aCode[3]; //!< Analytical BC codes (used by destructor)
 };

@@ -95,6 +95,7 @@ int main (int argc, char** argv)
   bool dumpMatlab = false;
   bool KLp = false;
   bool isC1 = false;
+  bool shell = false;
   bool noProj = false;
   bool noError = false;
   char* infile = nullptr;
@@ -141,10 +142,11 @@ int main (int argc, char** argv)
       args.dim = isC1 = true;
     else if (!strcmp(argv[i],"-1DKL"))
       args.dim = isC1 = KLp = true;
-    else if (!strcmp(argv[i],"-2DKL"))
+    else if (!strncmp(argv[i],"-2DKL",5))
     {
       args.dim = 2;
       isC1 = KLp = true;
+      shell = !strncmp(argv[i]+5,"shel",4);
     }
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
@@ -226,7 +228,7 @@ int main (int argc, char** argv)
       model = new SIMElasticBar();
   }
   else if (KLp)
-    model = new SIMLinElKL();
+    model = new SIMLinElKL(shell);
   else if (args.dim == 2)
     model = new SIMLinEl2D(checkRHS);
   else

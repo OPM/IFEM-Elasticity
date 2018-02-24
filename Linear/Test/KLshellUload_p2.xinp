@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported rectangular plate with uniform pressure load.
+     Quadratic spline Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2" Lx="10.0" Ly="8.0">
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="4" v="3"/>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+      <set name="plate" type="face">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss>3</nGauss>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="123"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="2.1e11" nu="0.3" rho="1.0e3" thickness="0.1"/>
+    <pressure set="plate">1.0e3</pressure>
+  </KirchhoffLove>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.5" v="0.5"/>
+    </resultpoints>
+    <resultpoints file="line-x5.dat">
+      <line u0="0.5" v0="0.0" u1="0.5" v1="1.0">50</line>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

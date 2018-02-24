@@ -7,12 +7,13 @@
 //!
 //! \author Knut Morten Okstad / SINTEF
 //!
-//! \brief Solution driver for NURBS-based FE analysis of Kirchhoff-Love plates.
+//! \brief Solution driver for NURBS-based FE analysis of Kirchhoff-Love shells.
 //!
 //==============================================================================
 
 #include "SIMLinElKL.h"
 #include "KirchhoffLovePlate.h"
+#include "KirchhoffLoveShell.h"
 #include "LinIsotropic.h"
 #include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
@@ -26,9 +27,11 @@
 #include "tinyxml.h"
 
 
-SIMLinElKL::SIMLinElKL ()
+SIMLinElKL::SIMLinElKL (bool shell)
 {
-  nf[0] = 1;
+  if (shell) nsd = 3;
+
+  nf[0] = shell ? 3 : 1;
   aCode[0] = aCode[1] = aCode[2] = 0;
 }
 
@@ -49,13 +52,16 @@ Elasticity* SIMLinElKL::getIntegrand ()
 
 bool SIMLinElKL::parse (char* keyWord, std::istream& is)
 {
-  if (!myProblem)
-    myProblem = new KirchhoffLovePlate();
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
+  if (!klp)
+  {
+    if (nsd == 3)
+      myProblem = klp = new KirchhoffLoveShell();
+    else
+      myProblem = klp = new KirchhoffLovePlate();
+  }
 
-  char* cline = 0;
-  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
-  if (!klp) return false;
-
+  char* cline;
   if (!strncasecmp(keyWord,"GRAVITY",7))
   {
     double g = atof(strtok(keyWord+7," "));
@@ -185,12 +191,15 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
   if (strcasecmp(elem->Value(),"kirchhofflove"))
     return this->SIM2D::parse(elem);
 
-  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
   if (!klp)
   {
     int version = 1;
     utl::getAttribute(elem,"version",version);
-    myProblem = klp = new KirchhoffLovePlate(2,version);
+    if (nsd == 3)
+      myProblem = klp = new KirchhoffLoveShell();
+    else
+      myProblem = klp = new KirchhoffLovePlate(2,version);
   }
 
   const TiXmlElement* child = elem->FirstChildElement();
@@ -315,7 +324,7 @@ bool SIMLinElKL::initMaterial (size_t propInd)
 {
   if (propInd >= mVec.size()) propInd = mVec.size()-1;
 
-  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
   if (!klp) return false;
 
   klp->setMaterial(mVec[propInd]);
@@ -328,7 +337,7 @@ bool SIMLinElKL::initMaterial (size_t propInd)
 
 bool SIMLinElKL::initBodyLoad (size_t patchInd)
 {
-  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
   if (!klp) return false;
 
   SclFuncMap::const_iterator it = myScalars.find(0);
@@ -343,7 +352,7 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 
 bool SIMLinElKL::initNeumann (size_t propInd)
 {
-  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
   if (!klp) return false;
 
   return true;
@@ -353,7 +362,12 @@ bool SIMLinElKL::initNeumann (size_t propInd)
 void SIMLinElKL::preprocessA ()
 {
   if (!myProblem)
-    myProblem = new KirchhoffLovePlate();
+  {
+    if (nsd == 3)
+      myProblem = new KirchhoffLoveShell();
+    else
+      myProblem = new KirchhoffLovePlate();
+  }
 
   this->printProblem();
 
@@ -459,10 +473,12 @@ bool SIMLinElKL::haveAnaSol () const
 {
   if (!mySol) return false;
 
-  short int version = static_cast<KirchhoffLovePlate*>(myProblem)->getVersion();
-  if (version == 1 && mySol->getStressSol())
+  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  if (!klp) return false;
+
+  if (klp->getVersion() == 1 && mySol->getStressSol())
     return true;
-  else if (version > 1 && mySol->getScalarSecSol())
+  else if (klp->getVersion() > 1 && mySol->getScalarSecSol())
     return true;
   else
     return false;
