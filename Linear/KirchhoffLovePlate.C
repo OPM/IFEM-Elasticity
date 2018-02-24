@@ -20,29 +20,14 @@
 #include "TensorFunction.h"
 #include "Vec3Oper.h"
 #include "AnaSol.h"
-#include "VTF.h"
 #include "IFEM.h"
 
 
 KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n, short int v)
-  : IntegrandBase(n), version(v)
+  : KirchhoffLove(n)
 {
-  npv = 1; // Number of primary unknowns per node
-
-  gravity = 0.0;
-  thickness = 0.1;
-
-  material = nullptr;
-  locSys = nullptr;
-  presFld = nullptr;
-  eM = eK = 0;
-  eS = 0;
-}
-
-
-KirchhoffLovePlate::~KirchhoffLovePlate ()
-{
-  if (locSys) delete locSys;
+  version = v;
+  nOrder = 0;
 }
 
 
@@ -66,125 +51,9 @@ void KirchhoffLovePlate::printLog () const
 }
 
 
-void KirchhoffLovePlate::setMode (SIM::SolutionMode mode)
-{
-  m_mode = mode;
-  eM = eK = 0;
-  eS = 0;
-
-  if (mode == SIM::RECOVERY)
-    primsol.resize(1);
-  else
-    primsol.clear();
-
-  switch (mode)
-    {
-    case SIM::STATIC:
-      eK = 1;
-      eS = 1;
-      break;
-
-    case SIM::VIBRATION:
-      eK = 1;
-      eM = 2;
-      break;
-
-    case SIM::STIFF_ONLY:
-      eK = 1;
-      break;
-
-    case SIM::RHS_ONLY:
-      eS = 1;
-      break;
-
-    default:
-      ;
-    }
-}
-
-
-LocalIntegral* KirchhoffLovePlate::getLocalIntegral (size_t nen, size_t,
-						     bool neumann) const
-{
-  ElmMats* result = new ElmMats();
-  switch (m_mode)
-    {
-    case SIM::STATIC:
-      result->rhsOnly = neumann;
-      result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, 1);
-      break;
-
-    case SIM::VIBRATION:
-      result->resize(2,0);
-      break;
-
-    case SIM::STIFF_ONLY:
-      result->resize(1,0);
-      break;
-
-    case SIM::RHS_ONLY:
-      result->resize(neumann ? 0 : 1, 1);
-
-    case SIM::RECOVERY:
-      result->rhsOnly = true;
-      result->withLHS = false;
-      break;
-
-    default:
-      ;
-    }
-
-  result->redim(nen);
-  return result;
-}
-
-
 double KirchhoffLovePlate::getStiffness (const Vec3& X) const
 {
   return material->getPlateStiffness(X,thickness);
-}
-
-
-double KirchhoffLovePlate::getPressure (const Vec3& X) const
-{
-  double p = material->getMassDensity(X)*gravity*thickness;
-
-  if (presFld)
-    p += (*presFld)(X);
-
-  return p;
-}
-
-
-bool KirchhoffLovePlate::haveLoads () const
-{
-  if (presFld) return true;
-
-  if (gravity != 0.0 && material)
-    return material->getMassDensity(Vec3()) != 0.0;
-
-  return false;
-}
-
-
-void KirchhoffLovePlate::initIntegration (size_t nGp, size_t)
-{
-  if (this->haveLoads())
-    presVal.resize(nGp,std::make_pair(Vec3(),Vec3()));
-}
-
-
-bool KirchhoffLovePlate::writeGlvT (VTF* vtf, int iStep,
-                                    int& geoBlk, int& nBlock) const
-{
-  if (presVal.empty())
-    return true;
-  else if (!vtf)
-    return false;
-
-  // Write surface pressures as discrete point vectors to the VTF-file
-  return vtf->writeVectors(presVal,geoBlk,++nBlock,"Pressure",iStep);
 }
 
 
@@ -358,15 +227,17 @@ bool KirchhoffLovePlate::evalSol (Vector& s,
                                   const std::vector<int>& MNPC) const
 {
   // Extract element displacements
-  int ierr = 0;
   Vector eV;
   if (!primsol.empty() && !primsol.front().empty())
-    if ((ierr = utl::gather(MNPC,1,primsol.front(),eV)))
+  {
+    int ierr = utl::gather(MNPC,1,primsol.front(),eV);
+    if (ierr > 0)
     {
       std::cerr <<" *** KirchhoffLovePlate::evalSol: Detected "
 		<< ierr <<" node numbers out of range."<< std::endl;
       return false;
     }
+  }
 
   // Evaluate the stress resultant tensor
   return this->evalSol(s,eV,fe,X,true);

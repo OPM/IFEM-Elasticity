@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported rectangular plate with uniform pressure load.
+     Quadratic spline Kirchhoff-Love thin plate elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2" Lx="10.0" Ly="8.0">
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="4" v="3"/>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+      <set name="plate" type="face">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="2.1e11" nu="0.3" rho="1.0e3" thickness="0.1"/>
+    <pressure set="plate">1.0e3</pressure>
+    <anasol type="NavierPlate" a="10.0" b="8.0" t="0.1"
+            E="2.1E11" nu="0.3" pz="1.0e3"/>
+  </KirchhoffLove>
+
+  <!-- General - result output !-->
+  <postprocessing>
+    <vtfformat>BINARY</vtfformat>
+    <projection>
+      <cgl2/>
+    </projection>
+  </postprocessing>
+
+</simulation>

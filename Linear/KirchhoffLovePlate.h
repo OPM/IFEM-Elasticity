@@ -14,12 +14,8 @@
 #ifndef _KIRCHHOFF_LOVE_PLATE_H
 #define _KIRCHHOFF_LOVE_PLATE_H
 
-#include "IntegrandBase.h"
-#include "Vec3.h"
+#include "KirchhoffLove.h"
 
-class LocalSystem;
-class Material;
-class RealFunc;
 class VecFunc;
 class STensorFunc;
 
@@ -35,60 +31,26 @@ class STensorFunc;
   the evalInt() and evalBou() methods.
 */
 
-class KirchhoffLovePlate : public IntegrandBase
+class KirchhoffLovePlate : public KirchhoffLove
 {
 public:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions (1=beam, 2=plate)
   //! \param[in] v Integrand version (1: B-matrix, 2: Tensor form)
   explicit KirchhoffLovePlate(unsigned short int n = 2, short int v = 1);
-  //! \brief The destructor frees the dynamically allocated data objects.
-  virtual ~KirchhoffLovePlate();
+  //! \brief Empty destructor,
+  virtual ~KirchhoffLovePlate() {}
 
   //! \brief Prints out the problem definition to the log stream.
   virtual void printLog() const;
 
-  //! \brief Defines the solution mode before the element assembly is started.
-  //! \param[in] mode The solution mode to use
-  virtual void setMode(SIM::SolutionMode mode);
-
   //! \brief Defines the Neumann order that is the subject of integration.
   virtual void setNeumannOrder(char flag) { nOrder = flag; }
 
-  //! \brief Defines the gravitation constant.
-  void setGravity(double g) { gravity = g; }
-
-  //! \brief Defines the gravitation constant.
-  void setThickness(double t) { thickness = t; }
-
-  //! \brief Defines the pressure field.
-  void setPressure(RealFunc* pf) { presFld = pf; }
-
-  //! \brief Defines the material properties.
-  void setMaterial(Material* mat) { material = mat; }
-
-  //! \brief Defines the local coordinate system for stress resultant output.
-  void setLocalSystem(LocalSystem* cs) { locSys = cs; }
-
-  //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
   //! \brief Returns the integrand version flag.
   short int getVersion() const { return version; }
 
-  using IntegrandBase::initIntegration;
-  //! \brief Initializes the integrand with the number of integration points.
-  //! \param[in] nGp Total number of interior integration points
-  //! \param[in] nBp Total number of boundary integration points
-  virtual void initIntegration(size_t nGp, size_t nBp);
-
-  using IntegrandBase::getLocalIntegral;
-  //! \brief Returns a local integral container for the given element.
-  //! \param[in] nen Number of nodes on element
-  //! \param[in] neumann Whether or not we are assembling Neumann BC's
-  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t,
-                                          bool neumann) const;
-
-  using IntegrandBase::evalInt;
+  using KirchhoffLove::evalInt;
   //! \brief Evaluates the integrand at an interior point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -96,7 +58,7 @@ public:
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
 
-  using IntegrandBase::evalBou;
+  using KirchhoffLove::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Finite element data of current integration point
@@ -105,7 +67,7 @@ public:
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X, const Vec3& normal) const;
 
-  using IntegrandBase::evalSol;
+  using KirchhoffLove::evalSol;
   //! \brief Evaluates the secondary solution at a result point.
   //! \param[out] s Array of solution field values at current point
   //! \param[in] fe Finite element data at current point
@@ -126,23 +88,6 @@ public:
 
   //! \brief Returns the plate stiffness parameter at the specified point \a X.
   double getStiffness(const Vec3& X) const;
-
-  //! \brief Evaluates the pressure field (if any) at specified point.
-  virtual double getPressure(const Vec3& X) const;
-  //! \brief Returns whether an external load is defined.
-  virtual bool haveLoads() const;
-
-  //! \brief Returns the derivative order of the differential operator.
-  virtual int derivativeOrder() const { return 2; }
-
-  //! \brief Writes the surface pressure for a given time step to VTF-file.
-  //! \param vtf The VTF-file object to receive the pressure vectors
-  //! \param[in] iStep Load/time step identifier
-  //! \param geoBlk Running geometry block counter
-  //! \param nBlock Running result block counter
-  virtual bool writeGlvT(VTF* vtf, int iStep, int& geoBlk, int& nBlock) const;
-  //! \brief Returns whether there are any pressure values to write to VTF.
-  virtual bool hasTractionValues() const { return !presVal.empty(); }
 
   //! \brief Returns a pointer to an Integrand for solution norm evaluation.
   //! \note The Integrand object is allocated dynamically and has to be deleted
@@ -207,24 +152,6 @@ public:
                    bool invers = false) const;
 
 protected:
-  // Finite element quantities, i.e., indices into element matrices and vectors.
-  // These indices will be identical for all elements in a model and can thus
-  // be stored here, even when doing multi-threading. Note that these indices
-  // 1-based, since the value zero is used to signal non-existing matrix/vector.
-  unsigned short int eK; //!< Index to element stiffness matrix
-  unsigned short int eM; //!< Index to element mass matrix
-  unsigned short int eS; //!< Index to element load vector
-
-  // Physical properties
-  Material* material;  //!< Material data and constitutive relation
-  double    thickness; //!< Plate thickness
-  double    gravity;   //!< Gravitation constant
-
-  LocalSystem* locSys;  //!< Local coordinate system for result output
-  RealFunc*    presFld; //!< Pointer to pressure field
-
-  mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values
-
   short int version; //!< Integrand version flag
   short int nOrder;  //!< Neumann order flag, 1 = moments, 2 = shear forces
 };
