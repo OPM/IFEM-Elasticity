@@ -25,7 +25,7 @@ http://www.derivative-calculator.net/#expr=%28x%5E2-1%29%5E2&difforder=4&simplif
   </geometry>
 
   <boundaryconditions>
-    <dirichlet set="boundary" comp="101"/>
+    <dirichlet set="boundary" comp="1001"/>
   </boundaryconditions>
 
   <KirchhoffLove version="2">

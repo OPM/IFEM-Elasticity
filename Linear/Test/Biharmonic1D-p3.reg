@@ -23,7 +23,7 @@ Parsing <geometry>
   Parsing <topologysets>
 Parsing <boundaryconditions>
   Parsing <dirichlet>
-	Dirichlet code 101: (fixed)
+	Dirichlet code 1001: (fixed)
 Parsing <KirchhoffLove>
 	Material code 0: 1.2e+07 0 1 0.01
 	Pressure code 1 (expression): (120\*x-24)\*(y^2-1)^2 + 32\*(x-1)\*(5\*x^2+2\*x-1)\*(3\*y^2-1) + (x-1)\*(x^2-1)^2\*24
@@ -52,10 +52,10 @@ KirchhoffLovePlate: thickness = 0.01, gravity = 0
 LinIsotropic: plane stress, E = 1.2e+07, nu = 0, rho = 1, alpha = 0
 	Plate stiffness: D = 1
 Resolving Dirichlet boundary conditions
-	Constraining P1 E1 in direction(s) 101
-	Constraining P1 E2 in direction(s) 101
-	Constraining P1 E3 in direction(s) 101
-	Constraining P1 E4 in direction(s) 101
+	Constraining P1 E1 in direction(s) 1001
+	Constraining P1 E2 in direction(s) 1001
+	Constraining P1 E3 in direction(s) 1001
+	Constraining P1 E4 in direction(s) 1001
 Result point #1: patch #1 (u,v)=(0.5,0.5), node #181, X = 0 0 0
  >>> SAM model summary <<<
 Number of elements    256
