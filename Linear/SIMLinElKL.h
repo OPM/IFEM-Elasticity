@@ -31,11 +31,12 @@ class SIMLinElKL : public SIMElasticity<SIM2D>
   {
     size_t patch; //!< Patch index [0,nPatch>
     int    inod;  //!< Local node number of the closest node
+    char   ldof;  //!< Local DOF number of the load
     double xi[2]; //!< Parameters of the point (u,v)
     Vec3   X;     //!< Spatial coordinates of the point
     double pload; //!< Load magnitude
     // \brief Default constructor.
-    PointLoad() : patch(0), inod(0) { xi[0] = xi[1] = pload = 0.0; }
+    PointLoad() : patch(0), inod(0), ldof(1) { xi[0] = xi[1] = pload = 0.0; }
   };
 
   typedef std::vector<PointLoad> PloadVec; //!< Point load container

@@ -109,8 +109,13 @@ bool SIMLinElKL::parse (char* keyWord, std::istream& is)
       myLoads[i].xi[1] = atof(strtok(NULL," "));
       myLoads[i].pload = atof(strtok(NULL," "));
       IFEM::cout <<"\n\tPoint "<< i+1 <<": P"<< myLoads[i].patch
-                 <<" xi = "<< myLoads[i].xi[0] <<" "<< myLoads[i].xi[1]
-                 <<" load = "<< myLoads[i].pload;
+                 <<" xi = "<< myLoads[i].xi[0] <<" "<< myLoads[i].xi[1];
+      if (nsd == 3)
+      {
+        myLoads[i].ldof = (cline = strtok(NULL, " ")) ? atoi(cline) : 1;
+        IFEM::cout <<" direction = "<< (int)myLoads[i].ldof;
+      }
+      IFEM::cout <<" load = "<< myLoads[i].pload;
     }
   }
 
@@ -231,16 +236,20 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
     }
 
     else if (!strcasecmp(child->Value(),"pointload")) {
-      PointLoad load; int patch;
-      utl::getAttribute(child,"patch",patch);
+      PointLoad load;
+      utl::getAttribute(child,"patch",load.patch);
       if (child->FirstChild()) {
-        load.patch = patch;
         load.pload = atof(child->FirstChild()->Value());
         utl::getAttribute(child,"xi",load.xi[0]);
         utl::getAttribute(child,"eta",load.xi[1]);
         IFEM::cout <<"\tPoint: P"<< load.patch
-                   <<" xi = "<< load.xi[0] <<" "<< load.xi[1]
-                   <<" load = "<< load.pload << std::endl;
+                   <<" xi = "<< load.xi[0] <<" "<< load.xi[1];
+        if (nsd == 3)
+        {
+          utl::getAttribute(child,"direction",load.ldof);
+          IFEM::cout <<" direction = "<< (int)load.ldof;
+        }
+        IFEM::cout <<" load = "<< load.pload << std::endl;
         myLoads.push_back(load);
       }
     }
@@ -341,9 +350,9 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
   if (!klp) return false;
 
   SclFuncMap::const_iterator it = myScalars.find(0);
-  for (size_t i = 0; i < myProps.size(); i++)
-    if (myProps[i].pcode == Property::BODYLOAD && myProps[i].patch == patchInd)
-      if ((it = myScalars.find(myProps[i].pindx)) != myScalars.end()) break;
+  for (const Property& prop : myProps)
+    if (prop.pcode == Property::BODYLOAD && prop.patch == patchInd)
+      if ((it = myScalars.find(prop.pindx)) != myScalars.end()) break;
 
   klp->setPressure(it == myScalars.end() ? 0 : it->second);
   return true;
@@ -375,47 +384,47 @@ void SIMLinElKL::preprocessA ()
   if (!plSol) return;
 
   // Define analytical boundary condition fields (for rotations)
-  for (PropertyVec::iterator p = myProps.begin(); p != myProps.end(); ++p)
-    if (p->pcode == Property::DIRICHLET_ANASOL)
+  for (Property& prop : myProps)
+    if (prop.pcode == Property::DIRICHLET_ANASOL)
     {
-      if (abs(p->pindx) >= 200)
+      if (abs(prop.pindx) >= 200)
       {
-        if (aCode[2] == abs(p->pindx))
-          p->pcode = Property::DIRICHLET_INHOM;
+        if (aCode[2] == abs(prop.pindx))
+          prop.pcode = Property::DIRICHLET_INHOM;
         else if (aCode[2] == 0 && plSol->thetaY())
         {
-          aCode[2] = abs(p->pindx);
+          aCode[2] = abs(prop.pindx);
           myScalars[aCode[2]] = plSol->thetaY();
-          p->pcode = Property::DIRICHLET_INHOM;
+          prop.pcode = Property::DIRICHLET_INHOM;
         }
         else
-          p->pcode = Property::UNDEFINED;
+          prop.pcode = Property::UNDEFINED;
       }
-      else if (abs(p->pindx) >= 100)
+      else if (abs(prop.pindx) >= 100)
       {
-        if (aCode[1] == abs(p->pindx))
-          p->pcode = Property::DIRICHLET_INHOM;
+        if (aCode[1] == abs(prop.pindx))
+          prop.pcode = Property::DIRICHLET_INHOM;
         else if (aCode[1] == 0 && plSol->thetaX())
         {
-          aCode[1] = abs(p->pindx);
+          aCode[1] = abs(prop.pindx);
           myScalars[aCode[1]] = plSol->thetaX();
-          p->pcode = Property::DIRICHLET_INHOM;
+          prop.pcode = Property::DIRICHLET_INHOM;
         }
         else
-          p->pcode = Property::UNDEFINED;
+          prop.pcode = Property::UNDEFINED;
       }
-      else if (abs(p->pindx) > 0)
+      else if (abs(prop.pindx) > 0)
       {
-        if (aCode[0] == abs(p->pindx))
-          p->pcode = Property::DIRICHLET_INHOM;
+        if (aCode[0] == abs(prop.pindx))
+          prop.pcode = Property::DIRICHLET_INHOM;
         else if (aCode[0] == 0 && mySol->getScalarSol())
         {
-          aCode[0] = abs(p->pindx);
+          aCode[0] = abs(prop.pindx);
           myScalars[aCode[0]] = plSol->getScalarSol();
-          p->pcode = Property::DIRICHLET_INHOM;
+          prop.pcode = Property::DIRICHLET_INHOM;
         }
         else
-          p->pcode = Property::UNDEFINED;
+          prop.pcode = Property::UNDEFINED;
       }
     }
 }
@@ -438,7 +447,10 @@ bool SIMLinElKL::preprocessB ()
       if (ipt == 1) IFEM::cout <<'\n';
       IFEM::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
                  <<" (u,v)=("<< p->xi[0] <<','<< p->xi[1]
-                 <<"), node #"<< p->inod <<", X = "<< p->X << std::endl;
+                 <<"), node #"<< p->inod <<", X = "<< p->X;
+      if (nsd == 3)
+        IFEM::cout <<", direction = "<< (int)p->ldof;
+      IFEM::cout << std::endl;
       ++p;
     }
 
@@ -449,9 +461,15 @@ bool SIMLinElKL::preprocessB ()
 bool SIMLinElKL::assembleDiscreteTerms (const IntegrandBase*, const TimeDomain&)
 {
   SystemVector* b = myEqSys->getVector();
-  for (size_t i = 0; i < myLoads.size() && b; i++)
-    if (!mySam->assembleSystem(*b,&myLoads[i].pload,myLoads[i].inod))
+  if (!b) return false;
+
+  for (const PointLoad& load : myLoads)
+  {
+    double pload[3] = { 0.0, 0.0, 0.0 };
+    pload[load.ldof-1] = load.pload;
+    if (!mySam->assembleSystem(*b,pload,load.inod))
       return false;
+  }
 
   return true;
 }
@@ -462,8 +480,9 @@ double SIMLinElKL::externalEnergy (const Vectors& psol) const
   double energy = this->SIMbase::externalEnergy(psol);
 
   // External energy from the nodal point loads
-  for (size_t i = 0; i < myLoads.size(); i++)
-    energy += myLoads[i].pload * psol.front()(myLoads[i].inod);
+  const int* madof = mySam->getMADOF();
+  for (const PointLoad& load : myLoads)
+    energy += load.pload * psol.front()(madof[load.inod-1] + load.ldof-1);
 
   return energy;
 }
