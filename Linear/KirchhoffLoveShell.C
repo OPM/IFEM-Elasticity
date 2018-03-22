@@ -15,6 +15,7 @@
 #include "LinIsotropic.h"
 #include "FiniteElement.h"
 #include "ElmMats.h"
+#include "Vec3Oper.h"
 #include "Utilities.h"
 #include "IFEM.h"
 
@@ -44,12 +45,162 @@ bool KirchhoffLoveShell::evalInt (LocalIntegral& elmInt,
     ; // TODO: Include the mass-matrix terms in elmMat.A[eM-1]
 
   if (eK) // Integrate the stiffness matrix
-    ; // TODO: Include the stiffness-matrix terms in elmMat.A[eK-1]
+    this->evalK(elMat.A[eK-1],fe,X);
 
   if (eS) // Integrate the load vector due to gravitation and other body forces
     ; // TODO: Include the pressure/gravity load terms in elmMat.b[eS-1]
 
   return true;
+}
+
+
+bool KirchhoffLoveShell::evalK (Matrix& EK, const FiniteElement& fe,
+                                const Vec3& X) const
+{
+
+    int ndof = fe.N.size()*3;
+
+      Matrix kem(ndof,ndof);
+      Matrix keb(ndof,ndof);
+
+      Matrix dN_ca(3,ndof);
+      Matrix dM_ca(3,ndof);
+
+      Matrix Dm;
+      Matrix Db;
+      if (!this->formDmatrix(Dm,Db,fe,X))
+        return false;
+
+      Matrix Bm;
+      Matrix Bb;
+      if (!this->formBmatrix(Bm,Bb,fe))
+          return false;
+
+      dN_ca.multiply(Dm,Bm);
+      dM_ca.multiply(Db,Bb);
+
+      kem.multiply(Bm,dN_ca,true,false,true);
+      keb.multiply(Bb,dM_ca,true,false,true);
+      kem.multiply(fe.detJxW);
+      keb.multiply(fe.detJxW);
+
+      EK.add(kem).add(keb);
+
+
+      return true;
+
+}
+
+bool KirchhoffLoveShell::formDmatrix (Matrix& Dm, Matrix& Db, const FiniteElement& fe, const Vec3& X, bool invers) const
+{
+    SymmTensor dummy(2); double U;
+    Matrix D;
+    if (!material->evaluate(D,dummy,U,fe,X,dummy,dummy, invers ? -1 : 1))
+        return false;
+
+    Matrix Dtemp = D;
+    double factorm = thickness;
+    double factorb = thickness*thickness*thickness/12;
+
+    Dm = D.multiply(invers ? 1.0/factorm : factorm);
+    Db = Dtemp.multiply(invers ? 1.0/factorb : factorb);
+
+    return true;
+}
+
+bool KirchhoffLoveShell::formBmatrix (Matrix& Bm, Matrix& Bb, const FiniteElement& fe) const
+{
+    // Covariant basis vectors
+    Vec3 g1 = fe.G.getColumn(1);
+    Vec3 g2 = fe.G.getColumn(2);
+
+    // Basis vector g3
+    Vec3 g3(g1,g2);
+    double lg3 = g3.length();
+    Vec3 n(g3);
+    n.normalize();
+
+    // Covariant metric gab
+    double gab11 = g1*g1;
+    double gab12 = g1*g2;
+    double gab22 = g2*g2;
+
+    // Contravariant metric gab_con and base vectors g_con
+    double invdetgab =  1.0/(gab11*gab22-gab12*gab12);
+    double gab_con11 =  invdetgab*gab22;
+    double gab_con12 = -invdetgab*gab12;
+    double gab_con22 =  invdetgab*gab11;
+    Vec3 g1_con = g1*gab_con11 + g2*gab_con12;
+    Vec3 g2_con = g1*gab_con12 + g2*gab_con22;
+
+    // Local cartesian coordinates
+    Vec3 e1(g1);     e1.normalize();
+    Vec3 e2(g2_con); e2.normalize();
+
+    // Transformation matrix T from contravariant to local cartesian basis
+    Matrix T(3,3);
+    double eg11 = e1*g1_con;
+    double eg12 = e1*g2_con;
+    double eg21 = e2*g1_con;
+    double eg22 = e2*g2_con;
+    T(1,1) =      eg11*eg11;
+    T(1,2) =      eg12*eg12;
+    T(1,3) = 2.0* eg11*eg12;
+    T(2,1) =      eg21*eg21;
+    T(2,2) =      eg22*eg22;
+    T(2,3) = 2.0* eg21*eg22;
+    T(3,1) = 2.0* eg11*eg21;
+    T(3,2) = 2.0* eg12*eg22;
+    T(3,3) = 2.0*(eg11*eg22+eg12*eg21);
+
+    // Strain
+    int ndof = fe.N.size()*3;
+    Matrix dE_ca(3,ndof); // dE_ca = epsilon cartesian coordinates
+    Matrix dK_ca(3,ndof); // dK_ca = kappa cartesian coordinates
+    Matrix dE_cu(3,ndof); // dE_cu = epsilon curvelinear coordinate system
+    Matrix dK_cu(3,ndof); // dK_cu = kappa curvelinear
+
+      for (int i = 1; i <= ndof; i++)
+      {
+        double dummy = i;
+        double k = ceil(dummy/3);
+        int dir = i-3*(k-1);
+
+        dE_cu(1,i) = fe.dNdX(k,1)*g1(dir);
+        dE_cu(2,i) = fe.dNdX(k,2)*g2(dir);
+        dE_cu(3,i) = 0.5*(fe.dNdX(k,1)*g2(dir) + fe.dNdX(k,2)*g1(dir));
+
+        Vec3 dg1;
+        dg1(dir) = fe.dNdX(k,1);
+
+        Vec3 dg2;
+        dg2(dir) = fe.dNdX(k,2);
+
+        Vec3 dummy2(dg1,g2);
+        Vec3 dg3(g1,dg2);
+        dg3 = dg3 + dummy2;
+
+        double g3dg3lg3_3 = g3*dg3/(lg3*lg3*lg3); // eq 5.31 last part
+
+        Vec3 dn; // eq 5.31 dn = a3,rs (kanskje)
+        for (int kaffi = 1; kaffi <= 3; kaffi ++)
+          {
+             dn(kaffi) = dg3(kaffi)/lg3 - g3(kaffi)*g3dg3lg3_3;
+          }
+
+
+
+        dK_cu(1,i) = -(fe.d2NdX2(k,1,1)*n(dir) + fe.H.getColumn(1)*dn);
+        dK_cu(2,i) = -(fe.d2NdX2(k,2,2)*n(dir) + fe.H.getColumn(2)*dn);
+        dK_cu(3,i) = -(fe.d2NdX2(k,1,2)*n(dir) + fe.H.getColumn(3)*dn);
+
+
+      } // for int i = 0; i <= ndof; i++
+
+      Bm.multiply(T,dE_cu); // Bm = dE_ca.multiply(T,dE_cu);
+      Bb.multiply(T,dK_cu); // Bb = dK_ca.multiply(T,dK_cu);
+    return true;
+
 }
 
 

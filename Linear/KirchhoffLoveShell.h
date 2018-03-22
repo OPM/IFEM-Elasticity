@@ -43,6 +43,13 @@ public:
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
 
+  bool evalK(Matrix& EK, const FiniteElement& fe, const Vec3& X) const;
+
+  bool formDmatrix(Matrix& Dm, Matrix& Db, const FiniteElement& fe,
+                   const Vec3& X, bool invers = false) const;
+
+  bool formBmatrix(Matrix& Bm, Matrix& Bb, const FiniteElement& fe) const;
+
   using KirchhoffLove::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
