@@ -1,0 +1,62 @@
+Cantilever-KLplate.xinp -2DKL
+
+Input file: Cantilever-KLplate.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file Cantilever-KLplate.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+	Length in Y = 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2 0
+  Parsing <refine>
+	Refining P1 9 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1001: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 1e+06 0 1000 0.1
+	Point: P1 xi = 1 0 load = -0.5
+	Point: P1 xi = 1 1 load = -0.5
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: -1
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLovePlate: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 1e+06, nu = 0, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1001
+Result point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       26
+Number of dofs        26
+Number of unknowns    22
+Load point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0
+Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0
+Number of quadrature points 30
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 2.15544
+Max displacement   : 4
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 2
+External energy ((f,u^h)+(t,u^h)^0.5 : 2
+  Node #13:	sol1 = -4.000000e+00
+  Node #26:	sol1 = -4.000000e+00

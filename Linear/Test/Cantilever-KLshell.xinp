@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Cantilever rectangular plate with tip shear load.
+     Cubic spline Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2" Lx="10.0" Ly="1.0">
+    <raiseorder patch="1" u="2" v="0"/>
+    <refine patch="1" u="9" v="0"/>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss>0</nGauss>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="3123"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="1.0e6" nu="0.0" rho="1.0e3" thickness="0.1"/>
+    <pointload patch="1" xi="1.0" eta="0.0" direction="3">-0.5</pointload>
+    <pointload patch="1" xi="1.0" eta="1.0" direction="3">-0.5</pointload>
+  </KirchhoffLove>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="1.0" v="0.0"/>
+      <point patch="1" u="1.0" v="1.0"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

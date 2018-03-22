@@ -1,0 +1,57 @@
+Cantilever-KLshell.xinp -2DKLshell -noError
+
+Input file: Cantilever-KLshell.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file Cantilever-KLshell.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+	Length in Y = 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2 0
+  Parsing <refine>
+	Refining P1 9 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3123: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 1e+06 0 1000 0.1
+	Point: P1 xi = 1 0 direction = 3 load = -0.5
+	Point: P1 xi = 1 1 direction = 3 load = -0.5
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 0
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 1e+06, nu = 0, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 3123
+Result point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       26
+Number of dofs        78
+Number of unknowns    70
+Load point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0, direction = 3
+Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
+Number of quadrature points 80
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.24444
+Max Z-displacement : 4
