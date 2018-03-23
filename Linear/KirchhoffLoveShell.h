@@ -28,12 +28,17 @@ class KirchhoffLoveShell : public KirchhoffLove
 {
 public:
   //! \brief Default constructor.
-  KirchhoffLoveShell() : KirchhoffLove(3) {}
+  KirchhoffLoveShell();
   //! \brief Empty destructor,
   virtual ~KirchhoffLoveShell() {}
 
   //! \brief Prints out the problem definition to the log stream.
   virtual void printLog() const;
+
+  //! \brief Defines the traction field to use in Neumann boundary conditions.
+  void setTraction(TractionFunc* tf) { tracFld = tf; }
+  //! \brief Defines the traction field to use in Neumann boundary conditions.
+  void setTraction(VecFunc* tf) { fluxFld = tf; }
 
   using KirchhoffLove::evalInt;
   //! \brief Evaluates the integrand at an interior point.
@@ -89,6 +94,10 @@ public:
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
   virtual std::string getField2Name(size_t i, const char* prefix) const;
+
+protected:
+  TractionFunc* tracFld; //!< Pointer to implicit boundary traction field
+  VecFunc*      fluxFld; //!< Pointer to explicit boundary traction field
 };
 
 #endif

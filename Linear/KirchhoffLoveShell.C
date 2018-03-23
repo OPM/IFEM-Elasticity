@@ -20,6 +20,13 @@
 #include "IFEM.h"
 
 
+KirchhoffLoveShell::KirchhoffLoveShell () : KirchhoffLove(3)
+{
+  tracFld = nullptr;
+  fluxFld = nullptr;
+}
+
+
 void KirchhoffLoveShell::printLog () const
 {
   IFEM::cout <<"KirchhoffLoveShell: thickness = "<< thickness
@@ -208,9 +215,29 @@ bool KirchhoffLoveShell::evalBou (LocalIntegral& elmInt,
                                   const FiniteElement& fe,
                                   const Vec3& X, const Vec3& normal) const
 {
-  // TODO (if you want to support Neumann boundary conditions)
-  std::cerr <<" *** KirchhoffLoveShell::evalBou not implemented."<< std::endl;
-  return false;
+  if (!eS)
+  {
+    std::cerr <<" *** KirchhoffLoveShell::evalBou: No load vector."<< std::endl;
+    return false;
+  }
+
+  Vec3 T;
+  if (fluxFld)
+    T = (*fluxFld)(X);
+  else if (tracFld)
+    T = (*tracFld)(X,normal);
+  else
+  {
+    std::cerr <<" *** KirchhoffLoveShell::evalBou: No tractions."<< std::endl;
+    return false;
+  }
+
+  Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
+  for (size_t a = 1; a <= fe.N.size(); a++)
+    for (unsigned short int i = 1; i <= 3; i++)
+      ES(3*(a-1)+i) += T[i-1]*fe.N(a)*fe.detJxW;
+
+  return true;
 }
 
 

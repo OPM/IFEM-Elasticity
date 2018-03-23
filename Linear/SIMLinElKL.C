@@ -207,8 +207,9 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
       myProblem = klp = new KirchhoffLovePlate(2,version);
   }
 
+  bool ok = true;
   const TiXmlElement* child = elem->FirstChildElement();
-  for (; child; child = child->NextSiblingElement())
+  for (; child && ok; child = child->NextSiblingElement())
 
     if (!strcasecmp(child->Value(),"gravity")) {
       double g = 0.0;
@@ -324,8 +325,10 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
         std::cerr <<"  ** SIMLinElKL::parse: Unknown analytical solution "
                   << type <<" (ignored)"<< std::endl;
     }
+    else
+      ok = this->SIM2D::parse(child);
 
-  return true;
+  return ok;
 }
 
 
@@ -361,8 +364,18 @@ bool SIMLinElKL::initBodyLoad (size_t patchInd)
 
 bool SIMLinElKL::initNeumann (size_t propInd)
 {
-  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
+  KirchhoffLoveShell* klp = dynamic_cast<KirchhoffLoveShell*>(myProblem);
   if (!klp) return false;
+
+  VecFuncMap::const_iterator vit = myVectors.find(propInd);
+  TracFuncMap::const_iterator tit = myTracs.find(propInd);
+
+  if (vit != myVectors.end())
+    klp->setTraction(vit->second);
+  else if (tit != myTracs.end())
+    klp->setTraction(tit->second);
+  else
+    return false;
 
   return true;
 }
