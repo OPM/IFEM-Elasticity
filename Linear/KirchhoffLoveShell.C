@@ -49,15 +49,43 @@ bool KirchhoffLoveShell::evalInt (LocalIntegral& elmInt,
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
 
   if (eM) // Integrate the mass matrix
-    ; // TODO: Include the mass-matrix terms in elmMat.A[eM-1]
+    this->formMassMatrix(elMat.A[eM-1],fe.N,X,fe.detJxW);
 
   if (eK) // Integrate the stiffness matrix
     this->evalK(elMat.A[eK-1],fe,X);
 
   if (eS) // Integrate the load vector due to gravitation and other body forces
-    ; // TODO: Include the pressure/gravity load terms in elmMat.b[eS-1]
+    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,fe.detJxW);
 
   return true;
+}
+
+
+void KirchhoffLoveShell::formMassMatrix (Matrix& EM, const Vector& N,
+                                         const Vec3& X, double detJW) const
+{
+  double rhow = material->getMassDensity(X)*thickness*detJW;
+  if (rhow == 0.0) return;
+
+  for (size_t a = 1; a <= N.size(); a++)
+    for (size_t b = 1; b <= N.size(); b++)
+      for (unsigned short int i = 1; i <= 3; i++)
+        EM(3*(a-1)+i,3*(b-1)+i) += rhow*N(a)*N(b);
+}
+
+
+void KirchhoffLoveShell::formBodyForce (Vector& ES, const Vector& N, size_t iP,
+                                        const Vec3& X, double detJW) const
+{
+  double p = this->getPressure(X);
+  if (p == 0.0) return;
+
+  for (size_t a = 1; a <= N.size(); a++)
+    ES(3*a) += N(a)*p*detJW;
+
+  // Store pressure value for visualization
+  if (iP < presVal.size())
+    presVal[iP] = std::make_pair(X,Vec3(0.0,0.0,p));
 }
 
 

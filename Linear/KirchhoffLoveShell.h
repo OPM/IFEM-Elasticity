@@ -55,6 +55,12 @@ public:
 
   bool formBmatrix(Matrix& Bm, Matrix& Bb, const FiniteElement& fe) const;
 
+  void formMassMatrix(Matrix& EM, const Vector& N,
+                      const Vec3& X, double detJW) const;
+
+  void formBodyForce(Vector& ES, const Vector& N, size_t iP,
+                     const Vec3& X, double detJW) const;
+
   using KirchhoffLove::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
   //! \param elmInt The local integral object to receive the contributions
