@@ -1,0 +1,67 @@
+ScordelisLo-p4-4x4.xinp -2DKLshell
+
+Input file: ScordelisLo-p4-4x4.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file ScordelisLo-p4-4x4.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file ScordelisLo.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,3,1D) (1,4,1D)
+	               fixed (1,1,0D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 2 3
+  Parsing <refine>
+	Refining P1 3 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 13: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+Parsing <KirchhoffLove>
+	Gravitation constant: -1
+	Material code 0: 4.32e+08 0 360 0.25
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0 0.5
+	Point 2: P1 xi = 1 0.5
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 5
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.25, gravity = -1
+LinIsotropic: plane stress, E = 4.32e+08, nu = 0, rho = 360, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 2
+	Constraining P1 E3 in direction(s) 13
+	Constraining P1 E4 in direction(s) 13
+Result point #1: patch #1 (u,v)=(0,0.5), X = -16.0697 25 19.1511
+Result point #2: patch #1 (u,v)=(1,0.5), X = 16.0697 25 19.1511
+ >>> SAM model summary <<<
+Number of elements    16
+Number of nodes       64
+Number of dofs        192
+Number of unknowns    159
+Number of quadrature points 400
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 399579
+ >>> Solution summary <<<
+L2-norm            : 0.08328
+Max X-displacement : 0.166951
+Max Y-displacement : 0.024294
+Max Z-displacement : 0.313684
+  Point #1:	sol1 =  1.597647e-01  1.214699e-02 -2.999999e-01
+		sol2 =  1.313302e+03  7.391233e+04  4.49983.e-02  7.552622e+02  6.523927e+02 -7.96....e-05
+  Point #2:	sol1 = -1.597647e-01  1.214699e-02 -2.999999e-01
+		sol2 =  1.313302e+03  7.391233e+04 -4.49983.e-02  7.552622e+02  6.523927e+02  7.96....e-05

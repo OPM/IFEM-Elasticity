@@ -295,9 +295,55 @@ bool KirchhoffLoveShell::evalSol (Vector& s, const Vector& eV,
                                   const FiniteElement& fe, const Vec3& X,
                                   bool toLocal) const
 {
-  // TODO (if you want to support postprocessing of stress resultants)
-  std::cerr <<" *** KirchhoffLoveShell::evalSol not implemented."<< std::endl;
-  return false;
+  if (eV.empty())
+  {
+    std::cerr <<" *** KirchhoffLoveShell::evalSol: No displacement vector."
+              << std::endl;
+    return false;
+  }
+  else if (eV.size() != 3*fe.d2NdX2.dim(1))
+  {
+    std::cerr <<" *** KirchhoffLoveShell::evalSol: Invalid displacement vector."
+              <<"\n     size(eV) = "<< eV.size() <<"   size(d2NdX2) = "
+              << fe.d2NdX2.dim(1) <<","<< fe.d2NdX2.dim(2)*fe.d2NdX2.dim(3)
+              << std::endl;
+    return false;
+  }
+
+  // Compute the strain-displacement matrices Bm and Bb
+  Matrix Bm, Bb;
+  if (!this->formBmatrix(Bm,Bb,fe))
+    return false;
+
+  // Evaluate the constitutive matrices at this point
+  Matrix Dm, Db;
+  if (!this->formDmatrix(Dm,Db,fe,X))
+    return false;
+
+  // Evaluate the membran strain and curvature tensors
+  SymmTensor epsilon(2), kappa(2);
+  if (!Bm.multiply(eV,epsilon)) // epsilon = B*eV
+    return false;
+  if (!Bb.multiply(eV,kappa)) // kappa = B*eV
+    return false;
+
+  // Evaluate the stress resultant tensors
+  SymmTensor n(2), m(2);
+  if (!Dm.multiply(epsilon,n)) // n = Dm*epsilon
+    return false;
+  if (!Db.multiply(-1.0*kappa,m)) // m = -Db*kappa
+    return false;
+
+  // Congruence transformation to local coordinate system at current point
+  if (toLocal && locSys)
+  {
+    n.transform(locSys->getTmat(X));
+    m.transform(locSys->getTmat(X));
+  }
+
+  s = n;
+  s.insert(s.end(),m.ptr(),m.ptr()+3);
+  return true;
 }
 
 

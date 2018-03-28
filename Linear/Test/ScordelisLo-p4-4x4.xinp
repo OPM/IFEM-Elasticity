@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Scordelis-Lo roof subjected to gravity load.
+     4x4 quartic spline Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry>
+    <patchfile>ScordelisLo.g2</patchfile>
+    <raiseorder patch="1" u="2" v="3"/>
+    <refine patch="1" u="3" v="3"/>
+    <topologysets>
+      <set name="ends" type="edge">
+        <item patch="1">3 4</item>
+      </set>
+      <set name="fixed" type="vertex">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss>5</nGauss>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="ends" comp="13"/>
+    <dirichlet set="fixed" comp="2"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <gravity g="-1.0"/>
+    <isotropic E="4.32e8" nu="0.0" rho="360.0" thickness="0.25"/>
+  </KirchhoffLove>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.0" v="0.5"/>
+      <point patch="1" u="1.0" v="0.5"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>
