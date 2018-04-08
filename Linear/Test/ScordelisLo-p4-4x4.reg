@@ -61,6 +61,9 @@ L2-norm            : 0.08328
 Max X-displacement : 0.166951
 Max Y-displacement : 0.024294
 Max Z-displacement : 0.313684
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 97.2569
+External energy ((f,u^h)+(t,u^h)^0.5 : 97.2569
   Point #1:	sol1 =  1.597647e-01  1.214699e-02 -2.999999e-01
 		sol2 =  1.313302e+03  7.391233e+04  4.49983.e-02  7.552622e+02  6.523927e+02 -7.96....e-05
   Point #2:	sol1 = -1.597647e-01  1.214699e-02 -2.999999e-01
