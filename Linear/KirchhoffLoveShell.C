@@ -292,13 +292,31 @@ bool KirchhoffLoveShell::evalSol (Vector& s,
       return false;
     }
   }
+  s.reserve(18);
 
   // Evaluate the stress resultant tensor
   Vector sb;
   if (!this->evalSol(s,sb,eV,fe,X,true))
     return false;
 
+  // Append the bending moment to the stress array
   s.insert(s.end(),sb.begin(),sb.end());
+
+  // Calculate top and bottom surface stresses
+  SymmTensor sigma(2);
+  Vec3       sigma_p;
+  for (int isurf = -1; isurf < 2; isurf += 2)
+  {
+    double* p = const_cast<double*>(sigma.ptr());
+    for (size_t i = 0; i < 3; i++)
+      p[i] = (s[i] - isurf*sb[i]*6.0/thickness)/thickness;
+
+    sigma.principal(sigma_p);
+    s.insert(s.end(),sigma.ptr(),sigma.ptr()+3);
+    s.insert(s.end(),sigma_p.ptr(),sigma_p.ptr()+2);
+    s.insert(s.end(),sigma.vonMises());
+  }
+
   return true;
 }
 
@@ -375,14 +393,20 @@ std::string KirchhoffLoveShell::getField1Name (size_t i,
 std::string KirchhoffLoveShell::getField2Name (size_t i,
                                                const char* prefix) const
 {
-  if (i >= 6) return "";
+  static const char* s[12] = { "n_xx", "n_yy", "n_xy", "m_xx", "m_yy", "m_xy",
+                               "sigma_x", "sigma_y", "tau_xy",
+                               "sigma_1", "sigma_2", "sigma_m" };
 
-  static const char* s[6] = { "n_xx", "n_yy", "n_xy", "m_xx", "m_yy", "m_xy" };
+  std::string name(s[i < 6 ? i : 6 + i%6]);
+  if (i >= 12)
+    name = "Top " + name;
+  else if (i >= 6)
+    name = "Bottom " + name;
 
   if (!prefix)
-    return s[i];
+    return name;
 
-  return prefix + std::string(" ") + s[i];
+  return prefix + std::string(" ") + name;
 }
 
 

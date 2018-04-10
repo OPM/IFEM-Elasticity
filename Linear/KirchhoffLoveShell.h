@@ -77,6 +77,9 @@ public:
                const FiniteElement& fe, const Vec3& X,
                bool toLocal = false) const;
 
+  //! \brief Returns max number of 2ndary solution components to print per line.
+  virtual size_t getNo2ndSolPerLine() const { return 6; }
+
 protected:
   //! \brief Evaluates the stiffness matrix integrand.
   bool evalK(Matrix& EK, const FiniteElement& fe, const Vec3& X) const;
@@ -109,7 +112,7 @@ public:
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
-  virtual size_t getNoFields(int fld = 2) const { return fld < 2 ? 3 : 6; }
+  virtual size_t getNoFields(int fld = 2) const { return fld < 2 ? 3 : 18; }
   //! \brief Returns the name of the primary solution field.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
