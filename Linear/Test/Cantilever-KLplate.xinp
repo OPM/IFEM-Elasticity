@@ -18,7 +18,7 @@
 
   <!-- General - Gauss quadrature scheme !-->
   <discretization>
-    <nGauss>-1</nGauss>
+    <nGauss default="-1"/>
   </discretization>
 
   <!-- General - boundary conditions !-->

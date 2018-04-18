@@ -1,0 +1,77 @@
+ScordelisLo-symm-p4-2x2.xinp -2DKLshell
+
+Input file: ScordelisLo-symm-p4-2x2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file ScordelisLo-symm-p4-2x2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file ScordelisLo-symm.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end (1,3,1D)
+	               symmXZ (1,4,1D)
+	               symmZY (1,1,1D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 2 3
+  Parsing <refine>
+	Refining P1 1 1
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 13: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 23000: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 13000: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+Parsing <KirchhoffLove>
+	Gravitation constant: -1
+	Material code 0: 4.32e+08 0 360 0.25
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 0
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.25, gravity = -1
+LinIsotropic: plane stress, E = 4.32e+08, nu = 0, rho = 360, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E3 in direction(s) 13
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E1 in direction(s) 23000
+	Constraining P1 E4 in direction(s) 13000
+	Constraining P1 E4 in direction(s) 2
+Resolved 1 MPC chains.
+Result point #1: patch #1 (u,v)=(1,1), node #36, X = 16.0697 25 19.1511
+ >>> SAM model summary <<<
+Number of elements    4
+Number of nodes       36
+Number of dofs        108
+Number of constraints 20
+Number of unknowns    65
+Number of quadrature points 100
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 512982
+ >>> Solution summary <<<
+L2-norm            : 0.0807543
+Max X-displacement : 0.158671
+Max Y-displacement : 0.0123706
+Max Z-displacement : 0.300563
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.0433
+External energy ((f,u^h)+(t,u^h)^0.5 : 49.0433
+  Node #36:	sol1 = -1.586705e-01  0.000000e+00 -3.005627e-01
+		sol2 =  1.569329e+03  7.594008e+04  3.831428e-02  3.821099e+02  6.609896e+02 -4.021973e-04

@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!-- Scordelis-Lo roof subjected to gravity load.
-     4x4 quartic spline Kirchhoff-Love thin shell elements. !-->
+<!-- Scordelis-Lo roof subjected to gravity load, 1/4 model.
+     2x2 quartic spline Kirchhoff-Love thin shell elements. !-->
 
 <simulation>
 
   <!-- General - geometry definitions !-->
   <geometry>
-    <patchfile>ScordelisLo.g2</patchfile>
+    <patchfile>ScordelisLo-symm.g2</patchfile>
     <raiseorder patch="1" u="2" v="3"/>
-    <refine patch="1" u="3" v="3"/>
+    <refine patch="1" u="1" v="1"/>
     <topologysets>
-      <set name="ends" type="edge">
-        <item patch="1">3 4</item>
+      <set name="end" type="edge">
+        <item patch="1">3</item>
       </set>
-      <set name="fixed" type="vertex">
+      <set name="symmZY" type="edge">
         <item patch="1">1</item>
+      </set>
+      <set name="symmXZ" type="edge">
+        <item patch="1">4</item>
       </set>
     </topologysets>
   </geometry>
@@ -27,8 +30,11 @@
 
   <!-- General - boundary conditions !-->
   <boundaryconditions>
-    <dirichlet set="ends" comp="13"/>
-    <dirichlet set="fixed" comp="2"/>
+    <dirichlet set="end" comp="13"/>
+    <dirichlet set="symmZY" comp="1"/>
+    <dirichlet set="symmZY" comp="23000"/>
+    <dirichlet set="symmXZ" comp="13000"/>
+    <dirichlet set="symmXZ" comp="2"/>
   </boundaryconditions>
 
   <!-- Problem specific block !-->
@@ -40,8 +46,7 @@
   <!-- General - point result output !-->
   <postprocessing>
     <resultpoints>
-      <point patch="1" u="0.0" v="0.5"/>
-      <point patch="1" u="1.0" v="0.5"/>
+      <point patch="1" u="1.0" v="1.0"/>
     </resultpoints>
   </postprocessing>
 

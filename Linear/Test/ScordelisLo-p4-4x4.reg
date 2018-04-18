@@ -35,7 +35,7 @@ Parsing <postprocessing>
 	Point 2: P1 xi = 1 0.5
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 5
+Number of Gauss points: 0
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 KirchhoffLoveShell: thickness = 0.25, gravity = -1

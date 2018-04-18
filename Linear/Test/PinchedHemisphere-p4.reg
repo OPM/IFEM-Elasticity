@@ -1,0 +1,88 @@
+PinchedHemisphere-p4.xinp -2DKLshell
+
+Input file: PinchedHemisphere-p4.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
+Parsing input file PinchedHemisphere-p4.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file hemisphere-symm.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: polept (1,1,1D)
+	               symmXY (1,4,1D)
+	               symmXZ (1,3,1D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 2 2
+  Parsing <refine>
+	Refining P1 3 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 13000: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 3: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 12000: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 6.825e+07 0.3 1 0.04
+	Point: P1 xi = 1 0 direction = 3 load = 1
+	Point: P1 xi = 1 1 direction = 2 load = -1
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 0
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.04, gravity = 0
+LinIsotropic: plane stress, E = 6.825e+07, nu = 0.3, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 123
+	Constraining P1 E3 in direction(s) 2
+	Constraining P1 E3 in direction(s) 13000
+	Constraining P1 E4 in direction(s) 3
+	Constraining P1 E4 in direction(s) 12000
+Result point #1: patch #1 (u,v)=(1,0), node #8, X = 0 0 10
+Result point #2: patch #1 (u,v)=(1,1), node #64, X = 0 10 0
+ >>> SAM model summary <<<
+Number of elements    16
+Number of nodes       64
+Number of dofs        192
+Number of constraints 28
+Number of unknowns    126
+Load point #1: patch #1 (u,v)=(1,0), node #8, X = 0 0 10, direction = 3
+Load point #2: patch #1 (u,v)=(1,1), node #64, X = 0 10 0, direction = 2
+Number of quadrature points 400
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 1.71649e+07
+ >>> Solution summary <<<
+L2-norm            : 0.0260764
+Max X-displacement : 0.0433897
+Max Y-displacement : 0.0883787
+Max Z-displacement : 0.0883787
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 0.420425
+External energy ((f,u^h)+(t,u^h)^0.5 : 0.420425
+  Node #8:	sol1 =  4.338855e-02  0.000000e+00  8.837875e-02
+		sol2 = -3.422639e+00 -2.283428e+01 -5.480571e-03 -7.280761e-01  1.340658e+00  0.000000e+00
+		sol3 = -2.815851e+03  4.456610e+03 -1.375468e-01  4.456610e+03 -2.815851e+03  6.351342e+03
+		sol4 =  2.644719e+03 -5.598325e+03 -1.364817e-01  2.644719e+03 -5.598325e+03  7.289841e+03
+  Node #64:	sol1 = -4.338855e-02 -8.837875e-02  0.000000e+00
+		sol2 =  3.422639e+00  2.283428e+01 -5.480571e-03  7.280761e-01 -1.340658e+00  0.000000e+00
+		sol3 =  2.815851e+03 -4.456610e+03 -1.375468e-01  2.815851e+03 -4.456610e+03  6.351342e+03
+		sol4 = -2.644719e+03  5.598325e+03 -1.364817e-01  5.598325e+03 -2.644719e+03  7.289841e+03
