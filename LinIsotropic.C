@@ -58,6 +58,16 @@ LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
 }
 
 
+LinIsotropic::~LinIsotropic ()
+{
+  delete Efield;
+  delete Efunc;
+  delete Afunc;
+  delete Cpfunc;
+  delete condFunc;
+}
+
+
 void LinIsotropic::parse (const TiXmlElement* elem)
 {
   if (utl::getAttribute(elem,"E",Emod))

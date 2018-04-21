@@ -15,8 +15,10 @@
 #define _LIN_ISOTROPIC_H
 
 #include "MaterialBase.h"
-#include "Function.h"
 #include "Field.h"
+
+class ScalarFunc;
+class RealFunc;
 
 
 /*!
@@ -58,7 +60,7 @@ public:
   LinIsotropic(Field* E, double v = 0.0, double density = 0.0,
                bool ps = false, bool ax = false);
   //! \brief The destructor deletes the stiffness function, if defined.
-  virtual ~LinIsotropic() { delete Efunc; delete Efield; delete Afunc; }
+  virtual ~LinIsotropic();
 
   //! \brief Parses material parementers from an XML element.
   virtual void parse(const TiXmlElement* elem);
@@ -116,7 +118,7 @@ public:
 protected:
   // Material properties
   RealFunc* Efunc;      //!< Young's modulus (spatial function)
-  Field* Efield;        //!< Young's modulus (spatial field)
+  Field*    Efield;     //!< Young's modulus (spatial field)
   double Emod;          //!< Young's modulus (constant)
   double nu;            //!< Poisson's ratio
   double rho;           //!< Mass density

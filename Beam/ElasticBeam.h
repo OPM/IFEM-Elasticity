@@ -15,8 +15,9 @@
 #define _ELASTIC_BEAM_H
 
 #include "ElasticBase.h"
-#include "Function.h"
 
+class VecFunc;
+class RealFunc;
 class TiXmlElement;
 
 
