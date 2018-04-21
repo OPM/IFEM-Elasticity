@@ -15,6 +15,7 @@ if(NOT IFEM_CONFIGURED)
 endif()
 
 include_directories(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
+                                     ${PROJECT_SOURCE_DIR}/../Shell
                                      ${PROJECT_SOURCE_DIR}/../Beam)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
@@ -27,6 +28,7 @@ if(NOT TARGET Beam)
 endif()
 
 file(GLOB LinEl_SRCS *.C)
+list(APPEND LinEl_SRCS ../Shell/SIMKLShell.C ../Shell/KirchhoffLoveShell.C)
 
 add_executable(LinEl ${LinEl_SRCS})
 target_link_libraries(LinEl Beam Elasticity ${IFEM_LIBRARIES})

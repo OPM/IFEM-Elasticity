@@ -14,7 +14,6 @@
 #include "KirchhoffLovePlate.h"
 #include "LinIsotropic.h"
 #include "FiniteElement.h"
-#include "Utilities.h"
 #include "ElmMats.h"
 #include "ElmNorm.h"
 #include "TensorFunction.h"
@@ -114,30 +113,6 @@ bool KirchhoffLovePlate::formCmatrix (Matrix& C, const FiniteElement& fe,
 }
 
 
-void KirchhoffLovePlate::formMassMatrix (Matrix& EM, const Vector& N,
-					 const Vec3& X, double detJW) const
-{
-  double rho = material->getMassDensity(X)*thickness;
-
-  if (rho != 0.0)
-    EM.outer_product(N,N*rho*detJW,true);
-}
-
-
-void KirchhoffLovePlate::formBodyForce (Vector& ES, const Vector& N, size_t iP,
-					const Vec3& X, double detJW) const
-{
-  double p = this->getPressure(X);
-  if (p != 0.0)
-  {
-    ES.add(N,p*detJW);
-    // Store pressure value for visualization
-    if (iP < presVal.size())
-      presVal[iP] = std::make_pair(X,Vec3(0.0,0.0,p));
-  }
-}
-
-
 bool KirchhoffLovePlate::evalInt (LocalIntegral& elmInt,
 				  const FiniteElement& fe,
 				  const Vec3& X) const
@@ -222,28 +197,6 @@ bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 }
 
 
-bool KirchhoffLovePlate::evalSol (Vector& s,
-                                  const FiniteElement& fe, const Vec3& X,
-                                  const std::vector<int>& MNPC) const
-{
-  // Extract element displacements
-  Vector eV;
-  if (!primsol.empty() && !primsol.front().empty())
-  {
-    int ierr = utl::gather(MNPC,1,primsol.front(),eV);
-    if (ierr > 0)
-    {
-      std::cerr <<" *** KirchhoffLovePlate::evalSol: Detected "
-		<< ierr <<" node numbers out of range."<< std::endl;
-      return false;
-    }
-  }
-
-  // Evaluate the stress resultant tensor
-  return this->evalSol(s,eV,fe,X,true);
-}
-
-
 bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
                                   const FiniteElement& fe, const Vec3& X,
                                   bool toLocal) const
@@ -301,7 +254,7 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
 
 #if INT_DEBUG > 3
   std::cout <<"KirchhoffLovePlate::evalSol("<< fe.iel <<", "<< X <<"):\n\ts =";
-  for (size_t i = 0; i < s.size(); i++) std::cout <<" "<< s[i];
+  for (double v : s) std::cout <<" "<< v;
   std::cout << std::endl;
 #endif
   return true;

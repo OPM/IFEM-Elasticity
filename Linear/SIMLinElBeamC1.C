@@ -282,13 +282,14 @@ bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase*,
 }
 
 
-double SIMLinElBeamC1::externalEnergy (const Vectors& psol) const
+double SIMLinElBeamC1::externalEnergy (const Vectors& u,
+                                       const TimeDomain& time) const
 {
-  double energy = this->SIMbase::externalEnergy(psol);
+  double energy = this->SIMbase::externalEnergy(u,time);
 
   // External energy from the nodal point loads
   for (size_t i = 0; i < myLoads.size(); i++)
-    energy += myLoads[i].pload * psol.front()(myLoads[i].inod);
+    energy += myLoads[i].pload * u.front()(myLoads[i].inod);
 
   return energy;
 }

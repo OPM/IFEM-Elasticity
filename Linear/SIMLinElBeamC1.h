@@ -70,7 +70,7 @@ protected:
   virtual bool assembleDiscreteTerms(const IntegrandBase*, const TimeDomain&);
 
   //! \brief Computes problem-dependent external energy contributions.
-  virtual double externalEnergy(const Vectors& psol) const;
+  virtual double externalEnergy(const Vectors& u, const TimeDomain& time) const;
 
 public:
   //! \brief Prints a norm group to the log stream.

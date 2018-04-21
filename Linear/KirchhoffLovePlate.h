@@ -68,23 +68,15 @@ public:
                        const Vec3& X, const Vec3& normal) const;
 
   using KirchhoffLove::evalSol;
-  //! \brief Evaluates the secondary solution at a result point.
-  //! \param[out] s Array of solution field values at current point
-  //! \param[in] fe Finite element data at current point
-  //! \param[in] X Cartesian coordinates of current point
-  //! \param[in] MNPC Nodal point correspondance for the basis function values
-  virtual bool evalSol(Vector& s, const FiniteElement& fe,
-                       const Vec3& X, const std::vector<int>& MNPC) const;
-
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress resultant values at current point
   //! \param[in] eV Element solution vector
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
-  bool evalSol(Vector& s, const Vector& eV,
-               const FiniteElement& fe, const Vec3& X,
-               bool toLocal = false) const;
+  virtual bool evalSol(Vector& s, const Vector& eV,
+                       const FiniteElement& fe, const Vec3& X,
+                       bool toLocal = false) const;
 
   //! \brief Returns the plate stiffness parameter at the specified point \a X.
   double getStiffness(const Vec3& X) const;
@@ -108,24 +100,6 @@ public:
   virtual std::string getField2Name(size_t i, const char* prefix) const;
 
 protected:
-  //! \brief Calculates integration point mass matrix contributions.
-  //! \param EM Element matrix to receive the mass contributions
-  //! \param[in] N Basis function values at current point
-  //! \param[in] X Cartesian coordinates of current point
-  //! \param[in] detJW Jacobian determinant times integration point weight
-  void formMassMatrix(Matrix& EM, const Vector& N,
-		      const Vec3& X, double detJW) const;
-
-  //! \brief Calculates integration point body force vector contributions.
-  //! \brief Evaluates the body force vector at current point.
-  //! \param ES Element vector to receive the body force contributions
-  //! \param[in] N Basis function values at current point
-  //! \param[in] iP Global integration point counter
-  //! \param[in] X Cartesian coordinates of current point
-  //! \param[in] detJW Jacobian determinant times integration point weight
-  void formBodyForce(Vector& ES, const Vector& N,
-		     size_t iP, const Vec3& X, double detJW) const;
-
   //! \brief Calculates the strain-displacement matrix \b B at current point.
   //! \param[out] Bmat The strain-displacement matrix
   //! \param[in] d2NdX2 Basis function 2nd derivatives at current point
