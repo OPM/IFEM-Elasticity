@@ -61,6 +61,5 @@ bool SIMElastic1D::assemblePoint (int patch, double u, double f, int ldof)
   if (!pch) return false;
 
   Vec3 Fvec; Fvec(ldof) = f;
-  this->setMode(SIM::RHS_ONLY);
   return pch->diracPoint(*myProblem,*myEqSys,&u,Fvec);
 }

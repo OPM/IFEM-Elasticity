@@ -386,13 +386,20 @@ bool SIMKLShell::preprocessB ()
 }
 
 
-bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase*,
+bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase* itg,
                                         const TimeDomain& time)
 {
   SystemVector* b = myEqSys->getVector();
   if (!b) return false;
 
   bool ok = true;
+  if (itg != myProblem)
+    return ok;
+
+  SIM::SolutionMode mode = itg->getMode();
+  if (!myLoads.empty())
+    this->setMode(SIM::RHS_ONLY);
+
   for (const PointLoad& load : myLoads)
     if (load.ldof.second > 0)
       ok &= mySam->assembleSystem(*b,(*load.p)(time.t),load.ldof);
@@ -412,6 +419,23 @@ bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase*,
       IFEM::cout << std::endl;
       IFEM::cout.precision(oldPrec);
     }
+  }
+
+  if (!myLoads.empty() && mode == SIM::ARCLEN)
+    b = myEqSys->getVector(1); // External load gradient for arc-length driver
+  else
+    b = nullptr;
+
+  if (b)
+  {
+    // Assemble external nodal point load gradient at current time step
+    this->setMode(mode);
+    for (const PointLoad& load : myLoads)
+      if (load.ldof.second > 0)
+        ok &= mySam->assembleSystem(*b,load.p->deriv(time.t),load.ldof);
+      else // This is an element point load
+        ok &= this->assemblePoint(load.patch,load.xi,load.p->deriv(time.t),
+                                  -load.ldof.second);
   }
 
   return ok;
@@ -448,6 +472,5 @@ bool SIMKLShell::assemblePoint (int patch, const double* u, double f, int ldof)
   if (!pch) return false;
 
   Vec3 Fvec; Fvec(ldof) = f;
-  this->setMode(SIM::RHS_ONLY);
   return pch->diracPoint(*myProblem,*myEqSys,u,Fvec);
 }
