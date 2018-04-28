@@ -106,87 +106,91 @@ bool KirchhoffLoveShell::formDmatrix (Matrix& Dm, Matrix& Db,
 bool KirchhoffLoveShell::formBmatrix (Matrix& Bm, Matrix& Bb,
                                       const FiniteElement& fe) const
 {
-  // Covariant basis vectors
-  Vec3 g1 = fe.G.getColumn(1);
-  Vec3 g2 = fe.G.getColumn(2);
+  // Calculate metrics
+  Vec3 g1, g2, g3, n, gab; Matrix T(3,3);
+  double lg3 = this->getMetrics(fe.G,g1,g2,g3,n,gab,&T);
+  double lg3_2 = lg3*lg3;
+  size_t nenod = fe.dNdX.rows();
+  size_t nedof = 3*nenod;
 
-  // Basis vector g3
-  Vec3 g3(g1,g2);
-  double lg3 = g3.length();
-  Vec3 n(g3);
-  n.normalize();
+  // Strains
+  Matrix dE_cu(3,nedof); // dE_cu = epsilon curvelinear coordinate system
+  Matrix dK_cu(3,nedof); // dK_cu = kappa curvelinear
 
-  // Covariant metric gab
-  double gab11 = g1*g1;
-  double gab12 = g1*g2;
-  double gab22 = g2*g2;
-
-  // Contravariant metric gab_con and base vectors g_con
-  double invdetgab =  1.0/(gab11*gab22-gab12*gab12);
-  double gab_con11 =  invdetgab*gab22;
-  double gab_con12 = -invdetgab*gab12;
-  double gab_con22 =  invdetgab*gab11;
-  Vec3 g1_con = g1*gab_con11 + g2*gab_con12;
-  Vec3 g2_con = g1*gab_con12 + g2*gab_con22;
-
-  // Local cartesian coordinates
-  Vec3 e1(g1);     e1.normalize();
-  Vec3 e2(g2_con); e2.normalize();
-
-  // Transformation matrix T from contravariant to local cartesian basis
-  Matrix T(3,3);
-  double eg11 = e1*g1_con;
-  double eg12 = e1*g2_con;
-  double eg21 = e2*g1_con;
-  double eg22 = e2*g2_con;
-  T(1,1) =      eg11*eg11;
-  T(1,2) =      eg12*eg12;
-  T(1,3) = 2.0* eg11*eg12;
-  T(2,1) =      eg21*eg21;
-  T(2,2) =      eg22*eg22;
-  T(2,3) = 2.0* eg21*eg22;
-  T(3,1) = 2.0* eg11*eg21;
-  T(3,2) = 2.0* eg12*eg22;
-  T(3,3) = 2.0*(eg11*eg22+eg12*eg21);
-
-  // Strain
-  int ndof = fe.N.size()*3;
-  Matrix dE_cu(3,ndof); // dE_cu = epsilon curvelinear coordinate system
-  Matrix dK_cu(3,ndof); // dK_cu = kappa curvelinear
-
-    for (int i = 1; i <= ndof; i++)
+  for (size_t k = 1; k <= nenod; k++)
+    for (int dir = 1; dir <= 3; dir++)
     {
-      double dummy = i;
-      double k = ceil(dummy/3);
-      int dir = i-3*(k-1);
+      Vec3 dg1, dg2;
+      dg1(dir) = fe.dNdX(k,1);
+      dg2(dir) = fe.dNdX(k,2);
+      Vec3 dg3 = Vec3(g1,dg2) + Vec3(dg1,g2);
+      Vec3 dn  = (dg3 - g3*((g3*dg3)/lg3_2))/lg3;
+      Vec3 bv  = dn * fe.H;
+      size_t i = 3*k-3 + dir;
 
       dE_cu(1,i) = fe.dNdX(k,1)*g1(dir);
       dE_cu(2,i) = fe.dNdX(k,2)*g2(dir);
       dE_cu(3,i) = 0.5*(fe.dNdX(k,1)*g2(dir) + fe.dNdX(k,2)*g1(dir));
 
-      Vec3 dg1;
-      dg1(dir) = fe.dNdX(k,1);
-
-      Vec3 dg2;
-      dg2(dir) = fe.dNdX(k,2);
-
-      Vec3 dummy2(dg1,g2);
-      Vec3 dg3(g1,dg2);
-      dg3 = dg3 + dummy2;
-
-      double g3dg3lg3_3 = g3*dg3/(lg3*lg3*lg3);
-
-      Vec3 dn = dg3/lg3 - g3*g3dg3lg3_3;
-
-      dK_cu(1,i) = -(fe.d2NdX2(k,1,1)*n(dir) + fe.H.getColumn(1)*dn);
-      dK_cu(2,i) = -(fe.d2NdX2(k,2,2)*n(dir) + fe.H.getColumn(2)*dn);
-      dK_cu(3,i) = -(fe.d2NdX2(k,1,2)*n(dir) + fe.H.getColumn(3)*dn);
+      dK_cu(1,i) = -fe.d2NdX2(k,1,1)*n(dir) - bv.x;
+      dK_cu(2,i) = -fe.d2NdX2(k,2,2)*n(dir) - bv.y;
+      dK_cu(3,i) = -fe.d2NdX2(k,1,2)*n(dir) - bv.z;
     }
 
-  Bm.multiply(T,dE_cu); // Bm = T*dE_cu
-  Bb.multiply(T,dK_cu); // Bb = T*dK_cu
+  Bm.multiply(T,dE_cu); // Bm = dE_ca = T * dE_cu
+  Bb.multiply(T,dK_cu); // Bb = dK_ca = T * dK_cu
 
   return true;
+}
+
+
+double KirchhoffLoveShell::getMetrics (const Matrix& G,
+                                       Vec3& g1, Vec3& g2, Vec3& g3, Vec3& n,
+                                       Vec3& gab, Matrix* Tlc) const
+{
+  // Covariant basis vectors
+  g1 = G.getColumn(1);
+  g2 = G.getColumn(2);
+  n = g3.cross(g1,g2);
+
+  // Covariant metric gab
+  gab.x = g1*g1;
+  gab.y = g2*g2;
+  gab.z = g1*g2;
+
+  if (Tlc)
+  {
+    Matrix& T = *Tlc;
+
+    // Contravariant metric gab_con and base vectors g_con
+    double invdetgab =  1.0/(gab.x*gab.y - gab.z*gab.z);
+    double gab_con11 =  invdetgab*gab.y;
+    double gab_con12 = -invdetgab*gab.z;
+    double gab_con22 =  invdetgab*gab.x;
+    Vec3 g1_con = g1*gab_con11 + g2*gab_con12;
+    Vec3 g2_con = g1*gab_con12 + g2*gab_con22;
+
+    // Local cartesian coordinates
+    Vec3 e1(g1);     e1.normalize();
+    Vec3 e2(g2_con); e2.normalize();
+
+    // Transformation matrix from contravariant to local cartesian basis
+    double eg11 = e1*g1_con;
+    double eg12 = e1*g2_con;
+    double eg21 = e2*g1_con;
+    double eg22 = e2*g2_con;
+    T(1,1) =      eg11*eg11;
+    T(1,2) =      eg12*eg12;
+    T(1,3) = 2.0* eg11*eg12;
+    T(2,1) =      eg21*eg21;
+    T(2,2) =      eg22*eg22;
+    T(2,3) = 2.0* eg21*eg22;
+    T(3,1) = 2.0* eg11*eg21;
+    T(3,2) = 2.0* eg12*eg22;
+    T(3,3) = 2.0*(eg11*eg22+eg12*eg21);
+  }
+
+  return n.normalize();
 }
 
 

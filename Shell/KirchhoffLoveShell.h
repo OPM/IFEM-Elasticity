@@ -90,6 +90,20 @@ private:
   //! \param[in] fe Finite element data at current point
   bool formBmatrix(Matrix& Bm, Matrix& Bb, const FiniteElement& fe) const;
 
+protected:
+  //! \brief Calculates some metrics at current point.
+  //! \param[in] G Gradient of the cartesian coordinates at current point
+  //! \param[out] g1 First covariant basis vector
+  //! \param[out] g2 Second covariant basis vector
+  //! \param[out] g3 Third covariant basis vector (normal vector)
+  //! \param[out] n Unit normal vector
+  //! \param[out] gab Covariant metric
+  //! \param[out] Tlc Transformation from contravariant to local cartesian basis
+  //! \return Length of the third covariant basis vector \b g3
+  double getMetrics(const Matrix& G,
+                    Vec3& g1, Vec3& g2, Vec3& g3, Vec3& n,
+                    Vec3& gab, Matrix* Tlc = nullptr) const;
+
 public:
   //! \brief Sets up the constitutive matrices at current point.
   //! \param[out] Dm Constitutive tensor for membrane part
