@@ -85,7 +85,7 @@ public:
   //! \brief Evaluates the boundary traction field (if any) at specified point.
   Vec3 getTraction(const Vec3& X, const Vec3& n) const;
   //! \brief Evaluates the pressure field (if any) at specified point.
-  double getPressure(const Vec3& X) const;
+  Vec3 getPressure(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0)) const;
   //! \brief Returns whether external loads are defined.
   bool haveLoads(char type = 'A') const;
 
@@ -122,9 +122,11 @@ protected:
   //! \param[in] N Basis function values at current point
   //! \param[in] iP Global integration point counter
   //! \param[in] X Cartesian coordinates of current point
+  //! \param[in] n Plate/shell normal vector of current point
   //! \param[in] detJW Jacobian determinant times integration point weight
   virtual void formBodyForce(Vector& ES, const Vector& N, size_t iP,
-                             const Vec3& X, double detJW) const;
+                             const Vec3& X, const Vec3& n,
+                             double detJW) const;
 
 public:
   //! \brief Returns whether there are any load values to write to VTF.

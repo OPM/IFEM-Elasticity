@@ -15,6 +15,7 @@
 #include "MaterialBase.h"
 #include "ElmMats.h"
 #include "Utilities.h"
+#include "Vec3Oper.h"
 #include "Tensor.h"
 #include "VTF.h"
 
@@ -140,12 +141,18 @@ Vec3 KirchhoffLove::getTraction (const Vec3& X, const Vec3& n) const
 }
 
 
-double KirchhoffLove::getPressure (const Vec3& X) const
+Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n) const
 {
-  double p = material->getMassDensity(X)*gravity*thickness;
+  Vec3 p;
+  p.z = material->getMassDensity(X)*gravity*thickness;
 
   if (presFld)
-    p += (*presFld)(X);
+  {
+    if (n.isZero())
+      p.z += (*presFld)(X); // Assume pressure acts in global Z-direction
+    else
+      p += (*presFld)(X)*n;
+  }
 
   return p;
 }
@@ -172,20 +179,21 @@ bool KirchhoffLove::haveLoads (char type) const
 
 
 void KirchhoffLove::formBodyForce (Vector& ES, const Vector& N, size_t iP,
-                                   const Vec3& X, double detJW) const
+                                   const Vec3& X, const Vec3& n,
+                                   double detJW) const
 {
-  double p = this->getPressure(X);
-  if (p == 0.0) return;
+  Vec3 p = this->getPressure(X,n);
+  if (p.isZero()) return;
 
   if (npv == 1)
-    ES.add(N,p*detJW);
-  else
-    for (size_t a = 1; a <= N.size(); a++)
-      ES(npv*a) += N(a)*p*detJW; // Assuming the load acts in global z-direction
+    ES.add(N,p.z*detJW);
+  else for (size_t a = 1; a <= N.size(); a++)
+    for (unsigned short int i = 1; i <= npv && i <= 3; i++)
+      ES(npv*(a-1)+i) += N(a)*p(i)*detJW;
 
   // Store pressure value for visualization
   if (iP < presVal.size())
-    presVal[iP] = std::make_pair(X,Vec3(0.0,0.0,p));
+    presVal[iP] = std::make_pair(X,p);
 }
 
 

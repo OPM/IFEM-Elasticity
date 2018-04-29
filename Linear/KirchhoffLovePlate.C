@@ -123,7 +123,7 @@ bool KirchhoffLovePlate::evalInt (LocalIntegral& elmInt,
     this->formMassMatrix(elMat.A[eM-1],fe.N,X,fe.detJxW);
 
   if (eS) // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,fe.detJxW);
+    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,Vec3(),fe.detJxW);
 
   if (!eK)
     return true;
@@ -353,7 +353,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     pnorm[ip++] += mh.dot(mh)*fe.detJxW;
 
   // Evaluate the body load
-  double p = problem.getPressure(X);
+  double p = problem.getPressure(X).z;
   if (version > 1) p /= problem.getStiffness(X);
   // Evaluate the displacement field
   double w = pnorm.vec.front().dot(fe.N);

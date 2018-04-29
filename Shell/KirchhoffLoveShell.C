@@ -48,7 +48,8 @@ bool KirchhoffLoveShell::evalInt (LocalIntegral& elmInt,
     this->evalK(elMat.A[eK-1],fe,X);
 
   if (eS) // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,fe.detJxW);
+    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,
+                        this->getShellNormal(fe.G),fe.detJxW);
 
   return true;
 }
@@ -308,6 +309,14 @@ bool KirchhoffLoveShell::evalSol (Vector& sm, Vector& sb, const Vector& eV,
 }
 
 
+Vec3 KirchhoffLoveShell::getShellNormal (const Matrix& G) const
+{
+  Vec3 n(G.getColumn(1),G.getColumn(2));
+  n.normalize();
+  return n;
+}
+
+
 std::string KirchhoffLoveShell::getField1Name (size_t i,
                                                const char* prefix) const
 {
@@ -371,18 +380,17 @@ bool KirchhoffLoveShellNorm::evalInt (LocalIntegral& elmInt,
   if (!problem.evalSol(nh,mh,pnorm.vec.front(),fe,X))
     return false;
 
+  // Evaluate the pressure load and displacement field
+  Vec3 u, p = problem.getPressure(X,problem.getShellNormal(fe.G));
+  for (int i = 0; i < 3; i++)
+    u[i] = pnorm.vec.front().dot(fe.N,i,3);
+
   size_t ip = 0;
 
   // Integrate the energy norm a(u^h,u^h)
   pnorm[ip++] += (nh.dot(Dm*nh) + mh.dot(Db*mh))*fe.detJxW;
-
-  // Evaluate the body load
-  double p = problem.getPressure(X);
-  // Evaluate the transverse displacement field
-  double w = pnorm.vec.front().dot(fe.N,2,3);
   // Integrate the external energy (p,u^h)
-  pnorm[ip++] += p*w*fe.detJxW;
-
+  pnorm[ip++] += p*u*fe.detJxW;
   // Integrate the area
   pnorm[ip++] += fe.detJxW;
 
