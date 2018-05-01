@@ -32,7 +32,7 @@ Parsing <postprocessing>
 	Point 2: P1 xi = 1 1
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: -1
+Number of Gauss points: p (p = polynomial degree of basis)
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 KirchhoffLovePlate: thickness = 0.1, gravity = 0
