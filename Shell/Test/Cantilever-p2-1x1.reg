@@ -1,0 +1,54 @@
+Cantilever-p2-1x1.xinp -dense
+
+Input file: Cantilever-p2-1x1.xinp
+Equation solver: 0
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file Cantilever-p2-1x1.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+  Parsing <raiseorder>
+  Parsing <topologysets>
+	Topology sets: all (1,0,2D)
+	               innspenning (1,1,1D)
+  Parsing <raiseorder>
+	Raising order of P1 1 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 23123: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 1e+07 0 1 0.05
+	Point: P1 xi = 1 0 direction = 3 load = -50
+	Point: P1 xi = 1 1 direction = 3 load = -50
+Parsing <nonlinearsolver>
+Parsing input file succeeded.
+Equation solver: 0
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.05, gravity = 0
+LinIsotropic: plane stress, E = 1e+07, nu = 0, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 23123
+	Constraining P1 in direction(s) 2
+ >>> SAM model summary <<<
+Number of elements    1
+Number of nodes       6
+Number of dofs        18
+Number of unknowns    6
+Load point #1: patch #1 (u,v)=(1,0), node #3, X = 2 0 0, direction = 3
+Load point #2: patch #1 (u,v)=(1,1), node #6, X = 2 1 0, direction = 3
+  step=1  time=1
+  Primary solution summary: L2-norm            : 0.10187
+                            Max X-displacement : 0.0312119
+                            Max Z-displacement : 0.303913
+  Total reaction forces: Sum(R) = 2\..*e-06 0 -100
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 20.7448
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 5.51283
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1.41421
+  Time integration completed.

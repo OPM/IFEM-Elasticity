@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Cantilever rectangular plate with tip shear load.
+     Quadratic spline Kirchhoff-Love thin shell element. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2" Lx="2.0">
+    <raiseorder patch="1" u="1"/>
+    <topologysets>
+      <set name="all" type="face">
+        <item patch="1"/>
+      </set>
+      <set name="innspenning" type="edge">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss default="0"/>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="all" comp="2"/>
+    <dirichlet set="innspenning" comp="23123"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="1.0e7" nu="0.0" thickness="0.05"/>
+    <pointload patch="1" xi="1.0" eta="0.0" direction="3">-50.0</pointload>
+    <pointload patch="1" xi="1.0" eta="1.0" direction="3">-50.0</pointload>
+  </KirchhoffLove>
+
+  <!-- General - nonlinear solution setup !-->
+  <nonlinearsolver>
+    <rtol>1.0e-16</rtol>
+    <dtol>1.0e4</dtol>
+  </nonlinearsolver>
+
+</simulation>

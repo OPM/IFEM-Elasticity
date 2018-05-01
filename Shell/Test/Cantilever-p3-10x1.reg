@@ -1,0 +1,211 @@
+Cantilever-p3-10x1.xinp
+
+Input file: Cantilever-p3-10x1.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file Cantilever-p3-10x1.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: innspenning (1,1,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2 0
+  Parsing <refine>
+	Refining P1 9 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3123: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 1e+07 0 1 0.05
+	Point: P1 xi = 1 0 direction = 3 Load: -5\*t
+	Point: P1 xi = 1 1 direction = 3 Load: -5\*t
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing <nonlinearsolver>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.05, gravity = 0
+LinIsotropic: plane stress, E = 1e+07, nu = 0, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 3123
+Result point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       26
+Number of dofs        78
+Number of unknowns    70
+Load point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0, direction = 3
+Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
+  step=1  time=0.1
+  Primary solution summary: L2-norm            : 0.923707
+                            Max X-displacement : 0.526012
+                            Max Z-displacement : 2.91609
+  Total reaction forces: Sum(R) = 0 0 -1
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 140.071
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 1.70766
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -5.260e-01  0.000e+00 -2.916e+00
+		sol2 = -4.877e+04  0.000e+00  0.000e+00  4.608e-04  0.000e+00  0.000e+00
+		sol3 = -9.754e+05  0.000e+00  0.000e+00  0.000e+00 -9.754e+05  9.754e+05
+		sol4 = -9.754e+05  0.000e+00  0.000e+00  0.000e+00 -9.754e+05  9.754e+05
+  Node #26:	sol1 = -5.260e-01  0.000e+00 -2.916e+00
+		sol2 = -4.877e+04  0.000e+00  0.000e+00  4.608e-04  0.000e+00  0.000e+00
+		sol3 = -9.754e+05  0.000e+00  0.000e+00  0.000e+00 -9.754e+05  9.754e+05
+		sol4 = -9.754e+05  0.000e+00  0.000e+00  0.000e+00 -9.754e+05  9.754e+05
+  step=2  time=0.2
+  Primary solution summary: L2-norm            : 1.58086
+                            Max X-displacement : 1.52242
+                            Max Z-displacement : 4.81529
+  Total reaction forces: Sum(R) = 0 0 -2
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 402.274
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 3.10332
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -1.522e+00  0.000e+00 -4.815e+00
+		sol2 = -1.379e+05  0.000e+00  0.000e+00  1.670e-03  0.000e+00  0.000e+00
+		sol3 = -2.758e+06  0.000e+00  0.000e+00  0.000e+00 -2.758e+06  2.758e+06
+		sol4 = -2.758e+06  0.000e+00  0.000e+00  0.000e+00 -2.758e+06  2.758e+06
+  Node #26:	sol1 = -1.522e+00  0.000e+00 -4.815e+00
+		sol2 = -1.379e+05  0.000e+00  0.000e+00  1.670e-03  0.000e+00  0.000e+00
+		sol3 = -2.758e+06  0.000e+00  0.000e+00  0.000e+00 -2.758e+06  2.758e+06
+		sol4 = -2.758e+06  0.000e+00  0.000e+00  0.000e+00 -2.758e+06  2.758e+06
+  step=3  time=0.3
+  Primary solution summary: L2-norm            : 2.01413
+                            Max X-displacement : 2.4389
+                            Max Z-displacement : 5.92384
+  Total reaction forces: Sum(R) = 0 0 -3
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 639.257
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 4.21563
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -2.439e+00  0.000e+00 -5.924e+00
+		sol2 = -2.155e+05  0.000e+00  0.000e+00  2.439e-03  0.000e+00  0.000e+00
+		sol3 = -4.311e+06  0.000e+00  0.000e+00  0.000e+00 -4.311e+06  4.311e+06
+		sol4 = -4.311e+06  0.000e+00  0.000e+00  0.000e+00 -4.311e+06  4.311e+06
+  Node #26:	sol1 = -2.439e+00  0.000e+00 -5.924e+00
+		sol2 = -2.155e+05  0.000e+00  0.000e+00  2.439e-03  0.000e+00  0.000e+00
+		sol3 = -4.311e+06  0.000e+00  0.000e+00  0.000e+00 -4.311e+06  4.311e+06
+		sol4 = -4.311e+06  0.000e+00  0.000e+00  0.000e+00 -4.311e+06  4.311e+06
+  step=4  time=0.4
+  Primary solution summary: L2-norm            : 2.31318
+                            Max X-displacement : 3.17641
+                            Max Z-displacement : 6.60362
+  Total reaction forces: Sum(R) = 0 0 -4
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 826.451
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 5.1395
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -3.176e+00  0.000e+00 -6.604e+00
+		sol2 = -2.743e+05  0.000e+00  0.000e+00  2.661e-03  0.000e+00  0.000e+00
+		sol3 = -5.486e+06  0.000e+00  0.000e+00  0.000e+00 -5.486e+06  5.486e+06
+		sol4 = -5.486e+06  0.000e+00  0.000e+00  0.000e+00 -5.486e+06  5.486e+06
+  Node #26:	sol1 = -3.176e+00  0.000e+00 -6.604e+00
+		sol2 = -2.743e+05  0.000e+00  0.000e+00  2.661e-03  0.000e+00  0.000e+00
+		sol3 = -5.486e+06  0.000e+00  0.000e+00  0.000e+00 -5.486e+06  5.486e+06
+		sol4 = -5.486e+06  0.000e+00  0.000e+00  0.000e+00 -5.486e+06  5.486e+06
+  step=5  time=0.5
+  Primary solution summary: L2-norm            : 2.53196
+                            Max X-displacement : 3.7613
+                            Max Z-displacement : 7.05165
+  Total reaction forces: Sum(R) = 0 0 -5
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 972.245
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 5.93787
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -3.761e+00  0.000e+00 -7.052e+00
+		sol2 = -3.181e+05  0.000e+00  0.000e+00  2.578e-03  0.000e+00  0.000e+00
+		sol3 = -6.362e+06  0.000e+00  0.000e+00  0.000e+00 -6.362e+06  6.362e+06
+		sol4 = -6.363e+06  0.000e+00  0.000e+00  0.000e+00 -6.363e+06  6.363e+06
+  Node #26:	sol1 = -3.761e+00  0.000e+00 -7.052e+00
+		sol2 = -3.181e+05  0.000e+00  0.000e+00  2.578e-03  0.000e+00  0.000e+00
+		sol3 = -6.362e+06  0.000e+00  0.000e+00  0.000e+00 -6.362e+06  6.362e+06
+		sol4 = -6.363e+06  0.000e+00  0.000e+00  0.000e+00 -6.363e+06  6.363e+06
+  step=6  time=0.6
+  Primary solution summary: L2-norm            : 2.69995
+                            Max X-displacement : 4.23115
+                            Max Z-displacement : 7.36619
+  Total reaction forces: Sum(R) = 0 0 -6
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1087.37
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 6.64809
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -4.231e+00  0.000e+00 -7.366e+00
+		sol2 = -3.512e+05  0.000e+00  0.000e+00  2.365e-03  0.000e+00  0.000e+00
+		sol3 = -7.024e+06  0.000e+00  0.000e+00  0.000e+00 -7.024e+06  7.024e+06
+		sol4 = -7.024e+06  0.000e+00  0.000e+00  0.000e+00 -7.024e+06  7.024e+06
+  Node #26:	sol1 = -4.231e+00  0.000e+00 -7.366e+00
+		sol2 = -3.512e+05  0.000e+00  0.000e+00  2.365e-03  0.000e+00  0.000e+00
+		sol3 = -7.024e+06  0.000e+00  0.000e+00  0.000e+00 -7.024e+06  7.024e+06
+		sol4 = -7.024e+06  0.000e+00  0.000e+00  0.000e+00 -7.024e+06  7.024e+06
+  step=7  time=0.7
+  Primary solution summary: L2-norm            : 2.83388
+                            Max X-displacement : 4.61551
+                            Max Z-displacement : 7.59858
+  Total reaction forces: Sum(R) = 0 0 -7
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1180.03
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 7.29315
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -4.616e+00  0.000e+00 -7.599e+00
+		sol2 = -3.766e+05  0.000e+00  0.000e+00  2.109e-03  0.000e+00  0.000e+00
+		sol3 = -7.532e+06  0.000e+00  0.000e+00  0.000e+00 -7.532e+06  7.532e+06
+		sol4 = -7.532e+06  0.000e+00  0.000e+00  0.000e+00 -7.532e+06  7.532e+06
+  Node #26:	sol1 = -4.616e+00  0.000e+00 -7.599e+00
+		sol2 = -3.766e+05  0.000e+00  0.000e+00  2.109e-03  0.000e+00  0.000e+00
+		sol3 = -7.532e+06  0.000e+00  0.000e+00  0.000e+00 -7.532e+06  7.532e+06
+		sol4 = -7.532e+06  0.000e+00  0.000e+00  0.000e+00 -7.532e+06  7.532e+06
+  step=8  time=0.8
+  Primary solution summary: L2-norm            : 2.94385
+                            Max X-displacement : 4.93561
+                            Max Z-displacement : 7.77742
+  Total reaction forces: Sum(R) = 0 0 -8
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1256.04
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 7.88792
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -4.936e+00  0.000e+00 -7.777e+00
+		sol2 = -3.965e+05  0.000e+00  0.000e+00  1.854e-03  0.000e+00  0.000e+00
+		sol3 = -7.930e+06  0.000e+00  0.000e+00  0.000e+00 -7.930e+06  7.930e+06
+		sol4 = -7.930e+06  0.000e+00  0.000e+00  0.000e+00 -7.930e+06  7.930e+06
+  Node #26:	sol1 = -4.936e+00  0.000e+00 -7.777e+00
+		sol2 = -3.965e+05  0.000e+00  0.000e+00  1.854e-03  0.000e+00  0.000e+00
+		sol3 = -7.930e+06  0.000e+00  0.000e+00  0.000e+00 -7.930e+06  7.930e+06
+		sol4 = -7.930e+06  0.000e+00  0.000e+00  0.000e+00 -7.930e+06  7.930e+06
+  step=9  time=0.9
+  Primary solution summary: L2-norm            : 3.03625
+                            Max X-displacement : 5.20649
+                            Max Z-displacement : 7.91963
+  Total reaction forces: Sum(R) = 0 0 -9
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1319.46
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 8.44255
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -5.206e+00  0.000e+00 -7.920e+00
+		sol2 = -4.123e+05  0.000e+00  0.000e+00  1.616e-03  0.000e+00  0.000e+00
+		sol3 = -8.246e+06  0.000e+00  0.000e+00  0.000e+00 -8.246e+06  8.246e+06
+		sol4 = -8.246e+06  0.000e+00  0.000e+00  0.000e+00 -8.246e+06  8.246e+06
+  Node #26:	sol1 = -5.206e+00  0.000e+00 -7.920e+00
+		sol2 = -4.123e+05  0.000e+00  0.000e+00  1.616e-03  0.000e+00  0.000e+00
+		sol3 = -8.246e+06  0.000e+00  0.000e+00  0.000e+00 -8.246e+06  8.246e+06
+		sol4 = -8.246e+06  0.000e+00  0.000e+00  0.000e+00 -8.246e+06  8.246e+06
+  step=10  time=1
+  Primary solution summary: L2-norm            : 3.11535
+                            Max X-displacement : 5.43896
+                            Max Z-displacement : 8.03576
+  Total reaction forces: Sum(R) = 0 0 -10
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1373.16
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 8.96424
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 3.16228
+  Node #13:	sol1 = -5.439e+00  0.000e+00 -8.036e+00
+		sol2 = -4.251e+05  0.000e+00  0.000e+00  1.402e-03  0.000e+00  0.000e+00
+		sol3 = -8.502e+06  0.000e+00  0.000e+00  0.000e+00 -8.502e+06  8.502e+06
+		sol4 = -8.502e+06  0.000e+00  0.000e+00  0.000e+00 -8.502e+06  8.502e+06
+  Node #26:	sol1 = -5.439e+00  0.000e+00 -8.036e+00
+		sol2 = -4.251e+05  0.000e+00  0.000e+00  1.402e-03  0.000e+00  0.000e+00
+		sol3 = -8.502e+06  0.000e+00  0.000e+00  0.000e+00 -8.502e+06  8.502e+06
+		sol4 = -8.502e+06  0.000e+00  0.000e+00  0.000e+00 -8.502e+06  8.502e+06
+  Time integration completed.
