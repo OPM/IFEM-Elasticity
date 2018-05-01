@@ -104,6 +104,12 @@ bool NLKirchhoffLoveShell::evalKandS (Matrix& EK, Vector& ES,
     bv  = n * Hn;
   }
 
+#if INT_DEBUG > 1
+  std::cout <<"\nNLKirchhoffLoveShell::evalKandS(X="<< X <<", iGP="<< fe.iGP
+            <<")\n\tg1 = "<< g1 <<"\n\tg2 = "<< g2 <<"\n\tg3 = "<< g3
+            <<"\n\tn = "<< n <<"\n\tgab = "<< gab <<"\n\tgab = "<< bv <<"\n";
+#endif
+
   // Strain vectors referred to curvilinear coordinate system
   Vec3 E_cu = 0.5*(gab-Gab);
   Vec3 K_cu = (Bv - bv);
@@ -118,6 +124,11 @@ bool NLKirchhoffLoveShell::evalKandS (Matrix& EK, Vector& ES,
     return false;
   if (!Db.multiply(K_ca.vec(),M_ca)) // M_ca = Db*K_ca
     return false;
+
+#if INT_DEBUG > 1
+  std::cout <<"\tE_ca = "<< E_ca <<"\n\tK_ca = "<< K_ca
+            <<"\nN_ca:"<< N_ca <<"M_ca:"<< M_ca;
+#endif
 
   // Establish the strain-displacement matrices
   size_t nenod = fe.dNdX.rows();
@@ -154,6 +165,10 @@ bool NLKirchhoffLoveShell::evalKandS (Matrix& EK, Vector& ES,
       dK_cu(3,i) = -fe.d2NdX2(k,1,2)*n(dir) - dbv.z;
     }
 
+#if INT_DEBUG > 1
+  std::cout <<"dE_cu:"<< dE_cu <<"dK_cu:"<< dK_cu;
+#endif
+
   Matrix dE_ca, dK_ca;
   dE_ca.multiply(T,dE_cu);
   dK_ca.multiply(T,dK_cu);
@@ -163,6 +178,9 @@ bool NLKirchhoffLoveShell::evalKandS (Matrix& EK, Vector& ES,
   dE_ca.multiply(N_ca,fiem,true); // fiem = dE_ca^t * N_ca
   dK_ca.multiply(M_ca,fieb,true); // fieb = dK_ca^t * M_ca
   ES.add(fiem,-fe.detJxW).add(fieb,-fe.detJxW);
+#if INT_DEBUG > 1
+  std::cout <<"fiem:"<< fiem <<"fieb:"<< fieb;
+#endif
 
   if (EK.empty())
     return true;
