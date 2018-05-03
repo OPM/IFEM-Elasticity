@@ -4,8 +4,10 @@ Input file: Cantilever-Cable3p.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
 Parsing input file Cantilever-Cable3p.xinp
 Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
   Parsing <raiseorder>
   Parsing <refine>
   Parsing <topologysets>
@@ -20,7 +22,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 3: (fixed)
   Parsing <dirichlet>
-	Dirichlet code 1123: (fixed)
+	Dirichlet code 23123: (fixed)
 Parsing <cable>
   Parsing <material>
 	Axial stiffness = 785398
@@ -35,16 +37,18 @@ Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 ElasticCable: Stiffness = 785398 490.874, Mass density = 7850
 Resolving Dirichlet boundary conditions
-	Constraining P1 V1 in direction(s) 1123
+	Constraining P1 V1 in direction(s) 23123
 	Constraining P1 in direction(s) 3
  >>> SAM model summary <<<
 Number of elements    10
 Number of nodes       13
 Number of dofs        39
-Number of unknowns    22
+Number of unknowns    23
+Number of quadrature points 40
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Solving the equation system ...
+	Condition number: 137427
  >>> Solution summary <<<
 L2-norm            : 0.0211263
-Max Y-displacement : 0.0679061 node 13
+Max Y-displacement : 0.0679061

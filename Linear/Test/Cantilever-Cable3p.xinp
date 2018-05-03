@@ -19,7 +19,7 @@
 
   <boundaryconditions>
     <dirichlet set="all" comp="3"/>
-    <dirichlet set="innspenning" comp="1123"/>
+    <dirichlet set="innspenning" comp="23123"/>
   </boundaryconditions>
 
   <cable>
