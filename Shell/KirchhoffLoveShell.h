@@ -127,7 +127,7 @@ public:
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
-  virtual size_t getNoFields(int fld = 2) const { return fld < 2 ? 3 : 18; }
+  virtual size_t getNoFields(int fld = 2) const { return fld < 2 ? 4 : 18; }
   //! \brief Returns the name of the primary solution field.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
@@ -136,6 +136,9 @@ public:
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
   virtual std::string getField2Name(size_t i, const char* prefix) const;
+
+  //! \brief Computes some derived primary solution quantities.
+  virtual void primaryScalarFields(Matrix& field);
 };
 
 

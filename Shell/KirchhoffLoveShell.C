@@ -321,10 +321,32 @@ Vec3 KirchhoffLoveShell::getShellNormal (const Matrix& G) const
 }
 
 
+void KirchhoffLoveShell::primaryScalarFields (Matrix& field)
+{
+  if (field.rows() != 3) return;
+
+  // Insert the absolute value as the fourth solution component
+  double* u = new double[field.cols()];
+  for (size_t c = 1; c <= field.cols(); c++)
+    u[c-1] = field.getColumn(c).norm2();
+  field.expandRows(1);
+  field.fillRow(4,u);
+  delete[] u;
+}
+
+
 std::string KirchhoffLoveShell::getField1Name (size_t i,
                                                const char* prefix) const
 {
-  if (i >= 3) return "";
+  if (i == 3)
+  {
+    std::string name("sqrt(u^2+v^2+w^2)");
+    if (prefix)
+      name = prefix + std::string(" ") + name;
+    return name;
+  }
+  else if (i > 3)
+    return "";
 
   char name = 'u'+i;
   if (!prefix)
