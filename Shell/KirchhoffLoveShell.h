@@ -55,24 +55,24 @@ public:
   using KirchhoffLove::evalSol;
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress resultant values at current point
-  //! \param[in] eV Element solution vector
+  //! \param[in] eV Element solution vectors
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
-  virtual bool evalSol(Vector& s, const Vector& eV,
+  virtual bool evalSol(Vector& s, const Vectors& eV,
                        const FiniteElement& fe, const Vec3& X,
                        bool toLocal = false) const;
 
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] sm The FE in-plane stress resultant values at current point
   //! \param[out] sb The FE bending stress resultant values at current point
-  //! \param[in] eV Element solution vector
+  //! \param[in] eV Element solution vectors
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
-  bool evalSol(Vector& sm, Vector& sb, const Vector& eV,
-               const FiniteElement& fe, const Vec3& X,
-               bool toLocal = false) const;
+  virtual bool evalSol(Vector& sm, Vector& sb, const Vectors& eV,
+                       const FiniteElement& fe, const Vec3& X,
+                       bool toLocal = false) const;
 
   //! \brief Returns max number of 2ndary solution components to print per line.
   virtual size_t getNo2ndSolPerLine() const { return 6; }
@@ -171,9 +171,6 @@ public:
   //! \param[in] normal Boundary normal vector at current integration point
   virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X, const Vec3& normal) const;
-
-  //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
 
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return true; }

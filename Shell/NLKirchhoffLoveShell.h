@@ -46,6 +46,16 @@ public:
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
 
+  using KirchhoffLoveShell::evalSol;
+  //! \brief Evaluates the finite element (FE) solution at an integration point.
+  //! \param[out] sm The FE in-plane stress resultant values at current point
+  //! \param[out] sb The FE bending stress resultant values at current point
+  //! \param[in] eV Element solution vectors
+  //! \param[in] fe Finite element data at current point
+  //! \param[in] X Cartesian coordinates of current point
+  virtual bool evalSol(Vector& sm, Vector& sb, const Vectors& eV,
+                       const FiniteElement& fe, const Vec3& X, bool) const;
+
 private:
   //! \brief Evaluates the stiffness matrix and internal forces integrand.
   //! \param EK Element matrix to receive the stiffness contributions

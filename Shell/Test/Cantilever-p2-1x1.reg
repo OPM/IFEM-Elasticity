@@ -48,7 +48,6 @@ Load point #2: patch #1 (u,v)=(1,1), node #6, X = 2 1 0, direction = 3
                             Max X-displacement : 0.0312119
                             Max Z-displacement : 0.303913
   Total reaction forces: Sum(R) = 2\..*e-06 0 -100
-  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 20.7448
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.1598
   External energy: ((f,u^h)+(t,u^h))^0.5 : 5.51283
-  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1.41421
   Time integration completed.

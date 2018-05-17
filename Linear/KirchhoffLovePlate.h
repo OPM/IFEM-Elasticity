@@ -74,7 +74,7 @@ public:
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] toLocal If \e true, transform to local coordinates (if defined)
-  virtual bool evalSol(Vector& s, const Vector& eV,
+  virtual bool evalSol(Vector& s, const Vectors& eV,
                        const FiniteElement& fe, const Vec3& X,
                        bool toLocal = false) const;
 

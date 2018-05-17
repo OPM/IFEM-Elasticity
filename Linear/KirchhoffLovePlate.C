@@ -197,20 +197,20 @@ bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 }
 
 
-bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
+bool KirchhoffLovePlate::evalSol (Vector& s, const Vectors& eV,
                                   const FiniteElement& fe, const Vec3& X,
                                   bool toLocal) const
 {
-  if (eV.empty())
+  if (eV.empty() || eV.front().empty())
   {
     std::cerr <<" *** KirchhoffLovePlate::evalSol: No displacement vector."
 	      << std::endl;
     return false;
   }
-  else if (eV.size() != fe.d2NdX2.dim(1))
+  else if (eV.front().size() != fe.d2NdX2.dim(1))
   {
     std::cerr <<" *** KirchhoffLovePlate::evalSol: Invalid displacement vector."
-              <<"\n     size(eV) = "<< eV.size() <<"   size(d2NdX2) = "
+              <<"\n     size(eV) = "<< eV.front().size() <<"   size(d2NdX2) = "
               << fe.d2NdX2.dim(1) <<","<< fe.d2NdX2.dim(2)*fe.d2NdX2.dim(3)
               << std::endl;
     return false;
@@ -230,7 +230,7 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
 
     // Evaluate the curvature tensor
     SymmTensor kappa(nsd), m(nsd);
-    if (!Bmat.multiply(eV,kappa)) // kappa = B*eV
+    if (!Bmat.multiply(eV.front(),kappa)) // kappa = B*eV
       return false;
 
     // Evaluate the stress resultant tensor
@@ -247,9 +247,9 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vector& eV,
     // Compute the Laplacian components, w,xx w,yy and w,xy
     s.resize(this->getNoFields(2));
     for (size_t i = 1; i <= fe.d2NdX2.dim(2); i++)
-      s(i) = eV.dot(fe.d2NdX2.getColumn(i,i));
+      s(i) = eV.front().dot(fe.d2NdX2.getColumn(i,i));
     if (s.size() > 2)
-      s(3) = eV.dot(fe.d2NdX2.getColumn(1,2));
+      s(3) = eV.front().dot(fe.d2NdX2.getColumn(1,2));
   }
 
 #if INT_DEBUG > 3
@@ -337,7 +337,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
   // Evaluate the finite element stress field
   Vector mh, m, error;
-  if (!problem.evalSol(mh,pnorm.vec.front(),fe,X))
+  if (!problem.evalSol(mh,pnorm.vec,fe,X))
     return false;
   else if (mh.size() == 3 && version > 1)
     mh.push_back(mh(3));

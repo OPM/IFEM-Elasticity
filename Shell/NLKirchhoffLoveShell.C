@@ -246,3 +246,70 @@ bool NLKirchhoffLoveShell::evalKandS (Matrix& EK, Vector& ES,
 
   return true;
 }
+
+
+bool NLKirchhoffLoveShell::evalSol (Vector& sm, Vector& sb, const Vectors& eV,
+                                    const FiniteElement& fe, const Vec3& X,
+                                    bool) const
+{
+  if (eV.size() < 2 || eV.front().empty() || eV.back().empty())
+  {
+    std::cerr <<" *** NLKirchhoffLoveShell::evalSol: No displacement vectors."
+              << std::endl;
+    return false;
+  }
+  else if (eV.front().size() != 3*fe.d2NdX2.dim(1))
+  {
+    std::cerr <<" *** NLKirchhoffLoveShell::evalSol: Invalid solution vector."
+              <<"\n     size(eV) = "<< eV.front().size() <<"   size(d2NdX2) = "
+              << fe.d2NdX2.dim(1) <<","<< fe.d2NdX2.dim(2)*fe.d2NdX2.dim(3)
+              << std::endl;
+    return false;
+  }
+
+  // Co-variant basis and Hessian in deformed configuration
+  Matrix Gd, Hd;
+  Matrix3D Hess;
+  Gd.multiplyMat(eV.back(),fe.dNdX);
+  if (Hess.multiplyMat(eV.back(),fe.d2NdX2))
+    utl::Hessian(Hess,Hd);
+  else
+    return false;
+
+  Matrix Dm, Db;
+  if (!this->formDmatrix(Dm,Db,fe,X))
+    return false;
+
+  // Calculate the metrics of the initial and deformed configurations
+  Vec3 g1, g2, g3, n, gab, Gab; Matrix T(3,3);
+  this->getMetrics(fe.G,g1,g2,g3,n,Gab,&T);
+  this->getMetrics(Gd,g1,g2,g3,n,gab);
+  Vec3 Bv = n * fe.H;
+  Vec3 bv = n * Hd;
+
+#if INT_DEBUG > 1
+  std::cout <<"\nNLKirchhoffLoveShell::evalSol(X="<< X
+            <<")\n\tg1 = "<< g1 <<"\n\tg2 = "<< g2 <<"\n\tg3 = "<< g3
+            <<"\n\tn = "<< n <<"\n\tgab = "<< gab <<"\n\tgab = "<< bv <<"\n";
+#endif
+
+  // Strain vectors referred to curvilinear coordinate system
+  Vec3 E_cu = 0.5*(gab-Gab);
+  Vec3 K_cu = (Bv - bv);
+
+  // Strain vectors referred to cartesian coordinate system
+  Vec3 E_ca = T * E_cu;
+  Vec3 K_ca = T * K_cu;
+
+  // Stress resultants referred to cartesian coordinate system
+  if (!Dm.multiply(E_ca.vec(),sm)) // sm = Dm*E_ca
+    return false;
+  if (!Db.multiply(K_ca.vec(),sb)) // sb = Db*K_ca
+    return false;
+
+#if INT_DEBUG > 1
+  std::cout <<"\tE_ca = "<< E_ca <<"\n\tK_ca = "<< K_ca
+            <<"\nN_ca:"<< sm <<"M_ca:"<< sb;
+#endif
+  return true;
+}

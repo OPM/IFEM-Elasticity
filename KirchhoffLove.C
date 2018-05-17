@@ -241,17 +241,18 @@ bool KirchhoffLove::evalSol (Vector& s,
                              const std::vector<int>& MNPC) const
 {
   // Extract element displacements
-  Vector eV;
-  if (!primsol.empty() && !primsol.front().empty())
-  {
-    int ierr = utl::gather(MNPC,npv,primsol.front(),eV);
-    if (ierr > 0)
+  Vectors eV(primsol.size());
+  for (size_t i = 0; i < primsol.size(); i++)
+    if (!primsol[i].empty())
     {
-      std::cerr <<" *** KirchhoffLove::evalSol: Detected "
-                << ierr <<" node numbers out of range."<< std::endl;
-      return false;
+      int ierr = utl::gather(MNPC,npv,primsol[i],eV[i]);
+      if (ierr > 0)
+      {
+        std::cerr <<" *** KirchhoffLove::evalSol: Detected "
+                  << ierr <<" node numbers out of range."<< std::endl;
+        return false;
+      }
     }
-  }
 
   // Evaluate the stress resultants
   return this->evalSol(s,eV,fe,X,true);
