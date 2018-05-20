@@ -33,7 +33,7 @@ install(TARGETS ShellEl DESTINATION bin COMPONENT bin)
 # For generating the doxy
 set(EXTRA_DOXY_PATHS "${PROJECT_SOURCE_DIR} \\
                       ${PROJECT_SOURCE_DIR}/..")
-#add_doc_target(ShellEl ShellEl)
+add_doc_target(ShellEl ShellEl)
 
 # Regression tests
 enable_testing()
