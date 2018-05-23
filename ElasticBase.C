@@ -17,7 +17,7 @@
 #include "BDF.h"
 
 
-ElasticBase::ElasticBase ()
+ElasticBase::ElasticBase () : IntegrandBase(0)
 {
   nSV = 1; // Default number of solution vectors in core
 

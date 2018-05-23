@@ -182,7 +182,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
   this->initEqSystem();
 
   SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
-  if (pit != opt.project.end()) getMaxVals = true;
+  if (pit != opt.project.end() && elp) getMaxVals = true;
 
   // Invoke the time-step loop
   SIM::ConvStatus stat = SIM::OK;

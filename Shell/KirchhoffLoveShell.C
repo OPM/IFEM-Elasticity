@@ -417,8 +417,6 @@ bool KirchhoffLoveShellNorm::evalInt (LocalIntegral& elmInt,
   pnorm[ip++] += (nh.dot(Dm*nh) + mh.dot(Db*mh))*fe.detJxW;
   // Integrate the external energy (p,u^h)
   pnorm[ip++] += p*u*fe.detJxW;
-  // Integrate the area
-  pnorm[ip++] += fe.detJxW;
 
 #if INT_DEBUG > 3
   if (!pnorm.psol.empty())
@@ -497,7 +495,7 @@ size_t KirchhoffLoveShellNorm::getNoFields (int group) const
   if (group == 0)
     return this->NormBase::getNoFields();
   else if (group == 1 || group == -1)
-    return 3;
+    return 2;
   else if (group > 0 || !prjsol[-group-2].empty())
     return 6;
   else
@@ -508,13 +506,12 @@ size_t KirchhoffLoveShellNorm::getNoFields (int group) const
 std::string KirchhoffLoveShellNorm::getName (size_t i, size_t j,
                                              const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 3))
+  if (i == 0 || j == 0 || j > 6 || (i == 1 && j > 2))
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[3] = {
+  static const char* u[2] = {
     "a(u^h,u^h)^0.5",
-    "(p,u^h)^0.5",
-    "area"
+    "(p,u^h)^0.5"
   };
 
   static const char* p[6] = {
