@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Pinched open hemisphere, 1/4 modelled.
+     Quartic spline Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <!-- General - gemoetry definitions !-->
+  <geometry>
+    <patchfile>hemisphere72.g2</patchfile>
+    <raiseorder patch="1" u ="2" v="2"/>
+    <refine patch="1" u="1" v="1"/>
+    <topologysets>
+      <set name="symmXZ" type="edge">
+	<item patch="1">3</item>
+      </set>
+      <set name="symmYZ" type="edge">
+	<item patch="1">4</item>
+      </set>
+      <set name="punkt" type="vertex">
+	<item patch="1">2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss default="0"/>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="symmXZ" type="symmXZ"/>
+    <dirichlet set="symmYZ" type="symmYZ"/>
+    <dirichlet set="punkt" comp="3"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="6.825e7" nu="0.3" thickness="0.04"/>
+    <pointload patch="1" xi="0.0" eta="0.0" direction="1" type="linear">200.0</pointload>
+    <pointload patch="1" xi="0.0" eta="1.0" direction="2" type="linear">-200.0</pointload>
+  </KirchhoffLove>
+
+  <!-- General - nonlinear solution setup !-->
+  <nonlinearsolver>
+    <noEnergy/>
+    <rtol>1.0e-16</rtol>
+    <dtol>1.0e5</dtol>
+    <maxits>30</maxits>
+    <nupdate>30</nupdate>
+    <timestepping dt="0.1"/>
+  </nonlinearsolver>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.0" v="0.0"/>
+      <point patch="1" u="0.0" v="1.0"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>
