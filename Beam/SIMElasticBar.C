@@ -35,8 +35,8 @@ SIMElasticBar::SIMElasticBar (unsigned char n) : SIM1D(3)
 
 SIMElasticBar::~SIMElasticBar ()
 {
-  for (LoadMap::iterator it = myLoads.begin(); it != myLoads.end(); ++it)
-    delete it->second;
+  for (LoadMap::value_type& load : myLoads)
+    delete load.second;
 }
 
 
@@ -210,8 +210,7 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
       double xi;
       if (utl::getAttribute(child,"u",xi) && xi >= 0.0 && xi <= 1.0)
       {
-        for (PatchVec::iterator it = myModel.begin(); it != myModel.end(); ++it)
-          (*it)->setNoFields(nf);
+        for (ASMbase* pch : myModel) pch->setNoFields(nf);
         if (this->createFEMmodel())
           node = this->evalPoint(&xi,Xnod,&xi,patch,true);
       }
@@ -242,9 +241,7 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
 void SIMElasticBar::preprocessA ()
 {
   this->printProblem();
-
-  for (PatchVec::iterator it = myModel.begin(); it != myModel.end(); ++it)
-    (*it)->setNoFields(nf);
+  for (ASMbase* pch : myModel) pch->setNoFields(nf);
 }
 
 
@@ -253,11 +250,11 @@ bool SIMElasticBar::renumberNodes (const std::map<int,int>& nodeMap)
   bool ok = this->SIM1D::renumberNodes(nodeMap);
 
   LoadMap newLoads;
-  for (LoadMap::iterator it = myLoads.begin(); it != myLoads.end(); ++it)
+  for (LoadMap::value_type& load : myLoads)
   {
-    int node = it->first.first;
+    int node = load.first.first;
     if (utl::renumber(node,nodeMap,true))
-      newLoads[std::make_pair(node,it->first.second)] = it->second;
+      newLoads[std::make_pair(node,load.first.second)] = load.second;
     else
       ok = false;
   }
@@ -285,8 +282,8 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
   if (!R) return true; // Silently ignore, if no right-hand-side vector
 
   // Assemble external nodal point loads at current time step
-  for (LoadMap::const_iterator it = myLoads.begin(); it != myLoads.end(); ++it)
-    if (!mySam->assembleSystem(*R,(*it->second)(time.t)*scale,it->first))
+  for (const LoadMap::value_type& load : myLoads)
+    if (!mySam->assembleSystem(*R,(*load.second)(time.t)*scale,load.first))
       return false;
 
   return true;
@@ -295,10 +292,12 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
 
 Tensor SIMElasticBar::getNodeRotation (int inod) const
 {
-  size_t node = 0;
-  for (PatchVec::const_iterator it = myModel.begin(); it != myModel.end(); ++it)
-    if ((node = (*it)->getNodeIndex(inod,true)))
-      return static_cast<const ASMs1D*>(*it)->getRotation(node);
+  for (const ASMbase* pch : myModel)
+  {
+    size_t node = pch->getNodeIndex(inod,true);
+    if (node > 0)
+      return static_cast<const ASMs1D*>(pch)->getRotation(node);
+  }
 
   return Tensor(nsd,true);
 }
