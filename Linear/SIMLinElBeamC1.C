@@ -28,6 +28,13 @@
 #include "tinyxml.h"
 
 
+void SIMLinElBeamC1::clearProperties ()
+{
+  myLoads.clear();
+  this->SIM1D::clearProperties();
+}
+
+
 bool SIMLinElBeamC1::parse (char* keyWord, std::istream& is)
 {
   if (!myProblem)
@@ -236,9 +243,9 @@ bool SIMLinElBeamC1::initBodyLoad (size_t patchInd)
   if (!klp) return false;
 
   SclFuncMap::const_iterator it = myScalars.find(0);
-  for (size_t i = 0; i < myProps.size(); i++)
-    if (myProps[i].pcode == Property::BODYLOAD && myProps[i].patch == patchInd)
-      if ((it = myScalars.find(myProps[i].pindx)) != myScalars.end()) break;
+  for (const Property& prop : myProps)
+    if (prop.pcode == Property::BODYLOAD && prop.patch == patchInd)
+      if ((it = myScalars.find(prop.pindx)) != myScalars.end()) break;
 
   klp->setPressure(it == myScalars.end() ? 0 : it->second);
   return true;
@@ -247,26 +254,36 @@ bool SIMLinElBeamC1::initBodyLoad (size_t patchInd)
 
 bool SIMLinElBeamC1::preprocessB ()
 {
-  // Preprocess the nodal point loads
-  for (PloadVec::iterator p = myLoads.begin(); p != myLoads.end();)
-    if ((p->inod = this->evalPoint(&p->xi,p->X,nullptr,p->patch,true)) < 1)
-    {
-      p = myLoads.erase(p);
-      std::cerr <<"  ** SIMLinElBeamC1::preprocess: Load point ("<< p->xi
-                <<") on patch #"<< p->patch <<" is not a nodal point (ignored)."
-                << std::endl;
-    }
+  // Preprocess the nodal point loads, if any
+  if (myLoads.empty())
+    return true;
+
+  IFEM::cout <<'\n';
+  bool ok = true;
+  int  pt = 0;
+  for (PointLoad& pl : myLoads)
+  {
+    int iclose = 0;
+    int imatch = this->evalPoint(&pl.xi,pl.X,nullptr,pl.patch,true);
+    if (imatch > 0)
+      pl.inod = imatch;
+    else if (imatch == 0 && (iclose = this->findClosestNode(pl.X)) > 0)
+      pl.inod = iclose;
     else
     {
-      int ipt = 1 + (int)(p-myLoads.begin());
-      if (ipt == 1) IFEM::cout <<'\n';
-      IFEM::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
-                 <<" u=("<< p->xi <<"), node #"<< p->inod <<", X = "<< p->X
-                 << std::endl;
-      ++p;
+      std::cerr <<" *** SIMLinElBeamC1::preprocessB: Load point ("<< pl.xi
+                <<") on patch #"<< pl.patch <<" is not a nodal point."
+                << std::endl;
+      ok = false;
+      continue;
     }
 
-  return true;
+    IFEM::cout <<"Load point #"<< ++pt <<": patch #"<< pl.patch <<" u=("<< pl.xi
+               << (iclose > 0 ? "), (closest) node #" : "), node #")
+               << pl.inod <<", X = "<< pl.X << std::endl;
+  }
+
+  return ok;
 }
 
 
@@ -274,8 +291,10 @@ bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase*,
                                             const TimeDomain&)
 {
   SystemVector* b = myEqSys->getVector();
-  for (size_t i = 0; i < myLoads.size() && b; i++)
-    if (!mySam->assembleSystem(*b,&myLoads[i].pload,myLoads[i].inod))
+  if (!b) return false;
+
+  for (const PointLoad& load : myLoads)
+    if (!mySam->assembleSystem(*b,&load.pload,load.inod))
       return false;
 
   return true;
@@ -288,8 +307,8 @@ double SIMLinElBeamC1::externalEnergy (const Vectors& u,
   double energy = this->SIMbase::externalEnergy(u,time);
 
   // External energy from the nodal point loads
-  for (size_t i = 0; i < myLoads.size(); i++)
-    energy += myLoads[i].pload * u.front()(myLoads[i].inod);
+  for (const PointLoad& load : myLoads)
+    energy += load.pload * u.front()(load.inod);
 
   return energy;
 }

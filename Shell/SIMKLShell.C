@@ -59,6 +59,17 @@ Elasticity* SIMKLShell::getIntegrand ()
 }
 
 
+void SIMKLShell::clearProperties()
+{
+  for (PointLoad& load : myLoads)
+    delete load.p;
+
+  myLoads.clear();
+
+  this->SIMElasticity<SIM2D>::clearProperties();
+}
+
+
 bool SIMKLShell::parse (char* keyWord, std::istream& is)
 {
   KirchhoffLove* klp = this->getProblem();
@@ -304,29 +315,42 @@ void SIMKLShell::preprocessA ()
 
 bool SIMKLShell::preprocessB ()
 {
-  // Preprocess the nodal point loads
-  for (PloadVec::iterator p = myLoads.begin(); p != myLoads.end();)
-    if ((p->ldof.first = this->evalPoint(p->xi,p->X,nullptr,p->patch,true)) < 1)
-    {
-      p = myLoads.erase(p);
-      std::cerr <<"  ** SIMKLShell::preprocess: Load point ("
-                << p->xi[0] <<','<< p->xi[1] <<") on patch #"<< p->patch
-                <<" is not a nodal point (ignored)."<< std::endl;
-    }
+  // Preprocess the nodal point loads, if any
+  if (myLoads.empty())
+    return true;
+
+  IFEM::cout <<'\n';
+  bool ok = true;
+  int ipt = 0;
+  for (PointLoad& pl : myLoads)
+  {
+    int iclose = 0;
+    int imatch = this->evalPoint(pl.xi,pl.X,nullptr,pl.patch,true);
+    if (imatch > 0)
+      pl.ldof.first = imatch;
+    else if (imatch == 0 && (iclose = this->findClosestNode(pl.X)) > 0)
+      pl.ldof.first = iclose;
     else
     {
-      int ipt = 1 + (int)(p-myLoads.begin());
-      if (ipt == 1) IFEM::cout <<'\n';
-      IFEM::cout <<"Load point #"<< ipt <<": patch #"<< p->patch
-                 <<" (u,v)=("<< p->xi[0] <<','<< p->xi[1]
-                 <<"), node #"<< p->ldof.first <<", X = "<< p->X;
-      if (nsd == 3)
-        IFEM::cout <<", direction = "<< (int)p->ldof.second;
-      IFEM::cout << std::endl;
-      ++p;
+      std::cerr <<" *** SIMKLShell::preprocessB: Load point ("
+                << pl.xi[0] <<','<< pl.xi[1] <<") on patch #"<< pl.patch
+                <<" is not a nodal point."<< std::endl;
+      ok = false;
+      continue;
     }
 
-  return true;
+    IFEM::cout <<"Load point #"<< ++ipt <<": patch #"<< pl.patch
+               <<" (u,v)=("<< pl.xi[0] <<','<< pl.xi[1]
+               << (iclose > 0 ? "), (closest) node #" : "), node #")
+               << pl.ldof.first <<", X = "<< pl.X;
+    if (iclose > 0)
+      IFEM::cout <<" (Xnod = "<< this->getNodeCoord(iclose) <<")";
+    if (nsd == 3)
+      IFEM::cout <<", direction = "<< (int)pl.ldof.second;
+    IFEM::cout << std::endl;
+  }
+
+  return ok;
 }
 
 

@@ -54,6 +54,9 @@ public:
   //! \brief Returns that no analytical solution is available.
   virtual bool haveAnaSol() const { return false; }
 
+  //! \brief Initializes the property containers of the model.
+  virtual void clearProperties();
+
 protected:
   //! \brief Returns the actual integrand.
   virtual KirchhoffLove* getProblem(int version = 1);

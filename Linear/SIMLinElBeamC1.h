@@ -47,6 +47,9 @@ public:
   //! \brief Empty destructor.
   virtual ~SIMLinElBeamC1() {}
 
+  //! \brief Initializes the property containers of the model.
+  virtual void clearProperties();
+
 protected:
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
