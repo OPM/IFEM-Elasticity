@@ -47,7 +47,6 @@
       <DGL2/>
       <CGL2/>
     </projection>
-    <vtfformat>BINARY</vtfformat>
   </postprocessing>
 
   <!-- General - adaptive control !-->

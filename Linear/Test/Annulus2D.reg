@@ -1,4 +1,4 @@
-Annulus2D.xinp -2D
+Annulus2D.xinp
 
 Input file: Annulus2D.xinp
 Equation solver: 2
@@ -28,8 +28,6 @@ Parsing <boundaryconditions>
 	Neumann code 1000000 direction 2: 1e+10
 Parsing <elasticity>
 	Material code 0: 2.068e+11 0.29 7820
-Parsing <postprocessing>
-  Parsing <vtfformat>
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 4

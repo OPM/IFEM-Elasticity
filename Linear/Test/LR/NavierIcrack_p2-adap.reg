@@ -1,10 +1,10 @@
 NavierIcrack_p2.xinp -2DKL -adap
 
-Input file: NavierCrack_p2.xinp
+Input file: NavierIcrack_p2.xinp
 Equation solver: 2
 Number of Gauss points: 4
 LR-spline basis functions are used
-Parsing input file NavierCrack_p2.xinp
+Parsing input file NavierIcrack_p2.xinp
 Parsing <geometry>
   Parsing <patchfile>
 	Reading data file coarse.lr
@@ -21,7 +21,6 @@ Parsing <kirchhofflove>
 	Material code 0: 2.1e+11 0.3 1000 0.01
 	Pressure code 1000001: 1000
 Parsing <postprocessing>
-  Parsing <vtfformat>
   Parsing <projection>
 Parsing <adaptive>
 Parsing input file succeeded.
@@ -63,7 +62,7 @@ Average element error                : 0.0015248
 Refining 20 basis functions with errors in range \[0.0251636,0.0383327] 10% of all basis functions
 Refined mesh: 276 elements 312 nodes.
 Adaptive step 2
-Parsing input file NavierCrack_p2.xinp
+Parsing input file NavierIcrack_p2.xinp
 Parsing <geometry>
   Parsing <patchfile>
   Parsing <topologysets>
@@ -78,7 +77,6 @@ Parsing <kirchhofflove>
 	Material code 0: 2.1e+11 0.3 1000 0.01
 	Pressure code 1000001: 1000
 Parsing <postprocessing>
-  Parsing <vtfformat>
   Parsing <projection>
 Parsing <adaptive>
 Parsing input file succeeded.

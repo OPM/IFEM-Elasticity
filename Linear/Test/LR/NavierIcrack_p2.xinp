@@ -32,7 +32,6 @@
 
   <!-- General - result output !-->
   <postprocessing>
-    <vtfformat>BINARY</vtfformat>
     <projection>
       <cgl2/>
     </projection>

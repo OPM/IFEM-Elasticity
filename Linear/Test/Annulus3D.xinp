@@ -49,8 +49,4 @@
     <isotropic E="2.068e11" nu="0.29" rho="7820.0"/>
   </elasticity>
 
-  <postprocessing>
-    <vtfformat nviz="5">BINARY</vtfformat>
-  </postprocessing>
-
 </simulation>
