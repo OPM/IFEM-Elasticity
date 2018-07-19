@@ -1,0 +1,53 @@
+Hole2D-p3.inp -2Dpstrain
+
+Step 1
+  Element block 1
+    45 nodes
+    32 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'a(e,e)^0.5, e=u-u^h'
+    Scalar: 'Greville point projection (u^r,u^r)^0.5'
+    Scalar: 'Greville point projection a(u^r,u^r)^0.5'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'FE s_xx'
+    Scalar: 'FE s_yy'
+    Scalar: 'FE s_zz'
+    Scalar: 'FE s_xy'
+    Scalar: 'FE von Mises stress'
+    Scalar: 'FE P1'
+    Scalar: 'FE P2'
+    Scalar: 'Projected s_xx'
+    Scalar: 'Projected s_yy'
+    Scalar: 'Projected s_zz'
+    Scalar: 'Projected s_xy'
+    Scalar: 'Projected von Mises stress'
+    Scalar: 'Projected P1'
+    Scalar: 'Projected P2'
+    Scalar: 'Exact s_xx'
+    Scalar: 'Exact s_yy'
+    Scalar: 'Exact s_zz'
+    Scalar: 'Exact s_xy'
+    Scalar: 'Exact von Mises stress'
+    Scalar: 'Exact P1'
+    Scalar: 'Exact P2'
+    Scalar: 'Greville point projection (e,e)^0.5, e=u^r-u^h'
+    Scalar: 'Greville point projection s_xx'
+    Scalar: 'Greville point projection s_yy'
+    Scalar: 'Greville point projection s_zz'
+    Scalar: 'Greville point projection s_xy'
+    Scalar: 'Greville point projection von Mises stress'
+    Scalar: 'Greville point projection P1'
+    Scalar: 'Greville point projection P2'
+    Scalar: 'Greville point projection effectivity index'
+    Scalar: 'Greville point projection a(e,e)^0.5, e=u^r-u^h'
+    Scalar: 'Greville point projection a(e,e)^0.5, e=u-u^r'
+    Scalar: 'volume'
+    Scalar: 'a(u,u)^0.5'
+  Element block 2
+    32 nodes
+    32 elements
+    Vector: 'Tractions'

@@ -1,0 +1,54 @@
+NavierIcrack_p2.xinp -2DKL -adap
+
+Step 1
+  Element block 1
+    576 nodes
+    144 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'm_xx'
+    Scalar: 'Continuous global L2-projection m_xx'
+    Scalar: 'Continuous global L2-projection m_yy'
+    Scalar: 'Continuous global L2-projection m_xy'
+    Scalar: 'a(w^h,w^h)^0.5'
+    Scalar: '(p,w^h)^0.5'
+    Scalar: 'area'
+    Scalar: 'm_yy'
+    Scalar: 'm_xy'
+    Scalar: 'Continuous global L2-projection (w^r,w^r)^0.5'
+    Scalar: 'Continuous global L2-projection a(e,e)^0.5, e=w^r-w^h'
+    Scalar: 'Continuous global L2-projection res(w^r)^0.5'
+    Scalar: 'Continuous global L2-projection jump(w^r)^0.5'
+    Scalar: 'Continuous global L2-projection a(w^r,w^r)^0.5'
+    Scalar: 'Continuous global L2-projection (e,e)^0.5, e=w^r-w^h'
+    Scalar: 'w'
+  Element block 2
+    2304 nodes
+    2304 elements
+    Vector: 'Pressure'
+Step 2
+  Element block 1
+    1104 nodes
+    276 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'm_xx'
+    Scalar: 'Continuous global L2-projection m_xx'
+    Scalar: 'Continuous global L2-projection m_yy'
+    Scalar: 'Continuous global L2-projection m_xy'
+    Scalar: 'a(w^h,w^h)^0.5'
+    Scalar: '(p,w^h)^0.5'
+    Scalar: 'area'
+    Scalar: 'm_yy'
+    Scalar: 'm_xy'
+    Scalar: 'Continuous global L2-projection (w^r,w^r)^0.5'
+    Scalar: 'Continuous global L2-projection a(e,e)^0.5, e=w^r-w^h'
+    Scalar: 'Continuous global L2-projection res(w^r)^0.5'
+    Scalar: 'Continuous global L2-projection jump(w^r)^0.5'
+    Scalar: 'Continuous global L2-projection a(w^r,w^r)^0.5'
+    Scalar: 'Continuous global L2-projection (e,e)^0.5, e=w^r-w^h'
+    Scalar: 'w'
+  Element block 2
+    4416 nodes
+    4416 elements
+    Vector: 'Pressure'

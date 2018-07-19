@@ -1,0 +1,38 @@
+ScordelisLo-p4-4x4.xinp -2DKLshell
+
+Step 1
+  Element block 1
+    25 nodes
+    16 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'fix_Z'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u'
+    Scalar: 'v'
+    Scalar: 'w'
+    Scalar: 'sqrt(u^2+v^2+w^2)'
+    Scalar: 'n_xx'
+    Scalar: 'n_yy'
+    Scalar: 'n_xy'
+    Scalar: 'm_xx'
+    Scalar: 'm_yy'
+    Scalar: 'm_xy'
+    Scalar: 'Bottom sigma_x'
+    Scalar: 'Bottom sigma_y'
+    Scalar: 'Bottom tau_xy'
+    Scalar: 'Bottom sigma_1'
+    Scalar: 'Bottom sigma_2'
+    Scalar: 'Bottom sigma_m'
+    Scalar: 'Top sigma_x'
+    Scalar: 'Top sigma_y'
+    Scalar: 'Top tau_xy'
+    Scalar: 'Top sigma_1'
+    Scalar: 'Top sigma_2'
+    Scalar: 'Top sigma_m'
+    Scalar: '(p,u^h)^0.5'
+  Element block 2
+    400 nodes
+    400 elements
+    Vector: 'Pressure'

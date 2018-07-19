@@ -59,14 +59,21 @@ include(IFEMTesting)
 
 file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/*.reg)
+file(GLOB LINEL_VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/*.vreg)
 if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
+  file(GLOB LRE_VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/LR/*.vreg)
 endif()
 
 if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
     ifem_add_test(${TESTFILE} LinEl)
+  endforeach()
+  foreach(VTFFILE ${LINEL_VTF_FILES} ${LRE_VTF_FILES})
+    ifem_add_vtf_test(${VTFFILE} LinEl)
   endforeach()
 endif()
 

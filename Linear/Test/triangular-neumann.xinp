@@ -2,7 +2,7 @@
 
 <simulation>
 
-  <geometry Lx="4.0" Ly="2.0">
+  <geometry dim="2" Lx="4.0" Ly="2.0">
     <triangular/>
     <refine patch="1" u="7" v="3"/>
     <topologysets>
