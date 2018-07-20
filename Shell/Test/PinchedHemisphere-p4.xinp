@@ -44,7 +44,6 @@
 
   <!-- General - nonlinear solution setup !-->
   <nonlinearsolver>
-    <noEnergy/>
     <rtol>1.0e-16</rtol>
     <dtol>1.0e5</dtol>
     <maxits>30</maxits>
@@ -54,6 +53,7 @@
 
   <!-- General - point result output !-->
   <postprocessing>
+    <direct2nd/>
     <resultpoints>
       <point patch="1" u="0.0" v="0.0"/>
       <point patch="1" u="0.0" v="1.0"/>

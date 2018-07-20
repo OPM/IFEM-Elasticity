@@ -43,8 +43,13 @@ if(NOT MPI_FOUND)
   # Only serial tests for this app
   file(GLOB TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                       ${PROJECT_SOURCE_DIR}/Test/*.reg)
+  file(GLOB VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                      ${PROJECT_SOURCE_DIR}/Test/*.vreg)
   foreach(TESTFILE ${TESTFILES})
     ifem_add_test(${TESTFILE} ShellEl)
+  endforeach()
+  foreach(VTF_FILE ${VTF_FILES})
+    ifem_add_vtf_test(${VTF_FILE} ShellEl)
   endforeach()
 endif()
 
