@@ -39,7 +39,7 @@
 
   <elasticity>
     <isotropic E="2.068e11" nu="0.29"/>
-    <anasol type="fields" file="CanTS2D-refsol">
+    <anasol type="fields" file="CanTS2D-refsol" file_basis="Elasticity-1">
       <stress>s_xx|s_yy|s_xy</stress>
     </anasol>
   </elasticity>
