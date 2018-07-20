@@ -20,7 +20,6 @@
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
 #include "HDF5Writer.h"
-#include "XMLWriter.h"
 #include "Utilities.h"
 #include "VTF.h"
 #include "Profiler.h"
@@ -290,10 +289,10 @@ int main (int argc, char** argv)
     model->opt.hdf5.clear();
   }
 
-  const char* prefix[pOpt.size()];
+  std::vector<std::string> prefix(pOpt.size());
   if (model->opt.format >= 0 || model->opt.dumpHDF5(infile))
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
-      prefix[i] = pit->second.c_str();
+      prefix[i] = pit->second;
 
   Matrix eNorm;
   Vector displ, load;
@@ -340,8 +339,6 @@ int main (int argc, char** argv)
     }
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
                                             model->getProcessAdm()));
-    exporter->registerWriter(new XMLWriter(model->opt.hdf5,
-                                           model->getProcessAdm()));
   }
 
   switch (args.adap ? 10 : iop+model->opt.eig) {

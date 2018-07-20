@@ -15,7 +15,6 @@
 #include "SIMShell.h"
 #include "NonlinearDriver.h"
 #include "HDF5Writer.h"
-#include "XMLWriter.h"
 #include "Utilities.h"
 #include "Profiler.h"
 #include <stdlib.h>
@@ -144,7 +143,6 @@ int main (int argc, char** argv)
                           DataExporter::PRIMARY);
     writer->setFieldValue("u",&model,&simulator.getSolution());
     writer->registerWriter(new HDF5Writer(fileName,model.getProcessAdm()));
-    writer->registerWriter(new XMLWriter(fileName,model.getProcessAdm()));
   }
 
   // Now invoke the main solution driver
