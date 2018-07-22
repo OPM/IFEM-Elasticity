@@ -1,0 +1,185 @@
+MidShipFrame.xinp -2D -noProj
+
+Step 1
+  Element block 1
+    81 nodes
+    64 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 2
+    45 nodes
+    32 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 3
+    81 nodes
+    64 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 4
+    297 nodes
+    256 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 5
+    297 nodes
+    256 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 6
+    81 nodes
+    64 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 7
+    81 nodes
+    64 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 8
+    297 nodes
+    256 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 9
+    81 nodes
+    64 elements
+    Displacement: 'Solution'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 10
+    153 nodes
+    128 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 11
+    362 nodes
+    362 elements
+  Element block 12
+    362 nodes
+    362 elements
+  Element block 13
+    1808 nodes
+    1808 elements
+  Element block 14
+    1086 nodes
+    1086 elements
+  Element block 15
+    1440 nodes
+    1440 elements
+  Element block 16
+    360 nodes
+    360 elements

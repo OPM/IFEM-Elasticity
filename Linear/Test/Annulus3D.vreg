@@ -1,0 +1,31 @@
+Annulus3D.xinp -noProj
+
+Step 1
+  Element block 1
+    153 nodes
+    64 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'fix_Z'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_zz'
+    Scalar: 's_xy'
+    Scalar: 's_yz'
+    Scalar: 's_xz'
+    Scalar: 'von Mises stress'
+    Scalar: 'P1'
+    Scalar: 'P2'
+    Scalar: 'P3'
+    Scalar: 'volume'
+    Vector: 'Principal direction P1'
+    Vector: 'Principal direction P2'
+  Element block 2
+    64 nodes
+    64 elements
+    Vector: 'Tractions'
