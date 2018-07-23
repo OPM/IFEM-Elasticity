@@ -43,6 +43,7 @@ if(NOT MPI_FOUND)
   # Only serial tests for this app
   file(GLOB TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                       ${PROJECT_SOURCE_DIR}/Test/*.reg)
+  list(REMOVE_ITEM TESTFILES Cantilever-p3-restart.reg)
   file(GLOB VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                       ${PROJECT_SOURCE_DIR}/Test/*.vreg)
   foreach(TESTFILE ${TESTFILES})
@@ -51,6 +52,9 @@ if(NOT MPI_FOUND)
   foreach(VTF_FILE ${VTF_FILES})
     ifem_add_vtf_test(${VTF_FILE} ShellEl)
   endforeach()
+  if(HDF5_FOUND AND CEREAL_FOUND)
+    ifem_add_restart_test(Cantilever-p3-restart.reg ShellEl 5)
+  endif()
 endif()
 
 list(APPEND TEST_APPS ShellEl)

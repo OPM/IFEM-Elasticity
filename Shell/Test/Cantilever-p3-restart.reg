@@ -1,0 +1,125 @@
+Cantilever-p3-10x1.xinp -restartInc 1
+
+Input file: Cantilever-p3-10x1.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Parsing input file Cantilever-p3-10x1.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: innspenning (1,1,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2 0
+  Parsing <refine>
+	Refining P1 9 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3123: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 1e+07 0 1 0.05
+	Point: P1 xi = 1 0 direction = 3 Load: -5\*t
+	Point: P1 xi = 1 1 direction = 3 Load: -5\*t
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing <nonlinearsolver>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.05, gravity = 0
+LinIsotropic: plane stress, E = 1e+07, nu = 0, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 3123
+Result point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       26
+Number of dofs        78
+Number of unknowns    70
+Load point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0, direction = 3
+Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
+  Primary solution summary: L2-norm            : 2.69995
+                            Max X-displacement : 4.23115
+                            Max Z-displacement : 7.36619
+  Total reaction forces: Sum(R) = 0 0 -6
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.09037
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 6.64809
+  Node #13:	sol1 = -4.231e+00  0.000e+00 -7.366e+00
+		sol2 =  5.882e+00  0.000e+00  0.000e+00 -3.730e-03  0.000e+00  0.000e+00
+		sol3 =  1.087e+02  0.000e+00  0.000e+00  1.087e+02  0.000e+00  1.087e+02
+		sol4 =  1.266e+02  0.000e+00  0.000e+00  1.266e+02  0.000e+00  1.266e+02
+  Node #26:	sol1 = -4.231e+00  0.000e+00 -7.366e+00
+		sol2 =  5.882e+00  0.000e+00  0.000e+00 -3.730e-03  0.000e+00  0.000e+00
+		sol3 =  1.087e+02  0.000e+00  0.000e+00  1.087e+02  0.000e+00  1.087e+02
+		sol4 =  1.266e+02  0.000e+00  0.000e+00  1.266e+02  0.000e+00  1.266e+02
+  step=7  time=0.7
+  Primary solution summary: L2-norm            : 2.83388
+                            Max X-displacement : 4.61551
+                            Max Z-displacement : 7.59858
+  Total reaction forces: Sum(R) = 0 0 -7
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.37792
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 7.29315
+  Node #13:	sol1 = -4.616e+00  0.000e+00 -7.599e+00
+		sol2 =  6.942e+00  0.000e+00  0.000e+00 -3.795e-03  0.000e+00  0.000e+00
+		sol3 =  1.297e+02  0.000e+00  0.000e+00  1.297e+02  0.000e+00  1.297e+02
+		sol4 =  1.479e+02  0.000e+00  0.000e+00  1.479e+02  0.000e+00  1.479e+02
+  Node #26:	sol1 = -4.616e+00  0.000e+00 -7.599e+00
+		sol2 =  6.942e+00  0.000e+00  0.000e+00 -3.795e-03  0.000e+00  0.000e+00
+		sol3 =  1.297e+02  0.000e+00  0.000e+00  1.297e+02  0.000e+00  1.297e+02
+		sol4 =  1.479e+02  0.000e+00  0.000e+00  1.479e+02  0.000e+00  1.479e+02
+  step=8  time=0.8
+  Primary solution summary: L2-norm            : 2.94385
+                            Max X-displacement : 4.93561
+                            Max Z-displacement : 7.77742
+  Total reaction forces: Sum(R) = 0 0 -8
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.62115
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 7.88792
+  Node #13:	sol1 = -4.936e+00  0.000e+00 -7.777e+00
+		sol2 =  7.986e+00  0.000e+00  0.000e+00 -3.790e-03  0.000e+00  0.000e+00
+		sol3 =  1.506e+02  0.000e+00  0.000e+00  1.506e+02  0.000e+00  1.506e+02
+		sol4 =  1.688e+02  0.000e+00  0.000e+00  1.688e+02  0.000e+00  1.688e+02
+  Node #26:	sol1 = -4.936e+00  0.000e+00 -7.777e+00
+		sol2 =  7.986e+00  0.000e+00  0.000e+00 -3.790e-03  0.000e+00  0.000e+00
+		sol3 =  1.506e+02  0.000e+00  0.000e+00  1.506e+02  0.000e+00  1.506e+02
+		sol4 =  1.688e+02  0.000e+00  0.000e+00  1.688e+02  0.000e+00  1.688e+02
+  step=9  time=0.9
+  Primary solution summary: L2-norm            : 3.03625
+                            Max X-displacement : 5.20649
+                            Max Z-displacement : 7.91963
+  Total reaction forces: Sum(R) = 0 0 -9
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.8318
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 8.44255
+  Node #13:	sol1 = -5.206e+00  0.000e+00 -7.920e+00
+		sol2 =  9.018e+00  0.000e+00  0.000e+00 -3.744e-03  0.000e+00  0.000e+00
+		sol3 =  1.714e+02  0.000e+00  0.000e+00  1.714e+02  0.000e+00  1.714e+02
+		sol4 =  1.894e+02  0.000e+00  0.000e+00  1.894e+02  0.000e+00  1.894e+02
+  Node #26:	sol1 = -5.206e+00  0.000e+00 -7.920e+00
+		sol2 =  9.018e+00  0.000e+00  0.000e+00 -3.744e-03  0.000e+00  0.000e+00
+		sol3 =  1.714e+02  0.000e+00  0.000e+00  1.714e+02  0.000e+00  1.714e+02
+		sol4 =  1.894e+02  0.000e+00  0.000e+00  1.894e+02  0.000e+00  1.894e+02
+  step=10  time=1
+  Primary solution summary: L2-norm            : 3.11535
+                            Max X-displacement : 5.43896
+                            Max Z-displacement : 8.03576
+  Total reaction forces: Sum(R) = 0 0 -10
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.0177
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 8.96424
+  Node #13:	sol1 = -5.439e+00  0.000e+00 -8.036e+00
+		sol2 =  1.004e+01  0.000e+00  0.000e+00 -3.670e-03  0.000e+00  0.000e+00
+		sol3 =  1.920e+02  0.000e+00  0.000e+00  1.920e+02  0.000e+00  1.920e+02
+		sol4 =  2.096e+02  0.000e+00  0.000e+00  2.096e+02  0.000e+00  2.096e+02
+  Node #26:	sol1 = -5.439e+00  0.000e+00 -8.036e+00
+		sol2 =  1.004e+01  0.000e+00  0.000e+00 -3.670e-03  0.000e+00  0.000e+00
+		sol3 =  1.920e+02  0.000e+00  0.000e+00  1.920e+02  0.000e+00  1.920e+02
+		sol4 =  2.096e+02  0.000e+00  0.000e+00  2.096e+02  0.000e+00  2.096e+02
+  Time integration completed.

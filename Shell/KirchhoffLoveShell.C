@@ -346,7 +346,11 @@ std::string KirchhoffLoveShell::getField1Name (size_t i,
     return name;
   }
   else if (i > 3)
-    return "";
+  {
+    if (prefix)
+      return prefix + std::string(" displacement");
+    return "displacement";
+  }
 
   char name = 'u'+i;
   if (!prefix)

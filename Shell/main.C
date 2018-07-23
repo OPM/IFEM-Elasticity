@@ -132,6 +132,22 @@ int main (int argc, char** argv)
   // Initialize the linear equation solver and solution vectors
   simulator.initSol();
 
+  if (!model.opt.restartFile.empty())
+  {
+    DataExporter::SerializeData data;
+    HDF5Writer hdf(model.opt.restartFile,model.getProcessAdm(),true);
+    int restartStep = hdf.readRestartData(data,model.opt.restartStep);
+    if (restartStep >= 0 && simulator.deSerialize(data))
+      IFEM::cout <<"\n === Restarting from a serialized state ==="
+                 <<"\n     file = "<< model.opt.restartFile
+                 <<"\n     step = "<< restartStep << std::endl;
+    else
+    {
+      std::cerr <<" *** Failed to read restart data."<< std::endl;
+      return restartStep;
+    }
+  }
+
   DataExporter* writer = nullptr;
   if (model.opt.dumpHDF5(infile))
   {
@@ -139,7 +155,7 @@ int main (int argc, char** argv)
     const std::string& fileName = model.opt.hdf5;
     IFEM::cout <<"\nWriting HDF5 file "<< fileName <<".hdf5"<< std::endl;
 
-    writer = new DataExporter(true);
+    writer = new DataExporter(true,model.opt.saveInc,model.opt.restartInc);
     writer->registerField("u","solution",DataExporter::SIM,
                           DataExporter::PRIMARY);
     writer->setFieldValue("u",&model,&simulator.getSolution());
