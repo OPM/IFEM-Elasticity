@@ -87,7 +87,7 @@ public:
     double nextSave = params.time.t + Newmark::opt.dtSave;
 
     std::streamsize ptPrec = outPrec > 0 ? outPrec : 3;
-    std::ostream* os = &std::cout;
+    std::ostream* os = nullptr;
     if (!pointfile.empty())
       os = new std::ofstream(pointfile.c_str());
 
@@ -112,8 +112,13 @@ public:
       }
 
       // Print solution components at the user-defined points
-      utl::LogStream log(*os);
-      this->dumpResults(params.time.t,log,ptPrec,pointfile.empty());
+      if (os)
+      {
+        utl::LogStream log(os);
+        this->dumpResults(params.time.t,log,ptPrec,false);
+      }
+      else
+        this->dumpResults(params.time.t,IFEM::cout,ptPrec,true);
 
       if (params.hasReached(nextSave))
       {
@@ -132,8 +137,13 @@ public:
 
         // Save solution variables to HDF5
         if (writer)
-          if (!writer->dumpTimeLevel(&params))
-            status += 8;
+        {
+          DataExporter::SerializeData data;
+          if (writer->dumpForRestart(&params) && this->serialize(data))
+            status += writer->dumpTimeLevel(&params,false,&data) ? 0 : 8;
+          else
+            status += writer->dumpTimeLevel(&params) ? 0 : 8;
+        }
 
         nextSave = params.time.t + Newmark::opt.dtSave;
         if (nextSave > params.stopTime)
@@ -141,10 +151,23 @@ public:
       }
     }
 
-    if (!pointfile.empty())
-      delete os;
+    delete os;
 
     return status;
+  }
+
+  //! \brief Serialize solution state for restarting purposes.
+  //! \param data Container for serialized data
+  virtual bool serialize(DataExporter::SerializeData& data) const
+  {
+    return params.serialize(data) && this->Newmark::serialize(data);
+  }
+
+  //! \brief Set solution from a serialized state.
+  //! \param[in] data Container for serialized data
+  virtual bool deSerialize(const DataExporter::SerializeData& data)
+  {
+    return params.deSerialize(data) && this->Newmark::deSerialize(data);
   }
 
   //! \brief Accesses the projected solution.

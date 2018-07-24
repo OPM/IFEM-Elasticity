@@ -246,8 +246,16 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
 
       // Save solution variables to HDF5
       if (writer)
-        if (!writer->dumpTimeLevel(&params))
+      {
+        bool dstat = true;
+        SerializeMap data;
+        if (writer->dumpForRestart(&params) && this->serialize(data))
+          dstat = writer->dumpTimeLevel(&params,false,&data);
+        else
+          dstat = writer->dumpTimeLevel(&params);
+        if (!dstat)
           return 9;
+      }
 
       nextSave = params.time.t + opt.dtSave;
       if (nextSave > params.stopTime)
@@ -274,4 +282,16 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
   }
 
   return 0;
+}
+
+
+bool NonlinearDriver::serialize (SerializeMap& data) const
+{
+  return params.serialize(data) && this->NonLinSIM::serialize(data);
+}
+
+
+bool NonlinearDriver::deSerialize (const SerializeMap& data)
+{
+  return params.deSerialize(data) && this->NonLinSIM::deSerialize(data);
 }
