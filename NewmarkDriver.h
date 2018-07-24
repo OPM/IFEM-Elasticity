@@ -87,7 +87,7 @@ public:
     double nextSave = params.time.t + Newmark::opt.dtSave;
 
     std::streamsize ptPrec = outPrec > 0 ? outPrec : 3;
-    std::ostream* os = &std::cout;
+    std::ostream* os = nullptr;
     if (!pointfile.empty())
       os = new std::ofstream(pointfile.c_str());
 
@@ -112,7 +112,7 @@ public:
       }
 
       // Print solution components at the user-defined points
-      utl::LogStream log(*os);
+      utl::LogStream log(os ? os : &std::cout);
       this->dumpResults(params.time.t,log,ptPrec,pointfile.empty());
 
       if (params.hasReached(nextSave))
@@ -141,8 +141,7 @@ public:
       }
     }
 
-    if (!pointfile.empty())
-      delete os;
+    delete os;
 
     return status;
   }
