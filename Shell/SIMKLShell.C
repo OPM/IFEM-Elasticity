@@ -15,6 +15,7 @@
 #include "KirchhoffLoveShell.h"
 #include "LinIsotropic.h"
 #include "AlgEqSystem.h"
+#include "ASMbase.h"
 #include "SAM.h"
 #include "Functions.h"
 #include "Utilities.h"
@@ -198,46 +199,47 @@ bool SIMKLShell::parse (const TiXmlElement* elem)
         klp->setThickness(tVec.front());
     }
 
-    else if (!strcasecmp(child->Value(),"pointload"))
+    else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild())
     {
       myLoads.resize(myLoads.size()+1);
       PointLoad& load = myLoads.back();
-      std::string type("constant");
       utl::getAttribute(child,"patch",load.patch);
       utl::getAttribute(child,"xi",load.xi[0]);
       utl::getAttribute(child,"eta",load.xi[1]);
-      utl::getAttribute(child,"type",type);
-      if (child->FirstChild())
+      IFEM::cout <<"\tPoint: P"<< load.patch
+                 <<" xi = "<< load.xi[0] <<" "<< load.xi[1];
+      if (nsd == 3)
       {
-        const char* cload = child->FirstChild()->Value();
-        IFEM::cout <<"\tPoint: P"<< load.patch
-                   <<" xi = "<< load.xi[0] <<" "<< load.xi[1];
-        if (nsd == 3)
-        {
-          utl::getAttribute(child,"direction",load.ldof.second);
-          IFEM::cout <<" direction = "<< load.ldof.second;
-        }
-        if (type == "constant")
-        {
-          load.p = new ConstantFunc(atof(cload));
-          IFEM::cout <<" load = "<< (*load.p)(0.0) << std::endl;
-        }
-        else
-        {
-          IFEM::cout <<" Load: ";
-          load.p = utl::parseTimeFunc(cload,type);
-        }
+        utl::getAttribute(child,"direction",load.ldof.second);
+        IFEM::cout <<" direction = "<< load.ldof.second;
       }
+
+      std::string type("constant");
+      utl::getAttribute(child,"type",type);
+      if (type == "constant")
+      {
+        load.p = new ConstantFunc(atof(child->FirstChild()->Value()));
+        IFEM::cout <<" load = "<< (*load.p)(0.0) << std::endl;
+      }
+      else
+      {
+        IFEM::cout <<" Load: ";
+        load.p = utl::parseTimeFunc(child->FirstChild()->Value(),type);
+      }
+
+      // Negate the local DOF flag to signal that element loads are allowed
+      bool allowElementPointLoad = false;
+      utl::getAttribute(child,"onElement",allowElementPointLoad);
+      if (allowElementPointLoad) load.ldof.second *= -1;
     }
 
-    else if (!strcasecmp(child->Value(),"pressure"))
+    else if (!strcasecmp(child->Value(),"pressure") && child->FirstChild())
     {
       std::string set, type;
       utl::getAttribute(child,"set",set);
       int code = this->getUniquePropertyCode(set,1);
       if (code == 0) utl::getAttribute(child,"code",code);
-
-      if (child->FirstChild() && code > 0)
+      if (code > 0)
       {
         utl::getAttribute(child,"type",type,true);
         IFEM::cout <<"\tPressure code "<< code;
@@ -324,13 +326,17 @@ bool SIMKLShell::preprocessB ()
   int ipt = 0;
   for (PointLoad& pl : myLoads)
   {
+    double prms[2];
     int iclose = 0;
-    int imatch = this->evalPoint(pl.xi,pl.X,nullptr,pl.patch,true);
-    if (imatch > 0)
-      pl.ldof.first = imatch;
+    int imatch = this->evalPoint(pl.xi,pl.X,prms,pl.patch,true);
+    if (imatch >= 0 && pl.ldof.second < 0)
+      pl.ldof.first = this->findElementContaining(prms,pl.patch);
     else if (imatch == 0 && (iclose = this->findClosestNode(pl.X)) > 0)
       pl.ldof.first = iclose;
     else
+      pl.ldof.first = imatch;
+
+    if (pl.ldof.first <= 0)
     {
       std::cerr <<" *** SIMKLShell::preprocessB: Load point ("
                 << pl.xi[0] <<','<< pl.xi[1] <<") on patch #"<< pl.patch
@@ -339,14 +345,20 @@ bool SIMKLShell::preprocessB ()
       continue;
     }
 
+    memcpy(pl.xi,prms,2*sizeof(double));
     IFEM::cout <<"Load point #"<< ++ipt <<": patch #"<< pl.patch
-               <<" (u,v)=("<< pl.xi[0] <<','<< pl.xi[1]
-               << (iclose > 0 ? "), (closest) node #" : "), node #")
-               << pl.ldof.first <<", X = "<< pl.X;
+               <<" (u,v)=("<< pl.xi[0] <<','<< pl.xi[1];
+    if (pl.ldof.second < 0)
+      IFEM::cout <<") on element #";
+    else if (iclose > 0)
+      IFEM::cout <<"), (closest) node #";
+    else
+      IFEM::cout <<"), node #";
+    IFEM::cout << pl.ldof.first <<", X = "<< pl.X;
     if (iclose > 0)
       IFEM::cout <<" (Xnod = "<< this->getNodeCoord(iclose) <<")";
     if (nsd == 3)
-      IFEM::cout <<", direction = "<< (int)pl.ldof.second;
+      IFEM::cout <<", direction = "<< abs(pl.ldof.second);
     IFEM::cout << std::endl;
   }
 
@@ -360,11 +372,29 @@ bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase*,
   SystemVector* b = myEqSys->getVector();
   if (!b) return false;
 
+  bool ok = true;
   for (const PointLoad& load : myLoads)
-    if (!mySam->assembleSystem(*b,(*load.p)(time.t),load.ldof))
-      return false;
+    if (load.ldof.second > 0)
+      ok &= mySam->assembleSystem(*b,(*load.p)(time.t),load.ldof);
+    else // This is an element point load
+      ok &= this->assemblePoint(load.patch,load.xi,(*load.p)(time.t),
+                                -load.ldof.second);
 
-  return true;
+  if (ok && time.first && time.it == 0)
+  {
+    Vector extLoad;
+    if (mySam->expandSolution(*b,extLoad,0.0))
+    {
+      std::streamsize oldPrec = IFEM::cout.precision(15);
+      IFEM::cout <<"  * Sum external load:";
+      for (unsigned char d = 0; d < nf[0]; d++)
+        IFEM::cout <<" "<< extLoad.sum(d,nf[0]);
+      IFEM::cout << std::endl;
+      IFEM::cout.precision(oldPrec);
+    }
+  }
+
+  return ok;
 }
 
 
@@ -376,10 +406,29 @@ double SIMKLShell::externalEnergy (const Vectors& u,
   // External energy from the nodal point loads
   const int* madof = mySam->getMADOF();
   for (const PointLoad& load : myLoads)
-  {
-    int idof = madof[load.ldof.first-1] + load.ldof.second-1;
-    energy += (*load.p)(time.t) * u.front()(idof);
-  }
+    if (load.ldof.second > 0)
+    {
+      int idof = madof[load.ldof.first-1] + load.ldof.second-1;
+      energy += (*load.p)(time.t) * u.front()(idof);
+    }
+    else if (load.ldof.second < 0) // This is an element point load
+    {
+      Vector v = this->SIMgeneric::getSolution(u.front(),load.xi,0,load.patch);
+      if (-load.ldof.second <= (int)v.size())
+        energy += (*load.p)(time.t) * v(-load.ldof.second);
+    }
 
   return energy;
+}
+
+
+bool SIMKLShell::assemblePoint (int patch, const double* u,
+                                double scale, int ldof)
+{
+  ASMbase* pch = this->getPatch(patch,true);
+  if (!pch) return false;
+
+  this->setMode(SIM::RHS_ONLY);
+  Vec3 pval; pval(ldof) = scale;
+  return pch->diracPoint(*myProblem,*myEqSys,u,pval);
 }

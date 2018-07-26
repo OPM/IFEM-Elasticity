@@ -108,6 +108,13 @@ public:
                        const FiniteElement& fe, const Vec3& X,
                        bool toLocal = false) const = 0;
 
+  //! \brief Evaluates the point load integrand at a specified point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] pval Load value at the specified point
+  virtual bool evalPoint(LocalIntegral& elmInt, const FiniteElement& fe,
+                         const Vec3& pval);
+
 protected:
   //! \brief Calculates integration point mass matrix contributions.
   //! \param EM Element matrix to receive the mass contributions

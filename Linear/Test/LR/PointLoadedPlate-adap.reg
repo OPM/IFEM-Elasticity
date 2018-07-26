@@ -1,0 +1,208 @@
+PointLoadedPlate-adap.xinp -2DKL -adap
+
+Input file: PointLoadedPlate-adap.xinp
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Solution component output zero tolerance: 1e-06
+Parsing input file PointLoadedPlate-adap.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2 2
+  Parsing <refine>
+	Refining P1 7 7
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 1 0.3 1 1
+	Point: P1 xi = 0.5 0.5 load = 1
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+Parsing <adaptive>
+	Refinement percentage: 2 type=0
+	Refinement scheme: 2
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Problem definition:
+KirchhoffLovePlate: thickness = 1, gravity = 0
+LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+Result point #1: patch #1 (u,v)=(0.5,0.5), X = 0.5 0.5 0
+ >>> SAM model summary <<<
+Number of elements    64
+Number of nodes       121
+Number of dofs        121
+Number of unknowns    81
+Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
+ >>> Starting adaptive simulation based on
+     Continuous global L2-projection error estimates (norm group 1) <<<
+Adaptive step 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 640.297
+ >>> Solution summary <<<
+L2-norm            : 0.0433307
+Max displacement   : 0.142236
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.262254e-01
+		sol2 =  3.301266e-01  3.301266e-01  0.000000e+00
+Energy norm           a(w^h,w^h)^0.5 : 0.355282
+External energy          (p,w^h)^0.5 : 0.355282
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.354956
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0152239
+ relative error (% of |u^r|) : 4.28896
+Residual error (r(u^r) + J(u^r))^0.5 : 0.284706
+ relative error (% of |u^r|) : 80.2089
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.0152239
+Relative error (%) : 4.28109
+Root mean square (RMS) of error      : 1.05772
+Min element error                    : 0.000127367
+Max element error                    : 0.00570914
+Average element error                : 0.00130736
+Refining 3 basis functions with errors in range \[0.0469909,0.0513728] 2% of all basis functions
+Refined mesh: 136 elements 163 nodes.
+Adaptive step 2
+Parsing input file PointLoadedPlate-adap.xinp
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 1 0.3 1 1
+	Point: P1 xi = 0.5 0.5 load = 1
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+KirchhoffLovePlate: thickness = 1, gravity = 0
+LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+Result point #1: patch #1 (u,v)=(0.5,0.5), X = 0.5 0.5 0
+ >>> SAM model summary <<<
+Number of elements    136
+Number of nodes       163
+Number of dofs        163
+Number of unknowns    123
+Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 2650.62
+ >>> Solution summary <<<
+L2-norm            : 0.062894
+Max displacement   : 0.131787
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.265613e-01
+		sol2 =  4.019934e-01  4.019934e-01
+Energy norm           a(w^h,w^h)^0.5 : 0.355755
+External energy          (p,w^h)^0.5 : 0.355755
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.355657
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.008334
+ relative error (% of |u^r|) : 2.34327
+Residual error (r(u^r) + J(u^r))^0.5 : 0.135835
+ relative error (% of |u^r|) : 38.1928
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.008334
+Relative error (%) : 2.34198
+Root mean square (RMS) of error      : 1.29786
+Min element error                    : 3.05922e-05
+Max element error                    : 0.00308702
+Average element error                : 0.000436171
+Refining 4 basis functions with errors in range \[0.025041,0.0402097] 2% of all basis functions
+Refined mesh: 229 elements 220 nodes.
+Adaptive step 3
+Parsing input file PointLoadedPlate-adap.xinp
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 1 0.3 1 1
+	Point: P1 xi = 0.5 0.5 load = 1
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+KirchhoffLovePlate: thickness = 1, gravity = 0
+LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+Result point #1: patch #1 (u,v)=(0.5,0.5), X = 0.5 0.5 0
+ >>> SAM model summary <<<
+Number of elements    229
+Number of nodes       220
+Number of dofs        220
+Number of unknowns    180
+Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+	Condition number: 22281.4
+ >>> Solution summary <<<
+L2-norm            : 0.0770038
+Max displacement   : 0.12818
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.266489e-01
+		sol2 =  4.738063e-01  4.738063e-01
+Energy norm           a(w^h,w^h)^0.5 : 0.355878
+External energy          (p,w^h)^0.5 : 0.355878
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.35585
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.00441501
+ relative error (% of |u^r|) : 1.24069
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0680267
+ relative error (% of |u^r|) : 19.1167
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.00441501
+Relative error (%) : 1.2405
+Root mean square (RMS) of error      : 1.1772
+Min element error                    : 2.90318e-05
+Max element error                    : 0.00154844
+Average element error                : 0.000188885

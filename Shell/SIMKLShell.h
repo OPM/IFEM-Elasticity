@@ -91,9 +91,13 @@ protected:
   //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& u, const TimeDomain& time) const;
 
+private:
+  //! \brief Assembles consistent nodal forces due to a element point load.
+  bool assemblePoint(int patch, const double* u, double scale, int ldof);
+
 protected:
   RealArray tVec;     //!< Shell thickness data
-  PloadVec  myLoads;  //!< Nodal point loads
+  PloadVec  myLoads;  //!< Nodal/element point loads
   int       aCode[3]; //!< Analytical BC codes (used by destructor)
 };
 

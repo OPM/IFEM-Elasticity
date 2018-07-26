@@ -13,6 +13,7 @@
 
 #include "KirchhoffLove.h"
 #include "MaterialBase.h"
+#include "FiniteElement.h"
 #include "ElmMats.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
@@ -256,4 +257,22 @@ bool KirchhoffLove::evalSol (Vector& s,
 
   // Evaluate the stress resultants
   return this->evalSol(s,eV,fe,X,true);
+}
+
+
+bool KirchhoffLove::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
+                               const Vec3& pval)
+{
+  if (!eS)
+  {
+    std::cerr <<" *** KirchhoffLove::evalPoint: No load vector."<< std::endl;
+    return false;
+  }
+
+  Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
+  for (size_t a = 1; a <= fe.N.size(); a++)
+    for (unsigned short int i = 1; i <= npv; i++)
+      ES(npv*(a-1)+i) += pval(i)*fe.N(a)*fe.detJxW;
+
+  return true;
 }
