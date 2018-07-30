@@ -61,6 +61,8 @@ file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/*.reg)
 file(GLOB LINEL_VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/*.vreg)
+file(GLOB LINEL_HDF5_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/*.hreg)
 if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
@@ -74,6 +76,9 @@ if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   endforeach()
   foreach(VTFFILE ${LINEL_VTF_FILES} ${LRE_VTF_FILES})
     ifem_add_vtf_test(${VTFFILE} LinEl)
+  endforeach()
+  foreach(HDF5FILE ${LINEL_HDF5_FILES})
+    ifem_add_hdf5_test(${HDF5FILE} LinEl)
   endforeach()
 endif()
 

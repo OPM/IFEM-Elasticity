@@ -338,6 +338,9 @@ void KirchhoffLoveShell::primaryScalarFields (Matrix& field)
 std::string KirchhoffLoveShell::getField1Name (size_t i,
                                                const char* prefix) const
 {
+  if (i == 11)
+    return "u";
+
   if (i == 3)
   {
     std::string name("sqrt(u^2+v^2+w^2)");
