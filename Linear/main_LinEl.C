@@ -319,16 +319,14 @@ int main (int argc, char** argv)
       results |= DataExporter::SECONDARY;
 
     exporter = new DataExporter(true);
+    exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
+                                            model->getProcessAdm()));
     if (staticSol)
     {
       exporter->registerField("u", "solution", DataExporter::SIM, results);
-      exporter->setFieldValue("u", model, aSim ? &aSim->getSolution() : &displ);
-      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit) {
-        exporter->registerField(prefix[i], "projected", DataExporter::SIM,
-                                DataExporter::SECONDARY, prefix[i]);
-        exporter->setFieldValue(prefix[i], model,
-                                aSim ? &aSim->getProjection(i) : &projs[i]);
-      }
+      exporter->setFieldValue("u", model, aSim ? &aSim->getSolution() : &displ,
+                              projs.empty() ? nullptr : &projs,
+                              results & DataExporter::NORMS ? &eNorm : nullptr);
       exporter->setNormPrefixes(prefix);
     }
     if (model->opt.eig > 0)
@@ -337,8 +335,6 @@ int main (int argc, char** argv)
                               DataExporter::EIGENMODES);
       exporter->setFieldValue("eig", model, &modes);
     }
-    exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
-                                            model->getProcessAdm()));
   }
 
   switch (args.adap ? 10 : iop+model->opt.eig) {

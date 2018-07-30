@@ -1,0 +1,51 @@
+ScordelisLo-p4-4x4.xinp -2DKLshell
+
+/                        Group
+/0                       Group
+/0/Elasticity-1          Group
+/0/Elasticity-1/basis    Group
+/0/Elasticity-1/basis/1  Dataset {3241}
+/0/Elasticity-1/fields   Group
+/0/Elasticity-1/fields/Bottom\ sigma_1 Group
+/0/Elasticity-1/fields/Bottom\ sigma_1/1 Dataset {64}
+/0/Elasticity-1/fields/Bottom\ sigma_2 Group
+/0/Elasticity-1/fields/Bottom\ sigma_2/1 Dataset {64}
+/0/Elasticity-1/fields/Bottom\ sigma_m Group
+/0/Elasticity-1/fields/Bottom\ sigma_m/1 Dataset {64}
+/0/Elasticity-1/fields/Bottom\ sigma_x Group
+/0/Elasticity-1/fields/Bottom\ sigma_x/1 Dataset {64}
+/0/Elasticity-1/fields/Bottom\ sigma_y Group
+/0/Elasticity-1/fields/Bottom\ sigma_y/1 Dataset {64}
+/0/Elasticity-1/fields/Bottom\ tau_xy Group
+/0/Elasticity-1/fields/Bottom\ tau_xy/1 Dataset {64}
+/0/Elasticity-1/fields/Top\ sigma_1 Group
+/0/Elasticity-1/fields/Top\ sigma_1/1 Dataset {64}
+/0/Elasticity-1/fields/Top\ sigma_2 Group
+/0/Elasticity-1/fields/Top\ sigma_2/1 Dataset {64}
+/0/Elasticity-1/fields/Top\ sigma_m Group
+/0/Elasticity-1/fields/Top\ sigma_m/1 Dataset {64}
+/0/Elasticity-1/fields/Top\ sigma_x Group
+/0/Elasticity-1/fields/Top\ sigma_x/1 Dataset {64}
+/0/Elasticity-1/fields/Top\ sigma_y Group
+/0/Elasticity-1/fields/Top\ sigma_y/1 Dataset {64}
+/0/Elasticity-1/fields/Top\ tau_xy Group
+/0/Elasticity-1/fields/Top\ tau_xy/1 Dataset {64}
+/0/Elasticity-1/fields/m_xx Group
+/0/Elasticity-1/fields/m_xx/1 Dataset {64}
+/0/Elasticity-1/fields/m_xy Group
+/0/Elasticity-1/fields/m_xy/1 Dataset {64}
+/0/Elasticity-1/fields/m_yy Group
+/0/Elasticity-1/fields/m_yy/1 Dataset {64}
+/0/Elasticity-1/fields/n_xx Group
+/0/Elasticity-1/fields/n_xx/1 Dataset {64}
+/0/Elasticity-1/fields/n_xy Group
+/0/Elasticity-1/fields/n_xy/1 Dataset {64}
+/0/Elasticity-1/fields/n_yy Group
+/0/Elasticity-1/fields/n_yy/1 Dataset {64}
+/0/Elasticity-1/fields/u Group
+/0/Elasticity-1/fields/u/1 Dataset {192}
+/0/Elasticity-1/knotspan Group
+/0/Elasticity-1/knotspan/(p,u^h)^0.5 Group
+/0/Elasticity-1/knotspan/(p,u^h)^0.5/1 Dataset {16}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {16}

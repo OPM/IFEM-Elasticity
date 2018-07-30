@@ -1,0 +1,117 @@
+MidShipFrame.xinp -2D -noProj
+
+/                        Group
+/0                       Group
+/0/Elasticity-1          Group
+/0/Elasticity-1/basis    Group
+/0/Elasticity-1/basis/1  Dataset {6968}
+/0/Elasticity-1/basis/10 Dataset {6291}
+/0/Elasticity-1/basis/2  Dataset {3229}
+/0/Elasticity-1/basis/3  Dataset {5488}
+/0/Elasticity-1/basis/4  Dataset {17584}
+/0/Elasticity-1/basis/5  Dataset {9320}
+/0/Elasticity-1/basis/6  Dataset {3998}
+/0/Elasticity-1/basis/7  Dataset {3519}
+/0/Elasticity-1/basis/8  Dataset {12992}
+/0/Elasticity-1/basis/9  Dataset {3612}
+/0/Elasticity-1/fields   Group
+/0/Elasticity-1/fields/P1 Group
+/0/Elasticity-1/fields/P1/1 Dataset {100}
+/0/Elasticity-1/fields/P1/10 Dataset {170}
+/0/Elasticity-1/fields/P1/2 Dataset {60}
+/0/Elasticity-1/fields/P1/3 Dataset {100}
+/0/Elasticity-1/fields/P1/4 Dataset {330}
+/0/Elasticity-1/fields/P1/5 Dataset {330}
+/0/Elasticity-1/fields/P1/6 Dataset {100}
+/0/Elasticity-1/fields/P1/7 Dataset {90}
+/0/Elasticity-1/fields/P1/8 Dataset {330}
+/0/Elasticity-1/fields/P1/9 Dataset {90}
+/0/Elasticity-1/fields/P2 Group
+/0/Elasticity-1/fields/P2/1 Dataset {100}
+/0/Elasticity-1/fields/P2/10 Dataset {170}
+/0/Elasticity-1/fields/P2/2 Dataset {60}
+/0/Elasticity-1/fields/P2/3 Dataset {100}
+/0/Elasticity-1/fields/P2/4 Dataset {330}
+/0/Elasticity-1/fields/P2/5 Dataset {330}
+/0/Elasticity-1/fields/P2/6 Dataset {100}
+/0/Elasticity-1/fields/P2/7 Dataset {90}
+/0/Elasticity-1/fields/P2/8 Dataset {330}
+/0/Elasticity-1/fields/P2/9 Dataset {90}
+/0/Elasticity-1/fields/displacement Group
+/0/Elasticity-1/fields/displacement/1 Dataset {200}
+/0/Elasticity-1/fields/displacement/10 Dataset {340}
+/0/Elasticity-1/fields/displacement/2 Dataset {120}
+/0/Elasticity-1/fields/displacement/3 Dataset {200}
+/0/Elasticity-1/fields/displacement/4 Dataset {660}
+/0/Elasticity-1/fields/displacement/5 Dataset {660}
+/0/Elasticity-1/fields/displacement/6 Dataset {200}
+/0/Elasticity-1/fields/displacement/7 Dataset {180}
+/0/Elasticity-1/fields/displacement/8 Dataset {660}
+/0/Elasticity-1/fields/displacement/9 Dataset {180}
+/0/Elasticity-1/fields/s_xx Group
+/0/Elasticity-1/fields/s_xx/1 Dataset {100}
+/0/Elasticity-1/fields/s_xx/10 Dataset {170}
+/0/Elasticity-1/fields/s_xx/2 Dataset {60}
+/0/Elasticity-1/fields/s_xx/3 Dataset {100}
+/0/Elasticity-1/fields/s_xx/4 Dataset {330}
+/0/Elasticity-1/fields/s_xx/5 Dataset {330}
+/0/Elasticity-1/fields/s_xx/6 Dataset {100}
+/0/Elasticity-1/fields/s_xx/7 Dataset {90}
+/0/Elasticity-1/fields/s_xx/8 Dataset {330}
+/0/Elasticity-1/fields/s_xx/9 Dataset {90}
+/0/Elasticity-1/fields/s_xy Group
+/0/Elasticity-1/fields/s_xy/1 Dataset {100}
+/0/Elasticity-1/fields/s_xy/10 Dataset {170}
+/0/Elasticity-1/fields/s_xy/2 Dataset {60}
+/0/Elasticity-1/fields/s_xy/3 Dataset {100}
+/0/Elasticity-1/fields/s_xy/4 Dataset {330}
+/0/Elasticity-1/fields/s_xy/5 Dataset {330}
+/0/Elasticity-1/fields/s_xy/6 Dataset {100}
+/0/Elasticity-1/fields/s_xy/7 Dataset {90}
+/0/Elasticity-1/fields/s_xy/8 Dataset {330}
+/0/Elasticity-1/fields/s_xy/9 Dataset {90}
+/0/Elasticity-1/fields/s_yy Group
+/0/Elasticity-1/fields/s_yy/1 Dataset {100}
+/0/Elasticity-1/fields/s_yy/10 Dataset {170}
+/0/Elasticity-1/fields/s_yy/2 Dataset {60}
+/0/Elasticity-1/fields/s_yy/3 Dataset {100}
+/0/Elasticity-1/fields/s_yy/4 Dataset {330}
+/0/Elasticity-1/fields/s_yy/5 Dataset {330}
+/0/Elasticity-1/fields/s_yy/6 Dataset {100}
+/0/Elasticity-1/fields/s_yy/7 Dataset {90}
+/0/Elasticity-1/fields/s_yy/8 Dataset {330}
+/0/Elasticity-1/fields/s_yy/9 Dataset {90}
+/0/Elasticity-1/fields/von\ Mises\ stress Group
+/0/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {100}
+/0/Elasticity-1/fields/von\ Mises\ stress/10 Dataset {170}
+/0/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {60}
+/0/Elasticity-1/fields/von\ Mises\ stress/3 Dataset {100}
+/0/Elasticity-1/fields/von\ Mises\ stress/4 Dataset {330}
+/0/Elasticity-1/fields/von\ Mises\ stress/5 Dataset {330}
+/0/Elasticity-1/fields/von\ Mises\ stress/6 Dataset {100}
+/0/Elasticity-1/fields/von\ Mises\ stress/7 Dataset {90}
+/0/Elasticity-1/fields/von\ Mises\ stress/8 Dataset {330}
+/0/Elasticity-1/fields/von\ Mises\ stress/9 Dataset {90}
+/0/Elasticity-1/knotspan Group
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {64}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/10 Dataset {128}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/2 Dataset {32}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/3 Dataset {64}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/4 Dataset {256}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/5 Dataset {256}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/6 Dataset {64}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/7 Dataset {64}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/8 Dataset {256}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/9 Dataset {64}
+/0/Elasticity-1/knotspan/volume Group
+/0/Elasticity-1/knotspan/volume/1 Dataset {64}
+/0/Elasticity-1/knotspan/volume/10 Dataset {128}
+/0/Elasticity-1/knotspan/volume/2 Dataset {32}
+/0/Elasticity-1/knotspan/volume/3 Dataset {64}
+/0/Elasticity-1/knotspan/volume/4 Dataset {256}
+/0/Elasticity-1/knotspan/volume/5 Dataset {256}
+/0/Elasticity-1/knotspan/volume/6 Dataset {64}
+/0/Elasticity-1/knotspan/volume/7 Dataset {64}
+/0/Elasticity-1/knotspan/volume/8 Dataset {256}
+/0/Elasticity-1/knotspan/volume/9 Dataset {64}
