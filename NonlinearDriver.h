@@ -34,7 +34,7 @@ public:
   //! \brief The constructor forwards to the parent class constructor.
   //! \param sim Reference to the spline FE model
   //! \param linear If \e true, use a linear driver (no Newton iterations)
-  NonlinearDriver(SIMbase& sim, bool linear = false);
+  explicit NonlinearDriver(SIMbase& sim, bool linear = false);
   //! \brief Empty destructor.
   virtual ~NonlinearDriver() {}
 

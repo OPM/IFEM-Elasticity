@@ -30,7 +30,7 @@ template<class Newmark> class NewmarkDriver : public Newmark
 public:
   //! \brief The constructor forwards to the parent class constructor.
   //! \param sim Reference to the spline FE model
-  NewmarkDriver(SIMbase& sim) : Newmark(sim) { doInitAcc = false; }
+  explicit NewmarkDriver(SIMbase& sim) : Newmark(sim) { doInitAcc = false; }
   //! \brief Empty destructor.
   virtual ~NewmarkDriver() {}
 
