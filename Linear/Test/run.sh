@@ -14,11 +14,12 @@ run () {
 # This function runs a simulation with the specified options,
 # pipes the terminal output to a log-file, and compares it
 # with a previous simulation stored in the Reference folder.
+  ext=`echo $1 | sed 's/.*\.//'`
   if `echo $2 | grep -q '^\-'`; then
     inp=$1
-    log=`basename $1 .inp`.log
+    log=`basename $1 .$ext`.log
   else
-    inp=$2.inp
+    inp=$2.$ext
     log=$2.log
     ln -s $1 $inp
     shift
@@ -60,9 +61,9 @@ run SquarePlate-p2.inp SquarePlate-Splines  $eigOpt -nGauss 3 -vtf 1 -nviz 3
 run SquarePlate-p2.inp SquarePlate-Lagrange $eigOpt -nGauss 3 -vtf 1 -lagrange
 run SquarePlate-p2.inp SquarePlate-Spectral $eigOpt -nGauss 3 -vtf 1 -spectral
 
-run PipeJoint.inp PipeJoint-vibration -vtf 1 -nu 7 -nv 7 -free -eig 4 -nev 16 -ncv 32
-run PipeJoint.inp PipeJoint-NURBS     -vtf 1 -nu 7 -nv 7 -hdf5
-run PipeJoint.inp PipeJoint-Lagrange  -vtf 1 -lagrange
+run PipeJoint.xinp PipeJoint-vibration -vtf 1 -nu 7 -nv 7 -free -eig 4 -nev 16 -ncv 32
+run PipeJoint.xinp PipeJoint-NURBS     -vtf 1 -nu 7 -nv 7 -hdf5
+run PipeJoint.xinp PipeJoint-Lagrange  -vtf 1 -lagrange
 
 run NavierPress_p2.inp -2DKL -nGauss 2 -vtf 1 -nviz 7
 run NavierPress_p3.inp -2DKL -nGauss 3 -vtf 1 -nviz 7 -hdf5

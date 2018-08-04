@@ -1,31 +1,41 @@
-PipeJoint.inp
+PipeJoint.xinp
 
-Input file: PipeJoint.inp
+Input file: PipeJoint.xinp
 Equation solver: 2
 Number of Gauss points: 4
-Reading input file PipeJoint.inp
-Reading data file pipe_bifurcation.g2
-Reading patch 1
-Reading patch 2
-Reading patch 3
-Reading patch 4
-Reading patch 5
-Reading patch 6
-Reading patch 7
-Reading patch 8
-Reading patch 9
-Reading patch 10
-Reading data file pipe_bifurcation.gno
-Reading data file pipe_bifurcation.prc
-Number of Dirichlet properties: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file PipeJoint.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file pipe_bifurcation.g2
+	Reading patch 1
+	Reading patch 2
+	Reading patch 3
+	Reading patch 4
+	Reading patch 5
+	Reading patch 6
+	Reading patch 7
+	Reading patch 8
+	Reading patch 9
+	Reading patch 10
+  Parsing <nodefile>
+	Reading data file pipe_bifurcation.gno
+  Parsing <patchfile>
+  Parsing <nodefile>
+Parsing <boundaryconditions>
+  Parsing <propertyfile>
+	Reading data file pipe_bifurcation.prc
+  Parsing <dirichlet>
 	Dirichlet code 123: (fixed)
-Number of pressures: 1
-	Pressure code 1001 direction 1: 1e+08
-Reading input file succeeded.
+  Parsing <neumann>
+	Neumann code 1001 direction 1: 1e+08
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 4
 Problem definition:
 Elasticity: 3D, gravity = 0 0 0
-LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850
-Renumbered 246 nodes
+LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Renumbered 246 nodes.
 Resolving Dirichlet boundary conditions
 	Constraining P1 F1 in direction(s) 123
 	Constraining P2 F1 in direction(s) 123
@@ -38,6 +48,8 @@ Number of elements    12
 Number of nodes       166
 Number of dofs        498
 Number of unknowns    402
+Number of quadrature points 896 64
+Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
 Assembling interior matrix terms for P3
@@ -53,14 +65,21 @@ Assembling Neumann matrix terms for boundary 1 on P8
 Assembling Neumann matrix terms for boundary 1 on P9
 Assembling Neumann matrix terms for boundary 1 on P10
 Solving the equation system ...
+	Condition number: 3.81661e+06
  >>> Solution summary <<<
 L2-norm            : 0.0707423
 Max X-displacement : 0.295694
 Max Y-displacement : 0.100096
 Max Z-displacement : 0.0302177
 Projecting secondary solution ...
+	Greville point projection
+Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 41649
 External energy ((f,u^h)+(t,u^h)^0.5 : 41649
+>>> Error estimates based on Greville point projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 41489.2
 Error norm a(e,e)^0.5, e=u^r-u^h     : 15087.3
  relative error (% of |u^r|) : 36.3645
+L2-norm |s^r| = (s^r,s^r)^0.5        : 1.74378e+10
+L2-error (e,e)^0.5, e=s^r-s^h        : 7.42866e+09
+ relative error (% of |s^r|) : 42.6009
