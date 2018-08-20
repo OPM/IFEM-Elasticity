@@ -14,7 +14,7 @@
 #ifndef _SIM_ELASTICITY_WRAP_H_
 #define _SIM_ELASTICITY_WRAP_H_
 
-#include "SIMElasticity.h"
+#include "SIMElasticityInstance.h"
 #include "DataExporter.h"
 
 
