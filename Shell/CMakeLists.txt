@@ -28,7 +28,9 @@ add_executable(ShellEl ${Shell_SRCS})
 target_link_libraries(ShellEl Elasticity ${IFEM_LIBRARIES})
 
 # Installation
+
 install(TARGETS ShellEl DESTINATION bin COMPONENT bin)
+list(APPEND CHECK_SOURCES ${Shell_SRCS})
 
 # For generating the doxy
 set(EXTRA_DOXY_PATHS "${PROJECT_SOURCE_DIR} \\
