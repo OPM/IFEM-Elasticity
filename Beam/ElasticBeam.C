@@ -7,7 +7,7 @@
 //!
 //! \author Knut Morten Okstad / SINTEF
 //!
-//! \brief Class representing a non-linear elastic beam.
+//! \brief Class representing a nonlinear elastic beam.
 //!
 //==============================================================================
 
@@ -67,7 +67,7 @@ typedef BeamMats<NewmarkMats> NewmarkBeamMats;
 template<> NewmarkBeamMats::BeamMats (double a1, double a2, double b, double c)
   : NewmarkMats(a1,a2,b,c) {}
 
-//! Element matrices and data for non-linear dynamic beam FE problems
+//! Element matrices and data for nonlinear dynamic beam FE problems
 typedef BeamMats<HHTMats> HHTBeamMats;
 
 template<> HHTBeamMats::BeamMats (double a1, double a2, double b, double)
@@ -592,7 +592,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 {
   // Calculate initial element length
   Vec3 X0 = fe.XC[1] - fe.XC[0];
-  double L, L0 = X0.length();
+  double L0 = X0.length();
   if (L0 <= 1.0e-8)
   {
     std::cerr <<" *** ElasticBeam::evalInt: Zero initial element length "
@@ -604,15 +604,13 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 #endif
 
   const Vector& eV = elmInt.vec.front();
-  if (eV.empty())
-    L = L0;
-  else
+  if (!eV.empty())
   {
     // Calculate current element length
     Vec3 U1(eV.ptr(),npv);
     Vec3 U2(eV.ptr()+eV.size()-npv,npv);
     Vec3 X1 = X0 + U2 - U1;
-    L = X1.length();
+    double L = X1.length();
     if (L <= 1.0e-8)
     {
       std::cerr <<" *** ElasticBeam::evalInt: Zero element length "
