@@ -12,6 +12,7 @@
 //==============================================================================
 
 #include "IFEM.h"
+#include "SIMElasticityInstance.h"
 #include "SIMLinEl.h"
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"

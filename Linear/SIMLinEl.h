@@ -74,4 +74,9 @@ template<> bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is);
 //! \brief Template specialization - 3D specific input parsing.
 template<> bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem);
 
+//! \brief Explicit instance declaration.
+template<> bool SIMLinEl2D::GIpointsVTF;
+//! \brief Explicit instance declaration.
+template<> bool SIMLinEl3D::GIpointsVTF;
+
 #endif
