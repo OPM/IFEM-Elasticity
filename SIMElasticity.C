@@ -11,23 +11,21 @@
 //!
 //==============================================================================
 
-#include "SIMElasticity.h"
-#include "SIM2D.h"
-#include "SIM3D.h"
+#include "ElasticityUtils.h"
+#include "SIMbase.h"
+#include "IFEM.h"
+
 
 //! Plane strain/stress option for 2D problems.
-template<> bool SIMElasticity<SIM2D>::planeStrain = false;
+bool Elastic::planeStrain = false;
 //! Axisymmtry option for 2D problems.
-template<> bool SIMElasticity<SIM2D>::axiSymmetry = false;
-
-//! Dummy option for 3D problems.
-template<> bool SIMElasticity<SIM3D>::planeStrain = false;
-//! Dummy option for 3D problems.
-template<> bool SIMElasticity<SIM3D>::axiSymmetry = false;
+bool Elastic::axiSymmetry = false;
+//! Option for Gauss point output to VTF
+bool Elastic::GIpointsVTF = false;
 
 
-void ElasticityUtils::printNorms (const Vector& gNorm, const Vector& rNorm,
-                                  const std::string& name, const SIMbase* model)
+void Elastic::printNorms (const Vector& gNorm, const Vector& rNorm,
+                          const std::string& name, const SIMbase* model)
 {
   const char* uRef = model->haveAnaSol() ? "|u|)   : " : "|u^r|) : ";
   double Rel = 100.0/(model->haveAnaSol() ? rNorm(3) : gNorm(1));

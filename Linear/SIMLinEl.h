@@ -39,8 +39,8 @@ protected:
   {
     if (!Dim::myProblem)
       Dim::myProblem = new LinearElasticity(Dim::dimension,
-                                            SIMElasticity<Dim>::axiSymmetry,
-                                            GIpointsVTF);
+                                            Elastic::axiSymmetry,
+                                            Elastic::GIpointsVTF);
 
     return dynamic_cast<Elasticity*>(Dim::myProblem);
   }
@@ -56,9 +56,6 @@ protected:
   //! while still reusing as much code as possible.
   //! Only put dimension-specific code in here.
   virtual bool parseDimSpecific(const TiXmlElement* elem);
-
-public:
-  static bool GIpointsVTF; //!< Gauss point output to VTF option
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver

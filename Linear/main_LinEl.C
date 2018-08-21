@@ -136,7 +136,7 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-voz") && i < argc-1)
       VTF::vecOffset[2] = atof(argv[++i]);
     else if (!strcmp(argv[i],"-plotSC"))
-      SIMLinEl2D::GIpointsVTF = Immersed::plotCells = true;
+      Elastic::GIpointsVTF = Immersed::plotCells = true;
     else if (!strcmp(argv[i],"-free"))
       SIMbase::ignoreDirichlet = true;
     else if (!strcmp(argv[i],"-check"))
@@ -160,12 +160,12 @@ int main (int argc, char** argv)
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
       args.dim = 2;
-      SIMLinEl2D::planeStrain = true;
+      Elastic::planeStrain = true;
     }
     else if (!strncmp(argv[i],"-2Daxi",6))
     {
       args.dim = 2;
-      SIMLinEl2D::axiSymmetry = true;
+      Elastic::axiSymmetry = true;
     }
     else if (!strncmp(argv[i],"-noP",4))
       noProj = true;

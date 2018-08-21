@@ -195,11 +195,6 @@ protected:
     return true;
   }
 
-public:
-  static bool planeStrain; //!< Plane strain/stress option - 2D only
-  static bool axiSymmetry; //!< Axisymmtry option - 2D only
-
-protected:
   //! \brief Returns the actual integrand.
   virtual Elasticity* getIntegrand() = 0;
   //! \brief Parses a dimension-specific data section from an input file.
@@ -231,10 +226,8 @@ protected:
         IFEM::cout <<"\tMaterial code "<< code <<": ";
         if (code > 0)
           this->setPropertyType(code,Property::MATERIAL,mVec.size());
-        if (Dim::dimension == 2)
-          mVec.push_back(elInt->parseMatProp((char*)nullptr,planeStrain));
-        else
-          mVec.push_back(elInt->parseMatProp((char*)nullptr));
+        bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
+        mVec.push_back(elInt->parseMatProp((char*)nullptr,planeStrain));
         IFEM::cout << std::endl;
       }
     }
@@ -325,10 +318,8 @@ protected:
       for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
       {
         IFEM::cout <<"\tMaterial data: ";
-        if (Dim::dimension == 2)
-          mVec.push_back(elInt->parseMatProp(cline,planeStrain));
-        else
-          mVec.push_back(elInt->parseMatProp(cline));
+        bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
+        mVec.push_back(elInt->parseMatProp(cline,planeStrain));
 
         while ((cline = strtok(nullptr," ")))
           if (!strncasecmp(cline,"ALL",3))
@@ -402,10 +393,8 @@ protected:
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";
-        if (Dim::dimension == 2)
-          mVec.push_back(this->getIntegrand()->parseMatProp(child,planeStrain));
-        else
-          mVec.push_back(this->getIntegrand()->parseMatProp(child));
+        bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
+        mVec.push_back(this->getIntegrand()->parseMatProp(child,planeStrain));
       }
       else if (!strcasecmp(child->Value(),"bodyforce"))
       {
@@ -497,7 +486,7 @@ public:
   virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                const std::string& prjName) const
   {
-    ElasticityUtils::printNorms(gNorm,rNorm,prjName,this);
+    Elastic::printNorms(gNorm,rNorm,prjName,this);
   }
 
 protected:

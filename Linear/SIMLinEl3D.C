@@ -15,9 +15,6 @@
 #include "AnalyticSolutions.h"
 #include "Vec3Oper.h"
 
-//! Option for output of Gauss points to VTF for 3D problems.
-template<> bool SIMLinEl3D::GIpointsVTF = false;
-
 
 template<> bool SIMLinEl3D::parseDimSpecific (char* keyWord, std::istream& is)
 {

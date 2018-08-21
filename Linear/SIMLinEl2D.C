@@ -14,9 +14,6 @@
 #include "SIMLinEl.h"
 #include "AnalyticSolutions.h"
 
-//! Option for output of Gauss points to VTF for 2D problems.
-template<> bool SIMLinEl2D::GIpointsVTF = false;
-
 
 template<> bool SIMLinEl2D::parseDimSpecific (char* keyWord, std::istream& is)
 {

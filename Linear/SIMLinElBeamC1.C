@@ -40,7 +40,7 @@ bool SIMLinElBeamC1::parse (char* keyWord, std::istream& is)
   if (!myProblem)
     myProblem = new KirchhoffLovePlate(1);
 
-  char* cline = 0;
+  char* cline;
   KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
   if (!klp) return false;
 
@@ -247,7 +247,7 @@ bool SIMLinElBeamC1::initBodyLoad (size_t patchInd)
     if (prop.pcode == Property::BODYLOAD && prop.patch == patchInd)
       if ((it = myScalars.find(prop.pindx)) != myScalars.end()) break;
 
-  klp->setPressure(it == myScalars.end() ? 0 : it->second);
+  klp->setPressure(it == myScalars.end() ? nullptr : it->second);
   return true;
 }
 
@@ -317,5 +317,5 @@ double SIMLinElBeamC1::externalEnergy (const Vectors& u,
 void SIMLinElBeamC1::printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                      const std::string& prjName) const
 {
-  ElasticityUtils::printNorms(gNorm,rNorm,prjName,this);
+  Elastic::printNorms(gNorm,rNorm,prjName,this);
 }

@@ -20,7 +20,7 @@
 class SIMbase;
 
 
-namespace ElasticityUtils //! Dimension-independent utilities for Elasticity
+namespace Elastic //! Dimension-independent utilities for Elasticity
 {
   //! \brief Prints a norm group to the log stream.
   //! \param[in] gNorm The norm values to print
@@ -29,6 +29,10 @@ namespace ElasticityUtils //! Dimension-independent utilities for Elasticity
   //! \param[in] model The FE model associated with the norm values to print
   void printNorms(const Vector& gNorm, const Vector& rNorm,
                   const std::string& name, const SIMbase* model);
+
+  extern bool planeStrain; //!< Plane strain/stress option - 2D only
+  extern bool axiSymmetry; //!< Axisymmtry option - 2D only
+  extern bool GIpointsVTF; //!< Option for Gauss point output to VTF
 }
 
 #endif
