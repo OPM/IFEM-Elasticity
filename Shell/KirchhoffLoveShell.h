@@ -151,7 +151,7 @@ class KirchhoffLoveShellNorm : public NormBase
 public:
   //! \brief The constructor initializes its data members.
   //! \param[in] p The thin shell problem to evaluate norms for
-  KirchhoffLoveShellNorm(KirchhoffLoveShell& p);
+  explicit KirchhoffLoveShellNorm(KirchhoffLoveShell& p);
   //! \brief Empty destructor.
   virtual ~KirchhoffLoveShellNorm() {}
 
