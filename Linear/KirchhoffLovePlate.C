@@ -310,6 +310,7 @@ KirchhoffLovePlateNorm::KirchhoffLovePlateNorm (KirchhoffLovePlate& p,
 {
   nrcmp = myProblem.getNoFields(2);
   projBou = true;
+  nOrder = 0;
 }
 
 
@@ -319,6 +320,7 @@ KirchhoffLovePlateNorm::KirchhoffLovePlateNorm (KirchhoffLovePlate& p,
 {
   nrcmp = myProblem.getNoFields(2);
   projBou = true;
+  nOrder = 0;
 }
 
 
