@@ -25,7 +25,7 @@ class SIMLinElKL : public SIMKLShell
 {
 public:
   //! \brief Default constructor.
-  SIMLinElKL(bool shell = false) : SIMKLShell(shell) {}
+  explicit SIMLinElKL(bool shell = false) : SIMKLShell(shell) {}
   //! \brief Empty destructor.
   virtual ~SIMLinElKL() {}
 
