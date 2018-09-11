@@ -91,12 +91,14 @@ public:
   }
 
   //! \brief Initializes the linear equation solver and solution vectors.
+  //! \param[in] tp Time stepping parameters
   //! \param[in] withRF If \e true, reaction forces will be calculated
-  virtual bool init(const TimeStep&, bool withRF = false)
+  virtual bool init(const TimeStep& tp, bool withRF = false)
   {
     return (this->initSystem(Dim::opt.solver,1,1,0,withRF) &&
             this->initSolution(this->getNoDOFs(),this->getNoSolutions()) &&
-            this->setMode(SIM::INIT));
+            this->setMode(SIM::INIT) &&
+            this->getIntegrand()->init(tp.time));
   }
 
   //! \brief Advances the time step one step forward.

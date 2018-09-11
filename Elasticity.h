@@ -76,6 +76,9 @@ public:
   //! \brief Returns the current material object.
   Material* getMaterial() const { return material; }
 
+  //! \brief Initializes time integration parameters.
+  virtual bool init(const TimeDomain&) { return true; }
+
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 
