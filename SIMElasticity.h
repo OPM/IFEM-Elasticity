@@ -18,6 +18,7 @@
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
+#include "IsotropicTextureMat.h"
 #include "ForceIntegrator.h"
 #include "Property.h"
 #include "TimeStep.h"
@@ -387,7 +388,17 @@ protected:
     for (; child; child = child->NextSiblingElement())
       if (this->parseDimSpecific(child))
         continue;
-
+      else if (!strcasecmp(child->Value(),"texturematerial"))
+      {
+        IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
+        int code = this->parseMaterialSet(child,mVec.size());
+        IFEM::cout <<"\tMaterial code "<< code <<":";
+        bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
+        IsotropicTextureMat* mat = new IsotropicTextureMat(planeStrain,
+                                                           Elastic::axiSymmetry);
+        mat->parse(child);
+        mVec.push_back(mat);
+      }
       else if (!strcasecmp(child->Value(),"isotropic"))
       {
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
