@@ -78,6 +78,13 @@ if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
 endif()
 
 list(APPEND TEST_APPS LinEl)
+
+# Unit tests
+IFEM_add_test_app(${PROJECT_SOURCE_DIR}/Test/*.C
+                  ${PROJECT_SOURCE_DIR}/Test
+                  LinEl
+                  Beam Elasticity ${IFEM_LIBRARIES})
+
 if(IFEM_COMMON_APP_BUILD)
   set(TEST_APPS ${TEST_APPS} PARENT_SCOPE)
 else()
