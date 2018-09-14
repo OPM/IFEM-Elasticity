@@ -15,6 +15,8 @@
 #define _SIM_ELASTICITY_H
 
 #include "IFEM.h"
+#include "ASMs2D.h"
+#include <GoTools/geometry/SplineSurface.h>
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
@@ -390,6 +392,27 @@ protected:
         continue;
       else if (!strcasecmp(child->Value(),"texturematerial"))
       {
+        if (Dim::dimension != 2)
+        {
+          std::cerr << "Texture material not supported for trivariate models" << std::endl;
+          return false;
+        }
+        for (size_t i=1; i<=this->getNoPatches(); ++i)
+        {
+          ASMs2D *patch = dynamic_cast<ASMs2D*>(this->getPatch(i));
+          if (!patch)
+          {
+            std::cerr << "Only works for ASMs2D..." << std::endl;
+            return false;
+          }
+          Go::SplineSurface *surf = patch->getSurface();
+          if (surf->startparam_u() != 0 || surf->endparam_u() != 1 ||
+              surf->startparam_v() != 0 || surf->endparam_v() != 1)
+          {
+            std::cerr << "Texture material requires unit parametric domain" << std::endl;
+            return false;
+          }
+        }
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";

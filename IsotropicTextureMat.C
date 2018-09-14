@@ -12,14 +12,40 @@
 //==============================================================================
 
 #include "IsotropicTextureMat.h"
+#include "FiniteElement.h"
 #include "Utilities.h"
 #include "IFEM.h"
 #include "tinyxml.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 
 void IsotropicTextureMat::parse (const TiXmlElement* elem)
 {
+  std::string textureFile;
   utl::getAttribute(elem, "file", textureFile);
+
+  int width, height, nrChannels;
+  unsigned char* image = stbi_load(textureFile.c_str(),
+                                   &width, &height, &nrChannels, 0);
+  if (!image) {
+    std::cerr << "File not found: " << textureFile << std::endl;
+    return;
+  }
+  textureData.resize(width, std::vector<std::array<double,4> >(height));
+  const unsigned char* data = image;
+  for(int j=0; j<height; ++j) {
+    for(int i=0; i<width; ++i) {
+      for(int c=0; c<nrChannels; c++) {
+        textureData[i][j][c] = double(*data++) / 255.0;
+      }
+      for(int c=nrChannels; c<4; c++) {
+        textureData[i][j][c] = textureData[i][j][c];
+      }
+    }
+  }
+  free(image);
+
   const TiXmlElement* child = elem->FirstChildElement("range");
   for (; child; child = child->NextSiblingElement("range"))
   {
@@ -28,6 +54,10 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
     utl::getAttribute(child,"max",minmax.second);
     materials.insert(std::make_pair(minmax,LinIsotropic(planeStress,axiSymmetry)));
     materials[minmax].parse(child);
+  }
+  for (const auto it : materials) {
+    IFEM::cout << "Material with range [" << it.first.first << "," << it.first.second << "]:\n";
+    it.second.printLog();
   }
 }
 
@@ -47,7 +77,7 @@ const LinIsotropic* IsotropicTextureMat::findMaterial (const FiniteElement& fe) 
   auto mat = std::find_if(materials.begin(), materials.end(),
             [I](const std::pair<std::pair<double,double>,LinIsotropic>& a)
             {
-              return a.first.first >= I && a.first.second <= I;
+              return a.first.first <= I && I <= a.first.second;
             });
 
   if (mat == materials.end())
@@ -59,7 +89,14 @@ const LinIsotropic* IsotropicTextureMat::findMaterial (const FiniteElement& fe) 
 
 double IsotropicTextureMat::findIntensity (const FiniteElement& fe) const
 {
-  return 0.0;
+  size_t i = fe.u * (textureData.size()   -1);
+  size_t j = fe.v * (textureData[0].size()-1);
+  if (i<0 || i>textureData.size()   -1 ||
+      j<0 || j>textureData[0].size()-1) {
+    std::cerr << "Texture index out of bounds" << std::endl;
+    return -1;
+  }
+  return textureData[i][j][0];
 }
 
 
