@@ -17,10 +17,10 @@
 #include "LinIsotropic.h"
 #include "Field.h"
 #include <map>
+#include <vector>
 
 class ScalarFunc;
 class RealFunc;
-
 
 /*!
   \brief Class representing an isotropic material model with a texture.
@@ -69,8 +69,14 @@ public:
                 const FiniteElement& fe, const Vec3& X) const override;
 
 protected:
+  struct rgba {
+    double r;
+    double g;
+    double b;
+    double a;
+  };
   std::map<std::pair<double,double>,LinIsotropic> materials; //!< Material for different texture regions. 
-  std::string textureFile; //!< Path to texture file
+  std::vector<std::vector<std::array<double,4> > > textureData;
 
 private:
   //! \brief Locates the appropriate material as indicated by texture.
