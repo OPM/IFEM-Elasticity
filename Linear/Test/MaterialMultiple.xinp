@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2">
+    <patchfile>quarter-disk-9patch.g2</patchfile>
+    <refine lowerpatch="1" upperpatch="9" u="7" v="7"/>
+      <topology>
+        <connection master="1" medge="2" slave="4" sedge="1"/>
+        <connection master="1" medge="3" slave="2" sedge="4"/>
+        <connection master="2" medge="2" slave="5" sedge="1"/>
+        <connection master="2" medge="3" slave="3" sedge="4"/>
+        <connection master="3" medge="2" slave="6" sedge="1"/>
+        <connection master="4" medge="2" slave="7" sedge="1"/>
+        <connection master="4" medge="3" slave="5" sedge="4"/>
+        <connection master="5" medge="2" slave="8" sedge="1"/>
+        <connection master="5" medge="3" slave="6" sedge="4"/>
+        <connection master="6" medge="2" slave="9" sedge="1"/>
+        <connection master="7" medge="3" slave="8" sedge="4"/>
+        <connection master="8" medge="3" slave="9" sedge="4"/>
+      </topology>
+    <topologysets>
+      <set name="bottom" type="edge">
+        <item patch="1">1</item>
+        <item patch="2">1</item>
+        <item patch="3">1</item>
+      </set>
+      <set name="left" type="edge">
+        <item patch="7">2</item>
+        <item patch="8">2</item>
+        <item patch="9">2</item>
+      </set>
+      <set name="center" type="face">
+        <item patch="5"/>
+      </set>
+      <set name="most_patches" type="face">
+        <item patch="1"/>
+        <item patch="2"/>
+        <item patch="3"/>
+        <item patch="4"/>
+        <item patch="6"/>
+        <item patch="7"/>
+        <item patch="8"/>
+        <item patch="9"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="left" comp="12"/>
+    <neumann set="bottom" direction="1">1</neumann>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <elasticity>
+    <isotropic E="1e0" nu="0.30" rho="1" set="most_patches"/>
+    <isotropic E="1e3" nu="0.40" rho="1" set="center"/>
+  </elasticity>
+
+</simulation>

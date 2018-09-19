@@ -56,7 +56,7 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
     utl::getAttribute(child,"min",minmax.first);
     utl::getAttribute(child,"max",minmax.second);
 
-    materials.insert(std::make_pair(minmax,LinIsotropic()));
+    materials.insert(std::make_pair(minmax,LinIsotropic(!planeStress,axiSymmetry)));
     materials[minmax].parse(child);
     child = child->NextSiblingElement("range");
   }
