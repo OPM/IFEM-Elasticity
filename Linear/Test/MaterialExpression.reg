@@ -1,0 +1,46 @@
+MaterialExpression.xinp
+
+Input file: MaterialExpression.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file ImageMaterial.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file quarter-disk-1patch.g2
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: bottom (1,1,1D)
+	               left (1,2,1D)
+	               model (1,0,2D)
+  Parsing <patchfile>
+  Parsing <refine>
+	Refining P1 7 7
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <neumann>
+	  Stiffness function (expression) : r=sqrt
+Equation solver: 2
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E2 in direction(s) 12
+ >>> SAM model summary <<<
+Number of elements    576
+Number of nodes       700
+Number of dofs        1400
+Number of unknowns    1350
+Number of quadrature points 9984 96
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Solving the equation system ...
+	Condition number: 1.57668e+08
+L2-norm            : 12.8735
+Max X-displacement : 29.4324
+Max Y-displacement : 30.7243
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 5.3714
+External energy ((f,u^h)+(t,u^h)^0.5 : 5.3714
