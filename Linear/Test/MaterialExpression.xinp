@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2">
+    <patchfile>quarter-disk-1patch.g2</patchfile>
+    <refine u="7" v="7"/>
+    <topologysets>
+      <set name="bottom" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="left" type="edge">
+        <item patch="1">2</item>
+      </set>
+      <set name="model" type="face">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+
+  </geometry>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="left" comp="12"/>
+    <neumann set="bottom" direction="1">1</neumann>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <elasticity>
+    <isotropic nu="0.4" rho="1.0">
+      <stiffness type="expression">
+        r=sqrt(x*x+y*y);
+        theta=atan2(y,x)*180.0/PI;
+        if(below(r,1.333333),1.0,
+          if(above(r,1.666667),1.0,
+            if(below(theta,30.0),1.0,
+              if(above(theta,60.0),1.0,1.0e3))))
+      </stiffness>
+    </isotropic>
+  </elasticity>
+
+</simulation>
