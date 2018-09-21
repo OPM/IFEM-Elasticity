@@ -66,7 +66,7 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
 void IsotropicTextureMat::printLog () const
 {
   for (const auto it : materials) {
-    IFEM::cout << "Material with range [" << it.first.first << "," << it.first.second << "]: ";
+    IFEM::cout << "Material with range [" << it.first.first << "," << it.first.second << "]:\n";
     it.second.printLog();
   }
 }

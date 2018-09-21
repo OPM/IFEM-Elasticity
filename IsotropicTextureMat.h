@@ -12,7 +12,7 @@
 //==============================================================================
 
 #ifndef _ISOTROPIC_TEXTURE_MAT_H
-#define _ISOTROPIC_TEXURE_MAT_H
+#define _ISOTROPIC_TEXTURE_MAT_H
 
 #include "LinIsotropic.h"
 #include "Field.h"
@@ -29,10 +29,10 @@ class RealFunc;
 class IsotropicTextureMat : public LinIsotropic
 {
 public:
-  //! \brief Default constructor.
+  //! \brief Constructor.
   //! \param[in] ps If \e true, assume plane stress in 2D
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
-  IsotropicTextureMat(bool ps, bool ax);
+  inline IsotropicTextureMat(bool ps, bool ax);
   //! \brief Empty destructor.
   virtual ~IsotropicTextureMat() = default;
 
