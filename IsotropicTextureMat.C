@@ -19,12 +19,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-IsotropicTextureMat::IsotropicTextureMat (bool ps, bool ax) :
-  LinIsotropic(ps, ax)
-{
-}
-
-
 void IsotropicTextureMat::parse (const TiXmlElement* elem)
 {
   std::string textureFile;
