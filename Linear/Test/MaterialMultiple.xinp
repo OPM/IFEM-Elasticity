@@ -55,7 +55,7 @@
 
   <!-- Problem specific block !-->
   <elasticity>
-    <isotropic E="1e0" nu="0.30" rho="1" set="most_patches"/>
+    <isotropic E="1e0" nu="0.40" rho="1" set="most_patches"/>
     <isotropic E="1e3" nu="0.40" rho="1" set="center"/>
   </elasticity>
 

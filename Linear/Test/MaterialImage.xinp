@@ -28,9 +28,10 @@
 
   <!-- Problem specific block !-->
   <elasticity>
+    <gravity> 0|-9.81 </gravity>
     <texturematerial set="model" file="refdata/white_square.png">
       <range min="0.5" max="1.0"  E="1e3" nu="0.4" rho="1"/>
-      <range min="0"   max="0.5"  E="1e0" nu="0.3" rho="1"/>
+      <range min="0"   max="0.5"  E="1.0" nu="0.4" rho="1"/>
     </texturematerial>
   </elasticity>
 

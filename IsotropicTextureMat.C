@@ -54,6 +54,10 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
     materials[minmax].parse(child);
     child = child->NextSiblingElement("range");
   }
+  for (const auto it : materials) {
+    IFEM::cout << "Material with range [" << it.first.first << "," << it.first.second << "]:\n";
+    it.second.printLog();
+  }
 }
 
 
@@ -86,7 +90,7 @@ const LinIsotropic* IsotropicTextureMat::findMaterial (const FiniteElement& fe) 
 
 double IsotropicTextureMat::findIntensity (const FiniteElement& fe) const
 {
-  size_t i = fe.u * (textureData.size()-1);
+  size_t i = fe.u * (textureData.size()   -1);
   size_t j = fe.v * (textureData[0].size()-1);
   if (i<0 || i>textureData.size()   -1 ||
       j<0 || j>textureData[0].size()-1) {

@@ -31,11 +31,11 @@
     <isotropic nu="0.4" rho="1.0">
       <stiffness type="expression">
         r=sqrt(x*x+y*y);
-        theta=atan2(y,x)*180.0/PI;
+        theta=atan2(y,x);
         if(below(r,1.333333),1.0,
           if(above(r,1.666667),1.0,
-            if(below(theta,30.0),1.0,
-              if(above(theta,60.0),1.0,1.0e3))))
+            if(below(theta,0.5109907472970435),1.0,
+              if(above(theta,1.059805579497853),1.0,1.0e3))))
       </stiffness>
     </isotropic>
   </elasticity>
