@@ -31,8 +31,8 @@ class IsotropicTextureMat : public LinIsotropic
 public:
   //! \brief Constructor.
   //! \param[in] ps If \e true, assume plane stress in 2D
-  //! \param[in] ax If \e true, assume 3D axi-symmetric material
-  inline IsotropicTextureMat(bool ps, bool ax) : LinIsotropic(ps,ax) { } ;
+  //! \param[in] ax If \e true, assume 3D axi-symmetric materia
+  inline IsotropicTextureMat(bool ps, bool ax) : LinIsotropic(ps,ax) {}
   //! \brief Empty destructor.
   virtual ~IsotropicTextureMat() = default;
 
