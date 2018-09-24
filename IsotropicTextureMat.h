@@ -69,14 +69,8 @@ public:
                 const FiniteElement& fe, const Vec3& X) const override;
 
 protected:
-  struct rgba {
-    double r;
-    double g;
-    double b;
-    double a;
-  };
   std::map<std::pair<double,double>,LinIsotropic> materials; //!< Material for different texture regions. 
-  std::vector<std::vector<std::array<double,4> > > textureData;
+  std::vector<std::vector<std::array<double,4> > > textureData; //!< Raw image texture information
 
 private:
   //! \brief Locates the appropriate material as indicated by texture.
