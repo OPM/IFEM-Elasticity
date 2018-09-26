@@ -32,71 +32,64 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
     std::cerr << "File not found: " << textureFile << std::endl;
     return;
   }
-  textureData.resize(width, std::vector<std::array<double,4> >(height));
+
+  textureData.resize(width,std::vector<rgba>(height,{0.0,0.0,0.0}));
   const unsigned char* data = image;
-  for(int j=0; j<height; ++j) {
-    for(int i=0; i<width; ++i) {
-      for(int c=0; c<nrChannels; c++) {
+  for (int j = 0; j < height; j++)
+    for (int i = 0; i < width; i++)
+      for (int c = 0; c < nrChannels; c++)
         textureData[i][j][c] = double(*data++) / 255.0;
-      }
-      for(int c=nrChannels; c<4; c++) {
-        textureData[i][j][c] = textureData[i][j][c];
-      }
-    }
-  }
+
   free(image);
 
+  Doubles     range;
+  LinIsotropic mat(planeStress,axiSymmetry);
   const TiXmlElement* child = elem->FirstChildElement("range");
   for (; child; child = child->NextSiblingElement("range"))
   {
-    std::pair<double,double> minmax;
-    utl::getAttribute(child,"min",minmax.first);
-    utl::getAttribute(child,"max",minmax.second);
-    materials.insert(std::make_pair(minmax,LinIsotropic(planeStress,axiSymmetry)));
-    materials[minmax].parse(child);
-  }
-  for (const auto it : materials) {
-    IFEM::cout << "Material with range [" << it.first.first << "," << it.first.second << "]:\n";
-    it.second.printLog();
+    utl::getAttribute(child,"min",range.first);
+    utl::getAttribute(child,"max",range.second);
+    IFEM::cout << (materials.empty() ? "\n\t" : "\t");
+    mat.parse(child);
+    materials[range] = mat;
   }
 }
 
 
 void IsotropicTextureMat::printLog () const
 {
-  for (const auto it : materials) {
-    IFEM::cout << "Material with range [" << it.first.first << "," << it.first.second << "]:\n";
-    it.second.printLog();
+  for (const std::pair<Doubles,LinIsotropic>& mat : materials)
+  {
+    IFEM::cout <<"Material with range ["
+               << mat.first.first <<","<< mat.first.second <<"]:\n";
+    mat.second.printLog();
   }
 }
 
 
 const LinIsotropic* IsotropicTextureMat::findMaterial (const FiniteElement& fe) const
 {
-  double I = this->findIntensity(fe);
-  auto mat = std::find_if(materials.begin(), materials.end(),
-            [I](const std::pair<std::pair<double,double>,LinIsotropic>& a)
-            {
-              return a.first.first <= I && I <= a.first.second;
-            });
-
-  if (mat == materials.end())
+  if (textureData.empty())
     return nullptr;
 
-  return &mat->second;
-}
-
-
-double IsotropicTextureMat::findIntensity (const FiniteElement& fe) const
-{
-  size_t i = fe.u * (textureData.size()   -1);
-  size_t j = fe.v * (textureData[0].size()-1);
-  if (i<0 || i>textureData.size()   -1 ||
-      j<0 || j>textureData[0].size()-1) {
-    std::cerr << "Texture index out of bounds" << std::endl;
-    return -1;
+  int nrow = textureData.size();
+  int ncol = textureData.front().size();
+  int i = fe.u * (nrow-1);
+  int j = fe.v * (ncol-1);
+  if (i < 0 || i >= nrow || j < 0 || j >= ncol)
+  {
+    std::cerr <<" *** Texture index out of bounds "<< i <<" "<< j << std::endl;
+    return nullptr;
   }
-  return textureData[i][j][0];
+
+  double I = textureData[i][j].front();
+  auto mat = std::find_if(materials.begin(),materials.end(),
+                          [I](const std::pair<Doubles,LinIsotropic>& a)
+                          {
+                            return a.first.first <= I && I <= a.first.second;
+                          });
+
+  return mat == materials.end() ? nullptr : &mat->second;
 }
 
 
@@ -105,21 +98,15 @@ bool IsotropicTextureMat::evaluate (double& lambda, double& mu,
                                     const Vec3& X) const
 {
   const LinIsotropic* mat = this->findMaterial(fe);
-  if (!mat)
-    return false;
-
-  return mat->evaluate(lambda, mu, fe, X);
+  return mat ? mat->evaluate(lambda, mu, fe, X) : false;
 }
 
 
 bool IsotropicTextureMat::evaluate (Matrix& C, SymmTensor& sigma, double& U,
                                     const FiniteElement& fe, const Vec3& X,
-                                    const Tensor& T, const SymmTensor& eps,
-                                    char iop, const TimeDomain* time, const Tensor* T2) const
+                                    const Tensor&, const SymmTensor& eps,
+                                    char iop, const TimeDomain*, const Tensor*) const
 {
   const LinIsotropic* mat = this->findMaterial(fe);
-  if (!mat)
-    return false;
-
-  return mat->evaluate(C, sigma, U, fe, X, T, eps, iop, time, T2);
+  return mat ? mat->evaluate(C, sigma, U, fe, X, eps, eps, iop) : false;
 }

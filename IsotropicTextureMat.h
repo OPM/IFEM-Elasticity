@@ -15,6 +15,7 @@
 #define _ISOTROPIC_TEXTURE_MAT_H
 
 #include "LinIsotropic.h"
+#include <array>
 #include <map>
 
 
@@ -64,16 +65,18 @@ public:
   bool evaluate(double& lambda, double& mu,
                 const FiniteElement& fe, const Vec3& X) const override;
 
-protected:
-  std::map<std::pair<double,double>,LinIsotropic> materials; //!< Material for different texture regions
-  std::vector<std::vector<std::array<double,4> > > textureData; //!< Raw image texture information
-
 private:
   //! \brief Locates the appropriate material as indicated by texture.
   const LinIsotropic* findMaterial(const FiniteElement& fe) const;
 
-  //! \brief Get texture intensity in an integration point.
-  double findIntensity(const FiniteElement& fe) const;
+protected:
+  typedef std::pair<double,double> Doubles; //!< Convenience type
+  typedef std::array<double,4>     rgba;    //!< RGB color code
+
+  //! Material for different texture regions
+  std::map< Doubles,LinIsotropic > materials;
+  //! Raw image texture information describing the spatial material variation
+  std::vector< std::vector<rgba> > textureData;
 };
 
 #endif

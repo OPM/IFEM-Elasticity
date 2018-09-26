@@ -15,15 +15,13 @@
 #define _SIM_ELASTICITY_H
 
 #include "IFEM.h"
-#include "ASMs2D.h"
-#include <GoTools/geometry/SplineSurface.h>
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
-#include "IsotropicTextureMat.h"
 #include "ForceIntegrator.h"
 #include "Property.h"
 #include "TimeStep.h"
+#include "ASMbase.h"
 #include "AnaSol.h"
 #include "Functions.h"
 #include "Utilities.h"
@@ -390,40 +388,24 @@ protected:
     for (; child; child = child->NextSiblingElement())
       if (this->parseDimSpecific(child))
         continue;
-      else if (!strcasecmp(child->Value(),"texturematerial"))
+      else if (!strcasecmp(child->Value(),"isotropic") ||
+               !strcasecmp(child->Value(),"texturematerial"))
       {
-        if (Dim::dimension != 2)
+        if (!strcasecmp(child->Value(),"texturematerial"))
         {
-          std::cerr << "Texture material not supported for trivariate models" << std::endl;
-          return false;
+          Real2DMat domain;
+          for (ASMbase* pch : Dim::myModel)
+            if (pch->getParameterDomain(domain))
+              for (size_t d = 0; d < domain.size(); d++)
+                if (domain[d].front() != 0.0 || domain[d].back() != 1.0)
+                {
+                  std::cerr <<" *** Texture material requires unit parametric"
+                            <<" domain, "<< char('u'+d) <<"0 = "
+                            << domain[d].front() <<", "<< char('u'+d) <<"1 = "
+                            << domain[d].back() << std::endl;
+                  return false;
+                }
         }
-        for (size_t i=1; i<=this->getNoPatches(); ++i)
-        {
-          ASMs2D *patch = dynamic_cast<ASMs2D*>(this->getPatch(i));
-          if (!patch)
-          {
-            std::cerr << "Only works for ASMs2D..." << std::endl;
-            return false;
-          }
-          Go::SplineSurface *surf = patch->getSurface();
-          if (surf->startparam_u() != 0 || surf->endparam_u() != 1 ||
-              surf->startparam_v() != 0 || surf->endparam_v() != 1)
-          {
-            std::cerr << "Texture material requires unit parametric domain" << std::endl;
-            return false;
-          }
-        }
-        IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
-        int code = this->parseMaterialSet(child,mVec.size());
-        IFEM::cout <<"\tMaterial code "<< code <<":";
-        bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
-        IsotropicTextureMat* mat = new IsotropicTextureMat(planeStrain,
-                                                           Elastic::axiSymmetry);
-        mat->parse(child);
-        mVec.push_back(mat);
-      }
-      else if (!strcasecmp(child->Value(),"isotropic"))
-      {
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";
