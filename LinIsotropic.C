@@ -70,7 +70,7 @@ LinIsotropic::~LinIsotropic ()
 
 void LinIsotropic::parse (const TiXmlElement* elem)
 {
-  if (utl::getAttribute(elem,"E",Emod))
+  if (Emod >= 0.0 && utl::getAttribute(elem,"E",Emod))
     IFEM::cout <<" "<< Emod;
   if (utl::getAttribute(elem,"nu",nu))
     IFEM::cout <<" "<< nu;
@@ -86,7 +86,15 @@ void LinIsotropic::parse (const TiXmlElement* elem)
   const TiXmlNode* aval = nullptr;
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
-    if (!strcasecmp(child->Value(),"thermalexpansion"))
+    if (Emod >= 0.0 && !Efunc && !strcasecmp(child->Value(),"stiffness"))
+    {
+      std::string type;
+      utl::getAttribute(child,"type",type,true);
+      IFEM::cout <<"\n\t  Stiffness function ("<< type <<") ";
+      if ((aval = child->FirstChild()))
+        Efunc = utl::parseRealFunc(aval->Value(),type);
+    }
+    else if (!strcasecmp(child->Value(),"thermalexpansion"))
     {
       IFEM::cout <<" ";
       std::string type;
