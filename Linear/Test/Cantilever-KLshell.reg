@@ -4,6 +4,7 @@ Input file: Cantilever-KLshell.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
 Parsing input file Cantilever-KLshell.xinp
 Parsing <discretization>
 Parsing <geometry>
@@ -14,6 +15,7 @@ Parsing <geometry>
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: boundary (1,1,1D)
+	               tip (1,2,1D)
   Parsing <raiseorder>
 	Raising order of P1 2 0
   Parsing <refine>
@@ -22,10 +24,10 @@ Parsing <geometry>
 Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 3123: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 3 (constant): -1
 Parsing <KirchhoffLove>
 	Material code 0: 1e+06 0 1000 0.1
-	Point: P1 xi = 1 0 direction = 3 load = -0.5
-	Point: P1 xi = 1 1 direction = 3 load = -0.5
 Parsing <postprocessing>
   Parsing <resultpoints>
 	Point 1: P1 xi = 1 0
@@ -46,12 +48,15 @@ Number of elements    10
 Number of nodes       26
 Number of dofs        78
 Number of unknowns    70
-Load point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0, direction = 3
-Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
-Number of quadrature points 80
+Number of quadrature points 80 2
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 2 on P1
+  \* Sum external load: 0 0 -1
 Solving the equation system ...
+	Condition number: 170854
  >>> Solution summary <<<
 L2-norm            : 1.24444
 Max Z-displacement : 4
+  Node #13:	sol1 =  0.000000e+00  0.000000e+00 -4.000000e+00
+  Node #26:	sol1 =  0.000000e+00  0.000000e+00 -4.000000e+00

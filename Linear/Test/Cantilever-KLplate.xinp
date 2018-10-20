@@ -13,6 +13,9 @@
       <set name="boundary" type="edge">
         <item patch="1">1</item>
       </set>
+      <set name="tip" type="edge">
+        <item patch="1">2</item>
+      </set>
     </topologysets>
   </geometry>
 
@@ -24,13 +27,12 @@
   <!-- General - boundary conditions !-->
   <boundaryconditions>
     <dirichlet set="boundary" comp="1001"/>
+    <neumann set="tip" direction="1" type="constant">0.0 0.0 -1.0</neumann>
   </boundaryconditions>
 
   <!-- Problem specific block !-->
   <KirchhoffLove>
     <isotropic E="1.0e6" nu="0.0" rho="1.0e3" thickness="0.1"/>
-    <pointload patch="1" xi="1.0" eta="0.0">-0.5</pointload>
-    <pointload patch="1" xi="1.0" eta="1.0">-0.5</pointload>
   </KirchhoffLove>
 
   <!-- General - point result output !-->

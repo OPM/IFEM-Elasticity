@@ -193,8 +193,28 @@ bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 				  const FiniteElement& fe,
 				  const Vec3& X, const Vec3& normal) const
 {
-  std::cerr <<" *** KirchhoffLovePlate::evalBou not implemented."<< std::endl;
-  return false;
+  if (!eS)
+  {
+    std::cerr <<" *** KirchhoffLovePlate::evalBou: No load vector."<< std::endl;
+    return false;
+  }
+  else if (!fluxFld && !tracFld)
+  {
+    std::cerr <<" *** KirchhoffLovePlate::evalBou: No tractions."<< std::endl;
+    return false;
+  }
+
+  Vec3 T = this->getTraction(X,normal);
+  static_cast<ElmMats&>(elmInt).b[eS-1].add(fe.N,T.z*fe.detJxW);
+
+  // Store traction value for visualization
+  if (fe.iGP < tracVal.size() && !T.isZero())
+  {
+    tracVal[fe.iGP].first = X;
+    tracVal[fe.iGP].second += T;
+  }
+
+  return true;
 }
 
 
@@ -482,7 +502,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
 #if INT_DEBUG > 3
     std::cout <<"\n\t"<< (version > 1 ? "Laplace{w^r} =" : "m^r =");
-    for (double  v : mr) std::cout <<" "<< v;
+    for (double v : mr) std::cout <<" "<< v;
 #endif
 
     // Integrate the energy norm a(w^r,w^r)
@@ -602,8 +622,18 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
 {
   if (nrcmp <= 1) return true; // Nothing for 1D problems (beams)
 
+  KirchhoffLovePlate& problem = static_cast<KirchhoffLovePlate&>(myProblem);
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
-  int version = static_cast<KirchhoffLovePlate&>(myProblem).getVersion();
+  int version = problem.getVersion();
+
+  if (problem.haveLoads('B'))
+  {
+    // Evaluate the surface traction and displacement field
+    double T = problem.getTraction(X,normal).z;
+    double w = pnorm.vec.front().dot(fe.N);
+    // Integrate the external energy
+    pnorm[1] += T*w*fe.detJxW;
+  }
 
   double Jmp, m1, m2, hk3 = fe.h*fe.h*fe.h;
 
