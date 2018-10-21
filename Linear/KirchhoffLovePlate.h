@@ -57,6 +57,13 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
+  //! \brief Evaluates the integrand at an element interface point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] X Cartesian coordinates of current integration point
+  //! \param[in] normal Interface normal vector at current integration point
+  virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
+                       const Vec3& X, const Vec3& normal) const;
 
   using KirchhoffLove::evalBou;
   //! \brief Evaluates the integrand at a boundary point.
@@ -159,6 +166,13 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
+  //! \brief Evaluates the integrand at an element interface point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] X Cartesian coordinates of current integration point
+  //! \param[in] normal Interface normal vector at current integration point
+  virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
+                       const Vec3& X, const Vec3& normal) const;
 
   using NormBase::evalBou;
   //! \brief Evaluates the integrand at a boundary point.

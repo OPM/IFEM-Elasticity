@@ -32,6 +32,7 @@ KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
   material = nullptr;
   fluxFld = nullptr;
   tracFld = nullptr;
+  linLoad = nullptr;
   locSys = nullptr;
 
   eK = eM = 0;
@@ -109,10 +110,13 @@ void KirchhoffLove::setPressure (RealFunc* pf)
 
 int KirchhoffLove::getIntegrandType () const
 {
+  int itg_type = SECOND_DERIVATIVES;
   if (m_mode == SIM::RECOVERY && includeShear)
-    return SECOND_DERIVATIVES | THIRD_DERIVATIVES;
-  else
-    return SECOND_DERIVATIVES;
+    itg_type |= THIRD_DERIVATIVES;
+  if (linLoad)
+    itg_type |= INTERFACE_TERMS;
+
+  return itg_type;
 }
 
 
@@ -194,11 +198,22 @@ Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n) const
 }
 
 
+Vec3 KirchhoffLove::getLineLoad (const Vec3& X, const Vec3& n) const
+{
+  if (!linLoad)
+    return Vec3();
+  else if (n.isZero()) // Assume load acts in global Z-direction
+    return Vec3(0.0,0.0,(*linLoad)(X));
+  else
+    return (*linLoad)(X)*n;
+}
+
+
 bool KirchhoffLove::haveLoads (char type) const
 {
   if (type == 'A' || type == 'I')
   {
-    if (!presFld.empty())
+    if (!presFld.empty() || linLoad)
       return true;
 
     if (gravity != 0.0 && material)

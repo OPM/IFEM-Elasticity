@@ -16,8 +16,11 @@
 
 #include "SIMElasticity.h"
 #include "SIM2D.h"
+#include "Interface.h"
 
 class KirchhoffLove;
+
+typedef std::pair<double,double> Doubles; //!< Convenience type
 
 
 /*!
@@ -44,6 +47,18 @@ protected:
   };
 
   typedef std::vector<PointLoad> PloadVec; //!< Point load container
+
+  /*!
+    \brief Struct defining a line load domain within a patch.
+  */
+  struct LLdomain
+  {
+    char    direction; //!< Line direction flag: 1=East-West, 2=North-South
+    double  u;         //!< Location of the load line
+    Doubles range;     //!< Parameter range of the load line
+    //! \brief Default constructor.
+    LLdomain() : direction(0) { u = range.first = range.second = 0.0; }
+  };
 
 public:
   //! \brief Default constructor.
@@ -102,6 +117,9 @@ protected:
   //! \param[in] propInd Physical property index
   virtual bool initNeumann(size_t propInd);
 
+  //! \brief Returns the interface checker for line load terms in the integrand.
+  virtual ASM::InterfaceChecker* getInterfaceChecker(size_t pidx) const;
+
   //! \brief Assembles the nodal point loads, if any.
   virtual bool assembleDiscreteTerms(const IntegrandBase*, const TimeDomain&);
 
@@ -120,6 +138,65 @@ protected:
   RealArray tVec;     //!< Shell thickness data
   PloadVec  myLoads;  //!< Nodal/element point loads
   int       aCode[3]; //!< Analytical BC codes (used by destructor)
+  LLdomain  lineLoad; //!< Domain definition of the line load
+};
+
+
+/*!
+  \brief Checks for interface integration on the specified element boundaries.
+*/
+
+class ElmBorderChk
+{
+  double umin; //!< West border of load domain
+  double umax; //!< East border of load domain
+  double vmin; //!< South border of load domain
+  double vmax; //!< North border of load domain
+
+public:
+  //! \brief Default constructor.
+  ElmBorderChk();
+  //! \brief Empty destructor.
+  virtual ~ElmBorderChk() {}
+
+  //! \brief Defines the parameter domain of a north-south line load.
+  void setDomainNS(double u, const Doubles& rng);
+  //! \brief Defines the parameter domain of an east-west line load.
+  void setDomainEW(double v, const Doubles& rng);
+
+  //! \brief Returns a status mask based on the element boundary parameters.
+  //! \param[in] u0 Parameter value of the west element boundary
+  //! \param[in] u1 Parameter value of the east element boundary
+  //! \param[in] v0 Parameter value of the south element boundary
+  //! \param[in] v1 Parameter value of the north element boundary
+  short int maskBorder(double u0, double u1, double v0, double v1) const;
+};
+
+
+/*!
+  \brief Checks for line load on the specified element boundaries.
+*/
+
+template<class T>
+class LineLoadChecker : public T::InterfaceChecker, public ElmBorderChk
+{
+public:
+  //! \brief The constructor forwards to the parent class constructor.
+  //! \param[in] pch Patch to check for line loads on
+  explicit LineLoadChecker(const T& pch) : T::InterfaceChecker(pch) {}
+  //! \brief Empty destructor.
+  virtual ~LineLoadChecker() {}
+
+  //! \brief Returns a status mask based on the element boundary parameters.
+  //! \param[in] u0 Parameter value of the west element boundary
+  //! \param[in] u1 Parameter value of the east element boundary
+  //! \param[in] v0 Parameter value of the south element boundary
+  //! \param[in] v1 Parameter value of the north element boundary
+  virtual short int elmBorderMask(double u0, double u1,
+                                  double v0, double v1, double, double) const
+  {
+    return this->maskBorder(u0,u1,v0,v1);
+  }
 };
 
 #endif

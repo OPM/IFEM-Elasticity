@@ -60,6 +60,8 @@ public:
   void setMaterial(Material* mat) { material = mat; }
   //! \brief Defines the pressure field.
   void setPressure(RealFunc* pf = nullptr);
+  //! \brief Defines the line load function.
+  void setLineLoad(RealFunc* lf) { linLoad = lf; }
   //! \brief Defines the traction field to use in Neumann boundary conditions.
   void setTraction(TractionFunc* tf) { tracFld = tf; fluxFld = nullptr; }
   //! \brief Defines the traction field to use in Neumann boundary conditions.
@@ -91,6 +93,8 @@ public:
   Vec3 getTraction(const Vec3& X, const Vec3& n) const;
   //! \brief Evaluates the pressure field (if any) at specified point.
   Vec3 getPressure(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0)) const;
+  //! \brief Evaluates the line load field (if any) at specified point.
+  Vec3 getLineLoad(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0)) const;
   //! \brief Returns whether external loads are defined.
   bool haveLoads(char type = 'A') const;
 
@@ -167,6 +171,7 @@ protected:
 
   VecFunc*      fluxFld; //!< Pointer to explicit boundary traction field
   TractionFunc* tracFld; //!< Pointer to implicit boundary traction field
+  RealFunc*     linLoad; //!< Pointer to line load function
   LocalSystem*  locSys;  //!< Local coordinate system for result output
 
   std::vector<RealFunc*> presFld; //!< Pointers to pressure field functions

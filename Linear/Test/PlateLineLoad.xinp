@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<--! Simply supported square plate with a line load in the middle.
+     Quadratic spline Kirchhoff-Love thin plate elements. -->
+
+<simulation>
+
+  <geometry>
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="19" v="19"/>
+  </geometry>
+
+  <discretization>
+    <nGauss>3 5</nGauss>
+  </discretization>
+
+  <geometry>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+      <set name="plate" type="surface">
+        <item>1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1"/>
+  </boundaryconditions>
+
+  <kirchhofflove>
+    <isotropic E="1.0" nu="0.3" thickness="1.0"/>
+    <lineload set="plate" type="constant" u="0.5" v0="0.25" v1="0.75">2.0</lineload>
+  </kirchhofflove>
+
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.5" v="0.5"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

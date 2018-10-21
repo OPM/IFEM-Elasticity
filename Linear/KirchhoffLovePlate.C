@@ -189,6 +189,33 @@ bool KirchhoffLovePlate::evalK2 (Matrix& EK,
 }
 
 
+bool KirchhoffLovePlate::evalInt (LocalIntegral& elmInt,
+                                  const FiniteElement& fe,
+                                  const Vec3& X, const Vec3&) const
+{
+  if (!eS)
+  {
+    std::cerr <<" *** KirchhoffLovePlate::evalInt: No load vector."<< std::endl;
+    return false;
+  }
+  else if (!linLoad)
+  {
+    std::cerr <<" *** KirchhoffLovePlate::evalInt: No line load."<< std::endl;
+    return false;
+  }
+
+  Vec3 p = this->getLineLoad(X);
+  static_cast<ElmMats&>(elmInt).b[eS-1].add(fe.N,0.5*p.z*fe.detJxW);
+
+#if INT_DEBUG > 3
+  std::cout <<"KirchhoffLovePlate::evalInt("<< fe.iel <<", "<< X
+            <<"): p(X) = "<< p.z << std::endl;
+#endif
+
+  return true;
+}
+
+
 bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 				  const FiniteElement& fe,
 				  const Vec3& X, const Vec3& normal) const
@@ -616,6 +643,30 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 }
 
 
+bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
+                                      const FiniteElement& fe,
+                                      const Vec3& X, const Vec3&) const
+{
+  KirchhoffLovePlate& problem = static_cast<KirchhoffLovePlate&>(myProblem);
+  ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
+
+  if (problem.haveLoads('I'))
+  {
+    // Evaluate the line load and displacement field
+    double p = problem.getLineLoad(X).z;
+    double w = pnorm.vec.front().dot(fe.N);
+    // Integrate the external energy
+    pnorm[1] += 0.5*p*w*fe.detJxW;
+#if INT_DEBUG > 3
+    std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X
+              <<"): w(X) = "<< w <<" p(X) = "<< p << std::endl;
+#endif
+  }
+
+  return true;
+}
+
+
 bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
                                       const FiniteElement& fe,
                                       const Vec3& X, const Vec3& normal) const
@@ -763,7 +814,7 @@ bool KirchhoffLovePlateNorm::finalizeElement (LocalIntegral& elmInt)
 
 int KirchhoffLovePlateNorm::getIntegrandType () const
 {
-  return SECOND_DERIVATIVES | ELEMENT_CORNERS;
+  return myProblem.getIntegrandType() | ELEMENT_CORNERS;
 }
 
 

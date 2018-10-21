@@ -15,7 +15,10 @@
 #include "KirchhoffLoveShell.h"
 #include "LinIsotropic.h"
 #include "AlgEqSystem.h"
-#include "ASMbase.h"
+#include "ASMs2D.h"
+#ifdef HAS_LRSPLINE
+#include "ASMu2D.h"
+#endif
 #include "SAM.h"
 #include "Functions.h"
 #include "Utilities.h"
@@ -253,6 +256,42 @@ bool SIMKLShell::parse (const TiXmlElement* elem)
       bool allowElementPointLoad = false;
       utl::getAttribute(child,"onElement",allowElementPointLoad);
       if (allowElementPointLoad) load.ldof.second *= -1;
+    }
+
+    else if (!strcasecmp(child->Value(),"lineload") && child->FirstChild())
+    {
+      std::string set, type;
+      utl::getAttribute(child,"set",set);
+      int code = this->getUniquePropertyCode(set,1);
+      if (code == 0) utl::getAttribute(child,"code",code);
+      if (code > 0)
+      {
+        utl::getAttribute(child,"type",type,true);
+        IFEM::cout <<"\tLine load code "<< code;
+        if (!type.empty()) IFEM::cout <<" ("<< type <<")";
+        myScalars[code] = utl::parseRealFunc(child->FirstChild()->Value(),type);
+        this->setPropertyType(code,Property::OTHER);
+        klp->setLineLoad(myScalars[code]);
+        if (utl::getAttribute(child,"u",lineLoad.u))
+        {
+          lineLoad.direction = 2;
+          utl::getAttribute(child,"v0",lineLoad.range.first);
+          utl::getAttribute(child,"v1",lineLoad.range.second);
+          IFEM::cout <<"\n\tat u="<< lineLoad.u
+                     <<", v in ["<< lineLoad.range.first
+                     <<","<< lineLoad.range.second <<"]";
+        }
+        else if (utl::getAttribute(child,"v",lineLoad.u))
+        {
+          lineLoad.direction = 1;
+          utl::getAttribute(child,"u0",lineLoad.range.first);
+          utl::getAttribute(child,"u1",lineLoad.range.second);
+          IFEM::cout <<"\n\tat v="<< lineLoad.u
+                     <<", u in ["<< lineLoad.range.first
+                     <<","<< lineLoad.range.second <<"]";
+        }
+        IFEM::cout << std::endl;
+      }
     }
 
     else if (!strcasecmp(child->Value(),"pressure") && child->FirstChild())
@@ -546,4 +585,78 @@ void SIMKLShell::printNormGroup (const Vector& norm, const Vector& rNorm,
     IFEM::cout <<"\nL2 norm |m^r| = (m^r,m^r)^0.5        : "<< norm(4)
                <<"\nL2 error (e,e)^0.5, e=m^r-m^h        : "<< norm(6)
                <<"\n- relative error (% of |m^r|) : "<< 100.0*norm(6)/norm(4);
+}
+
+
+ASM::InterfaceChecker* SIMKLShell::getInterfaceChecker (size_t pidx) const
+{
+  ASM::InterfaceChecker* ichk = nullptr;
+
+  const ASMs2D* spch = dynamic_cast<const ASMs2D*>(this->getPatch(pidx+1));
+  if (spch)
+    ichk = new LineLoadChecker<ASMs2D>(*spch);
+#ifdef HAS_LRSPLINE
+  else
+  {
+    const ASMu2D* upch = dynamic_cast<const ASMu2D*>(this->getPatch(pidx+1));
+    if (upch)
+      ichk = new LineLoadChecker<ASMu2D>(*upch);
+  }
+#endif
+
+  if (ichk)
+  {
+    if (lineLoad.direction == 1)
+      dynamic_cast<ElmBorderChk*>(ichk)->setDomainEW(lineLoad.u,lineLoad.range);
+    else if (lineLoad.direction == 2)
+      dynamic_cast<ElmBorderChk*>(ichk)->setDomainNS(lineLoad.u,lineLoad.range);
+  }
+
+  return ichk;
+}
+
+
+ElmBorderChk::ElmBorderChk ()
+{
+  umin = umax = 0.5;
+  vmin = 0.25;
+  vmax = 0.75;
+}
+
+
+void ElmBorderChk::setDomainNS (double u, const Doubles& rng)
+{
+  umin = umax = u;
+  vmin = rng.first;
+  vmax = rng.second;
+}
+
+
+void ElmBorderChk::setDomainEW (double v, const Doubles& rng)
+{
+  vmin = vmax = v;
+  umin = rng.first;
+  umax = rng.second;
+}
+
+
+short int ElmBorderChk::maskBorder (double u0, double u1,
+                                    double v0, double v1) const
+{
+  if (umin == umax && v0 >= vmin && v1 <= vmax)
+  {
+    if (u0 == umin)
+      return 1;
+    else if (u1 == umax)
+      return 2;
+  }
+  else if (vmin == vmax && u0 >= umin && u1 <= umax)
+  {
+    if (v0 == vmin)
+      return 4;
+    else if (v1 == vmax)
+      return 8;
+  }
+
+  return 0;
 }
