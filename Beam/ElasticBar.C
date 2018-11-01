@@ -63,6 +63,10 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t, bool) const
       result->resize(1,1);
       break;
 
+    case SIM::ARCLEN:
+      result->resize(1,2,npv);
+      break;
+
     case SIM::DYNAMIC:
       result->resize(intPrm[3] >= 0.0 ? 3 : 4,
                      intPrm[3] > 0.0 ? 1 : (intPrm[4] == 1.0 ? 3 : 2));
@@ -79,7 +83,7 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t, bool) const
 
     case SIM::RHS_ONLY:
     case SIM::INT_FORCES:
-      result->resize(0,1);
+      result->resize(0,1,npv);
       result->rhsOnly = true;
       result->withLHS = false;
       break;

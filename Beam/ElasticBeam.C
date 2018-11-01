@@ -288,6 +288,10 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t, bool) const
       result->resize(1,1);
       break;
 
+    case SIM::ARCLEN:
+      result->resize(1,2);
+      break;
+
     case SIM::DYNAMIC:
       result->resize(intPrm[3] >= 0.0 ? 3 : 4, intPrm[3] > 0.0 ? 1 : 2);
       break;

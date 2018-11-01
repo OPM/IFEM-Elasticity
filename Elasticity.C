@@ -159,10 +159,11 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
   switch (m_mode)
   {
     case SIM::STATIC:
+    case SIM::ARCLEN:
     case SIM::MASS_ONLY:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, 1);
+      result->resize(neumann ? 0 : 1, m_mode == SIM::ARCLEN ? 2 : 1);
       break;
 
     case SIM::DYNAMIC:

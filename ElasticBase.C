@@ -46,6 +46,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
   switch (mode)
     {
     case SIM::STATIC:
+    case SIM::ARCLEN:
       eKm = eKg = 1;
       eS  = iS  = 1;
       if (intPrm[3] > 0.0)
@@ -93,6 +94,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
   switch (mode)
     {
     case SIM::STATIC:
+    case SIM::ARCLEN:
       primsol.resize(nSV);
       break;
 
@@ -162,6 +164,13 @@ bool ElasticBase::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= npv && i <= 3; i++)
       ES(npv*(a-1)+i) += pval(i)*fe.N(a)*fe.detJxW;
+
+  if (eS == 1)
+  {
+    RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
+    for (size_t i = 0; i < sumLoad.size() && i < 3; i++)
+      sumLoad[i] += pval[i]*fe.detJxW;
+  }
 
   return true;
 }

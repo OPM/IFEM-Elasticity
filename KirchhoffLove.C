@@ -58,6 +58,7 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
   switch (mode)
     {
     case SIM::STATIC:
+    case SIM::ARCLEN:
       eK = 1;
       eS = 1;
       break;
@@ -109,9 +110,10 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t,
   switch (m_mode)
     {
     case SIM::STATIC:
+    case SIM::ARCLEN:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, 1);
+      result->resize(neumann ? 0 : 1, m_mode, npv);
       break;
 
     case SIM::VIBRATION:
@@ -123,7 +125,7 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t,
       break;
 
     case SIM::RHS_ONLY:
-      result->resize(neumann ? 0 : 1, 1);
+      result->resize(neumann ? 0 : 1, 1, npv);
 
     case SIM::RECOVERY:
       result->rhsOnly = true;
@@ -281,6 +283,13 @@ bool KirchhoffLove::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= npv; i++)
       ES(npv*(a-1)+i) += pval(i)*fe.N(a)*fe.detJxW;
+
+  if (eS == 1)
+  {
+    RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
+    for (size_t i = 0; i < sumLoad.size() && i < 3; i++)
+      sumLoad[i] += pval[i]*fe.detJxW;
+  }
 
   return true;
 }

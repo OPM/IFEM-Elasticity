@@ -21,7 +21,7 @@
 void NLKirchhoffLoveShell::setMode (SIM::SolutionMode mode)
 {
   this->KirchhoffLoveShell::setMode(mode);
-  if (mode == SIM::STATIC || mode == SIM::RHS_ONLY)
+  if (mode == SIM::STATIC || mode == SIM::ARCLEN || mode == SIM::RHS_ONLY)
   {
     iS = 1;
     primsol.resize(1);

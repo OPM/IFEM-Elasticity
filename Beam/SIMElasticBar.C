@@ -341,6 +341,7 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
   {
     // Assemble external nodal point load gradient at current time step
     this->setMode(mode);
+    static_cast<ElasticBase*>(myProblem)->setLoadGradientMode();
     for (const PointLoad& load : myLoads)
       if (load.ldof > 0)
         ok &= mySam->assembleSystem(*R,load.p->deriv(time.t),

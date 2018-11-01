@@ -430,6 +430,7 @@ bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase* itg,
   {
     // Assemble external nodal point load gradient at current time step
     this->setMode(mode);
+    static_cast<KirchhoffLove*>(myProblem)->setLoadGradientMode();
     for (const PointLoad& load : myLoads)
       if (load.ldof.second > 0)
         ok &= mySam->assembleSystem(*b,load.p->deriv(time.t),load.ldof);
