@@ -74,7 +74,7 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
   double dMax[nsd];
   double normL2 = model.solutionNorms(solution.front(),dMax,iMax);
 
-  RealArray RF;
+  RealArray RF, Fext;
   bool haveReac = model.getCurrentReactions(RF,solution.front());
 
   Vectors gNorm;
@@ -99,6 +99,12 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
     if (utl::trunc(dMax[d]) != 0.0)
       IFEM::cout <<"\n                            Max "<< char('X'+d)
                  <<"-displacement : "<< dMax[d] <<" node "<< iMax[d];
+
+  if (model.getExtLoad(Fext,time) && !Fext.empty())
+  {
+    IFEM::cout <<"\n  Total external load: Sum(Fex) =";
+    for (double f : Fext) IFEM::cout <<" "<< utl::trunc(f);
+  }
 
   if (haveReac)
   {
@@ -179,7 +185,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
       return 4;
 
   // Initialize the linear solver
-  this->initEqSystem();
+  this->initEqSystem(true,model.getNoFields());
 
   SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
   if (pit != opt.project.end() && elp) getMaxVals = true;
@@ -230,7 +236,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
       nextDump = params.time.t + dtDump;
     }
 
-    if (params.hasReached(nextSave))
+    if (opt.dtSave <= 0.0 || params.hasReached(nextSave))
     {
       // Save solution variables to VTF for visualization
       if (opt.format >= 0)

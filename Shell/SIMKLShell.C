@@ -407,13 +407,13 @@ bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase* itg,
       ok &= this->assemblePoint(load.patch,load.xi,(*load.p)(time.t),
                                 -load.ldof.second);
 
-  if (ok && time.first && time.it == 0)
+  if (ok && time.first && time.it == 0 && mode != SIM::ARCLEN)
   {
     Vector extLoad;
     if (mySam->expandSolution(*b,extLoad,0.0))
     {
       std::streamsize oldPrec = IFEM::cout.precision(15);
-      IFEM::cout <<"  * Sum external load:";
+      IFEM::cout <<"   * Sum external load:";
       for (unsigned char d = 0; d < nf[0]; d++)
         IFEM::cout <<" "<< extLoad.sum(d,nf[0]);
       IFEM::cout << std::endl;
@@ -474,4 +474,34 @@ bool SIMKLShell::assemblePoint (int patch, const double* u, double f, int ldof)
 
   Vec3 Fvec; Fvec(ldof) = f;
   return pch->diracPoint(*myProblem,*myEqSys,u,Fvec);
+}
+
+
+bool SIMKLShell::getExtLoad (RealArray& extloa, const TimeDomain& time) const
+{
+  extloa.resize(nf[0]);
+  for (size_t i = 0; i < nf[0]; i++)
+    extloa[i] = this->extractScalar(i);
+
+  for (const PointLoad& load : myLoads)
+    if (load.ldof.second > 0 && load.ldof.second < nf[0])
+      extloa[load.ldof.second-1] += (*load.p)(time.t);
+
+  return true;
+}
+
+
+void SIMKLShell::printStep (int istep, const TimeDomain& time) const
+{
+  adm.cout <<"\n  step="<< istep <<"  time="<< time.t;
+
+  RealArray extLo;
+  if (myProblem->getMode() == SIM::ARCLEN && this->getExtLoad(extLo,time))
+  {
+    adm.cout <<"  Sum(Fex) =";
+    for (size_t d = 0; d < extLo.size(); d++)
+      adm.cout <<" "<< utl::trunc(extLo[d]);
+  }
+
+  adm.cout << std::endl;
 }

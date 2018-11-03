@@ -57,6 +57,16 @@ public:
   //! \brief Initializes the property containers of the model.
   virtual void clearProperties();
 
+  //! \brief Computes the total external load of current load step.
+  //! \param[out] extloa Sum external load in each direction
+  //! \param[in] time Parameters for nonlinear simulations
+  virtual bool getExtLoad(RealArray& extloa, const TimeDomain& time) const;
+
+  //! \brief Prints out load step identification.
+  //! \param[in] istep Load step counter
+  //! \param[in] time Parameters for nonlinear simulations
+  virtual void printStep(int istep, const TimeDomain& time) const;
+
 protected:
   //! \brief Returns the actual integrand.
   virtual KirchhoffLove* getProblem(int version = 1);

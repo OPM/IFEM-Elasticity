@@ -285,7 +285,9 @@ bool SIMElasticBar::preprocessB ()
         ok = false;
     }
 
-  IFEM::cout <<"\n"<< std::endl;
+  if (ipt > 0)
+    IFEM::cout <<"\n"<< std::endl;
+
   return ok;
 }
 
@@ -365,4 +367,18 @@ Tensor SIMElasticBar::getNodeRotation (int inod) const
   }
 
   return Tensor(nsd,true);
+}
+
+
+bool SIMElasticBar::getExtLoad (RealArray& extloa, const TimeDomain& time) const
+{
+  extloa.resize(nf,0.0);
+  for (size_t i = 0; i < nf; i++)
+    extloa[i] = this->extractScalar(i);
+
+  for (const PointLoad& load : myLoads)
+    if (load.ldof > 0 && load.ldof < nf)
+      extloa[load.ldof-1] += (*load.p)(time.t);
+
+  return true;
 }
