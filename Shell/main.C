@@ -14,6 +14,7 @@
 #include "IFEM.h"
 #include "SIMShell.h"
 #include "ArcLengthDriver.h"
+#include "HDF5Restart.h"
 #include "HDF5Writer.h"
 #include "Utilities.h"
 #include "Profiler.h"
@@ -63,9 +64,9 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
 
   if (!model.opt.restartFile.empty())
   {
-    DataExporter::SerializeData data;
-    HDF5Writer hdf(model.opt.restartFile,model.getProcessAdm(),true);
-    int restartStep = hdf.readRestartData(data,model.opt.restartStep);
+    HDF5Restart::SerializeData data;
+    HDF5Restart hdf(model.opt.restartFile,model.getProcessAdm(),1);
+    int restartStep = hdf.readData(data,model.opt.restartStep);
     if (restartStep >= 0 && simulator.deSerialize(data))
       IFEM::cout <<"\n === Restarting from a serialized state ==="
                  <<"\n     file = "<< model.opt.restartFile
@@ -84,15 +85,20 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
     const std::string& fileName = model.opt.hdf5;
     IFEM::cout <<"\nWriting HDF5 file "<< fileName <<".hdf5"<< std::endl;
 
-    writer = new DataExporter(true,model.opt.saveInc,model.opt.restartInc);
+    writer = new DataExporter(true,model.opt.saveInc);
     writer->registerField("u","solution",DataExporter::SIM,
                           DataExporter::PRIMARY);
     writer->setFieldValue("u",&model,&simulator.getSolution());
     writer->registerWriter(new HDF5Writer(fileName,model.getProcessAdm()));
   }
 
+  HDF5Restart* restart = nullptr;
+  if (model.opt.restartInc > 0)
+    restart = new HDF5Restart(model.opt.hdf5+"_restart",model.getProcessAdm(),
+                              model.opt.restartInc);
+
   // Now invoke the main solution driver
-  int status = simulator.solveProblem(writer,nullptr,0.0,zero_tol,outPrec);
+  int status = simulator.solveProblem(writer,restart,nullptr,0.0,zero_tol,outPrec);
 
   delete writer;
   return status;

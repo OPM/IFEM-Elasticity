@@ -18,6 +18,7 @@
 #include "TimeStep.h"
 
 class DataExporter;
+class HDF5Restart;
 
 
 /*!
@@ -62,11 +63,12 @@ protected:
 public:
   //! \brief Invokes the main pseudo-time stepping simulation loop.
   //! \param writer HDF5 results exporter
+  //! \param restart HDF5 restart handler
   //! \param oss Output stream for additional ASCII result output
   //! \param[in] dtDump Time increment for dump of ASCII results
   //! \param[in] zero_tol Truncate norm values smaller than this to zero
   //! \param[in] outPrec Number of digits after the decimal point in norm print
-  int solveProblem(DataExporter* writer, utl::LogStream* oss,
+  int solveProblem(DataExporter* writer, HDF5Restart* restart, utl::LogStream* oss,
                    double dtDump, double zero_tol, std::streamsize outPrec);
 
   //! \brief Serialize solution state for restarting purposes.

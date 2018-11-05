@@ -15,6 +15,7 @@
 #define _NEWMARK_DRIVER_H
 
 #include "DataExporter.h"
+#include "HDF5Restart.h"
 #include "TimeStep.h"
 #include "Utilities.h"
 #include "tinyxml.h"
@@ -60,19 +61,22 @@ protected:
 public:
   //! \brief Invokes the main time stepping simulation loop.
   //! \param writer HDF5 results exporter
+  //! \param restart HDF5 restart handler
   //! \param[in] ztol Truncate norm values smaller than this to zero
   //! \param[in] outPrec Number of digits after the decimal point in norm print
-  int solveProblem(DataExporter* writer, utl::LogStream*, double,
+  int solveProblem(DataExporter* writer, HDF5Restart* restart,
+                   utl::LogStream*, double,
                    double ztol = 1.0e-8, std::streamsize outPrec = 0)
   {
-    return this->solveProblem(writer,ztol,outPrec);
+    return this->solveProblem(writer,restart,ztol,outPrec);
   }
 
   //! \brief Invokes the main time stepping simulation loop.
   //! \param writer HDF5 results exporter
+  //! \param restart HDF5 restart handler
   //! \param[in] ztol Truncate norm values smaller than this to zero
   //! \param[in] outPrec Number of digits after the decimal point in norm print
-  int solveProblem(DataExporter* writer,
+  int solveProblem(DataExporter* writer, HDF5Restart* restart,
                    double ztol = 1.0e-8, std::streamsize outPrec = 0)
   {
     // Initialize the linear solver
@@ -138,11 +142,11 @@ public:
         // Save solution variables to HDF5
         if (writer)
         {
-          DataExporter::SerializeData data;
-          if (writer->dumpForRestart(&params) && this->serialize(data))
-            status += writer->dumpTimeLevel(&params,false,&data) ? 0 : 8;
-          else
-            status += writer->dumpTimeLevel(&params) ? 0 : 8;
+          HDF5Restart::SerializeData data;
+          if (restart && restart->dumpStep(params) && this->serialize(data))
+            status += restart->writeData(params,data) ? 0 : 8;
+
+          status += writer->dumpTimeLevel(&params) ? 0 : 8;
         }
 
         nextSave = params.time.t + Newmark::opt.dtSave;
@@ -158,14 +162,14 @@ public:
 
   //! \brief Serialize solution state for restarting purposes.
   //! \param data Container for serialized data
-  virtual bool serialize(DataExporter::SerializeData& data) const
+  virtual bool serialize(HDF5Restart::SerializeData& data) const
   {
     return params.serialize(data) && this->Newmark::serialize(data);
   }
 
   //! \brief Set solution from a serialized state.
   //! \param[in] data Container for serialized data
-  virtual bool deSerialize(const DataExporter::SerializeData& data)
+  virtual bool deSerialize(const HDF5Restart::SerializeData& data)
   {
     return params.deSerialize(data) && this->Newmark::deSerialize(data);
   }
