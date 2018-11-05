@@ -70,6 +70,10 @@ if(LRSpline_FOUND OR LRSPLINE_FOUND)
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.vreg)
 endif()
 
+if(NOT HDF5_FOUND)
+  list(REMOVE_ITEM LINEL_TESTFILES CanTS2D-fields-p2.reg)
+endif()
+
 if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
     ifem_add_test(${TESTFILE} LinEl)
