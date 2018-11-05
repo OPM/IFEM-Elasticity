@@ -15,6 +15,7 @@
 #include "SIMoutput.h"
 #include "Elasticity.h"
 #include "DataExporter.h"
+#include "HDF5Restart.h"
 #include "IFEM.h"
 #include "tinyxml.h"
 
@@ -167,6 +168,7 @@ void NonlinearDriver::printNorms (const Vector& norm, utl::LogStream& os) const
 */
 
 int NonlinearDriver::solveProblem (DataExporter* writer,
+                                   HDF5Restart* restart,
                                    utl::LogStream* oss, double dtDump,
                                    double zero_tol, std::streamsize outPrec)
 {
@@ -255,10 +257,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
       {
         bool dstat = true;
         SerializeMap data;
-        if (writer->dumpForRestart(&params) && this->serialize(data))
-          dstat = writer->dumpTimeLevel(&params,false,&data);
-        else
-          dstat = writer->dumpTimeLevel(&params);
+        if (restart && restart->dumpStep(params) && this->serialize(data))
+          dstat = restart->writeData(params,data);
+
+        dstat &= writer->dumpTimeLevel(&params);
         if (!dstat)
           return 9;
       }
