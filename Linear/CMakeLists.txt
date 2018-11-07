@@ -15,6 +15,7 @@ if(NOT IFEM_CONFIGURED)
 endif()
 
 include_directories(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
+                                     ${PROJECT_SOURCE_DIR}/../../Common
                                      ${PROJECT_SOURCE_DIR}/../Shell
                                      ${PROJECT_SOURCE_DIR}/../Beam)
 
@@ -31,7 +32,7 @@ file(GLOB LinEl_SRCS *.C)
 list(APPEND LinEl_SRCS ../Shell/SIMKLShell.C ../Shell/KirchhoffLoveShell.C)
 
 add_executable(LinEl ${LinEl_SRCS})
-target_link_libraries(LinEl Beam Elasticity ${IFEM_LIBRARIES})
+target_link_libraries(LinEl Beam Elasticity IFEMAppCommon ${IFEM_LIBRARIES})
 
 list(APPEND CHECK_SOURCES ${LinEl_SRCS})
 

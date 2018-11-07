@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2" nx="2" ny="2" sets="True">
+    <raiseorder lowerpatch="1" upperpatch="4" u="2" v="2"/>
+    <refine     lowerpatch="1" upperpatch="4" u="3" v="3"/>
+  </geometry>
+
+  <!-- SuperLU crashes (don't know why), so we use dense instead !-->
+  <linearsolver class="dense"/>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <neumann   set="Edge4" direction="2">-1e-4</neumann>
+    <dirichlet set="Edge3"/>
+  </boundaryconditions>
+
+</simulation>

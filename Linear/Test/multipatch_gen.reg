@@ -1,0 +1,52 @@
+multipatch_gen.xinp
+
+Input file: multipatch_gen.xinp
+Parsing <geometry>
+  Using 2D multi-patch model generator.
+	Split in X = 2
+	Split in Y = 2
+	Reading patch 1
+	Reading patch 2
+	Reading patch 3
+	Reading patch 4
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <raiseorder>
+	Raising order of P1 2 2
+	Raising order of P2 2 2
+	Raising order of P3 2 2
+	Raising order of P4 2 2
+  Parsing <refine>
+	Refining P1 3 3
+	Refining P2 3 3
+	Refining P3 3 3
+	Refining P4 3 3
+	Connecting P2 E1 to P1 E2 reversed? 0
+	Connecting P4 E1 to P3 E2 reversed? 0
+	Connecting P3 E3 to P1 E4 reversed? 0
+	Connecting P4 E3 to P2 E4 reversed? 0
+Parsing input file succeeded.
+Equation solver: 0
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    64
+Number of nodes       169
+Number of dofs        338
+Number of unknowns    338
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Assembling interior matrix terms for P4
+Assembling Neumann matrix terms for boundary 4 on P3
+Assembling Neumann matrix terms for boundary 4 on P4
+L2-norm            : 0.960092
+Max X-displacement : 0.690388 node 51
+Max Y-displacement : 1.77712 node 120
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 3.34537e-09
+External energy ((f,u^h)+(t,u^h)^0.5 : -0.0112293
