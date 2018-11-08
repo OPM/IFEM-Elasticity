@@ -12,6 +12,7 @@
 //==============================================================================
 
 #include "ElasticBase.h"
+#include "FiniteElement.h"
 #include "NewmarkMats.h"
 #include "TimeDomain.h"
 #include "BDF.h"
@@ -145,6 +146,24 @@ std::string ElasticBase::getField1Name (size_t i, const char* prefix) const
   if (!prefix) return s[i];
 
   return prefix + std::string(" ") + s[i];
+}
+
+
+bool ElasticBase::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
+                             const Vec3& pval)
+{
+  if (!eS)
+  {
+    std::cerr <<" *** ElasticBase::evalPoint: No load vector."<< std::endl;
+    return false;
+  }
+
+  Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
+  for (size_t a = 1; a <= fe.N.size(); a++)
+    for (unsigned short int i = 1; i <= npv && i <= 3; i++)
+      ES(npv*(a-1)+i) += pval(i)*fe.N(a)*fe.detJxW;
+
+  return true;
 }
 
 

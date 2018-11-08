@@ -422,13 +422,12 @@ double SIMKLShell::externalEnergy (const Vectors& u,
 }
 
 
-bool SIMKLShell::assemblePoint (int patch, const double* u,
-                                double scale, int ldof)
+bool SIMKLShell::assemblePoint (int patch, const double* u, double f, int ldof)
 {
   ASMbase* pch = this->getPatch(patch,true);
   if (!pch) return false;
 
+  Vec3 Fvec; Fvec(ldof) = f;
   this->setMode(SIM::RHS_ONLY);
-  Vec3 pval; pval(ldof) = scale;
-  return pch->diracPoint(*myProblem,*myEqSys,u,pval);
+  return pch->diracPoint(*myProblem,*myEqSys,u,Fvec);
 }

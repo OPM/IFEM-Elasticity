@@ -65,11 +65,18 @@ public:
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
-  virtual size_t getNoFields(int fld = 2) const { return fld == 1 ? npv : 0; }
+  virtual size_t getNoFields(int fld) const { return fld == 1 ? npv : 0; }
   //! \brief Returns the name of a primary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField1Name(size_t i, const char* prefix = 0) const;
+  virtual std::string getField1Name(size_t i, const char* prefix) const;
+
+  //! \brief Evaluates the point load integrand at a specified point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] pval Load value at the specified point
+  virtual bool evalPoint(LocalIntegral& elmInt, const FiniteElement& fe,
+                         const Vec3& pval);
 
   using IntegrandBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.

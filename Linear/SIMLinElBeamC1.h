@@ -14,7 +14,7 @@
 #ifndef _SIM_LIN_EL_BEAM_C1_H
 #define _SIM_LIN_EL_BEAM_C1_H
 
-#include "SIM1D.h"
+#include "SIMElastic1D.h"
 
 class Material;
 
@@ -23,27 +23,11 @@ class Material;
   \brief Driver class for isogeometric FEM analysis of C1-continuous beams.
 */
 
-class SIMLinElBeamC1 : public SIM1D
+class SIMLinElBeamC1 : public SIMElastic1D
 {
-  /*!
-    \brief Struct defining a nodal point load.
-  */
-  struct PointLoad
-  {
-    size_t patch; //!< Patch index [0,nPatch>
-    int    inod;  //!< Local node number of the closest node
-    double xi;    //!< Parameter of the point
-    Vec3   X;     //!< Spatial coordinates of the point
-    double pload; //!< Load magnitude
-    // \brief Default constructor.
-    PointLoad() : patch(0), inod(0) { xi = pload = 0.0; }
-  };
-
-  typedef std::vector<PointLoad> PloadVec; //!< Point load container
-
 public:
   //! \brief Default constructor.
-  SIMLinElBeamC1() : SIM1D(1) {}
+  SIMLinElBeamC1() {}
   //! \brief Empty destructor.
   virtual ~SIMLinElBeamC1() {}
 
@@ -84,9 +68,20 @@ public:
                                const std::string& prjName) const;
 
 private:
+  //! \brief Struct defining a point load.
+  struct PointLoad
+  {
+    size_t patch; //!< Patch index [0,nPatch>
+    int    inod;  //!< Local node/element number
+    double xi;    //!< Parameter of the point
+    double pload; //!< Load magnitude
+    // \brief Default constructor.
+    PointLoad() : patch(1), inod(0), xi(-1.0), pload(0.0) {}
+  };
+
+  std::vector<PointLoad> myLoads; //!< Nodal/element point loads
   std::vector<Material*> mVec;    //!< Material data
   RealArray              tVec;    //!< Beam thickness data
-  PloadVec               myLoads; //!< Nodal point loads
 };
 
 #endif

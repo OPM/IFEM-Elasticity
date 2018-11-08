@@ -92,8 +92,12 @@ protected:
   virtual double externalEnergy(const Vectors& u, const TimeDomain& time) const;
 
 private:
-  //! \brief Assembles consistent nodal forces due to a element point load.
-  bool assemblePoint(int patch, const double* u, double scale, int ldof);
+  //! \brief Assembles consistent nodal forces due to an element point load.
+  //! \param[in] patch 1-based patch index
+  //! \param[in] u Parameter values of the loaded point
+  //! \param[in] f Load magnitude
+  //! \param[in] ldof Coordinate direction of the load
+  bool assemblePoint(int patch, const double* u, double f, int ldof);
 
 protected:
   RealArray tVec;     //!< Shell thickness data

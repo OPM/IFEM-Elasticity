@@ -25,7 +25,7 @@
 #include "tinyxml.h"
 
 
-SIMElasticBar::SIMElasticBar (unsigned char n) : SIM1D(3)
+SIMElasticBar::SIMElasticBar (unsigned char n) : SIMElastic1D(3)
 {
   nsd = 3;
   nsv = n;
@@ -35,8 +35,8 @@ SIMElasticBar::SIMElasticBar (unsigned char n) : SIM1D(3)
 
 SIMElasticBar::~SIMElasticBar ()
 {
-  for (LoadMap::value_type& load : myLoads)
-    delete load.second;
+  for (PointLoad& load : myLoads)
+    delete load.p;
 }
 
 
@@ -197,37 +197,59 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
     else if (beam && !strcasecmp(child->Value(),"cplload"))
       beam->parseBeamLoad(child);
 
-    else if (!strcasecmp(child->Value(),"nodeload"))
+    else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild())
     {
-      int patch = 1, node = 0, dof = 0;
-      std::string type("constant");
-      utl::getAttribute(child,"patch",patch);
-      utl::getAttribute(child,"node",node);
-      utl::getAttribute(child,"dof",dof);
-      utl::getAttribute(child,"type",type);
-
-      Vec3 Xnod;
-      double xi;
-      if (utl::getAttribute(child,"u",xi) && xi >= 0.0 && xi <= 1.0)
+      PointLoad load(1);
+      utl::getAttribute(child,"dof",load.ldof);
+      utl::getAttribute(child,"u",load.xi);
+      if (load.ldof > 0 && load.ldof <= nf && load.xi >= 0.0 && load.xi <= 1.0)
       {
-        for (ASMbase* pch : myModel) pch->setNoFields(nf);
-        if (this->createFEMmodel())
-          node = this->evalPoint(&xi,Xnod,&xi,patch,true);
-      }
+        // Negate the local DOF flag to signal that element loads are allowed
+        bool allowElementPointLoad = false;
+        utl::getAttribute(child,"onElement",allowElementPointLoad);
+        if (allowElementPointLoad) load.ldof = -load.ldof;
 
-      if (child->FirstChild() && node > 0 && dof > 0 && dof <= nf)
-      {
-        ScalarFunc* f = nullptr;
-        IFEM::cout <<"\tNode "<< node <<" dof "<< dof <<" Load: ";
+        if (utl::getAttribute(child,"patch",load.inod))
+          IFEM::cout <<"\tPoint: P"<< load.inod;
+        else
+          IFEM::cout <<"\tPoint:";
+        IFEM::cout <<" xi = "<< load.xi <<" dof = "<< load.ldof <<" Load: ";
+
+        std::string type("constant");
+        utl::getAttribute(child,"type",type);
         if (type == "constant")
         {
-          f = new ConstantFunc(atof(child->FirstChild()->Value()));
-          IFEM::cout << (*f)(0.0) << std::endl;
+          load.p = new ConstantFunc(atof(child->FirstChild()->Value()));
+          IFEM::cout << (*load.p)(0.0) << std::endl;
         }
         else
-          f = utl::parseTimeFunc(child->FirstChild()->Value(),type);
+          load.p = utl::parseTimeFunc(child->FirstChild()->Value(),type);
 
-        myLoads[std::make_pair(node,dof)] = f;
+        myLoads.push_back(load);
+      }
+    }
+
+    else if (!strcasecmp(child->Value(),"nodeload") && child->FirstChild())
+    {
+      PointLoad load;
+      utl::getAttribute(child,"node",load.inod);
+      utl::getAttribute(child,"dof",load.ldof);
+
+      if (load.inod > 0 && load.ldof > 0 && load.ldof <= nf)
+      {
+        std::string type("constant");
+        utl::getAttribute(child,"type",type);
+
+        IFEM::cout <<"\tNode "<< load.inod <<" dof "<< load.ldof <<" Load: ";
+        if (type == "constant")
+        {
+          load.p = new ConstantFunc(atof(child->FirstChild()->Value()));
+          IFEM::cout << (*load.p)(0.0) << std::endl;
+        }
+        else
+          load.p = utl::parseTimeFunc(child->FirstChild()->Value(),type);
+
+        myLoads.push_back(load);
       }
     }
     else
@@ -245,21 +267,37 @@ void SIMElasticBar::preprocessA ()
 }
 
 
+bool SIMElasticBar::preprocessB ()
+{
+  // Preprocess the nodal point loads, if any
+  if (myLoads.empty())
+    return true;
+
+  int ipt = 0;
+  bool ok = true;
+  for (PointLoad& pl : myLoads)
+    if (pl.xi >= 0.0 && pl.inod > 0)
+    {
+      int foundPoint = this->findLoadPoint(++ipt,pl.inod,pl.xi,pl.ldof < 0);
+      if (foundPoint > 0)
+        pl.inod = foundPoint;
+      else if (foundPoint == 0)
+        ok = false;
+    }
+
+  IFEM::cout <<"\n"<< std::endl;
+  return ok;
+}
+
+
 bool SIMElasticBar::renumberNodes (const std::map<int,int>& nodeMap)
 {
   bool ok = this->SIM1D::renumberNodes(nodeMap);
 
-  LoadMap newLoads;
-  for (LoadMap::value_type& load : myLoads)
-  {
-    int node = load.first.first;
-    if (utl::renumber(node,nodeMap,true))
-      newLoads[std::make_pair(node,load.first.second)] = load.second;
-    else
-      ok = false;
-  }
+  for (PointLoad& load : myLoads)
+    if (load.xi < 0.0 && load.inod > 0)
+      ok &= utl::renumber(load.inod,nodeMap,true);
 
-  std::swap(myLoads,newLoads);
   return ok;
 }
 
@@ -267,26 +305,30 @@ bool SIMElasticBar::renumberNodes (const std::map<int,int>& nodeMap)
 bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
                                            const TimeDomain& time)
 {
+  bool ok = true;
   if (itg != myProblem)
-    return true;
+    return ok;
 
   SystemVector* R = myEqSys->getVector(2); // External load vector
-  double scale = 1.0;
+  double scl = 1.0;
 
   if (!R || itg->getIntegrationPrm(4) != 1.0)
   {
     R = myEqSys->getVector(0); // System right-hand-side vector
     if (itg->getIntegrationPrm(3) <= 0.0) // HHT is used
-      scale = itg->getIntegrationPrm(2) + 1.0; // alphaH + 1.0
+      scl = itg->getIntegrationPrm(2) + 1.0; // alphaH + 1.0
   }
-  if (!R) return true; // Silently ignore, if no right-hand-side vector
 
-  // Assemble external nodal point loads at current time step
-  for (const LoadMap::value_type& load : myLoads)
-    if (!mySam->assembleSystem(*R,(*load.second)(time.t)*scale,load.first))
-      return false;
+  if (R) // Assemble external nodal point loads at current time step
+    for (const PointLoad& load : myLoads)
+      if (load.ldof > 0)
+        ok &= mySam->assembleSystem(*R,(*load.p)(time.t)*scl,
+                                    std::make_pair(load.inod,load.ldof));
+      else // This is an element point load
+        ok &= this->assemblePoint(load.inod,load.xi,(*load.p)(time.t),
+                                  -load.ldof);
 
-  return true;
+  return ok;
 }
 
 

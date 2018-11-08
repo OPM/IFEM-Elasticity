@@ -17,7 +17,6 @@
 #include "LinIsotropic.h"
 #include "AnalyticSolutions.h"
 #include "AlgEqSystem.h"
-#include "ASMbase.h"
 #include "SAM.h"
 #include "Functions.h"
 #include "Utilities.h"
@@ -176,26 +175,27 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
         klp->setThickness(tVec.front());
     }
 
-    else if (!strcasecmp(child->Value(),"pointload")) {
-      PointLoad load; int patch;
-      utl::getAttribute(child,"patch",patch);
-      if (child->FirstChild()) {
-        load.patch = patch;
-        load.pload = atof(child->FirstChild()->Value());
-        utl::getAttribute(child,"xi",load.xi);
-        IFEM::cout <<"\tPoint: P"<< load.patch <<" xi = "<< load.xi
-                   <<" load = "<< load.pload << std::endl;
-        myLoads.push_back(load);
-      }
+    else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild()) {
+      PointLoad load;
+      bool allowElementPointLoad = false;
+      load.pload = atof(child->FirstChild()->Value());
+      if (utl::getAttribute(child,"patch",load.patch))
+        IFEM::cout <<"\tPoint: P"<< load.patch;
+      else
+        IFEM::cout <<"\tPoint:";
+      utl::getAttribute(child,"xi",load.xi);
+      utl::getAttribute(child,"onElement",allowElementPointLoad);
+      IFEM::cout <<" xi = "<< load.xi <<" load = "<< load.pload << std::endl;
+      if (allowElementPointLoad) load.inod = -1;
+      myLoads.push_back(load);
     }
 
-    else if (!strcasecmp(child->Value(),"pressure")) {
+    else if (!strcasecmp(child->Value(),"pressure") && child->FirstChild()) {
       std::string set, type;
       utl::getAttribute(child,"set",set);
       int code = this->getUniquePropertyCode(set,1);
       if (code == 0) utl::getAttribute(child,"code",code);
-
-      if (child->FirstChild() && code > 0) {
+      if (code > 0) {
         utl::getAttribute(child,"type",type,true);
         IFEM::cout <<"\tPressure code "<< code;
         if (!type.empty()) IFEM::cout <<" ("<< type <<")";
@@ -214,7 +214,7 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
           mySol = new AnaSol(child);
       }
       else
-        std::cerr <<"  ** SIMLinElKL::parse: Unknown analytical solution "
+        std::cerr <<"  ** SIMLinElBeamC1::parse: Unknown analytical solution "
                   << type <<" (ignored)"<< std::endl;
     }
 
@@ -258,31 +258,13 @@ bool SIMLinElBeamC1::preprocessB ()
   if (myLoads.empty())
     return true;
 
-  IFEM::cout <<'\n';
+  int ipt = 0;
   bool ok = true;
-  int  pt = 0;
   for (PointLoad& pl : myLoads)
-  {
-    int iclose = 0;
-    int imatch = this->evalPoint(&pl.xi,pl.X,nullptr,pl.patch,true);
-    if (imatch > 0)
-      pl.inod = imatch;
-    else if (imatch == 0 && (iclose = this->findClosestNode(pl.X)) > 0)
-      pl.inod = iclose;
-    else
-    {
-      std::cerr <<" *** SIMLinElBeamC1::preprocessB: Load point ("<< pl.xi
-                <<") on patch #"<< pl.patch <<" is not a nodal point."
-                << std::endl;
+    if (!(pl.inod = this->findLoadPoint(++ipt,pl.patch,pl.xi,pl.inod < 0)))
       ok = false;
-      continue;
-    }
 
-    IFEM::cout <<"Load point #"<< ++pt <<": patch #"<< pl.patch <<" u=("<< pl.xi
-               << (iclose > 0 ? "), (closest) node #" : "), node #")
-               << pl.inod <<", X = "<< pl.X << std::endl;
-  }
-
+  IFEM::cout <<"\n"<< std::endl;
   return ok;
 }
 
@@ -293,22 +275,39 @@ bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase*,
   SystemVector* b = myEqSys->getVector();
   if (!b) return false;
 
+  bool ok = true;
   for (const PointLoad& load : myLoads)
-    if (!mySam->assembleSystem(*b,&load.pload,load.inod))
-      return false;
+    if (load.inod > 0)
+      ok &= mySam->assembleSystem(*b,&load.pload,load.inod);
+    else if (load.inod < 0) // This is an element point load
+      ok &= this->assemblePoint(load.patch,load.xi,load.pload);
 
-  return true;
+  Vector extLoad;
+  if (ok && mySam->expandSolution(*b,extLoad,0.0))
+  {
+    std::streamsize oldPrec = IFEM::cout.precision(15);
+    IFEM::cout <<"   * Sum external load: "<< extLoad.sum() << std::endl;
+    IFEM::cout.precision(oldPrec);
+  }
+
+  return ok;
 }
 
 
 double SIMLinElBeamC1::externalEnergy (const Vectors& u,
                                        const TimeDomain& time) const
 {
-  double energy = this->SIMbase::externalEnergy(u,time);
+  double energy = this->SIM1D::externalEnergy(u,time);
 
   // External energy from the nodal point loads
   for (const PointLoad& load : myLoads)
-    energy += load.pload * u.front()(load.inod);
+    if (load.inod > 0)
+      energy += load.pload * u.front()(load.inod);
+    else if (load.inod < 0) // This is an element point load
+    {
+      Vector v = this->SIMgeneric::getSolution(u.front(),&load.xi,0,load.patch);
+      energy += load.pload * v.front();
+    }
 
   return energy;
 }

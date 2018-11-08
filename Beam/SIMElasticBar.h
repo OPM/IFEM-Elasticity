@@ -14,7 +14,7 @@
 #ifndef _SIM_ELASTIC_BAR_H
 #define _SIM_ELASTIC_BAR_H
 
-#include "SIM1D.h"
+#include "SIMElastic1D.h"
 
 class ElasticBar;
 class ElasticBeam;
@@ -25,11 +25,8 @@ class Tensor;
   \brief Driver class for isogeometric FEM analysis of elastic bars and beams.
 */
 
-class SIMElasticBar : public SIM1D
+class SIMElasticBar : public SIMElastic1D
 {
-  //! Nodal point load container
-  typedef std::map<std::pair<int,int>,ScalarFunc*> LoadMap;
-
 public:
   //! \brief Default constructor.
   //! \param[in] n Number of consequtive solution vectors in core
@@ -55,6 +52,8 @@ protected:
 
   //! \brief Preprocessing performed before the FEM model generation.
   virtual void preprocessA();
+  //! \brief Preprocessing performed after the FEM model generation.
+  virtual bool preprocessB();
 
   //! \brief Renumbers all global nodes number if the model.
   //! \param[in] nodeMap Mapping from old to new node number
@@ -65,7 +64,18 @@ protected:
                                      const TimeDomain& time);
 
 private:
-  LoadMap myLoads; //!< Nodal point loads
+  //! \brief Struct defining a nodal point load.
+  struct PointLoad
+  {
+    int         inod; //!< Node or patch index
+    int         ldof; //!< Local DOF number
+    double      xi;   //!< Parameter of the point
+    ScalarFunc* p;    //!< Load magnitude
+    //! \brief Default constructor.
+    PointLoad(int n = 0) : inod(n), ldof(0), xi(-1.0), p(nullptr) {}
+  };
+
+  std::vector<PointLoad> myLoads; //!< Nodal/element point loads
 
   mutable bool printed; //!< If \e true, the problem definition as been printed
 
