@@ -1,0 +1,57 @@
+SSbeamPointLoad.xinp -1DKL
+
+Input file: SSbeamPointLoad.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
+Parsing input file SSbeamPointLoad.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+	Raising order of P1 2
+  Parsing <refine>
+	Refining P1 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p-1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, node #4, X = 0.5 0 0
+ >>> SAM model summary <<<
+Number of elements    4
+Number of nodes       7
+Number of dofs        7
+Number of unknowns    5
+Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 0.5 0 0
+Number of quadrature points 8
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+   \* Sum external load: 1
+Solving the equation system ...
+	Condition number: 146.444
+ >>> Solution summary <<<
+L2-norm            : 124891
+Max displacement   : 234375
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 456.435
+External energy ((f,u^h)+(t,u^h)^0.5 : 456.435
+  Node #4:	sol1 =  2.083333e+05
+		sol2 =  2.500000e-01

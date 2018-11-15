@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test.
+     Simply supported beam with central point. !-->
+
+<simulation>
+
+  <geometry>
+    <raiseorder patch="1" u="2"/>
+    <refine patch="1" u="3"/>
+    <topologysets>
+      <set name="ends" type="vertex">
+        <item patch="1">1 2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="ends" comp="1"/>
+  </boundaryconditions>
+
+  <discretization>
+    <nGauss default="-2"/>
+  </discretization>
+
+  <EulerBernoulli>
+    <isotropic E="1.2" thickness="0.01"/>
+    <pointload xi="0.5" onElement="true">1.0</pointload>
+  </EulerBernoulli>
+
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.5"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>
