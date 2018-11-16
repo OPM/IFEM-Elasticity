@@ -241,6 +241,24 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vectors& eV,
     if (toLocal && locSys) m.transform(locSys->getTmat(X));
 
     s = m;
+
+    if (!fe.d3NdX3.empty())
+    {
+      Vector q(nsd); // Compute the shear forces from the third derivatives
+      for (unsigned char c = 1; c <= nsd; c++)
+        for (unsigned char d = 1; d <= nsd; d++)
+          q(d) += eV.front().dot(fe.d3NdX3.getColumn(c,c,d));
+      q *= -this->getStiffness(X);
+
+      if (toLocal && locSys && nsd == 2)
+      {
+        const Tensor& T = locSys->getTmat(X);
+        s.push_back(q(1)*T(1,1) + q(2)*T(2,1));
+        s.push_back(q(1)*T(1,2) + q(2)*T(2,2));
+      }
+      else
+        s.insert(s.end(),q.begin(),q.end());
+    }
   }
   else
   {
@@ -263,7 +281,16 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vectors& eV,
 
 size_t KirchhoffLovePlate::getNoFields (int fld) const
 {
-  return fld < 2 ? 1 : (version > 2 ? nsd : nsd*(nsd+1)/2);
+  if (fld < 2)
+    return 1;
+  else if (version > 2)
+    return nsd;
+
+  size_t n = nsd*(nsd+1)/2; // bending moments
+  if (version == 1 && m_mode >= SIM::RECOVERY)
+    n += nsd; // shear forces
+
+  return n;
 }
 
 
@@ -279,9 +306,10 @@ std::string KirchhoffLovePlate::getField1Name (size_t,
 std::string KirchhoffLovePlate::getField2Name (size_t i,
 					       const char* prefix) const
 {
-  if (i >= 3) return "";
+  if (i == 1 && version == 1 && nsd == 1) i = 3;
+  if (i >= (version == 1 ? 5 : 3)) return "";
 
-  static const char* s1[3] = { "m_xx", "m_yy", "m_xy" };
+  static const char* s1[5] = { "m_xx", "m_yy", "m_xy", "q_x", "q_y" };
   static const char* s2[3] = { "d2w/dx2", "d2w/dy2", "d2w/dxy" };
   const char** s = version == 1 ? s1 : s2;
 
@@ -341,7 +369,9 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
   Vector mh, m, error;
   if (!problem.evalSol(mh,pnorm.vec,fe,X))
     return false;
-  else if (mh.size() == 3 && version > 1)
+
+  size_t nscmp = mh.size();
+  if (version > 1 && nscmp == 3)
     mh.push_back(mh(3));
 
   double hk4 = fe.h*fe.h*fe.h*fe.h;
@@ -379,7 +409,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
 
     // Residual of analytical solution (should be zero)
-    if (nrcmp == 1)
+    if (nscmp == 1)
       Res = anasol->dderiv(X,1,1)(1,1) + p;
     else
     {
@@ -394,8 +424,8 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
   else if (version > 1 && ana2nd)
   {
     // Evaluate the analytical Laplacian
-    m = (*ana2nd)(X).vec(nrcmp);
-    if (nrcmp == 3) m.push_back(m(3));
+    m = (*ana2nd)(X).vec(nscmp);
+    if (nscmp == 3) m.push_back(m(3));
 
     // Integrate the energy norm a(w,w)
     pnorm[ip++] += m.dot(m)*fe.detJxW;
@@ -404,7 +434,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     pnorm[ip++] += error.dot(error)*fe.detJxW;
 
     // Residual of analytical solution (should be zero)
-    if (nrcmp == 1)
+    if (nscmp == 1)
       Res = ana2nd->dderiv(X,1,1).x + p;
     else
     {
@@ -425,10 +455,10 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     if (!psol.empty())
     {
       // Evaluate the projected solution
-      Vector mr(nrcmp);
-      for (unsigned short int j = 0; j < nrcmp; j++)
+      Vector mr(nscmp);
+      for (unsigned short int j = 0; j < nscmp; j++)
         mr[j] = psol.dot(fe.N,j,nrcmp);
-      if (nrcmp == 3 && version > 1)
+      if (version > 1 && nscmp == 3)
         mr.push_back(mr(3));
 
 #if INT_DEBUG > 3
@@ -450,12 +480,12 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
         pnorm[ip++] += error.dot(error)*fe.detJxW;
 
       // Integrate the L2-norm (m^r,m^r)
-      pnorm[ip++] += mr.dot(mr.ptr(),nrcmp)*fe.detJxW;
+      pnorm[ip++] += mr.dot(mr.ptr(),nscmp)*fe.detJxW;
       // Integrate the error in L2-norm (m^r-m^h,m^r-m^h)
-      pnorm[ip++] += error.dot(error.ptr(),nrcmp)*fe.detJxW;
+      pnorm[ip++] += error.dot(error.ptr(),nscmp)*fe.detJxW;
 
       // Evaluate the interior residual of the projected solution
-      if (nrcmp == 1)
+      if (nscmp == 1)
       {
         Res = psol.dot(fe.d2NdX2) + p;
 #if INT_DEBUG > 3
@@ -464,9 +494,9 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       }
       else if (version == 1)
       {
-        double d2mxxdx2 = psol.dot(fe.d2NdX2,0,3);
-        double d2myydy2 = psol.dot(fe.d2NdX2,1,3,nen*3);
-        double d2mxydxy = psol.dot(fe.d2NdX2,2,3,nen);
+        double d2mxxdx2 = psol.dot(fe.d2NdX2,0,nrcmp);
+        double d2myydy2 = psol.dot(fe.d2NdX2,1,nrcmp,nen*3);
+        double d2mxydxy = psol.dot(fe.d2NdX2,2,nrcmp,nen);
         Res = d2mxxdx2 + d2mxydxy + d2mxydxy + d2myydy2 + p;
 #if INT_DEBUG > 3
         std::cout <<"\n\tmxx,xx^r = "<< d2mxxdx2

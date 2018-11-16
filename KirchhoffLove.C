@@ -50,7 +50,7 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
   eM = eK = 0;
   eS = iS = 0;
 
-  if (mode == SIM::RECOVERY)
+  if (mode >= SIM::RECOVERY)
     primsol.resize(1);
   else
     primsol.clear();
@@ -88,6 +88,15 @@ void KirchhoffLove::setPressure (RealFunc* pf)
     presFld.push_back(pf);
   else
     presFld.clear();
+}
+
+
+int KirchhoffLove::getIntegrandType() const
+{
+  if (m_mode == SIM::RECOVERY)
+    return SECOND_DERIVATIVES | THIRD_DERIVATIVES;
+  else
+    return SECOND_DERIVATIVES;
 }
 
 

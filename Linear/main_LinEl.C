@@ -337,6 +337,18 @@ int main (int argc, char** argv)
     }
   }
 
+  // Lambda function to expand the number of nodal components in an array
+  auto&& expandNodalVec = [](Vector& v, size_t nnod, size_t ncmp)
+  {
+    size_t ndim = v.size()/nnod;
+    v.resize(ncmp*nnod);
+    for (size_t i = nnod-1; i > 0; i--)
+      for (size_t j = 0; j < ncmp; j++)
+        v[ncmp*i+j] = j < ndim ? v[ndim*i+j] : 0.0;
+    for (size_t j = ndim; j < ncmp; j++)
+      v[j] = 0.0;
+  };
+
   switch (args.adap ? 10 : iop+model->opt.eig) {
   case 0:
   case 5:
@@ -360,6 +372,11 @@ int main (int argc, char** argv)
         return 4;
       else if (!model->projectAnaSol(projx[i],pit->first))
         projx[i].clear();
+      else if (KLp && projx[i].size() < projs[i].size())
+        // Account for absent shear force components
+        // in the analytical solution, insert zeroes instead
+        expandNodalVec(projx[i],model->getNoNodes(),
+                       projs[i].size()/model->getNoNodes());
 
     if (!pOpt.empty())
       IFEM::cout << std::endl;

@@ -66,7 +66,7 @@ public:
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 
   //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
+  virtual int getIntegrandType() const;
 
   using IntegrandBase::initIntegration;
   //! \brief Initializes the integrand with the number of integration points.
