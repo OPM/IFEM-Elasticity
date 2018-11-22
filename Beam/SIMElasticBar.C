@@ -325,7 +325,9 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
       scl = itg->getIntegrationPrm(2) + 1.0; // alphaH + 1.0
   }
 
-  if (R) // Assemble external nodal point loads at current time step
+  if (R)
+  {
+    // Assemble external nodal point loads at current time step
     for (const PointLoad& load : myLoads)
       if (load.ldof > 0)
         ok &= mySam->assembleSystem(*R,(*load.p)(time.t)*scl,
@@ -333,6 +335,7 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
       else // This is an element point load
         ok &= this->assemblePoint(load.inod,load.xi,(*load.p)(time.t),
                                   -load.ldof);
+  }
 
   if (mode == SIM::ARCLEN)
     R = myEqSys->getVector(1); // External load gradient for arc-length driver
