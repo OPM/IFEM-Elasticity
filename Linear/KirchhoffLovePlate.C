@@ -487,7 +487,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       // Evaluate the interior residual of the projected solution
       if (nscmp == 1)
       {
-        Res = psol.dot(fe.d2NdX2) + p;
+        Res = psol.dot(fe.d2NdX2,0,nrcmp) + p;
 #if INT_DEBUG > 3
         if (version > 1) std::cout <<"\n\tw,xxxx^r = "<< Res-p;
 #endif
