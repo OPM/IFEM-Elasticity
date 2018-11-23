@@ -67,6 +67,8 @@ public:
   virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                const std::string& prjName) const;
 
+  virtual bool fieldProjections() const;
+
 private:
   //! \brief Struct defining a point load.
   struct PointLoad

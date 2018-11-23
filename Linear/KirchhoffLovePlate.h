@@ -14,7 +14,9 @@
 #ifndef _KIRCHHOFF_LOVE_PLATE_H
 #define _KIRCHHOFF_LOVE_PLATE_H
 
+#include "Fields.h"
 #include "KirchhoffLove.h"
+#include <memory>
 
 class VecFunc;
 class STensorFunc;
@@ -193,7 +195,18 @@ public:
   //! \param[in] prefix Common prefix for all norm names
   virtual std::string getName(size_t i, size_t j, const char* prefix) const;
 
+  //! \brief Projected quantities given as a field (recovery on a separate basis).
+  //! \param field The field
+  //! \param[in] idx The projection index
+  void setProjectedFields(Fields* field, size_t idx) override
+  {
+    if (idx >= projFields.size())
+      projFields.resize(idx+1);
+    projFields[idx].reset(field);
+  }
+
 private:
+  std::vector<std::unique_ptr<Fields>> projFields; //!< Projected fields for recovery
   STensorFunc* anasol; //!< Analytical stress resultant field
   VecFunc*     ana2nd; //!< Analytical 2nd derivatives of primary solution
   short int    nOrder; //!< Neumann order flag, 1 = moments, 2 = shear forces

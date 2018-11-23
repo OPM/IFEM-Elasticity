@@ -68,6 +68,8 @@ protected:
   virtual bool assembleDiscreteTerms(const IntegrandBase* itg,
                                      const TimeDomain& time);
 
+  virtual bool fieldProjections() const;
+
 private:
   //! \brief Struct defining a nodal point load.
   struct PointLoad

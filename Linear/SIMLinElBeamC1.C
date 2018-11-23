@@ -22,6 +22,7 @@
 #include "Utilities.h"
 #include "Property.h"
 #include "AnaSol.h"
+#include "ASMbase.h"
 #include "Vec3Oper.h"
 #include "IFEM.h"
 #include "tinyxml.h"
@@ -333,4 +334,11 @@ void SIMLinElBeamC1::printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                      const std::string& prjName) const
 {
   Elastic::printNorms(gNorm,rNorm,prjName,this);
+}
+
+
+bool SIMLinElBeamC1::fieldProjections() const
+{
+  return this->getPatch(1)->getNoProjectionNodes() !=
+         this->getPatch(1)->getNoNodes();
 }

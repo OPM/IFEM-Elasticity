@@ -422,12 +422,16 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
   size_t nen = fe.N.size();
   for (const Vector& psol : pnorm.psol)
-    if (!psol.empty())
+    if (!psol.empty() || !projFields.empty())
     {
       // Evaluate the projected solution
       Vector mr(nrcmp);
-      for (unsigned short int j = 0; j < nrcmp; j++)
-        mr[j] = psol.dot(fe.N,j,nrcmp);
+      if (projFields.empty())
+        for (unsigned short int j = 0; j < nrcmp; j++)
+          mr[j] = psol.dot(fe.N,j,nrcmp);
+      else
+        projFields.front()->valueFE(fe,mr);
+
       if (nrcmp == 3 && version > 1)
         mr.push_back(mr(3));
 
@@ -457,7 +461,13 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
       // Evaluate the interior residual of the projected solution
       if (nrcmp == 1)
       {
-        Res = psol.dot(fe.d2NdX2) + p;
+        if (projFields.empty())
+          Res = psol.dot(fe.d2NdX2) + p;
+        else {
+          Matrix3D H;
+          Res = projFields.front()->hessianFE(fe, H);
+          Res = H(1,1,1) + p;
+        }
 #if INT_DEBUG > 3
         if (version > 1) std::cout <<"\n\tw,xxxx^r = "<< Res-p;
 #endif
@@ -591,8 +601,11 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
       {
         // Evaluate the projected solution
         Vector mr(nrcmp);
-        for (unsigned short int j = 0; j < nrcmp; j++)
-          mr[j] = psol.dot(fe.N,j,nrcmp);
+        if (projFields.empty())
+          for (unsigned short int j = 0; j < nrcmp; j++)
+            mr[j] = psol.dot(fe.N,j,nrcmp);
+        else
+          projFields.front()->valueFE(fe,mr);
 
         // Jump in the projected solution
         if (version == 1)
@@ -615,8 +628,11 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
         // the element vector, psol, as a matrix whose number
         // of columns equals the number of rows in the matrix fe.dNdX.
         Matrix dmdX;
-        if (!dmdX.multiplyMat(psol,fe.dNdX)) // dmdX = psol*dNdX
-          return false;
+        if (projFields.empty()) {
+          if (!dmdX.multiplyMat(psol,fe.dNdX)) // dmdX = psol*dNdX
+            return false;
+        } else
+          projFields.front()->gradFE(fe,dmdX);
 
         if (version == 1) // Shear force q^r = {n}*grad{m^r}
           Jmp = (dmdX(1,1)+dmdX(3,2))*normal.x + (dmdX(3,1)+dmdX(2,2))*normal.y;

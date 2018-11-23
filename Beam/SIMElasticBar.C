@@ -382,3 +382,10 @@ bool SIMElasticBar::getExtLoad (RealArray& extloa, const TimeDomain& time) const
 
   return true;
 }
+
+
+bool SIMElasticBar::fieldProjections() const
+{
+  return this->getPatch(1)->getNoProjectionNodes() !=
+         this->getPatch(1)->getNoNodes();
+}
