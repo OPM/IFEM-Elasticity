@@ -81,7 +81,7 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
   Vectors gNorm;
   if (calcEn)
   {
-    model.setMode(SIM::RECOVERY);
+    model.setMode(SIM::NORMS);
     model.setQuadratureRule(opt.nGauss[1]);
     if (!model.solutionNorms(time,solution,gNorm))
       gNorm.clear();

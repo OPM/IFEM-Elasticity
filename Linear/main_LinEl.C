@@ -384,6 +384,7 @@ int main (int argc, char** argv)
     if (!noError)
     {
       // Evaluate solution norms
+      model->setMode(SIM::NORMS);
       model->setQuadratureRule(model->opt.nGauss[1]);
       if (!model->solutionNorms(displ,projs,eNorm,gNorm,"FE solution"))
         return 4;
@@ -454,6 +455,7 @@ int main (int argc, char** argv)
     {
       double old_tol = utl::zero_print_tol;
       if (zero_tol > 0.0) utl::zero_print_tol = zero_tol;
+      model->setMode(SIM::RECOVERY);
       model->dumpResults(displ,0.0,IFEM::cout,true,outPrec);
       if (!projs.empty())
         model->dumpVector(projs.front(),nullptr,IFEM::cout,outPrec);
@@ -543,6 +545,7 @@ int main (int argc, char** argv)
       return 10;
 
     // Write solution fields to VTF-file
+    model->setMode(SIM::RECOVERY);
     if (!model->writeGlvS(displ,1,nBlock))
       return 11;
 
@@ -588,6 +591,7 @@ int main (int argc, char** argv)
       oss.precision(18);
       IFEM::cout <<"\nWriting solution to file "<< infile << std::endl;
       utl::LogStream log2(oss);
+      model->setMode(SIM::RECOVERY);
       model->dumpSolution(displ,log2);
     }
     if (!modes.empty())

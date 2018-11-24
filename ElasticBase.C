@@ -106,6 +106,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
     case SIM::RHS_ONLY:
     case SIM::INT_FORCES:
     case SIM::RECOVERY:
+    case SIM::NORMS:
       primsol.resize(1);
       break;
 
