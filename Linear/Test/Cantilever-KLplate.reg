@@ -59,4 +59,6 @@ Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 2
 External energy ((f,u^h)+(t,u^h)^0.5 : 2
   Node #13:	sol1 = -4.000000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -1.000000e+00  0.000000e+00
   Node #26:	sol1 = -4.000000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -1.000000e+00  0.000000e+00

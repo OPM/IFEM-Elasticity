@@ -5,7 +5,7 @@
 
 <simulation>
 
-  <geometry>
+  <geometry dim="1" L="2.0">
     <raiseorder patch="1" u="2"/>
     <refine patch="1" u="3"/>
     <topologysets>
@@ -24,13 +24,15 @@
   </discretization>
 
   <EulerBernoulli>
-    <isotropic E="1.2" thickness="0.01"/>
+    <isotropic E="4.0e5" thickness="0.01"/>
     <pointload xi="0.5" onElement="true">1.0</pointload>
   </EulerBernoulli>
 
   <postprocessing>
     <resultpoints>
       <point patch="1" u="0.5"/>
+      <point patch="1" u="0.2"/>
+      <point patch="1" u="0.8"/>
     </resultpoints>
   </postprocessing>
 

@@ -9,6 +9,7 @@ Parsing input file SSbeamPointLoad.xinp
 Parsing <discretization>
 Parsing <geometry>
   Generating linear geometry on unit parameter domain \[0,1]
+	Length = 2
   Parsing <raiseorder>
   Parsing <refine>
   Parsing <topologysets>
@@ -22,11 +23,13 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 1: (fixed)
 Parsing <EulerBernoulli>
-	Material code 0: 1.2 1 0.01
+	Material code 0: 400000 1 0.01
 	Point: xi = 0.5 load = 1
 Parsing <postprocessing>
   Parsing <resultpoints>
 	Point 1: P1 xi = 0.5
+	Point 2: P1 xi = 0.2
+	Point 3: P1 xi = 0.8
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: p-1 (p = polynomial degree of basis)
@@ -34,13 +37,15 @@ Spline basis with C1-continuous patch interfaces is used
 Resolving Dirichlet boundary conditions
 	Constraining P1 V1 in direction(s) 1
 	Constraining P1 V2 in direction(s) 1
-Result point #1: patch #1 u=0.5, node #4, X = 0.5 0 0
+Result point #1: patch #1 u=0.5, node #4, X = 1 0 0
+Result point #2: patch #1 u=0.2, X = 0.4 0 0
+Result point #3: patch #1 u=0.8, X = 1.6 0 0
  >>> SAM model summary <<<
 Number of elements    4
 Number of nodes       7
 Number of dofs        7
 Number of unknowns    5
-Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 0.5 0 0
+Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 1 0 0
 Number of quadrature points 8
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
@@ -48,10 +53,14 @@ Assembling interior matrix terms for P1
 Solving the equation system ...
 	Condition number: 146.444
  >>> Solution summary <<<
-L2-norm            : 124891
-Max displacement   : 234375
+L2-norm            : 2.99739
+Max displacement   : 5.625
 Integrating solution norms (FE solution) ...
-Energy norm |u^h| = a(u^h,u^h)^0.5   : 456.435
-External energy ((f,u^h)+(t,u^h)^0.5 : 456.435
-  Node #4:	sol1 =  2.083333e+05
-		sol2 =  2.500000e-01
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 2.23607
+External energy ((f,u^h)+(t,u^h)^0.5 : 2.23607
+  Node #4:	sol1 =  5.000000e+00
+		sol2 =  5.000000e-01 -5.000000e-01
+  Point #2:	sol1 =  2.840000e+00
+		sol2 =  2.000000e-01  5.000000e-01
+  Point #3:	sol1 =  2.840000e+00
+		sol2 =  2.000000e-01 -5.000000e-01

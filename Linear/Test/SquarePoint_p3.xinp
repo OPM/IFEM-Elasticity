@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 <--! Simply supported square plate with central point load.
-     Quadratic spline Kirchhoff-Love thin plate elements. -->
+     Cubic spline Kirchhoff-Love thin plate elements. -->
 
 <simulation>
 
   <geometry Lx="10.0" Ly="10.0">
-    <raiseorder patch="1" u="1" v="1"/>
+    <raiseorder patch="1" u="2" v="2"/>
     <refine patch="1" u="3" v="3"/>
     <topologysets>
       <set name="boundary" type="edge">
@@ -24,12 +24,15 @@
     <pointload patch="1" xi="0.5" eta="0.5" onElement="true">10000.0</pointload>
     <anasol type="NavierPlate"
             a="10.0" b="10.0" t="0.1" E="2.1e11" nu="0.3"
-	    xi="0.5" eta="0.5" pz="10000.0"/>
+            xi="0.5" eta="0.5" pz="10000.0"/>
   </kirchhofflove>
 
   <postprocessing>
     <resultpoints>
       <point patch="1" u="0.5" v="0.5"/>
+      <point patch="1" u="0.5" v="0.25"/>
+      <point patch="1" u="0.25" v="0.5"/>
+      <point patch="1" u="0.25" v="0.25"/>
     </resultpoints>
   </postprocessing>
 
