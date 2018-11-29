@@ -27,8 +27,11 @@ Parsing <postprocessing>
   Parsing <projection>
   Parsing <resultpoints>
 	Point 1: P1 xi = 0.5 0.5
+	Point 2: P1 xi = 0.5 0.25
+	Point 3: P1 xi = 0.25 0.5
+	Point 4: P1 xi = 0.25 0.25
 Parsing <adaptive>
-	Refinement percentage: 2 type=0
+	Refinement percentage: 90 type=1
 	Refinement scheme: 2
 Parsing input file succeeded.
 Equation solver: 2
@@ -44,6 +47,9 @@ Resolving Dirichlet boundary conditions
 	Constraining P1 E3 in direction(s) 1
 	Constraining P1 E4 in direction(s) 1
 Result point #1: patch #1 (u,v)=(0.5,0.5), X = 0.5 0.5 0
+Result point #2: patch #1 (u,v)=(0.5,0.25), X = 0.5 0.25 0
+Result point #3: patch #1 (u,v)=(0.25,0.5), X = 0.25 0.5 0
+Result point #4: patch #1 (u,v)=(0.25,0.25), X = 0.25 0.25 0
  >>> SAM model summary <<<
 Number of elements    64
 Number of nodes       121
@@ -55,6 +61,7 @@ Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Adaptive step 1
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+   \* Sum external load: 1
 Solving the equation system ...
 	Condition number: 640.297
  >>> Solution summary <<<
@@ -63,7 +70,13 @@ Max displacement   : 0.142236
 Projecting secondary solution ...
 	Continuous global L2-projection
   Point #1:	sol1 =  1.262254e-01
-		sol2 =  3.301266e-01  3.301266e-01  0.000000e+00
+		sol2 =  3.301266e-01  3.301266e-01  0.000000e+00 -1.507744e+00 -1.507744e+00
+  Point #2:	sol1 =  7.798376e-02
+		sol2 =  1.040561e-01  6.200957e-02  0.000000e+00 -2.072240e-01  6.651893e-01
+  Point #3:	sol1 =  7.798376e-02
+		sol2 =  6.200957e-02  1.040561e-01  0.000000e+00  6.651893e-01 -2.072240e-01
+  Point #4:	sol1 =  5.206053e-02
+		sol2 =  4.426895e-02  4.426895e-02 -4.353575e-02  3.190714e-01  3.190714e-01
 Energy norm           a(w^h,w^h)^0.5 : 0.355282
 External energy          (p,w^h)^0.5 : 0.355282
 >>> Error estimates based on Continuous global L2-projection <<<
@@ -78,8 +91,8 @@ Root mean square (RMS) of error      : 1.05772
 Min element error                    : 0.000127367
 Max element error                    : 0.00570914
 Average element error                : 0.00130736
-Refining 3 basis functions with errors in range \[0.0469909,0.0513728] 2% of all basis functions
-Refined mesh: 136 elements 163 nodes.
+Refining 5 basis functions with errors in range \[0.0469909,0.0513728] 90% of max error (0.0462355)
+Refined mesh: 160 elements 181 nodes.
 Adaptive step 2
 Parsing input file PointLoadedPlate-adap.xinp
 Parsing <geometry>
@@ -100,6 +113,9 @@ Parsing <postprocessing>
   Parsing <projection>
   Parsing <resultpoints>
 	Point 1: P1 xi = 0.5 0.5
+	Point 2: P1 xi = 0.5 0.25
+	Point 3: P1 xi = 0.25 0.5
+	Point 4: P1 xi = 0.25 0.25
 Parsing <adaptive>
 Parsing input file succeeded.
 Problem definition:
@@ -111,39 +127,49 @@ Resolving Dirichlet boundary conditions
 	Constraining P1 E3 in direction(s) 1
 	Constraining P1 E4 in direction(s) 1
 Result point #1: patch #1 (u,v)=(0.5,0.5), X = 0.5 0.5 0
+Result point #2: patch #1 (u,v)=(0.5,0.25), X = 0.5 0.25 0
+Result point #3: patch #1 (u,v)=(0.25,0.5), X = 0.25 0.5 0
+Result point #4: patch #1 (u,v)=(0.25,0.25), X = 0.25 0.25 0
  >>> SAM model summary <<<
-Number of elements    136
-Number of nodes       163
-Number of dofs        163
-Number of unknowns    123
+Number of elements    160
+Number of nodes       181
+Number of dofs        181
+Number of unknowns    141
 Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+   \* Sum external load: 1
 Solving the equation system ...
-	Condition number: 2650.62
+	Condition number: 2803.9
  >>> Solution summary <<<
-L2-norm            : 0.062894
-Max displacement   : 0.131787
+L2-norm            : 0.0641958
+Max displacement   : 0.131351
 Projecting secondary solution ...
 	Continuous global L2-projection
-  Point #1:	sol1 =  1.265613e-01
-		sol2 =  4.019934e-01  4.019934e-01
-Energy norm           a(w^h,w^h)^0.5 : 0.355755
-External energy          (p,w^h)^0.5 : 0.355755
+  Point #1:	sol1 =  1.265657e-01
+		sol2 =  4.022788e-01  4.022788e-01  0.000000e+00 -3.051140e+00 -3.051140e+00
+  Point #2:	sol1 =  7.796047e-02
+		sol2 =  9.981414e-02  5.942210e-02  0.000000e+00 -1.090066e-01  6.640100e-01
+  Point #3:	sol1 =  7.796047e-02
+		sol2 =  5.942210e-02  9.981414e-02  0.000000e+00  6.640100e-01 -1.090066e-01
+  Point #4:	sol1 =  5.206042e-02
+		sol2 =  4.453445e-02  4.453445e-02 -4.307129e-02  3.212626e-01  3.212626e-01
+Energy norm           a(w^h,w^h)^0.5 : 0.355761
+External energy          (p,w^h)^0.5 : 0.355761
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.355657
-Error norm a(e,e)^0.5, e=u^r-u^h     : 0.008334
- relative error (% of |u^r|) : 2.34327
-Residual error (r(u^r) + J(u^r))^0.5 : 0.135835
- relative error (% of |u^r|) : 38.1928
-Error estimate a(e,e)^0.5, e=w^r-w^h : 0.008334
-Relative error (%) : 2.34198
-Root mean square (RMS) of error      : 1.29786
-Min element error                    : 3.05922e-05
-Max element error                    : 0.00308702
-Average element error                : 0.000436171
-Refining 4 basis functions with errors in range \[0.025041,0.0402097] 2% of all basis functions
-Refined mesh: 229 elements 220 nodes.
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.35567
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.00805412
+ relative error (% of |u^r|) : 2.2645
+Residual error (r(u^r) + J(u^r))^0.5 : 0.13667
+ relative error (% of |u^r|) : 38.4262
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.00805412
+Relative error (%) : 2.26334
+Root mean square (RMS) of error      : 1.49819
+Min element error                    : 3.03378e-05
+Max element error                    : 0.00301049
+Average element error                : 0.000353492
+Refining 5 basis functions with errors in range \[0.0243792,0.0267372] 90% of max error (0.0240635)
+Refined mesh: 256 elements 241 nodes.
 Adaptive step 3
 Parsing input file PointLoadedPlate-adap.xinp
 Parsing <geometry>
@@ -164,6 +190,9 @@ Parsing <postprocessing>
   Parsing <projection>
   Parsing <resultpoints>
 	Point 1: P1 xi = 0.5 0.5
+	Point 2: P1 xi = 0.5 0.25
+	Point 3: P1 xi = 0.25 0.5
+	Point 4: P1 xi = 0.25 0.25
 Parsing <adaptive>
 Parsing input file succeeded.
 Problem definition:
@@ -175,34 +204,44 @@ Resolving Dirichlet boundary conditions
 	Constraining P1 E3 in direction(s) 1
 	Constraining P1 E4 in direction(s) 1
 Result point #1: patch #1 (u,v)=(0.5,0.5), X = 0.5 0.5 0
+Result point #2: patch #1 (u,v)=(0.5,0.25), X = 0.5 0.25 0
+Result point #3: patch #1 (u,v)=(0.25,0.5), X = 0.25 0.5 0
+Result point #4: patch #1 (u,v)=(0.25,0.25), X = 0.25 0.25 0
  >>> SAM model summary <<<
-Number of elements    229
-Number of nodes       220
-Number of dofs        220
-Number of unknowns    180
+Number of elements    256
+Number of nodes       241
+Number of dofs        241
+Number of unknowns    201
 Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+   \* Sum external load: 1
 Solving the equation system ...
-	Condition number: 22281.4
+	Condition number: 23041.6
  >>> Solution summary <<<
-L2-norm            : 0.0770038
-Max displacement   : 0.12818
+L2-norm            : 0.0798844
+Max displacement   : 0.128043
 Projecting secondary solution ...
 	Continuous global L2-projection
-  Point #1:	sol1 =  1.266489e-01
-		sol2 =  4.738063e-01  4.738063e-01
-Energy norm           a(w^h,w^h)^0.5 : 0.355878
-External energy          (p,w^h)^0.5 : 0.355878
+  Point #1:	sol1 =  1.266503e-01
+		sol2 =  4.741013e-01  4.741013e-01  0.000000e+00 -6.120602e+00 -6.120602e+00
+  Point #2:	sol1 =  7.795998e-02
+		sol2 =  9.955195e-02  5.890445e-02  0.000000e+00 -1.056162e-01  7.086692e-01
+  Point #3:	sol1 =  7.795998e-02
+		sol2 =  5.890445e-02  9.955195e-02  0.000000e+00  7.086692e-01 -1.056162e-01
+  Point #4:	sol1 =  5.206070e-02
+		sol2 =  4.455173e-02  4.455173e-02 -4.306882e-02  3.210094e-01  3.210094e-01
+Energy norm           a(w^h,w^h)^0.5 : 0.35588
+External energy          (p,w^h)^0.5 : 0.35588
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.35585
-Error norm a(e,e)^0.5, e=u^r-u^h     : 0.00441501
- relative error (% of |u^r|) : 1.24069
-Residual error (r(u^r) + J(u^r))^0.5 : 0.0680267
- relative error (% of |u^r|) : 19.1167
-Error estimate a(e,e)^0.5, e=w^r-w^h : 0.00441501
-Relative error (%) : 1.2405
-Root mean square (RMS) of error      : 1.1772
-Min element error                    : 2.90318e-05
-Max element error                    : 0.00154844
-Average element error                : 0.000188885
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.355854
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.00424302
+ relative error (% of |u^r|) : 1.19235
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0685149
+ relative error (% of |u^r|) : 19.2536
+Error estimate a(e,e)^0.5, e=w^r-w^h : 0.00424302
+Relative error (%) : 1.19218
+Root mean square (RMS) of error      : 1.28125
+Min element error                    : 2.90319e-05
+Max element error                    : 0.00150866
+Average element error                : 0.000163163

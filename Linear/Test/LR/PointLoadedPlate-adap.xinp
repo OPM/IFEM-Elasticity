@@ -30,14 +30,17 @@
     </projection>
     <resultpoints>
       <point patch="1" u="0.5" v="0.5"/>
+      <point patch="1" u="0.5" v="0.25"/>
+      <point patch="1" u="0.25" v="0.5"/>
+      <point patch="1" u="0.25" v="0.25"/>
     </resultpoints>
   </postprocessing>
 
   <adaptive>
     <maxstep>3</maxstep>
-    <beta>2.0</beta>
+    <beta type="maximum">90</beta>
     <maxdof>100000</maxdof>
-    <errtol>0.00001</errtol>
+    <errtol>0.0001</errtol>
     <knot_mult>1</knot_mult>
     <scheme>isotropic_function</scheme>
     <use_norm>1</use_norm>
