@@ -16,6 +16,7 @@
 #include "FiniteElement.h"
 #include "ElmMats.h"
 #include "ElmNorm.h"
+#include "Fields.h"
 #include "TensorFunction.h"
 #include "Vec3Oper.h"
 #include "AnaSol.h"
@@ -374,9 +375,10 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
   if (version > 1 && nscmp == 3)
     mh.push_back(mh(3));
 
+  size_t ip  = 0;
+  size_t nen = fe.N.size();
   double hk4 = fe.h*fe.h*fe.h*fe.h;
   double Res = 0.0;
-  size_t ip = 0;
 
   // Integrate the energy norm a(w^h,w^h)
   if (version == 1)
@@ -394,7 +396,10 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
   if (version > 1) p = -p;
 
 #if INT_DEBUG > 3
-  std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X <<"):";
+  std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X
+            <<"):\n\t"<< (version > 1 ? "Laplace{w^h} =" : "m^h =");
+  for (double v : mh) std::cout <<" "<< v;
+  std::cout <<" w = "<< w <<" p = "<< p;
 #endif
 
   if (version == 1 && anasol)
@@ -447,98 +452,140 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     pnorm[ip++] += hk4*Res*Res*fe.detJxW;
   }
 
+#if INT_DEBUG > 3
+  std::cout <<"\n\t"<< (version > 1 ? "Laplace{w}   =" : "m   =");
+  for (double v : m) std::cout <<" "<< v;
+#endif
+
   // Integrate the area
   pnorm[ip++] += fe.detJxW;
 
-  size_t nen = fe.N.size();
-  for (const Vector& psol : pnorm.psol)
-    if (!psol.empty())
-    {
-      // Evaluate the projected solution
-      Vector mr(nscmp);
+  Vector mr(nscmp);
+  Matrix3D ddmr;
+
+  for (size_t i = 0; i < pnorm.psol.size(); i++)
+  {
+    // Evaluate the projected solution
+    if (!pnorm.psol[i].empty())
       for (unsigned short int j = 0; j < nscmp; j++)
-        mr[j] = psol.dot(fe.N,j,nrcmp);
-      if (version > 1 && nscmp == 3)
-        mr.push_back(mr(3));
-
-#if INT_DEBUG > 3
-      std::cout <<"\n\t"<< (version > 1 ? "Laplace{w^r} =" : "m^r =");
-      for (double  v : mr) std::cout <<" "<< v;
-#endif
-
-      // Integrate the energy norm a(w^r,w^r)
-      if (version == 1)
-        pnorm[ip++] += mr.dot(Cinv*mr)*fe.detJxW;
-      else
-        pnorm[ip++] += mr.dot(mr)*fe.detJxW;
-
-      // Integrate the error in energy norm a(w^r-w^h,w^r-w^h)
-      error = mr - mh;
-      if (version == 1)
-        pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
-      else
-        pnorm[ip++] += error.dot(error)*fe.detJxW;
-
-      // Integrate the L2-norm (m^r,m^r)
-      pnorm[ip++] += mr.dot(mr.ptr(),nscmp)*fe.detJxW;
-      // Integrate the error in L2-norm (m^r-m^h,m^r-m^h)
-      pnorm[ip++] += error.dot(error.ptr(),nscmp)*fe.detJxW;
-
-      // Evaluate the interior residual of the projected solution
-      if (nscmp == 1)
-      {
-        Res = psol.dot(fe.d2NdX2,0,nrcmp) + p;
-#if INT_DEBUG > 3
-        if (version > 1) std::cout <<"\n\tw,xxxx^r = "<< Res-p;
-#endif
-      }
-      else if (version == 1)
-      {
-        double d2mxxdx2 = psol.dot(fe.d2NdX2,0,nrcmp);
-        double d2myydy2 = psol.dot(fe.d2NdX2,1,nrcmp,nen*3);
-        double d2mxydxy = psol.dot(fe.d2NdX2,2,nrcmp,nen);
-        Res = d2mxxdx2 + d2mxydxy + d2mxydxy + d2myydy2 + p;
-#if INT_DEBUG > 3
-        std::cout <<"\n\tmxx,xx^r = "<< d2mxxdx2
-                  <<"\n\tmyy,yy^r = "<< d2myydy2
-                  <<"\n\tmxy,xy^r = "<< d2mxydxy;
-#endif
-      }
-      else
-      {
-        double wxxxx = psol.dot(fe.d2NdX2,0,nrcmp);
-        double wyyyy = psol.dot(fe.d2NdX2,1,nrcmp,nen*3);
-        double wxxyy = psol.dot(fe.d2NdX2,0,nrcmp,nen*3);
-#if INT_DEBUG > 3
-        std::cout <<"\n\tw,xxxx^r = "<< wxxxx
-                  <<"\n\tw,yyyy^r = "<< wyyyy
-                  <<"\n\tw,xxyy^r = "<< wxxyy;
-#endif
-        Res = wxxxx + wxxyy + wxxyy + wyyyy + p;
-      }
-      // Integrate the residual error in the projected solution
-#if INT_DEBUG > 3
-      std::cout <<"\n\tResidual h^4*|Laplace{m^r}-p|^2 = "
-                << hk4*Res*Res << std::endl;
-#endif
-      pnorm[ip++] += hk4*Res*Res*fe.detJxW;
-      ip++; // Make room for Jump contributions here
-
-      if (version == 1 && anasol)
-      {
-        // Integrate the error in the projected solution a(w-w^r,w-w^r)
-        error = m - mr;
-        pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
-        ip += 2; // Make room for the local effectivity indices here
-      }
-      else if (version > 1 && ana2nd)
-      {
-        // Integrate the error in the projected solution a(w-w^r,w-w^r)
-        error = m - mr;
-        pnorm[ip++] += error.dot(error)*fe.detJxW;
-        ip += 2; // Make room for the local effectivity indices here
-      }
+        mr[j] = pnorm.psol[i].dot(fe.N,j,nrcmp);
+    else if (i < prjFld.size() && prjFld[i])
+    {
+      prjFld[i]->valueFE(fe,mr); // this projection has its own basis
+      mr.std::vector<double>::resize(nscmp); // remove shear force components
     }
+    else
+      continue;
+
+    if (version > 1 && nscmp == 3)
+      mr.push_back(mr(3));
+
+#if INT_DEBUG > 3
+    std::cout <<"\n\t"<< (version > 1 ? "Laplace{w^r} =" : "m^r =");
+    for (double  v : mr) std::cout <<" "<< v;
+#endif
+
+    // Integrate the energy norm a(w^r,w^r)
+    if (version == 1)
+      pnorm[ip++] += mr.dot(Cinv*mr)*fe.detJxW;
+    else
+      pnorm[ip++] += mr.dot(mr)*fe.detJxW;
+
+    // Integrate the error in energy norm a(w^r-w^h,w^r-w^h)
+    error = mr - mh;
+    if (version == 1)
+      pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
+    else
+      pnorm[ip++] += error.dot(error)*fe.detJxW;
+
+    // Integrate the L2-norm (m^r,m^r)
+    pnorm[ip++] += mr.dot(mr.ptr(),nscmp)*fe.detJxW;
+    // Integrate the error in L2-norm (m^r-m^h,m^r-m^h)
+    pnorm[ip++] += error.dot(error.ptr(),nscmp)*fe.detJxW;
+
+    if (pnorm.psol[i].empty())
+      prjFld[i]->hessianFE(fe,ddmr);
+
+    // Evaluate the interior residual of the projected solution
+    if (nscmp == 1)
+    {
+      if (pnorm.psol[i].empty())
+        Res = ddmr(1,1,1) + p;
+      else
+        Res = pnorm.psol[i].dot(fe.d2NdX2,0,nrcmp) + p;
+#if INT_DEBUG > 3
+      if (version > 1) std::cout <<"\n\tw,xxxx^r = "<< Res-p;
+#endif
+    }
+    else if (version == 1)
+    {
+      double d2mxxdx2, d2myydy2, d2mxydxy;
+      if (pnorm.psol[i].empty())
+      {
+        d2mxxdx2 = ddmr(1,1,1);
+        d2myydy2 = ddmr(2,2,2);
+        d2mxydxy = ddmr(3,1,2);
+      }
+      else
+      {
+        d2mxxdx2 = pnorm.psol[i].dot(fe.d2NdX2,0,nrcmp);
+        d2myydy2 = pnorm.psol[i].dot(fe.d2NdX2,1,nrcmp,nen*3);
+        d2mxydxy = pnorm.psol[i].dot(fe.d2NdX2,2,nrcmp,nen);
+      }
+#if INT_DEBUG > 3
+      std::cout <<"\n\tmxx,xx^r = "<< d2mxxdx2
+                <<"\n\tmyy,yy^r = "<< d2myydy2
+                <<"\n\tmxy,xy^r = "<< d2mxydxy;
+#endif
+      Res = d2mxxdx2 + d2mxydxy + d2mxydxy + d2myydy2 + p;
+    }
+    else
+    {
+      double wxxxx, wyyyy, wxxyy;
+      if (pnorm.psol[i].empty())
+      {
+        wxxxx = ddmr(1,1,1);
+        wyyyy = ddmr(2,2,2);
+        wxxyy = ddmr(1,2,2);
+      }
+      else
+      {
+        wxxxx = pnorm.psol[i].dot(fe.d2NdX2,0,nrcmp);
+        wyyyy = pnorm.psol[i].dot(fe.d2NdX2,1,nrcmp,nen*3);
+        wxxyy = pnorm.psol[i].dot(fe.d2NdX2,0,nrcmp,nen*3);
+      }
+#if INT_DEBUG > 3
+      std::cout <<"\n\tw,xxxx^r = "<< wxxxx
+                <<"\n\tw,yyyy^r = "<< wyyyy
+                <<"\n\tw,xxyy^r = "<< wxxyy;
+#endif
+      Res = wxxxx + wxxyy + wxxyy + wyyyy + p;
+    }
+    // Integrate the residual error in the projected solution
+#if INT_DEBUG > 3
+    std::cout <<"\n\tResidual h^4*|Laplace{m^r}-p|^2 = "<< hk4*Res*Res;
+#endif
+    pnorm[ip++] += hk4*Res*Res*fe.detJxW;
+    ip++; // Make room for Jump contributions here
+
+    if (version == 1 && anasol)
+    {
+      // Integrate the error in the projected solution a(w-w^r,w-w^r)
+      error = m - mr;
+      pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
+      ip += 2; // Make room for the local effectivity indices here
+    }
+    else if (version > 1 && ana2nd)
+    {
+      // Integrate the error in the projected solution a(w-w^r,w-w^r)
+      error = m - mr;
+      pnorm[ip++] += error.dot(error)*fe.detJxW;
+      ip += 2; // Make room for the local effectivity indices here
+    }
+  }
+#if INT_DEBUG > 3
+  std::cout << std::endl;
+#endif
 
   if (ip == pnorm.size())
     return true;
