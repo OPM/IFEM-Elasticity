@@ -30,6 +30,8 @@ ScordelisLo-p4-4x4.xinp -2DKLshell
 /0/Elasticity-1/fields/Top\ sigma_y/1 Dataset {64}
 /0/Elasticity-1/fields/Top\ tau_xy Group
 /0/Elasticity-1/fields/Top\ tau_xy/1 Dataset {64}
+/0/Elasticity-1/fields/displacement Group
+/0/Elasticity-1/fields/displacement/1 Dataset {192}
 /0/Elasticity-1/fields/m_xx Group
 /0/Elasticity-1/fields/m_xx/1 Dataset {64}
 /0/Elasticity-1/fields/m_xy Group
@@ -42,8 +44,6 @@ ScordelisLo-p4-4x4.xinp -2DKLshell
 /0/Elasticity-1/fields/n_xy/1 Dataset {64}
 /0/Elasticity-1/fields/n_yy Group
 /0/Elasticity-1/fields/n_yy/1 Dataset {64}
-/0/Elasticity-1/fields/u Group
-/0/Elasticity-1/fields/u/1 Dataset {192}
 /0/Elasticity-1/knotspan Group
 /0/Elasticity-1/knotspan/(p,u^h)^0.5 Group
 /0/Elasticity-1/knotspan/(p,u^h)^0.5/1 Dataset {16}

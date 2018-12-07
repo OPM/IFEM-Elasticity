@@ -338,9 +338,6 @@ void KirchhoffLoveShell::primaryScalarFields (Matrix& field)
 std::string KirchhoffLoveShell::getField1Name (size_t i,
                                                const char* prefix) const
 {
-  if (i == 11)
-    return "u";
-
   if (i == 3)
   {
     std::string name("sqrt(u^2+v^2+w^2)");
@@ -392,7 +389,7 @@ NormBase* KirchhoffLoveShell::getNormIntegrand (AnaSol*) const
 KirchhoffLoveShellNorm::KirchhoffLoveShellNorm (KirchhoffLoveShell& p)
   : NormBase(p)
 {
-  nrcmp = 6;
+  nrcmp = myProblem.getNoFields(2);
 }
 
 
@@ -418,18 +415,22 @@ bool KirchhoffLoveShellNorm::evalInt (LocalIntegral& elmInt,
   for (int i = 0; i < 3; i++)
     u[i] = pnorm.vec.front().dot(fe.N,i,3);
 
-  size_t ip = 0;
-
   // Integrate the energy norm a(u^h,u^h)
-  pnorm[ip++] += (nh.dot(Dm*nh) + mh.dot(Db*mh))*fe.detJxW;
+  pnorm[0] += (nh.dot(Dm*nh) + mh.dot(Db*mh))*fe.detJxW;
   // Integrate the external energy (p,u^h)
-  pnorm[ip++] += p*u*fe.detJxW;
+  pnorm[1] += p*u*fe.detJxW;
+
+  if (pnorm.psol.empty() && pnorm.size() == 2)
+    return true; // no projection in this run
 
 #if INT_DEBUG > 3
-  if (!pnorm.psol.empty())
-    std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X <<"):";
+  std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X;
+  std::cout <<"):\n\ts^h =";
+  for (double v : nh) std::cout <<" "<< v;
+  for (double v : mh) std::cout <<" "<< v;
 #endif
 
+  size_t ip = 2;
   for (const Vector& psol : pnorm.psol)
     if (!psol.empty())
     {
@@ -464,10 +465,8 @@ bool KirchhoffLoveShellNorm::evalInt (LocalIntegral& elmInt,
     }
 
 #if INT_DEBUG > 3
-  if (!pnorm.psol.empty())
-    std::cout << std::endl;
+  std::cout << std::endl;
 #endif
-
   if (ip == pnorm.size())
     return true;
 
