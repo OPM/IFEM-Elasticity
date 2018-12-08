@@ -67,6 +67,13 @@ public:
   //! \param[in] time Parameters for nonlinear simulations
   virtual void printStep(int istep, const TimeDomain& time) const;
 
+  //! \brief Prints a norm group to the log stream.
+  //! \param[in] norm The norm values to print
+  //! \param[in] rNorm Reference norms for the first norm group
+  //! \param[in] prjName Projection name associated with this norm group
+  virtual void printNormGroup(const Vector& norm, const Vector& rNorm,
+                              const std::string& prjName) const;
+
 protected:
   //! \brief Returns the actual integrand.
   virtual KirchhoffLove* getProblem(int version = 1);

@@ -423,10 +423,11 @@ int main (int argc, char** argv)
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^rr     : "<< exaErr
                      <<"\n- relative error (% of |u|)   : "<< exaErr*Rel;
         }
-        IFEM::cout <<"\nL2-norm |s^r| = (s^r,s^r)^0.5        : "<< gNorm[j](3)
-                   <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4)
-                   <<"\n- relative error (% of |s^r|) : "
-                   << gNorm[j](4)/gNorm[j](3)*100.0;
+        if (!shell)
+          IFEM::cout <<"\nL2-norm |s^r| = (s^r,s^r)^0.5        : "<< gNorm[j](3)
+                     <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4)
+                     <<"\n- relative error (% of |s^r|) : "
+                     << gNorm[j](4)/gNorm[j](3)*100.0;
       }
       IFEM::cout << std::endl;
       IFEM::cout.precision(oldPrec);

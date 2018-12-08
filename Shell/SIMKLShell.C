@@ -505,3 +505,27 @@ void SIMKLShell::printStep (int istep, const TimeDomain& time) const
 
   adm.cout << std::endl;
 }
+
+
+void SIMKLShell::printNormGroup (const Vector& norm, const Vector& rNorm,
+                                 const std::string& prjName) const
+
+{
+  if (!dynamic_cast<KirchhoffLoveShell*>(myProblem))
+  {
+    Elastic::printNorms(norm,rNorm,prjName,this);
+    return;
+  }
+
+  // Special print for shell problems (no analytical solution)
+  IFEM::cout <<"\n\n>>> Error estimates based on "<< prjName <<" <<<"
+             <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< norm(1)
+             <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< norm(2)
+             <<"\n- relative error (% of |u^r|) : "<< 100.0*norm(2)/norm(1);
+  IFEM::cout <<"\nL2 norm |n^r| = (n^r,n^r)^0.5        : "<< norm(3)
+             <<"\nL2 error (e,e)^0.5, e=n^r-n^h        : "<< norm(5)
+             <<"\n- relative error (% of |n^r|) : "<< 100.0*norm(5)/norm(3);
+  IFEM::cout <<"\nL2 norm |m^r| = (m^r,m^r)^0.5        : "<< norm(4)
+             <<"\nL2 error (e,e)^0.5, e=m^r-m^h        : "<< norm(6)
+             <<"\n- relative error (% of |m^r|) : "<< 100.0*norm(6)/norm(4);
+}

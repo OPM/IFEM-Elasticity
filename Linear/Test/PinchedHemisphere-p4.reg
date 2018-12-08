@@ -1,9 +1,10 @@
-PinchedHemisphere-p4.xinp -2DKLshell
+PinchedHemisphere-p4.xinp -2DKLshell -cgl2
 
 Input file: PinchedHemisphere-p4.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Enabled projection(s): Continuous global L2-projection
 Solution component output zero tolerance: 1e-06
 Parsing input file PinchedHemisphere-p4.xinp
 Parsing <discretization>
@@ -46,6 +47,7 @@ Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: p+1 (p = polynomial degree of basis)
 Spline basis with C1-continuous patch interfaces is used
+Enabled projection(s): Continuous global L2-projection
 Problem definition:
 KirchhoffLoveShell: thickness = 0.04, gravity = 0
 LinIsotropic: plane stress, E = 6.825e+07, nu = 0.3, rho = 1, alpha = 0
@@ -68,6 +70,7 @@ Load point #2: patch #1 (u,v)=(1,1), node #64, X = 0 10 0, direction = 2
 Number of quadrature points 400
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+   \* Sum external load: 0 -2 2
 Solving the equation system ...
 	Condition number: 1.71649e+07
  >>> Solution summary <<<
@@ -75,9 +78,21 @@ L2-norm            : 0.0260764
 Max X-displacement : 0.0433897
 Max Y-displacement : 0.0883787
 Max Z-displacement : 0.0883787
+Projecting secondary solution ...
+	Continuous global L2-projection
 Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 0.420425
 External energy ((f,u^h)+(t,u^h)^0.5 : 0.420425
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.41707
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0530098
+ relative error (% of |u^r|) : 12.7101
+L2 norm |n^r| = (n^r,n^r)^0.5        : 63.8556
+L2 error (e,e)^0.5, e=n^r-n^h        : 92.3492
+ relative error (% of |n^r|) : 144.622
+L2 norm |m^r| = (m^r,m^r)^0.5        : 6.01099
+L2 error (e,e)^0.5, e=m^r-m^h        : 0.0347241
+ relative error (% of |m^r|) : 0.577676
   Node #8:	sol1 =  4.338855e-02  0.000000e+00  8.837875e-02
 		sol2 = -3.422639e+00 -2.283428e+01 -5.480571e-03 -7.280761e-01  1.340658e+00  0.000000e+00
 		sol3 = -2.815851e+03  4.456610e+03 -1.375468e-01  4.456610e+03 -2.815851e+03  6.351342e+03
