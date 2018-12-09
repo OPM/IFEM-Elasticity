@@ -235,6 +235,39 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
 }
 
 
+bool SIMLinElBeamC1::parseXi (const TiXmlElement* elem, RealArray& xi) const
+{
+  std::string type;
+  utl::getAttribute(elem,"type",type,true);
+  if (type == "midpoint-focus")
+  {
+    int levels = 0;
+    utl::getAttribute(elem,"levels",levels);
+    if (levels < 1) return false;
+
+    double hmax = pow(2.0,-levels);
+    double hmin = hmax*hmax;
+    IFEM::cout <<"\thmax = "<< hmax <<" ("<< 1.0/hmax
+               <<")\n\thmin = "<< hmin <<" ("<< 1.0/hmin <<")"<< std::endl;
+
+    std::set<double> knots;
+    for (double x = hmax; x < 1.0; x += hmax)
+      knots.insert(x);
+
+    for (double h = hmax*0.5; h > hmin; h *= 0.5)
+    {
+      knots.insert(0.5-h);
+      knots.insert(0.5+h);
+    }
+
+    xi.insert(xi.end(),knots.begin(),knots.end());
+    return true;
+  }
+
+  return false;
+}
+
+
 bool SIMLinElBeamC1::initMaterial (size_t propInd)
 {
   if (propInd >= mVec.size()) propInd = mVec.size()-1;
@@ -333,4 +366,18 @@ void SIMLinElBeamC1::printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                      const std::string& prjName) const
 {
   Elastic::printNorms(gNorm,rNorm,prjName,this);
+}
+
+
+bool SIMLinElBeamC1::haveAnaSol () const
+{
+  if (!mySol) return false;
+
+  KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);
+  if (!klp) return false;
+
+  if (klp->getVersion() > 1)
+    return mySol->getScalarSecSol() != nullptr;
+
+  return mySol->getStressSol() != nullptr;
 }

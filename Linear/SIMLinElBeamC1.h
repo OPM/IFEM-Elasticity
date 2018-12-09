@@ -43,6 +43,11 @@ protected:
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem);
 
+  //! \brief Parses or generates app-specific explicit knots for refinement.
+  //! \param[in] elem The XML element to parse
+  //! \param[out] xi Explicit knots in range [0,1]
+  virtual bool parseXi(const TiXmlElement* elem, RealArray& xi) const;
+
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual bool preprocessB();
 
@@ -66,6 +71,9 @@ public:
   //! \param[in] prjName Projection name associated with this norm group
   virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                const std::string& prjName) const;
+
+  //! \brief Returns whether an analytical solution is available or not.
+  virtual bool haveAnaSol() const;
 
 private:
   //! \brief Struct defining a point load.
