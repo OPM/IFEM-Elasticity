@@ -366,6 +366,7 @@ int main (int argc, char** argv)
       return 3;
 
     // Project the FE stresses onto the splines basis
+    noProj = true;
     model->setMode(SIM::RECOVERY);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       if (!model->project(projs[i],displ,pit->first))
@@ -377,6 +378,8 @@ int main (int argc, char** argv)
         // in the analytical solution, insert zeroes instead
         expandNodalVec(projx[i],model->getNoNodes(),
                        projs[i].size()/model->getNoNodes());
+      else
+        noProj = false; // We have projected analytical solution
 
     if (!pOpt.empty())
       IFEM::cout << std::endl;
@@ -389,7 +392,7 @@ int main (int argc, char** argv)
       if (!model->solutionNorms(displ,projs,eNorm,gNorm,"FE solution"))
         return 4;
 
-      if (model->haveAnaSol())
+      if (!noProj)
       {
         // Evaluate norms of the projected analytical solution
         Elasticity::asolProject = true;
