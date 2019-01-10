@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test.
+     Simply supported beam with central point + gravity load. !-->
+
+<simulation>
+
+  <geometry dim="1" L="2.0">
+    <projection>
+      <patchfile>SSbeam-projbasis.g2</patchfile>
+    </projection>
+    <raiseorder patch="1" u="2"/>
+    <refine patch="1" u="3"/>
+    <topologysets>
+      <set name="ends" type="vertex">
+        <item patch="1">1 2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="ends" comp="1"/>
+  </boundaryconditions>
+
+  <discretization>
+    <nGauss>4 6</nGauss>
+  </discretization>
+
+  <EulerBernoulli>
+    <isotropic E="4.0e5" thickness="0.01"/>
+    <gravity g="10.0"/>
+    <pointload xi="0.5" onElement="true">0.2</pointload>
+    <anasol type="expression">
+      <stress>
+        L=2.0; q=0.1; P=0.2;
+        (q*x*(L-x) + P*if(below(x,L/2.0),x,L-x))/2.0
+        <derivative d1="1" d2="1">q=0.1;-q</derivative>
+      </stress>
+    </anasol>
+  </EulerBernoulli>
+
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.5"/>
+      <point patch="1" u="0.2"/>
+      <point patch="1" u="0.8"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>
