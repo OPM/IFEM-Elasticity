@@ -17,7 +17,6 @@ Step 2
     9 nodes
     4 elements
     Displacement: 'Solution'
-    Scalar: 'Continuous global L2-projection Top sigma_m'
     Scalar: 'fix_X'
     Scalar: 'fix_Y'
     Scalar: 'fix_Z'
@@ -60,13 +59,13 @@ Step 2
     Scalar: 'Continuous global L2-projection Top tau_xy'
     Scalar: 'Continuous global L2-projection Top sigma_1'
     Scalar: 'Continuous global L2-projection Top sigma_2'
+    Scalar: 'Continuous global L2-projection Top sigma_m'
     Vector: 'Residual forces'
 Step 3
   Element block 1
     9 nodes
     4 elements
     Displacement: 'Solution'
-    Scalar: 'Continuous global L2-projection Top sigma_m'
     Scalar: 'fix_X'
     Scalar: 'fix_Y'
     Scalar: 'fix_Z'
@@ -109,4 +108,5 @@ Step 3
     Scalar: 'Continuous global L2-projection Top tau_xy'
     Scalar: 'Continuous global L2-projection Top sigma_1'
     Scalar: 'Continuous global L2-projection Top sigma_2'
+    Scalar: 'Continuous global L2-projection Top sigma_m'
     Vector: 'Residual forces'

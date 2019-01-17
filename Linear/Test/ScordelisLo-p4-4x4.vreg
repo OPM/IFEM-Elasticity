@@ -8,7 +8,6 @@ Step 1
     Scalar: 'fix_X'
     Scalar: 'fix_Y'
     Scalar: 'fix_Z'
-    Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'u'
     Scalar: 'v'
     Scalar: 'w'
@@ -31,6 +30,7 @@ Step 1
     Scalar: 'Top sigma_1'
     Scalar: 'Top sigma_2'
     Scalar: 'Top sigma_m'
+    Scalar: 'a(u^h,u^h)^0.5'
     Scalar: '(p,u^h)^0.5'
   Element block 2
     400 nodes

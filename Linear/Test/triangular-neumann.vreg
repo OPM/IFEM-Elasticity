@@ -5,17 +5,17 @@ Step 1
     45 nodes
     64 elements
     Displacement: 'Solution'
-    Scalar: 'von Mises stress'
     Scalar: 'fix_X'
     Scalar: 'fix_Y'
-    Scalar: 'volume'
-    Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'u_x'
     Scalar: 'u_y'
     Scalar: 's_xx'
     Scalar: 's_yy'
     Scalar: 's_zz'
     Scalar: 's_xy'
+    Scalar: 'von Mises stress'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'volume'
   Element block 2
     48 nodes
     48 elements
