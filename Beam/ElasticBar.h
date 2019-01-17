@@ -61,7 +61,9 @@ public:
   using ElasticBase::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
   //! \param[in] nen Number of nodes on element
-  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t, bool) const;
+  //! \param[in] neumann Whether or not we are assembling Neumann BCs
+  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t,
+                                          bool neumann) const;
 
   using ElasticBase::evalInt;
   //! \brief Evaluates the integrand at an interior point.

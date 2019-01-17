@@ -45,7 +45,8 @@ void ElasticBar::printLog () const
 }
 
 
-LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t, bool) const
+LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t,
+                                             bool neumann) const
 {
   ElmMats* result;
   if (m_mode != SIM::DYNAMIC)
@@ -60,7 +61,9 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t, bool) const
   {
     case SIM::STATIC:
     case SIM::MASS_ONLY:
-      result->resize(1,1);
+      result->rhsOnly = neumann;
+      result->withLHS = !neumann;
+      result->resize(neumann ? 0 : 1, 1);
       break;
 
     case SIM::ARCLEN:
@@ -68,7 +71,9 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t, bool) const
       break;
 
     case SIM::DYNAMIC:
-      result->resize(intPrm[3] >= 0.0 ? 3 : 4,
+      result->rhsOnly = neumann;
+      result->withLHS = !neumann;
+      result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
                      intPrm[3] > 0.0 ? 1 : (intPrm[4] == 1.0 ? 3 : 2));
       break;
 
