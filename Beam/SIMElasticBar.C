@@ -42,9 +42,9 @@ SIMElasticBar::~SIMElasticBar ()
 
 void SIMElasticBar::printProblem() const
 {
-  if (printed) return;
+  if (!printed)
+    this->SIM1D::printProblem();
 
-  this->SIM1D::printProblem();
   printed = true; // Avoid printing problem definition more than once
 }
 
@@ -52,7 +52,7 @@ void SIMElasticBar::printProblem() const
 ElasticBar* SIMElasticBar::getBarIntegrand (const std::string& type)
 {
   if (type == "cable")
-    myProblem = new ElasticCable(nsv);
+    myProblem = new ElasticCable(nsd,nsv);
   else
     myProblem = new ElasticBar(toupper(type[0]),nsd);
 
@@ -73,7 +73,6 @@ ElasticBeam* SIMElasticBar::getBeamIntegrand (const std::string&)
 
   return dynamic_cast<ElasticBeam*>(myProblem);
 }
-
 
 
 bool SIMElasticBar::parse (const TiXmlElement* elem)
@@ -125,7 +124,8 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
     }
   }
 
-  if (!bar && !beam) return false;
+  if (!bar && !beam)
+    return false;
 
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
@@ -262,8 +262,12 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
 
 void SIMElasticBar::preprocessA ()
 {
+  if (nf == 3 && nsd < 3)
+    nf = nsd; // 2D bar/cable, two DOFs per node
+
   this->printProblem();
-  for (ASMbase* pch : myModel) pch->setNoFields(nf);
+  for (ASMbase* pch : myModel)
+    pch->setNoFields(nf);
 }
 
 
@@ -380,7 +384,7 @@ bool SIMElasticBar::getExtLoad (RealArray& extloa, const TimeDomain& time) const
     extloa[i] = this->extractScalar(i);
 
   for (const PointLoad& load : myLoads)
-    if (load.ldof > 0 && load.ldof < nf)
+    if (load.ldof > 0 && load.ldof <= nf)
       extloa[load.ldof-1] += (*load.p)(time.t);
 
   return true;

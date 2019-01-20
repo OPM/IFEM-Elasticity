@@ -11,8 +11,7 @@ Parsing <geometry>
   Parsing <raiseorder>
   Parsing <refine>
   Parsing <topologysets>
-	Topology sets: all (1,0,1D)
-	               innspenning (1,1,0D)
+	Topology sets: innspenning (1,1,0D)
   Parsing <raiseorder>
 	Raising order of P1 2
   Parsing <refine>
@@ -20,9 +19,7 @@ Parsing <geometry>
   Parsing <topologysets>
 Parsing <boundaryconditions>
   Parsing <dirichlet>
-	Dirichlet code 3: (fixed)
-  Parsing <dirichlet>
-	Dirichlet code 23123: (fixed)
+	Dirichlet code 2012: (fixed)
 Parsing <cable>
   Parsing <material>
 	Axial stiffness = 785398
@@ -37,12 +34,11 @@ Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 ElasticCable: Stiffness = 785398 490.874, Mass density = 7850
 Resolving Dirichlet boundary conditions
-	Constraining P1 V1 in direction(s) 23123
-	Constraining P1 in direction(s) 3
+	Constraining P1 V1 in direction(s) 2012
  >>> SAM model summary <<<
 Number of elements    10
 Number of nodes       13
-Number of dofs        39
+Number of dofs        26
 Number of unknowns    23
 Number of quadrature points 40
 Processing integrand associated with code 0
@@ -50,5 +46,5 @@ Assembling interior matrix terms for P1
 Solving the equation system ...
 	Condition number: 137427
  >>> Solution summary <<<
-L2-norm            : 0.0211263
+L2-norm            : 0.0258744
 Max Y-displacement : 0.0679061

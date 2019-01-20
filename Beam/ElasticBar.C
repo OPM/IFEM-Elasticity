@@ -97,7 +97,7 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t,
       ;
   }
 
-  result->redim(3*nen);
+  result->redim((neumann ? npv : 3)*nen);
   return result;
 }
 
@@ -314,4 +314,47 @@ double ElasticBar::getStrain (double LoverL0) const
   }
 
   return LoverL0 - 1.0;
+}
+
+
+bool ElasticBar::finalizeElement (LocalIntegral& elmInt,
+                                  const FiniteElement& fe,
+                                  const TimeDomain& time, size_t iGP)
+{
+  bool ok = this->ElasticBase::finalizeElement(elmInt,time,iGP);
+  if (!ok || npv > 2)
+    return ok;
+
+  ElmMats& elMat = static_cast<ElmMats&>(elmInt);
+  if (elMat.empty())
+    return true;
+
+  size_t nen = fe.N.size();
+  size_t m = elMat.A.empty() ? elMat.b.front().size() : elMat.A.front().rows();
+  if (m == npv*nen)
+    return true;
+  else if (m < npv*nen)
+    return false;
+
+  // We need to shrink the element matrices to npv DOFs per node
+  for (Matrix& A : elMat.A)
+  {
+    Matrix Atmp(npv*nen,npv*nen);
+    for (size_t a = 0; a < nen; a++)
+      for (size_t b = 0; b < nen; b++)
+        for (unsigned short int i = 1; i <= npv; i++)
+          for (unsigned short int j = 1; j <= npv; j++)
+            Atmp(npv*a+i,npv*b+j) = A(3*a+i,3*b+j);
+    std::swap(A,Atmp);
+  }
+
+  for (Vector& b : elMat.b)
+  {
+    for (size_t a = 1; a < nen; a++)
+      for (unsigned short int i = 1; i <= npv; i++)
+        b(npv*a+i) = b(3*a+i);
+    b.std::vector<double>::resize(npv*nen);
+  }
+
+  return true;
 }

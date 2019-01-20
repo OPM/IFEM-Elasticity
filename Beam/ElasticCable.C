@@ -114,11 +114,11 @@ bool ElasticCable::evalInt (LocalIntegral& elmInt,
   Vec3   x(X);
   Vec3  dx(dX);
   Vec3 ddx(ddX);
-  for (i = 0; i < 3; i++)
+  for (i = 0; i < npv; i++)
   {
-      x[i] += eV.dot(fe.N,i,3);
-     dx[i] += eV.dot(fe.dNdX,i,3);
-    ddx[i] += eV.dot(fe.d2NdX2,i,3);
+      x[i] += eV.dot(fe.N,i,npv);
+     dx[i] += eV.dot(fe.dNdX,i,npv);
+    ddx[i] += eV.dot(fe.d2NdX2,i,npv);
   }
 #if INT_DEBUG > 1
   std::cout <<"ElasticCable: x = "<< x <<" dx = "<< dx <<" ddx = "<< ddx <<"\n";
@@ -128,14 +128,18 @@ bool ElasticCable::evalInt (LocalIntegral& elmInt,
 
   Vec3 B_unit, N_unit;
   double B_len, N_len;
-  if (!evalLocalAxes(dX,ddX,B_unit,N_unit,B_len,N_len)) return false;
+  if (!evalLocalAxes(dX,ddX,B_unit,N_unit,B_len,N_len))
+    return false;
+
 #if INT_DEBUG > 1
   std::cout <<"ElasticCable: B_unit = "<< B_unit <<" N_unit = "<< N_unit <<"\n";
 #endif
 
   Vec3 b_unit, n_unit;
   double b_len, n_len;
-  if (!evalLocalAxes(dx,ddx,b_unit,n_unit,b_len,n_len)) return false;
+  if (!evalLocalAxes(dx,ddx,b_unit,n_unit,b_len,n_len))
+    return false;
+
   Vec3   bin    = b_unit * b_len;
   double b_len2 = b_len  * b_len;
   Vec3   n      = n_unit * n_len;
@@ -450,7 +454,7 @@ bool ElasticCable::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
   Vector eV;
   if (!primsol.empty() && !primsol.front().empty())
   {
-    int ierr = utl::gather(MNPC,3,primsol.front(),eV);
+    int ierr = utl::gather(MNPC,npv,primsol.front(),eV);
     if (ierr > 0)
     {
       std::cerr <<" *** ElasticCable::evalSol: Detected "<< ierr
@@ -467,11 +471,11 @@ bool ElasticCable::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
   Vec3   x(X);
   Vec3  dx(dX);
   Vec3 ddx(ddX);
-  for (size_t i = 0; i < 3; i++)
+  for (size_t i = 0; i < npv; i++)
   {
-      x[i] += eV.dot(fe.N,i,3);
-     dx[i] += eV.dot(fe.dNdX,i,3);
-    ddx[i] += eV.dot(fe.d2NdX2,i,3);
+      x[i] += eV.dot(fe.N,i,npv);
+     dx[i] += eV.dot(fe.dNdX,i,npv);
+    ddx[i] += eV.dot(fe.d2NdX2,i,npv);
   }
 #if INT_DEBUG > 1
   std::cout <<"ElasticCable: X = "<< X <<" u = "<< X-x <<"\n";

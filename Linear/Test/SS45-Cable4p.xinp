@@ -5,13 +5,10 @@
 
 <simulation>
 
-  <geometry X1="1.0 1.0 0.0">
+  <geometry dim="2" X1="1.0 1.0">
     <raiseorder patch="1" u="3"/>
     <refine patch="1" u="9"/>
     <topologysets>
-      <set name="all" type="curve">
-        <item patch="1"/>
-      </set>
       <set name="ends" type="vertex">
         <item patch="1">1 2</item>
       </set>
@@ -19,8 +16,7 @@
   </geometry>
 
   <boundaryconditions>
-    <dirichlet set="all" comp="3"/>
-    <dirichlet set="ends" comp="123"/>
+    <dirichlet set="ends" comp="12"/>
   </boundaryconditions>
 
   <cable>

@@ -4,13 +4,10 @@
 
 <simulation>
 
-  <geometry>
+  <geometry dim="2">
     <raiseorder patch="1" u="2"/>
     <refine patch="1" u="9"/>
     <topologysets>
-      <set name="all" type="curve">
-        <item patch="1"/>
-      </set>
       <set name="innspenning" type="vertex">
         <item patch="1">1</item>
       </set>
@@ -18,8 +15,7 @@
   </geometry>
 
   <boundaryconditions>
-    <dirichlet set="all" comp="3"/>
-    <dirichlet set="innspenning" comp="23123"/>
+    <dirichlet set="innspenning" comp="2012"/>
   </boundaryconditions>
 
   <cable>

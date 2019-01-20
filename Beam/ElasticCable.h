@@ -31,9 +31,10 @@ class ElasticCable : public ElasticBar
 {
 public:
   //! \brief Default constructor.
-  //! \param[in] n Number of consequtive solution vectors to reside in core
-  explicit ElasticCable(unsigned short int n = 1) : ElasticBar('G',3,n),
-    EA(stiffness), EI(0.0) {}
+  //! \param[in] nd Number of primary unknowns per node
+  //! \param[in] ns Number of consequtive solution vectors to reside in core
+  explicit ElasticCable(unsigned short int nd = 3, unsigned short int ns = 1)
+    : ElasticBar('G',nd,ns), EA(stiffness), EI(0.0) {}
   //! \brief Empty destructor.
   virtual ~ElasticCable() {}
 
@@ -65,11 +66,11 @@ public:
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
-  virtual size_t getNoFields(int fld = 2) const { return fld == 1 ? 3 : 2; }
+  virtual size_t getNoFields(int fld) const { return fld == 1 ? 3 : 2; }
   //! \brief Returns the name of a secondary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField2Name(size_t i, const char* prefix = nullptr) const;
+  virtual std::string getField2Name(size_t i, const char* prefix) const;
 
 private:
   double& EA; //!< Axial stiffness
