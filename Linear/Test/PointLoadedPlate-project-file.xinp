@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<--! Simply supported square plate with central point load.
+     Cubic spline Kirchhoff-Love thin plate elements. -->
+
+<simulation>
+
+  <geometry>
+    <projection>
+      <patchfile>PLplate-projBasis.g2</patchfile>
+    </projection>
+    <raiseorder patch="1" u="2" v="2"/>
+    <refine patch="1" u="7" v="7"/>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1"/>
+  </boundaryconditions>
+
+  <kirchhofflove>
+    <isotropic E="1.0" nu="0.3" thickness="1.0"/>
+    <pointload patch="1" xi="0.5" eta="0.5" onElement="true">1.0</pointload>
+  </kirchhofflove>
+
+  <postprocessing>
+    <projection>
+      <CGL2/>
+    </projection>
+    <resultpoints>
+      <point patch="1" u="0.5" v="0.5"/>
+      <point patch="1" u="0.5" v="0.25"/>
+      <point patch="1" u="0.25" v="0.5"/>
+      <point patch="1" u="0.25" v="0.25"/>
+    </resultpoints>
+  </postprocessing>
+
+  <adaptive>
+    <maxstep>3</maxstep>
+    <beta type="maximum">90</beta>
+    <maxdof>100000</maxdof>
+    <errtol>0.0001</errtol>
+    <knot_mult>1</knot_mult>
+    <scheme>isotropic_function</scheme>
+    <use_norm>1</use_norm>
+  </adaptive>
+
+</simulation>
