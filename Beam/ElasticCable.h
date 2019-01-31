@@ -33,19 +33,33 @@ public:
   //! \brief Default constructor.
   //! \param[in] nd Number of primary unknowns per node
   //! \param[in] ns Number of consequtive solution vectors to reside in core
-  explicit ElasticCable(unsigned short int nd = 3, unsigned short int ns = 1)
-    : ElasticBar('G',nd,ns), EA(stiffness), EI(0.0) {}
+  explicit ElasticCable(unsigned short int nd = 3, unsigned short int ns = 1);
   //! \brief Empty destructor.
   virtual ~ElasticCable() {}
 
   //! \brief Defines the bending stiffness.
+  //! \param[in] stiff Bending stiffness
   void setBendingStiffness(double stiff) { EI = stiff; }
+  //! \brief Defines the moment field to use in Neumann boundary conditions.
+  //! \param[in] mf Bending moment field
+  //! \param[in] lcs Flag for load correction stiffness inclusion
+  void setMoment(RealFunc* mf, char lcs) { moment = mf; lcStif = lcs; }
 
   //! \brief Prints out the problem definition to the log stream.
   virtual void printLog() const;
 
+  using ElasticBar::getLocalIntegral;
+  //! \brief Returns a local integral container for the given element.
+  //! \param[in] nen Number of nodes on element
+  //! \param[in] neumann Whether or not we are assembling Neumann BCs
+  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t,
+                                          bool neumann) const;
+
   //! \brief Defines which FE quantities are needed by the integrand.
   virtual int getIntegrandType() const { return SECOND_DERIVATIVES; }
+
+  //! \brief Returns whether this integrand has explicit boundary contributions.
+  virtual bool hasBoundaryTerms() const { return true; }
 
   using ElasticBar::evalInt;
   //! \brief Evaluates the integrand at an interior point.
@@ -54,6 +68,16 @@ public:
   //! \param[in] X Cartesian coordinates of current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X) const;
+
+  using ElasticBar::evalBou;
+  //! \brief Evaluates the integrand at a boundary point.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Finite element data of current integration point
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //! \param[in] X Cartesian coordinates of current integration point
+  virtual bool evalBou(LocalIntegral& elmInt, const FiniteElement& fe,
+                       const TimeDomain& time,
+                       const Vec3& X, const Vec3&) const;
 
   using ElasticBar::evalSol;
   //! \brief Evaluates the secondary solution at a result point.
@@ -75,6 +99,9 @@ public:
 private:
   double& EA; //!< Axial stiffness
   double  EI; //!< Bending stiffness
+
+  RealFunc* moment; //!< End moment field
+  char      lcStif; //!< Flag for load correction stiffness
 };
 
 #endif

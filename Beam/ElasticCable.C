@@ -19,11 +19,36 @@
 #include "IFEM.h"
 
 
+ElasticCable::ElasticCable (unsigned short int nd, unsigned short int ns)
+  : ElasticBar('G',nd,ns), EA(stiffness), EI(0.0)
+{
+  moment = nullptr;
+  lcStif = false;
+}
+
+
 void ElasticCable::printLog () const
 {
   IFEM::cout <<"ElasticCable: Stiffness = "<< stiffness;
   if (EI > 0.0) IFEM::cout <<" "<< EI;
   IFEM::cout <<", Mass density = "<< lineMass << std::endl;
+}
+
+
+LocalIntegral* ElasticCable::getLocalIntegral (size_t nen, size_t,
+                                               bool neumann) const
+{
+  LocalIntegral* result = this->ElasticBar::getLocalIntegral(nen,0,neumann);
+  if (m_mode == SIM::STATIC && neumann && moment)
+  {
+    // Account for load correction stiffness
+    ElmMats* elMat = static_cast<ElmMats*>(result);
+    elMat->A.resize(1,Matrix(npv*nen,npv*nen));
+    elMat->rhsOnly = false;
+    elMat->withLHS = true;
+  }
+
+  return result;
 }
 
 
@@ -441,6 +466,142 @@ bool ElasticCable::evalInt (LocalIntegral& elmInt,
         for (i = 1; i <= 3; i++)
           S(3*(a-1)+i) += fe.N(a)*gravity[i-1]*dMass;
     }
+  }
+
+  return true;
+}
+
+
+bool ElasticCable::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
+                            const TimeDomain& time,
+                            const Vec3& X, const Vec3&) const
+{
+  if (!moment)
+  {
+    std::cerr <<" *** ElasticCable::evalBou: No moment field."<< std::endl;
+    return false;
+  }
+  else if (!eS)
+  {
+    std::cerr <<" *** ElasticCable::evalBou: No load vector."<< std::endl;
+    return false;
+  }
+
+  int n1, n2;
+  if (fe.xi == -1.0)
+  {
+    n2 = 1;
+    n1 = 2;
+  }
+  else if (fe.xi == 1.0)
+  {
+    n2 = fe.Xn.cols();
+    n1 = n2 - 1;
+  }
+  else
+    return false;
+
+  int j1 = npv*(n1-1) + 1;
+  int j2 = npv*(n1-1) + 2;
+  int j4 = npv*(n2-1) + 1;
+  int j5 = npv*(n2-1) + 2;
+
+  ElmMats& elMat = static_cast<ElmMats&>(elmInt);
+  const Vector& eV = elMat.vec.front(); // Current displacement vector
+
+  Vec3 X1 = fe.Xn.getColumn(n1);
+  Vec3 X2 = fe.Xn.getColumn(n2);
+  for (unsigned char i = 0; i < npv; i++)
+  {
+    X1[i] += eV[npv*(n1-1)+i];
+    X2[i] += eV[npv*(n2-1)+i];
+  }
+
+  Vec3   dX  = X2 - X1;
+  double ds2 = dX.length2();
+  double mn  = (*moment)(X) / ds2;
+  double Fx  = mn*dX.y;
+  double Fy  = mn*dX.x;
+
+#if INT_DEBUG > 1
+  std::cout <<"\nElasticCable: X = "<< X <<" xi = "<< fe.xi
+            <<"\n              X1 = "<< X1
+            <<"\n              X2 = "<< X2
+            <<"\n              dX = "<< dX <<" ds2 = "<< ds2
+            <<"\n              Fx = "<< Fx <<" Fy = "<< Fy << std::endl;
+#endif
+
+  // External load vector
+  Vector& fext = elMat.b[eS-1];
+
+  fext(j1) +=  fe.xi*Fx;
+  fext(j2) += -fe.xi*Fy;
+  fext(j4) += -fe.xi*Fx;
+  fext(j5) +=  fe.xi*Fy;
+
+  if (!eKg || !lcStif)
+    return true;
+
+  // Load correction stiffness
+  Matrix& Kext = elMat.A[eKg-1];
+
+  mn /= ds2;
+
+  double dFxdu1 =  mn*       2.0*dX.x*dX.y;
+  double dFxdv1 =  mn*(ds2 - 2.0*dX.y*dX.y);
+  double dFxdu2 = -mn*       2.0*dX.x*dX.y;
+  double dFxdv2 = -mn*(ds2 - 2.0*dX.y*dX.y);
+
+  double dFydu1 = -mn*(ds2 - 2.0*dX.x*dX.x);
+  double dFydv1 = -mn*       2.0*dX.x*dX.y;
+  double dFydu2 =  mn*(ds2 - 2.0*dX.x*dX.x);
+  double dFydv2 =  mn*       2.0*dX.x*dX.y;
+
+  if (lcStif == 1)
+  {
+    // Use non-symmetric matrix
+    Kext(j1,j1) += dFxdu1;
+    Kext(j1,j2) += dFxdv1;
+    Kext(j1,j4) += dFxdu2;
+    Kext(j1,j5) += dFxdv2;
+
+    Kext(j2,j1) -= dFydu1;
+    Kext(j2,j2) -= dFydv1;
+    Kext(j2,j4) -= dFydu2;
+    Kext(j2,j5) -= dFydv2;
+
+    Kext(j4,j1) -= dFxdu1;
+    Kext(j4,j2) -= dFxdv1;
+    Kext(j4,j4) -= dFxdu2;
+    Kext(j4,j5) -= dFxdv2;
+
+    Kext(j5,j1) += dFydu1;
+    Kext(j5,j2) += dFydv1;
+    Kext(j5,j4) += dFydu2;
+    Kext(j5,j5) += dFydv2;
+  }
+  else
+  {
+    // Use symmetrized matrix
+    Kext(j1,j1) +=      dFxdu1;
+    Kext(j1,j2) += 0.5*(dFxdv1 - dFydu1);
+    Kext(j1,j4) += 0.5*(dFxdu2 - dFxdu1);
+    Kext(j1,j5) += 0.5*(dFxdv2 + dFydu1);
+
+    Kext(j2,j1) -= 0.5*(dFydu1 - dFxdv1);
+    Kext(j2,j2) -=      dFydv1;
+    Kext(j2,j4) -= 0.5*(dFydu2 + dFxdv1);
+    Kext(j2,j5) -= 0.5*(dFydv2 - dFydv1);
+
+    Kext(j4,j1) -= 0.5*(dFxdu1 - dFxdu2);
+    Kext(j4,j2) -= 0.5*(dFxdv1 + dFydu2);
+    Kext(j4,j4) -=      dFxdu2;
+    Kext(j4,j5) -= 0.5*(dFxdv2 - dFydu2);
+
+    Kext(j5,j1) += 0.5*(dFydu1 + dFxdv2);
+    Kext(j5,j2) += 0.5*(dFydv1 - dFydv2);
+    Kext(j5,j4) += 0.5*(dFydu2 - dFxdv2);
+    Kext(j5,j5) +=      dFydv2;
   }
 
   return true;

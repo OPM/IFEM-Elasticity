@@ -73,6 +73,10 @@ protected:
   //! \brief Preprocessing performed after the FEM model generation.
   virtual bool preprocessB();
 
+  //! \brief Initializes for integration of Neumann terms for a given property.
+  //! \param[in] propInd Physical property index
+  virtual bool initNeumann(size_t propInd);
+
   //! \brief Renumbers all global nodes number if the model.
   //! \param[in] nodeMap Mapping from old to new node number
   virtual bool renumberNodes(const std::map<int,int>& nodeMap);
@@ -96,6 +100,7 @@ private:
   std::vector<PointLoad> myLoads; //!< Nodal/element point loads
 
   mutable bool printed; //!< If \e true, the problem definition as been printed
+  char         lcStiff; //!< Flag for inclusion of load correction stiffness
 
 protected:
   unsigned char nsv; //!< Number of consequtive solution vectors in core

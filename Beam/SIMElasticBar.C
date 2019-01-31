@@ -31,6 +31,7 @@ SIMElasticBar::SIMElasticBar (unsigned char n) : SIMElastic1D(3)
   nsv = n;
   twist = nullptr;
   printed = false;
+  lcStiff = false;
 }
 
 
@@ -42,7 +43,7 @@ SIMElasticBar::~SIMElasticBar ()
 }
 
 
-void SIMElasticBar::printProblem() const
+void SIMElasticBar::printProblem () const
 {
   if (!printed)
     this->SIM1D::printProblem();
@@ -81,7 +82,10 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
 {
   bool isCable = !strcasecmp(elem->Value(),"cable");
   if (isCable || !strcasecmp(elem->Value(),"bar"))
+  {
     nf = 3;
+    utl::getAttribute(elem,"loadCorrectionStiffness",lcStiff,true);
+  }
   else if (!strcasecmp(elem->Value(),"beam"))
     nf = 6;
   else if (!strcasecmp(elem->Value(),"anasol"))
@@ -309,6 +313,22 @@ bool SIMElasticBar::createFEMmodel (char)
       ok = pch->generateFEMTopology();
 
   return ok;
+}
+
+
+bool SIMElasticBar::initNeumann (size_t propInd)
+{
+  ElasticCable* cable = dynamic_cast<ElasticCable*>(myProblem);
+  if (!cable) return false;
+
+  SclFuncMap::const_iterator sit = myScalars.find(propInd);
+
+  if (sit != myScalars.end())
+    cable->setMoment(sit->second,lcStiff);
+  else
+    return false;
+
+  return true;
 }
 
 
