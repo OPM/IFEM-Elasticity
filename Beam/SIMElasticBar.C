@@ -29,12 +29,14 @@ SIMElasticBar::SIMElasticBar (unsigned char n) : SIMElastic1D(3)
 {
   nsd = 3;
   nsv = n;
+  twist = nullptr;
   printed = false;
 }
 
 
 SIMElasticBar::~SIMElasticBar ()
 {
+  delete twist;
   for (PointLoad& load : myLoads)
     delete load.p;
 }
@@ -143,6 +145,7 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
       else
         beam->setGravity(g);
     }
+
     else if (!strcasecmp(child->Value(),"material"))
     {
       double E = 2.1e11, G = 8.1e10, nu = 0.0, rho = 7.85e3;
@@ -185,17 +188,18 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
       IFEM::cout << (isCable ? "\n\tM" : ", m")
                   <<"ass density = "<< rho << std::endl;
     }
+
     else if (beam && !strcasecmp(child->Value(),"properties"))
       beam->parseBeamProperties(child);
-
-    else if (beam && !strcasecmp(child->Value(),"twist"))
-      this->parseTwist(child);
 
     else if (beam && !strcasecmp(child->Value(),"lineload"))
       beam->parseBeamLoad(child);
 
     else if (beam && !strcasecmp(child->Value(),"cplload"))
       beam->parseBeamLoad(child);
+
+    else if (beam && this->parseTwist(child))
+      continue;
 
     else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild())
     {
@@ -252,11 +256,59 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
         myLoads.push_back(load);
       }
     }
+
     else
       myProblem->parse(child);
   }
 
   return true;
+}
+
+
+/*!
+  The twist angle is used to define the local element axes of beam elements
+  along the spline curves. The angle describes the rotation of the local
+  Y-axis, relative to the globalized Y-axis of the beam.
+*/
+
+bool SIMElasticBar::parseTwist (const TiXmlElement* elem)
+{
+  if (!strcasecmp(elem->Value(),"Zdirection"))
+  {
+    utl::getAttribute(elem,"x",XZp.x);
+    utl::getAttribute(elem,"y",XZp.y);
+    utl::getAttribute(elem,"z",XZp.z);
+    IFEM::cout <<"\tZ-direction vector: "<< XZp;
+  }
+  else if (!strcasecmp(elem->Value(),"twist") && elem->FirstChild())
+  {
+    std::string type;
+    utl::getAttribute(elem,"type",type);
+    IFEM::cout <<"    Continuous twist angle:";
+    if (!type.empty()) IFEM::cout <<" ("<< type <<")";
+    twist = utl::parseRealFunc(elem->FirstChild()->Value(),type);
+  }
+  else
+    return false;
+
+  IFEM::cout << std::endl;
+  return true;
+}
+
+
+bool SIMElasticBar::createFEMmodel (char)
+{
+  bool ok = true;
+  ASMbase::resetNumbering();
+  for (ASMbase* pch : myModel)
+    if (twist)
+      ok &= static_cast<ASMs1D*>(pch)->generateTwistedFEModel(*twist,XZp);
+    else if (!XZp.isZero())
+      ok &= static_cast<ASMs1D*>(pch)->generateOrientedFEModel(XZp);
+    else
+      ok = pch->generateFEMTopology();
+
+  return ok;
 }
 
 
@@ -359,6 +411,27 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
         ok &= this->assemblePoint(load.inod,load.xi,load.p->deriv(time.t),
                                   -load.ldof);
   }
+
+  return ok;
+}
+
+
+bool SIMElasticBar::updateRotations (const Vector& incSol, double alpha)
+{
+  if (nf != 6) return true;
+
+  bool ok = true;
+  for (ASMbase* pch : myModel)
+    if (incSol.empty())
+      // Update the rotations of last converged load/time step
+      static_cast<ASMs1D*>(pch)->updateRotations();
+    else
+    {
+      Vector locSol;
+      pch->extractNodeVec(incSol,locSol);
+      if (alpha != 0.0 && alpha != 1.0) locSol *= alpha;
+      ok &= static_cast<ASMs1D*>(pch)->updateRotations(locSol,alpha==0.0);
+    }
 
   return ok;
 }

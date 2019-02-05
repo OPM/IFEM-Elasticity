@@ -37,6 +37,16 @@ public:
   //! \brief Prints out problem-specific data to the log stream.
   virtual void printProblem() const;
 
+  //! \brief Creates the computational FEM model from the spline patches.
+  //! \details Reimplemented to account for twist angle in beam problems.
+  virtual bool createFEMmodel(char);
+
+  //! \brief Updates the nodal rotations for problems with rotational DOFs.
+  //! \param[in] incSol Incremental solution to update the rotations with
+  //! \param[in] alpha Scaling factor for the incremental solution.
+  //! If 0.0, reinitialize the rotations from unity
+  virtual bool updateRotations(const Vector& incSol, double alpha);
+
   //! \brief Returns the current rotation tensor for the specified global node.
   Tensor getNodeRotation(int inod) const;
 
@@ -54,6 +64,9 @@ protected:
   using SIM1D::parse;
   //! \brief Parses a data section from an XML element.
   virtual bool parse(const TiXmlElement* elem);
+
+  //! \brief Parses the twist angle description along the curve.
+  bool parseTwist(const TiXmlElement* elem);
 
   //! \brief Preprocessing performed before the FEM model generation.
   virtual void preprocessA();
@@ -86,6 +99,9 @@ private:
 
 protected:
   unsigned char nsv; //!< Number of consequtive solution vectors in core
+
+  RealFunc* twist; //!< Twist angle along the beam
+  Vec3      XZp;   //!< Local Z-direction vector
 };
 
 #endif
