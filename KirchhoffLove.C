@@ -19,6 +19,7 @@
 #include "Vec3Oper.h"
 #include "Tensor.h"
 #include "VTF.h"
+#include "tinyxml.h"
 
 
 KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
@@ -35,12 +36,27 @@ KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
 
   eK = eM = 0;
   eS = iS = 0;
+
+  includeShear = true;
 }
 
 
 KirchhoffLove::~KirchhoffLove ()
 {
   if (locSys) delete locSys;
+}
+
+
+bool KirchhoffLove::parse (const TiXmlElement* elem)
+{
+  if (!strcasecmp(elem->Value(),"noshear"))
+    includeShear = false;
+  else if (!strcasecmp(elem->Value(),"withshear"))
+    includeShear = true;
+  else
+    return false;
+
+  return true;
 }
 
 
@@ -91,9 +107,9 @@ void KirchhoffLove::setPressure (RealFunc* pf)
 }
 
 
-int KirchhoffLove::getIntegrandType() const
+int KirchhoffLove::getIntegrandType () const
 {
-  if (m_mode == SIM::RECOVERY)
+  if (m_mode == SIM::RECOVERY && includeShear)
     return SECOND_DERIVATIVES | THIRD_DERIVATIVES;
   else
     return SECOND_DERIVATIVES;

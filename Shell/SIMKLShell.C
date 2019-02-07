@@ -269,7 +269,7 @@ bool SIMKLShell::parse (const TiXmlElement* elem)
       }
     }
 
-    else
+    else if (!klp->parse(child))
       ok = this->SIM2D::parse(child);
 
   return ok;
