@@ -203,9 +203,9 @@ int main (int argc, char** argv)
     return 0;
   }
 
-  if (args.adap)
+  if (args.adap && IFEM::getOptions().discretization < ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::LRSpline;
-  else if (isC1 && IFEM::getOptions().discretization != ASM::LRSpline)
+  else if (isC1 && IFEM::getOptions().discretization < ASM::LRSpline)
     IFEM::getOptions().discretization = ASM::SplineC1;
 
   IFEM::cout <<"\nInput file: "<< infile;
