@@ -43,6 +43,9 @@ public:
   //! \brief The destructor frees the dynamically allocated data objects.
   virtual ~KirchhoffLove();
 
+  //! \brief Parses a data section from an XML element.
+  virtual bool parse(const TiXmlElement* elem);
+
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
@@ -170,6 +173,8 @@ protected:
 
   mutable std::vector<Vec3Pair> tracVal; //!< Traction field point values
   mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values
+
+  bool includeShear; //!< If \e true, calculate shear forces during recovery
 };
 
 #endif
