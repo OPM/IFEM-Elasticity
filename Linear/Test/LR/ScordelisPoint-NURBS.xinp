@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Scordelis-Lo roof subjected to central point load.
+     Cubic NURBS Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry>
+    <patchfile>scordelis-lo-NURBS.g2</patchfile>
+    <raiseorder patch="1" u="2" v="1"/>
+    <refine patch="1" u="5" v="5"/>
+    <topologysets>
+      <set name="ends" type="edge">
+        <item patch="1">1 2</item>
+      </set>
+      <set name="fixed" type="vertex">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss>4 6</nGauss>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="ends" comp="13"/>
+    <dirichlet set="fixed" comp="2"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <noshear/>
+    <isotropic E="4.32e8" nu="0.0" rho="360.0" thickness="0.25"/>
+    <pointload patch="1" xi="0.5" eta="0.5" onElement="true" direction="3">
+      -1.0e6
+    </pointload>
+  </KirchhoffLove>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <projection>
+      <CGL2/>
+    </projection>
+    <resultpoints>
+      <point patch="1" u="0.5" v="0.5"/>
+    </resultpoints>
+  </postprocessing>
+
+  <!-- General - adaptive refinement scheme !-->
+  <adaptive>
+    <scheme>isotropic_function</scheme>
+    <beta type="maximum">90</beta>
+    <errtol>0.0001</errtol>
+    <maxdof>100000</maxdof>
+    <maxstep>3</maxstep>
+  </adaptive>
+
+</simulation>
