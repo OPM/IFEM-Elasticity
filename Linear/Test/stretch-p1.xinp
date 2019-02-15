@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- 2D Cantilever with a constant axial load.
+     Rectangular-shaped elements. !-->
+
+<simulation>
+
+  <geometry dim="2" Lx="2.0" Ly="0.4">
+    <refine patch="1" u="3" v="1"/>
+    <topologysets>
+      <set name="support" type="vertex">
+        <item patch="1">1</item>
+      </set>
+      <set name="fixed" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="loaded" type="edge">
+        <item patch="1">2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="fixed" component="1"/>
+    <dirichlet set="support" component="2"/>
+    <neumann set="loaded" direction="1">1.0e8</neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.0e11" nu="0.3"/>
+    <boundaryforce set="fixed"/>
+  </elasticity>
+
+  <discretization>
+    <nGauss>2 3</nGauss>
+  </discretization>
+
+</simulation>
