@@ -33,15 +33,14 @@ ElasticBar::ElasticBar (char strm, unsigned short int nd, unsigned short int ns)
 
 void ElasticBar::printLog () const
 {
-  utl::LogStream& os = IFEM::cout;
-
-  os <<"ElasticBar: Stiffness = "<< stiffness <<", Mass = "<< lineMass;
+  IFEM::cout <<"ElasticBar: Stiffness = "<< stiffness
+             <<", Mass/length = "<< lineMass;
   switch (strain_meassure) {
-  case 'E': os <<", Engineering strain"; break;
-  case 'G': os <<", Green strain"; break;
-  case 'L': os <<", Logarithmic strain"; break;
+  case 'E': IFEM::cout <<", Engineering strain"; break;
+  case 'G': IFEM::cout <<", Green strain"; break;
+  case 'L': IFEM::cout <<", Logarithmic strain"; break;
   }
-  os << std::endl;
+  IFEM::cout << std::endl;
 }
 
 

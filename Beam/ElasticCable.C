@@ -31,7 +31,7 @@ void ElasticCable::printLog () const
 {
   IFEM::cout <<"ElasticCable: Stiffness = "<< stiffness;
   if (EI > 0.0) IFEM::cout <<" "<< EI;
-  IFEM::cout <<", Mass density = "<< lineMass << std::endl;
+  IFEM::cout <<", Mass/length = "<< lineMass << std::endl;
 }
 
 

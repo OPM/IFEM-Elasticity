@@ -32,7 +32,7 @@ Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
-ElasticCable: Stiffness = 785398 490.874, Mass density = 7850
+ElasticCable: Stiffness = 785398 490.874, Mass/length = 7850
 Resolving Dirichlet boundary conditions
 	Constraining P1 V1 in direction(s) 2012
  >>> SAM model summary <<<

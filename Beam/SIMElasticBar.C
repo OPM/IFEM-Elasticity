@@ -152,17 +152,13 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
 
     else if (!strcasecmp(child->Value(),"material"))
     {
-      double E = 2.1e11, G = 8.1e10, nu = 0.0, rho = 7.85e3;
+      double E = 2.1e11, rho = 7.85e3;
       utl::getAttribute(child,"E",E);
-      if (!utl::getAttribute(child,"G",G) && utl::getAttribute(child,"nu",nu))
-        if (nu >= 0.0 && nu < 0.5)
-          G = E/(nu+nu+2.0); // Derive G-modulus from E and nu
       utl::getAttribute(child,"rho",rho);
       if (bar)
       {
-        double A = 0.1, I = 0.0;
+        double A = 1.0, I = 0.0, EA = 0.0, EI = 0.0, rhoA = 0.0;
         ElasticBeam::parsePipe(child,A,I); // "D" or "R" and optionally "t"
-        double EA = 0.0, EI = 0.0;
         if (!utl::getAttribute(child,"EA",EA))
         {
           utl::getAttribute(child,"A",A);
@@ -178,13 +174,21 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
           }
           static_cast<ElasticCable*>(bar)->setBendingStiffness(EI);
         }
-        bar->setMass(rho);
+        if (utl::getAttribute(child,"rhoA",rhoA) && A > 0.0)
+          rho = rhoA/A;
+        else
+          rhoA = rho*A;
+        bar->setMass(rhoA);
         IFEM::cout <<"\tAxial stiffness = "<< EA;
         if (isCable && EI > 0.0)
           IFEM::cout <<"\n\tBending stiffness = "<< EI;
       }
       else
       {
+        double G = 8.1e10, nu = 0.0;
+        if (!utl::getAttribute(child,"G",G) && utl::getAttribute(child,"nu",nu))
+          if (nu >= 0.0 && nu < 0.5)
+            G = E/(nu+nu+2.0); // Derive G-modulus from E and nu
         beam->setStiffness(E,G);
         beam->setMass(rho);
         IFEM::cout <<"\tStiffness moduli = "<< E <<" "<< G;
