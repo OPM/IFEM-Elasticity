@@ -7,7 +7,10 @@
 
   <geometry dim="1" L="2.0">
     <projection>
-      <patchfile>SSbeam-projbasis.g2</patchfile>
+      <patch>100 1 0 0 1 0\
+        7 3 0 0 0 0.25 0.5 0.5 0.75 1 1 1\
+        0 0.25 0.75 1 1.25 1.75 2\
+      </patch>
     </projection>
     <raiseorder patch="1" u="2"/>
     <refine patch="1" u="3"/>

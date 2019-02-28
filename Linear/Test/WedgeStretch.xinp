@@ -3,7 +3,19 @@
 <simulation>
 
   <geometry>
-    <patchfile>trapes.g2</patchfile>
+    <patch>700 1 0 0 3 0\
+      2 2 0 0 1 1\
+      2 2 0 0 1 1\
+      2 2 0 0 1 1\
+      0.0 0.0 0.0\
+      1.0 0.0 0.0\
+      0.0 5.0 0.0\
+      2.0 5.0 0.0\
+      0.0 0.0 1.0\
+      1.0 0.0 1.0\
+      0.0 5.0 1.0\
+      2.0 5.0 1.0\
+    </patch>
     <raiseorder patch="1" u="2" v="2" w="3"/>
     <refine patch="1" u="1" v="2" w="1"/>
   </geometry>
@@ -32,9 +44,5 @@
     <dirichlet code="1003" axes="local"/>
     <neumann code="1002">1.0e10</neumann>
   </boundaryconditions>
-
-  <elasticity>
-    <isotropic E="2.05e11" nu="0.27" rho="7850.0"/>
-  </elasticity>
 
 </simulation>

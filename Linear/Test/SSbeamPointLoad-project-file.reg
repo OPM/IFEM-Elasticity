@@ -17,7 +17,7 @@ Parsing <geometry>
   Parsing <topologysets>
 	Topology sets: ends (1,1,0D) (1,2,0D)
   Parsing <projection>
-	Reading data file SSbeam-projbasis.g2
+	Reading inlined patch geometry definition
 	Reading projection basis for patch 1
   Parsing <raiseorder>
 	Raising order of P1 2
