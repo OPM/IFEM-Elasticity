@@ -16,8 +16,7 @@
 #include "Utilities.h"
 #include "IFEM.h"
 #include "tinyxml.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "StbImage.h"
 
 
 void IsotropicTextureMat::parse (const TiXmlElement* elem)
@@ -26,8 +25,8 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
   utl::getAttribute(elem, "file", textureFile);
 
   int width, height, nrChannels;
-  unsigned char* image = stbi_load(textureFile.c_str(),
-                                   &width, &height, &nrChannels, 0);
+  unsigned char* image = stb::loadImage(textureFile.c_str(),
+                                        width, height, nrChannels);
   if (!image) {
     std::cerr << "File not found: " << textureFile << std::endl;
     return;
