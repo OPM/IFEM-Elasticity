@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!-- 2D Cantilever beam with a tip shear load. !-->
+<!-- 2D Cantilever beam with a prescribed axial displacement. !-->
 
 <simulation>
 
@@ -22,23 +22,12 @@
   <boundaryconditions>
     <dirichlet set="fixed" component="1"/>
     <dirichlet set="support" component="2"/>
-    <neumann set="loaded" direction="2" type="expression">
-      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
-      F0=1000000;
-     -F0*(H*H/I)*(0.5-x/L)*(0.25-Y*Y)
-    </neumann>
+    <dirichlet set="loaded" component="1">2.5e-5</dirichlet>
   </boundaryconditions>
 
   <elasticity>
-    <isotropic E="2.068e11" nu="0.29"/>
-    <anasol type="expression">
-      <variables>F0=1000000; L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5</variables>
-      <stress>F0*(L*H/I)*(x/L-1)*Y | 0 | F0*(H*H/I)*0.5*(0.25-Y*Y)</stress>
-    </anasol>
-    <dualfield X0="0.4" depth="0.4" comp="1"/>
-    <dualfield X0="0.4" depth="0.4" comp="2"/>
-    <dualfield X0="0.4" depth="0.4" comp="3"/>
-    <boundaryforce set="fixed"/>
+    <isotropic E="2.0e11" nu="0.3"/>
+    <boundaryforce set="loaded"/>
   </elasticity>
 
   <discretization>

@@ -1,10 +1,11 @@
-exact_p1.xinp -2D -grvl -cgl2
+exact_p1.xinp -grvl -cgl2
 
 Input file: exact_p1.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Enabled projection(s): Greville point projection
                        Continuous global L2-projection
+Solution component output zero tolerance: 1e-06
 Parsing input file exact_p1.xinp
 Parsing <discretization>
 Parsing <geometry>
@@ -21,9 +22,11 @@ Parsing <boundaryconditions>
 	Dirichlet code 12: (analytic)
 Parsing <elasticity>
   Parsing <isotropic>
-	Material code 0: 1000 0.3 0
+	Material code 0: 1000 0.3
   Parsing <bodyforce>
 	Bodyforce code 1000012 (expression): 1000/(1-0.3^2)\*(-2\*y^2 - x^2 + 0.3\*x\*(x - 2\*y) - 2\*x\*y + 3 - 0.3) | 1000/(1-0.3^2)\*(-2\*x^2 - y^2 + 0.3\*y\*(y - 2\*x) - 2\*x\*y + 3 - 0.3)
+  Parsing <boundaryforce>
+	Boundary force "edges" code 1000000
 	Analytical solution: Expression
 	Variables=Emod=1000;v=0.3;
 	Primary=(1-x^2)\*(1-y^2)|(1-x^2)\*(1-y^2)
@@ -35,7 +38,7 @@ Enabled projection(s): Greville point projection
                        Continuous global L2-projection
 Problem definition:
 Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 0, alpha = 1.2e-07
+LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 12 code = 12
 	Constraining P1 E2 in direction(s) 12 code = 12
@@ -56,12 +59,14 @@ Solving the equation system ...
 L2-norm            : 0.529895
 Max X-displacement : 1
 Max Y-displacement : 1
+Reaction force     : -1263.74 -1263.74
 Projecting secondary solution ...
 	Greville point projection
-Projecting secondary solution ...
 	Continuous global L2-projection
+Integrating solution norms (FE solution) ...
+Integrating solution norms (reference solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.4682
-External energy ((f,u^h)+(t,u^h)^0.5 : 41.7416
+External energy ((f,u^h)+(t,u^h)^0.5 : 49.4682
 Exact norm  |u|   = a(u,u)^0.5       : 49.6692
 Exact error a(e,e)^0.5, e=u-u^h      : 2.8788
 Exact relative error (%) : 5.79595

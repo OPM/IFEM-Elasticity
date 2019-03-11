@@ -1,8 +1,9 @@
-MidShipFrame.xinp -2D
+MidShipFrame.xinp
 
 Input file: MidShipFrame.xinp
 Equation solver: 2
 Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
 Parsing input file MidShipFrame.xinp
 Parsing <geometry>
   Parsing <immersedboundary>
@@ -88,6 +89,9 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 12: (fixed)
 Parsing <elasticity>
+  Parsing <boundaryforce>
+	Boundary force "innspenning" code 1000000
+  Parsing <isotropic>
 	Material code 0: 2.1e+11 0.3 7850
 	Gravitation vector: 9.81 0
 Parsing <postprocessing>
@@ -95,9 +99,10 @@ Parsing <postprocessing>
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 4
+Enabled projection(s): Continuous global L2-projection
 Problem definition:
 Elasticity: 2D, gravity = 9.81 0
-LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850, alpha = 1.2e-07
  Element 44 is completely outside the domain
  Element 52 is completely outside the domain
  Element 60 is completely outside the domain
@@ -135,6 +140,7 @@ Number of elements    1248
 Number of nodes       1610
 Number of dofs        3220
 Number of unknowns    3178
+Number of quadrature points 130266
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
@@ -147,12 +153,26 @@ Assembling interior matrix terms for P8
 Assembling interior matrix terms for P9
 Assembling interior matrix terms for P10
 Solving the equation system ...
+	Condition number: 2.15574e+07
  >>> Solution summary <<<
 L2-norm            : 0.0016228
-Max X-displacement : 0.00493709 node 1526
-Max Y-displacement : 0.0148774 node 1526
+Max X-displacement : 0.00493709
+Max Y-displacement : 0.0148774
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Assembling interior matrix terms for P4
+Assembling interior matrix terms for P5
+Assembling interior matrix terms for P6
+Assembling interior matrix terms for P7
+Assembling interior matrix terms for P8
+Assembling interior matrix terms for P9
+Assembling interior matrix terms for P10
+Reaction force     : -2.57405e+06 .*e-06
 Projecting secondary solution ...
 	Continuous global L2-projection
+Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 73.3241
 External energy ((f,u^h)+(t,u^h)^0.5 : 73.3241
 >>> Error estimates based on Continuous global L2-projection <<<

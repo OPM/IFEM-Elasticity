@@ -1,6 +1,6 @@
 <simulation>
 
-  <geometry>
+  <geometry dim="2">
     <patchfile>frame2.g2</patchfile>
     <raiseorder lowerpatch="1" upperpatch="3" u="1"/>
     <raiseorder lowerpatch="4" upperpatch="10" v="1"/>
@@ -68,6 +68,7 @@
   </boundaryconditions>
 
   <elasticity>
+    <boundaryforce set="innspenning"/>
     <isotropic E="2.1e11" nu="0.3" rho="7850"/>
     <gravity x="9.81"/>
   </elasticity>

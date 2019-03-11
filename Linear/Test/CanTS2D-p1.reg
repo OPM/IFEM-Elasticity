@@ -23,10 +23,10 @@ Parsing <boundaryconditions>
 	Dirichlet code 1: (fixed)
 	Dirichlet code 2: (fixed)
   Parsing <neumann>
-	Neumann code 1000000 direction 2 (expression): F0=-1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
 Parsing <elasticity>
   Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29 7820
+	Material code 0: 2.068e+11 0.29
 	Analytical solution: Expression
 	Variables=F0=1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5;
 	Stress=F0\*(L\*H/I)\*(x/L-1)\*Y | 0 | F0\*(H\*H/I)\*0.5\*(0.25-Y\*Y)
@@ -44,7 +44,7 @@ Equation solver: 2
 Number of Gauss points: 2 3
 Problem definition:
 Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7820, alpha = 1.2e-07
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 V1 in direction(s) 2
 	Constraining P1 E1 in direction(s) 1
@@ -64,6 +64,7 @@ Solving the equation system ...
 L2-norm            : 0.000865231
 Max X-displacement : 0.000352741
 Max Y-displacement : 0.00241332
+Reaction force     : .* -1e+06
 Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.1249
 External energy ((f,u^h)+(t,u^h)^0.5 : 49.1249

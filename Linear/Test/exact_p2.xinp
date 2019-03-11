@@ -6,7 +6,7 @@
 <simulation>
 
   <!-- General - geometry definitions !-->
-  <geometry>
+  <geometry dim="2">
     <raiseorder patch="1" u="1" v="1"/>
     <refine patch="1" u="7" v="7"/>
     <topologysets>
@@ -30,11 +30,12 @@
 
   <!-- Problem specific block !-->
   <elasticity>
-    <isotropic E="1000" nu="0.3" rho="0"/>
+    <isotropic E="1000" nu="0.3"/>
     <bodyforce type="expression" set="model">
       1000/(1-0.3^2)*(-2*y^2 - x^2 + 0.3*x*(x - 2*y) - 2*x*y + 3 - 0.3) |
       1000/(1-0.3^2)*(-2*x^2 - y^2 + 0.3*y*(y - 2*x) - 2*x*y + 3 - 0.3)
     </bodyforce>
+    <boundaryforce set="edges"/>
     <anasol type="expression">
       <variables>Emod=1000;v=0.3</variables>
       <primary>(1-x^2)*(1-y^2)|(1-x^2)*(1-y^2)</primary>

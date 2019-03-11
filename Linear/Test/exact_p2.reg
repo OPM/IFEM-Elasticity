@@ -1,8 +1,9 @@
-exact_p2.xinp -2D
+exact_p2.xinp
 
 Input file: exact_p2.xinp
 Equation solver: 2
 Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
 Parsing input file exact_p2.xinp
 Parsing <discretization>
 Parsing <geometry>
@@ -22,9 +23,11 @@ Parsing <boundaryconditions>
 	Dirichlet code 12: (analytic)
 Parsing <elasticity>
   Parsing <isotropic>
-	Material code 0: 1000 0.3 0
+	Material code 0: 1000 0.3
   Parsing <bodyforce>
 	Bodyforce code 1000012 (expression): 1000/(1-0.3^2)\*(-2\*y^2 - x^2 + 0.3\*x\*(x - 2\*y) - 2\*x\*y + 3 - 0.3) | 1000/(1-0.3^2)\*(-2\*x^2 - y^2 + 0.3\*y\*(y - 2\*x) - 2\*x\*y + 3 - 0.3)
+  Parsing <boundaryforce>
+	Boundary force "edges" code 1000000
 	Analytical solution: Expression
 	Variables=Emod=1000;v=0.3;
 	Primary=(1-x^2)\*(1-y^2)|(1-x^2)\*(1-y^2)
@@ -34,7 +37,7 @@ Equation solver: 2
 Number of Gauss points: 3 4
 Problem definition:
 Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 0, alpha = 1.2e-07
+LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 12 code = 12
 	Constraining P1 E2 in direction(s) 12 code = 12
@@ -55,10 +58,13 @@ Solving the equation system ...
 L2-norm            : 0.530859
 Max X-displacement : 1
 Max Y-displacement : 1
+Reaction force     : -1263.74 -1263.74
 Projecting secondary solution ...
 	Greville point projection
+Integrating solution norms (FE solution) ...
+Integrating solution norms (reference solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.6692
-External energy ((f,u^h)+(t,u^h)^0.5 : 41.8658
+External energy ((f,u^h)+(t,u^h)^0.5 : 49.6692
 Exact norm  |u|   = a(u,u)^0.5       : 49.6692
 >>> Error estimates based on Greville point projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 49.6692
