@@ -578,18 +578,23 @@ int main (int argc, char** argv)
   if (dumpASCII)
   {
     // Write (refined) model to g2-file
-    std::ofstream osg(strcat(strtok(infile,"."),".g2"));
+    const char* ext = model->opt.discretization < ASM::LRSpline ? ".g2" : ".lr";
+    std::ofstream osg(strcat(strtok(infile,"."),ext));
     osg.precision(18);
-    IFEM::cout <<"\nWriting updated g2-file "<< infile << std::endl;
+    IFEM::cout <<"\nWriting updated geometry file "<< infile << std::endl;
     model->dumpGeometry(osg);
-    if (!displ.empty())
+    const Vector& deformation = aSim ? aSim->getSolution() : displ;
+    if (!deformation.empty())
     {
       // Write solution (control point values) to ASCII files
       std::ofstream osd(strcat(strtok(infile,"."),".dis"));
       osd.precision(18);
       IFEM::cout <<"\nWriting deformation to file "<< infile << std::endl;
       utl::LogStream log(osd);
-      model->dumpPrimSol(displ,log,false);
+      model->dumpPrimSol(deformation,log,false);
+    }
+    if (!displ.empty())
+    {
       std::ofstream oss(strcat(strtok(infile,"."),".sol"));
       oss.precision(18);
       IFEM::cout <<"\nWriting solution to file "<< infile << std::endl;
