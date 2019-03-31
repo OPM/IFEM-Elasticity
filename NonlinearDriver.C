@@ -281,7 +281,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
     // Print out the maximum von Mises stress, etc., if present
     if (getMaxVals && myPid == 0)
     {
-      size_t id = model.getNoSpaceDim()*2 + 1;
+      size_t id = elp->getNoFields(3) + 1;
       elp->printMaxVals(outPrec,id);   // von Mises stress
       elp->printMaxVals(outPrec,id+1); // plastic strain, Epp
       elp->printMaxVals(outPrec,id+6); // stress triaxiality, T

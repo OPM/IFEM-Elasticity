@@ -51,7 +51,9 @@
   \arg -nv \a nv : Number of visualization points per knot-span in v-direction
   \arg -nw \a nw : Number of visualization points per knot-span in w-direction
   \arg -hdf5 : Write primary and projected secondary solution to HDF5 file
+  \arg -printMax : Print out maximum point-wise stresses
   \arg -dumpASC : Dump model and solution to ASCII files for external processing
+  \arg -dumpMatlab \a [topologySets] : Dump grid to Matlab file
   \arg -outPrec \a nDigit : Number of digits in solution component printout
   \arg -ztol \a eps : Zero tolerance for printing of solution components
   \arg -ignore \a p1, \a p2, ... : Ignore these patches in the analysis
@@ -95,6 +97,7 @@ int main (int argc, char** argv)
   bool checkRHS = false;
   bool vizRHS = false;
   bool fixDup = false;
+  bool printMax = false;
   bool dumpASCII = false;
   bool dumpMatlab = false;
   bool KLp = false;
@@ -113,6 +116,8 @@ int main (int argc, char** argv)
       ; // ignore the input file on the second pass
     else if (SIMoptions::ignoreOldOptions(argc,argv,i))
       ; // ignore the obsolete option
+    else if (!strcmp(argv[i],"-printMax"))
+      printMax = true;
     else if (!strcmp(argv[i],"-dumpASC"))
       dumpASCII = myPid == 0; // not for parallel runs
     else if (!strcmp(argv[i],"-dumpMatlab"))
@@ -128,12 +133,12 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
         utl::parseIntegers(ignoredPatches,argv[++i]);
-    else if (!strcmp(argv[i],"-vox") && i < argc-1)
-      VTF::vecOffset[0] = atof(argv[++i]);
-    else if (!strcmp(argv[i],"-voy") && i < argc-1)
-      VTF::vecOffset[1] = atof(argv[++i]);
-    else if (!strcmp(argv[i],"-voz") && i < argc-1)
-      VTF::vecOffset[2] = atof(argv[++i]);
+    else if (!strncmp(argv[i],"-vo",3) && i < argc-1)
+    {
+      int d = tolower(argv[i][3]) - 'x';
+      if (d >= 0 && d < 3)
+        VTF::vecOffset[d] = atof(argv[++i]);
+    }
     else if (!strcmp(argv[i],"-plotSC"))
       Elastic::GIpointsVTF = Immersed::plotCells = true;
     else if (!strcmp(argv[i],"-free"))
@@ -198,7 +203,7 @@ int main (int argc, char** argv)
               <<" [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
               <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
               <<"\n       [-ignore <p1> <p2> ...] [-fixDup]"
-              <<" [-checkRHS] [-check] [-dumpASC]\n      "
+              <<" [-checkRHS] [-check] [-printMax] [-dumpASC]\n      "
               <<" [-dumpMatlab [<setnames>]] [-outPrec <nd>] [-ztol <eps>]\n";
     return 0;
   }
@@ -349,6 +354,18 @@ int main (int argc, char** argv)
       v[j] = 0.0;
   };
 
+  const LinearElasticity* lelp;
+  if (!(lelp = dynamic_cast<const LinearElasticity*>(model->getProblem())))
+    printMax = false;
+
+  // Lambda function to print out max stress values
+  auto&& printMaxStress = [lelp,outPrec](const char* heading)
+  {
+    IFEM::cout <<"\n"<< heading <<":"<< std::endl;
+    for (size_t j = 0; j <= lelp->getNoFields(3); j++)
+      lelp->printMaxVals(outPrec,j+1);
+  };
+
   switch (args.adap ? 10 : iop+model->opt.eig) {
   case 0:
   case 5:
@@ -369,9 +386,12 @@ int main (int argc, char** argv)
     noProj = true;
     model->setMode(SIM::RECOVERY);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
+    {
       if (!model->project(projs[i],displ,pit->first))
         return 4;
-      else if (!model->projectAnaSol(projx[i],pit->first))
+      if (i == 0 && printMax)
+        printMaxStress("Maximum stresses in Gauss points");
+      if (!model->projectAnaSol(projx[i],pit->first))
         projx[i].clear();
       else if (KLp && projx[i].size() < projs[i].size())
         // Account for absent shear force components
@@ -380,11 +400,14 @@ int main (int argc, char** argv)
                        projs[i].size()/model->getNoNodes());
       else
         noProj = false; // We have projected analytical solution
+    }
 
     if (!pOpt.empty())
       IFEM::cout << std::endl;
 
-    if (!noError)
+    if (noError)
+      model->setMode(SIM::INIT);
+    else
     {
       // Evaluate solution norms
       model->setMode(SIM::NORMS);
@@ -535,13 +558,9 @@ int main (int argc, char** argv)
       return 8;
 
     // Write temperature field, if specified
-    const LinearElasticity* lelp;
-    if ((lelp = dynamic_cast<const LinearElasticity*>(model->getProblem())))
-    {
-      const RealFunc* temp = lelp->getTemperature();
-      if (temp && !model->writeGlvF(*temp,"Temperature",1,nBlock))
-        return 9;
-    }
+    const RealFunc* temp = lelp ? lelp->getTemperature() : nullptr;
+    if (temp && !model->writeGlvF(*temp,"Temperature",1,nBlock))
+      return 9;
 
     // Write load vector to VTF-file
     if (!model->writeGlvV(load,"Load vector",1,nBlock))
@@ -552,12 +571,22 @@ int main (int argc, char** argv)
     if (!model->writeGlvS(displ,1,nBlock))
       return 11;
 
+    std::vector<PointValue>* maxVals = lelp ? lelp->getMaxVals() : nullptr;
+    if (printMax)
+    {
+      printMaxStress("Maximum stresses in visualization points");
+      std::fill(maxVals->begin(),maxVals->end(),PointValue(Vec3(),0.0));
+    }
+
     // Write projected solution fields to VTF-file
     size_t i = 0;
     int iBlk = 100;
     for (pit = pOpt.begin(); pit != pOpt.end(); ++pit, i++, iBlk += 10)
-      if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str()))
+      if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str(),maxVals))
         return 12;
+
+    if (printMax)
+      printMaxStress("Maximum projected stresses in visualization points");
 
     // Write eigenmodes
     bool isFreq = model->opt.eig==3 || model->opt.eig==4 || model->opt.eig==6;
@@ -592,15 +621,12 @@ int main (int argc, char** argv)
       IFEM::cout <<"\nWriting deformation to file "<< infile << std::endl;
       utl::LogStream log(osd);
       model->dumpPrimSol(deformation,log,false);
-    }
-    if (!displ.empty())
-    {
       std::ofstream oss(strcat(strtok(infile,"."),".sol"));
       oss.precision(18);
       IFEM::cout <<"\nWriting solution to file "<< infile << std::endl;
       utl::LogStream log2(oss);
       model->setMode(SIM::RECOVERY);
-      model->dumpSolution(displ,log2);
+      model->dumpSolution(deformation,log2);
     }
     if (!modes.empty())
     {
