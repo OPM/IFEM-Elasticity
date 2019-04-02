@@ -1,0 +1,238 @@
+Cantilever-KLshell.xinp -2DKLshell -adap -cgl2
+
+Input file: Cantilever-KLshell.xinp
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Solution component output zero tolerance: 1e-06
+Parsing input file Cantilever-KLshell.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+	Length in Y = 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: support (1,1,1D)
+	               tip (1,2,1D)
+  Parsing <raiseorder>
+	Raising order of P1 1 0
+  Parsing <refine>
+	Refining P1 9 0
+  Parsing <topologysets>
+Parsing <discretization>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3123: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 3: -1
+Parsing <KirchhoffLove>
+	Material code 0: 1e+06 0 1000 0.1
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing <adaptive>
+	Refinement percentage: 90 type=1
+	Refinement scheme: 2
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Problem definition:
+KirchhoffLoveShell: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 1e+06, nu = 0, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 3123
+Result point #1: patch #1 (u,v)=(1,0), X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       24
+Number of dofs        72
+Number of unknowns    64
+ >>> Starting adaptive simulation based on
+     Continuous global L2-projection error estimates (norm group 1) <<<
+Adaptive step 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 2 on P1
+   \* Sum external load: 0 0 -1
+Solving the equation system ...
+	Condition number: 95976.7
+ >>> Solution summary <<<
+L2-norm            : 1.21445
+Max Z-displacement : 3.99
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  0.000000e+00  0.000000e+00 -3.990000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -5.000000e-01  0.000000e+00  0.000000e+00
+		sol3 = -3.000000e+02  0.000000e+00  0.000000e+00  0.000000e+00 -3.000000e+02  3.000000e+02
+		sol4 =  3.000000e+02  0.000000e+00  0.000000e+00  3.000000e+02  0.000000e+00  3.000000e+02
+  Point #2:	sol1 =  0.000000e+00  0.000000e+00 -3.990000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -5.000000e-01  0.000000e+00  0.000000e+00
+		sol3 = -3.000000e+02  0.000000e+00  0.000000e+00  0.000000e+00 -3.000000e+02  3.000000e+02
+		sol4 =  3.000000e+02  0.000000e+00  0.000000e+00  3.000000e+02  0.000000e+00  3.000000e+02
+Energy norm           a(u^h,u^h)^0.5 : 1.9975
+External energy          (p,u^h)^0.5 : 1.9975
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1.99527
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0942735
+ relative error (% of |u^r|) : 4.72484
+L2 norm |m^r| = (m^r,m^r)^0.5        : 18.2143
+L2 error (e,e)^0.5, e=m^r-m^h        : 0.860595
+ relative error (% of |m^r|) : 4.72484
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.0942735
+Relative error (%) : 4.71433
+Root mean square (RMS) of error      : 0.226574
+Min element error                    : 0.0162625
+Max element error                    : 0.035068
+Average element error                : 0.0290749
+Refining 12 basis functions with errors in range \[0.0940442,0.097614] 90% of max error (0.0878526)
+Refined mesh: 34 elements 54 nodes.
+Adaptive step 2
+Parsing input file Cantilever-KLshell.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: support (1,1,1D)
+	               tip (1,2,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3123: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 3: -1
+Parsing <KirchhoffLove>
+	Material code 0: 1e+06 0 1000 0.1
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+KirchhoffLoveShell: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 1e+06, nu = 0, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 3123
+Result point #1: patch #1 (u,v)=(1,0), X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    34
+Number of nodes       54
+Number of dofs        162
+Number of unknowns    154
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 2 on P1
+   \* Sum external load: 0 0 -1
+Solving the equation system ...
+	Condition number: 827145
+ >>> Solution summary <<<
+L2-norm            : 1.08831
+Max Z-displacement : 3.996
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  0.000000e+00  0.000000e+00 -3.996000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -5.000000e-01  0.000000e+00  0.000000e+00
+		sol3 = -3.000000e+02  0.000000e+00  0.000000e+00  0.000000e+00 -3.000000e+02  3.000000e+02
+		sol4 =  3.000000e+02  0.000000e+00  0.000000e+00  3.000000e+02  0.000000e+00  3.000000e+02
+  Point #2:	sol1 =  0.000000e+00  0.000000e+00 -3.996000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -5.000000e-01  0.000000e+00  0.000000e+00
+		sol3 = -3.000000e+02  0.000000e+00  0.000000e+00  0.000000e+00 -3.000000e+02  3.000000e+02
+		sol4 =  3.000000e+02  0.000000e+00  0.000000e+00  3.000000e+02  0.000000e+00  3.000000e+02
+Energy norm           a(u^h,u^h)^0.5 : 1.999
+External energy          (p,u^h)^0.5 : 1.999
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1.99837
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0503478
+ relative error (% of |u^r|) : 2.51945
+L2 norm |m^r| = (m^r,m^r)^0.5        : 18.2425
+L2 error (e,e)^0.5, e=m^r-m^h        : 0.45961
+ relative error (% of |m^r|) : 2.51945
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.0503478
+Relative error (%) : 2.51785
+Root mean square (RMS) of error      : 0.176866
+Min element error                    : 0.00778343
+Max element error                    : 0.0137651
+Average element error                : 0.00850261
+Refining 18 basis functions with errors in range \[0.047215,0.0517324] 90% of max error (0.0465591)
+Refined mesh: 136 elements 174 nodes.
+Adaptive step 3
+Parsing input file Cantilever-KLshell.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: support (1,1,1D)
+	               tip (1,2,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3123: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 3: -1
+Parsing <KirchhoffLove>
+	Material code 0: 1e+06 0 1000 0.1
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 1 1
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+KirchhoffLoveShell: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 1e+06, nu = 0, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 3123
+Result point #1: patch #1 (u,v)=(1,0), X = 10 0 0
+Result point #2: patch #1 (u,v)=(1,1), X = 10 1 0
+ >>> SAM model summary <<<
+Number of elements    136
+Number of nodes       174
+Number of dofs        522
+Number of unknowns    510
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 2 on P1
+   \* Sum external load: 0 0 -1
+Solving the equation system ...
+	Condition number: 1.10747e+07
+ >>> Solution summary <<<
+L2-norm            : 1.06066
+Max Z-displacement : 3.999
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  0.000000e+00  0.000000e+00 -3.999000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -2.500000e-01  0.000000e+00  0.000000e+00
+		sol3 = -1.500000e+02  0.000000e+00  0.000000e+00  0.000000e+00 -1.500000e+02  1.500000e+02
+		sol4 =  1.500000e+02  0.000000e+00  0.000000e+00  1.500000e+02  0.000000e+00  1.500000e+02
+  Point #2:	sol1 =  0.000000e+00  0.000000e+00 -3.999000e+00
+		sol2 =  0.000000e+00  0.000000e+00  0.000000e+00 -2.500000e-01  0.000000e+00  0.000000e+00
+		sol3 = -1.500000e+02  0.000000e+00  0.000000e+00  0.000000e+00 -1.500000e+02  1.500000e+02
+		sol4 =  1.500000e+02  0.000000e+00  0.000000e+00  1.500000e+02  0.000000e+00  1.500000e+02
+Energy norm           a(u^h,u^h)^0.5 : 1.99975
+External energy          (p,u^h)^0.5 : 1.99975
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1.99954
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0290689
+ relative error (% of |u^r|) : 1.45378
+L2 norm |m^r| = (m^r,m^r)^0.5        : 18.2532
+L2 error (e,e)^0.5, e=m^r-m^h        : 0.265361
+ relative error (% of |m^r|) : 1.45378
+Error estimate a(e,e)^0.5, e=u^r-u^h : 0.0290689
+Relative error (%) : 1.45347
+Root mean square (RMS) of error      : 0.466514
+Min element error                    : 0.00184644
+Max element error                    : 0.00789725
+Average element error                : 0.00225892

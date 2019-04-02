@@ -61,7 +61,7 @@ public:
   //! \brief Defines the pressure field.
   void setPressure(RealFunc* pf = nullptr);
   //! \brief Defines the traction field to use in Neumann boundary conditions.
-  void setTraction(TractionFunc* tf) { tracFld = tf; }
+  void setTraction(TractionFunc* tf) { tracFld = tf; fluxFld = nullptr; }
   //! \brief Defines the traction field to use in Neumann boundary conditions.
   void setTraction(VecFunc* tf) { fluxFld = tf; }
 

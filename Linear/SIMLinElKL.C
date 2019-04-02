@@ -161,8 +161,7 @@ bool SIMLinElKL::parse (const TiXmlElement* elem)
 
 void SIMLinElKL::preprocessA ()
 {
-  this->getProblem();
-  this->printProblem();
+  this->SIMKLShell::preprocessA();
 
   ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
   if (!plSol) return;

@@ -29,6 +29,11 @@ SIMKLShell::SIMKLShell (bool shell)
   if (shell) nsd = 3;
 
   nf[0] = shell ? 3 : 1;
+  if (opt.discretization == ASM::LRSpline)
+  {
+    nf.push_back('C');
+    nf.push_back('1');
+  }
   aCode[0] = aCode[1] = aCode[2] = 0;
 }
 
@@ -330,7 +335,15 @@ bool SIMKLShell::initNeumann (size_t propInd)
 
 void SIMKLShell::preprocessA ()
 {
-  this->getProblem();
+  // Check if we have neumann conditions (for Gauss point visualization).
+  // Need to do this to enable calculation of the number of boundary
+  // integration points before any traction field is assigned.
+  VecFunc* dummy = nullptr;
+  for (const Property& prop : myProps)
+    if (prop.pcode == Property::NEUMANN)
+      ++dummy;
+
+  this->getProblem()->setTraction(dummy);
   this->printProblem();
 }
 
@@ -517,15 +530,20 @@ void SIMKLShell::printNormGroup (const Vector& norm, const Vector& rNorm,
     return;
   }
 
+  if (utl::trunc(norm(1)) == 0.0)
+    return;
+
   // Special print for shell problems (no analytical solution)
   IFEM::cout <<"\n\n>>> Error estimates based on "<< prjName <<" <<<"
              <<"\nEnergy norm |u^r| = a(u^r,u^r)^0.5   : "<< norm(1)
              <<"\nError norm a(e,e)^0.5, e=u^r-u^h     : "<< norm(2)
              <<"\n- relative error (% of |u^r|) : "<< 100.0*norm(2)/norm(1);
-  IFEM::cout <<"\nL2 norm |n^r| = (n^r,n^r)^0.5        : "<< norm(3)
-             <<"\nL2 error (e,e)^0.5, e=n^r-n^h        : "<< norm(5)
-             <<"\n- relative error (% of |n^r|) : "<< 100.0*norm(5)/norm(3);
-  IFEM::cout <<"\nL2 norm |m^r| = (m^r,m^r)^0.5        : "<< norm(4)
-             <<"\nL2 error (e,e)^0.5, e=m^r-m^h        : "<< norm(6)
-             <<"\n- relative error (% of |m^r|) : "<< 100.0*norm(6)/norm(4);
+  if (utl::trunc(norm(3)) > 0.0)
+    IFEM::cout <<"\nL2 norm |n^r| = (n^r,n^r)^0.5        : "<< norm(3)
+               <<"\nL2 error (e,e)^0.5, e=n^r-n^h        : "<< norm(5)
+               <<"\n- relative error (% of |n^r|) : "<< 100.0*norm(5)/norm(3);
+  if (utl::trunc(norm(4)) > 0.0)
+    IFEM::cout <<"\nL2 norm |m^r| = (m^r,m^r)^0.5        : "<< norm(4)
+               <<"\nL2 error (e,e)^0.5, e=m^r-m^h        : "<< norm(6)
+               <<"\n- relative error (% of |m^r|) : "<< 100.0*norm(6)/norm(4);
 }
