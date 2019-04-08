@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <geometry>
+    <patchfile>bolt.g2</patchfile>
+    <raiseorder lowerpatch="1" w="2"/>
+    <refine lowerpatch="1" u="4" v="1" w="7"/>
+    <topologysets>
+      <set name="bottom" type="face">
+        <item patch="1">5</item>
+        <item patch="2">5</item>
+        <item patch="3">5</item>
+        <item patch="4">5</item>
+      </set>
+      <set name="top" type="face">
+        <item patch="1">6</item>
+        <item patch="2">6</item>
+        <item patch="3">6</item>
+        <item patch="4">6</item>
+      </set>
+    </topologysets>
+    <topology>
+      <connection master="1" mface="2" slave="2" sface="1"/>
+      <connection master="2" mface="2" slave="3" sface="1"/>
+      <connection master="3" mface="2" slave="4" sface="1"/>
+      <connection master="4" mface="2" slave="1" sface="1"/>
+      <connection master="1" mface="4" slave="2" sface="4"/>
+      <connection master="1" mface="4" slave="3" sface="4"/>
+      <connection master="1" mface="4" slave="4" sface="4"/>
+    </topology>
+    <collapse patch="1" face="4" edge="11"/>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="bottom" comp="123"/>
+    <neumann set="top" direction="3">1.0e10</neumann>
+  </boundaryconditions>
+
+</simulation>
