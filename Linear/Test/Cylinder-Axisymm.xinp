@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Thick cylinder with internal pressure. Axi-symmetric model.
+     Static linear-elastic analysis, quartic spline elements. -->
+
+<simulation>
+
+  <geometry X0="1.0 0.0" Lx="1.0" Ly="5.0">
+    <raiseorder patch="1" u="3" v="3"/>
+    <refine patch="1" u="3" v="1"/>
+    <topologysets>
+      <set name="fixed" type="edge">
+        <item patch="1">3 4</item>
+      </set>
+      <set name="inner" type="edge">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="fixed" comp="2"/>
+    <neumann set="inner" direction="0">-1.0e6</neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.05e11" nu="0.29"/>
+  </elasticity>
+
+</simulation>
