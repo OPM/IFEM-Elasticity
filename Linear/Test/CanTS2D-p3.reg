@@ -37,6 +37,9 @@ Parsing <elasticity>
 	Variables=F0=1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5;
 	Stress=F0\*(L\*H/I)\*(x/L-1)\*Y | 0 | F0\*(H\*H/I)\*0.5\*(0.25-Y\*Y)
   Parsing <dualfield>
+	X0     = 0.6 0 0
+	normal = 1 0 0
+	depth  = 0.2, width = 0
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 4
@@ -65,4 +68,5 @@ Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 49.9264
 External energy ((f,u^h)+(t,u^h)^0.5 : 49.9264
 Exact norm  |u|   = a(u,u)^0.5       : 49.9264
-Recovered section force a(u^h,w)     : 1e+06
+Recovered section force a(u^h,w2)    : 1e+06
+Recovered section force a(u^h,w3)    : 1.4e+06

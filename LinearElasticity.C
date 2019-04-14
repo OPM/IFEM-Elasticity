@@ -86,7 +86,7 @@ bool LinearElasticity::initElement (const std::vector<int>& MNPC,
                                     const FiniteElement&, const Vec3& XC,
                                     size_t, LocalIntegral& elmInt)
 {
-  if (!dualFld || dualFld->inDomain(XC))
+  if (dualFld.empty() || dualFld.front()->inDomain(XC))
     return this->Elasticity::initElement(MNPC,elmInt);
   else // the extraction function is zero in this element
     return this->initElement1(MNPC,elmInt.vec);
@@ -267,7 +267,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
 int LinearElasticity::getIntegrandType () const
 {
-  int itgType = dualFld ? ELEMENT_CENTER : STANDARD;
+  int itgType = dualFld.empty() ? STANDARD : ELEMENT_CENTER;
 
   return itgType | INTERFACE_TERMS | ELEMENT_CORNERS | NORMAL_DERIVS;
 }

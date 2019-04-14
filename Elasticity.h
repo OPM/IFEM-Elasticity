@@ -70,10 +70,10 @@ public:
   void setTraction(VecFunc* tf) { fluxFld = tf; }
   //! \brief Defines the body force field.
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
-  //! \brief Defines the extraction function of the dual problem.
-  void setExtrFunction(FunctionBase* exf);
-  //! \brief Returns the current extraction function.
-  const VecFunc* getExtrFunction() const { return dualFld; }
+  //! \brief Defines an extraction function for VCP.
+  void addExtrFunction(FunctionBase* exf);
+  //! \brief Returns the number of extraction functions.
+  size_t numExtrFunction() const { return dualFld.size(); }
 
   //! \brief Defines the material properties.
   virtual void setMaterial(Material* mat);
@@ -180,7 +180,8 @@ public:
   virtual bool hasTractionValues() const { return !tracVal.empty(); }
 
   //! \brief Returns the patch-wise extraction function field, if any.
-  virtual Vector* getExtractionField();
+  //! \param[in] ifield 1-based index of the field to return
+  virtual Vector* getExtractionField(size_t ifield);
 
   //! \brief Returns a pointer to an Integrand for solution norm evaluation.
   //! \note The Integrand object is allocated dynamically and has to be deleted
@@ -318,8 +319,9 @@ protected:
   TractionFunc* tracFld;  //!< Pointer to implicit boundary traction field
   VecFunc*      fluxFld;  //!< Pointer to explicit boundary traction field
   VecFunc*      bodyFld;  //!< Pointer to body force field
-  VecFunc*      dualFld;  //!< Pointer to extraction function
   Vec3Vec*      pDirBuf;  //!< Principal stress directions buffer
+
+  std::vector<VecFunc*> dualFld; //!< Pointers to extraction functions
 
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values

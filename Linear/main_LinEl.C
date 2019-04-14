@@ -451,6 +451,10 @@ int main (int argc, char** argv)
         else if (model->haveAnaSol() && norm.size() >= 6)
           IFEM::cout <<"\nResidual error (r(u) + J(u))^0.5 : "<< norm(5)
                      <<"\n- relative error (% of |u|) : "<< norm(5)*Rel;
+        for (size_t i = 2; (iSec = model->getVCPindex(i)); i++)
+          if (norm.size() >= iSec)
+            IFEM::cout <<"\nRecovered section force a(u^h,w"<< i <<")    : "
+                       << norm(iSec);
       }
 
       size_t j = 1;

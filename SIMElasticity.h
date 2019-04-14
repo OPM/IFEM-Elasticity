@@ -87,6 +87,7 @@ public:
       elp->setBodyForce(nullptr);
       elp->setTraction((VecFunc*)nullptr);
       elp->setTraction((TractionFunc*)nullptr);
+      elp->addExtrFunction(nullptr);
     }
 
     for (Material* mat : mVec)
@@ -448,7 +449,7 @@ protected:
       }
 
       else if (!strcasecmp(child->Value(),"dualfield"))
-        this->getIntegrand()->setExtrFunction(this->parseDualTag(child,2));
+        this->getIntegrand()->addExtrFunction(this->parseDualTag(child,2));
 
       else if (!this->getIntegrand()->parse(child))
         result &= this->Dim::parse(child);
@@ -506,23 +507,22 @@ protected:
     if (gNorm.empty())
       return false;
 
-    Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
-    if (!(elp && elp->getExtrFunction()))
-      return true;
-
-    size_t i = this->haveAnaSol() ? 5 : 3;
-    if (i <= gNorm.front().size())
+    size_t i, k = 0;
+    while ((i = this->getVCPindex(++k)))
     {
-      double& vcpq = gNorm.front()(i);
-      vcpq = copysign(vcpq*vcpq,vcpq);
-    }
-
-    if (eNorm && i <= eNorm->rows())
-      for (size_t j = 1; j <= eNorm->cols(); j++)
+      if (i <= gNorm.front().size())
       {
-        double& vcpq = (*eNorm)(i,j);
+        double& vcpq = gNorm.front()(i);
         vcpq = copysign(vcpq*vcpq,vcpq);
       }
+
+      if (eNorm && i <= eNorm->rows())
+        for (size_t j = 1; j <= eNorm->cols(); j++)
+        {
+          double& vcpq = (*eNorm)(i,j);
+          vcpq = copysign(vcpq*vcpq,vcpq);
+        }
+    }
 
     return true;
   }

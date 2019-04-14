@@ -49,7 +49,6 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   tracFld = nullptr;
   fluxFld = nullptr;
   bodyFld = nullptr;
-  dualFld = nullptr;
   pDirBuf = nullptr;
 
   gamma = 1.0;
@@ -143,10 +142,15 @@ void Elasticity::setMaterial (Material* mat)
 }
 
 
-void Elasticity::setExtrFunction (FunctionBase* extr)
+void Elasticity::addExtrFunction (FunctionBase* extr)
 {
-  if ((dualFld = dynamic_cast<VecFunc*>(extr)))
-    this->setNoSolutions(2,true);
+  if (!extr)
+    dualFld.clear();
+  else
+  {
+    dualFld.push_back(static_cast<VecFunc*>(extr));
+    this->setNoSolutions(1+dualFld.size(),true);
+  }
 }
 
 
@@ -811,9 +815,9 @@ bool Elasticity::evalEps (Vector& s, const Vector& eV, const FiniteElement& fe,
 }
 
 
-Vector* Elasticity::getExtractionField ()
+Vector* Elasticity::getExtractionField (size_t ifield)
 {
-  return dS && primsol.size() > 1 ? &primsol[1] : nullptr;
+  return dS && ifield < primsol.size() ? &primsol[ifield] : nullptr;
 }
 
 
@@ -985,11 +989,12 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (!problem.evalSol(sigmah,pnorm.vec,fe,X))
     return false;
 
-  // Evaluate the dual strain field
-  Vector epsz;
-  if (problem.getExtractionField() && pnorm.vec.size() > 1)
-    if (!problem.evalEps(epsz,pnorm.vec[1],fe,X))
-      return false;
+  // Evaluate the dual strain fields
+  Vectors epsz(problem.numExtrFunction());
+  for (size_t i = 1; i < pnorm.vec.size() && i-1 < epsz.size(); i++)
+    if (!pnorm.vec[i].empty())
+      if (!problem.evalEps(epsz[i-1],pnorm.vec[i],fe,X))
+        return false;
 
   bool planeStrain = sigmah.size() == 4 && Cinv.rows() == 3;
   if (planeStrain) sigmah.erase(sigmah.begin()+2); // Remove the sigma_zz
@@ -1027,10 +1032,10 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     pnorm[ip++] += error.dot(Cinv*error)*detJW;
   }
 
-  if (problem.getExtractionField())
+  for (const Vector& eps : epsz)
     // Evaluate the variational-consistent postprocessing quantity, a(u^h,w)
     // (typically a sectional force component)
-    pnorm[ip++] += sigmah.dot(epsz)*detJW;
+    pnorm[ip++] += sigmah.dot(eps)*detJW;
 
   // Integrate the volume
   pnorm[ip++] += detJW;
@@ -1038,8 +1043,9 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 #if INT_DEBUG > 3
   std::cout <<"\nElasticityNorm::evalInt(X = "<< X <<")\nsigma^h ="<< sigmah;
   if (anasol) std::cout <<"sigma ="<< sigma;
-  if (problem.getExtractionField())
-    std::cout <<"epsz ="<< epsz <<"a(u^,w): "<< pnorm[ip-2] << std::endl;
+  for (size_t i = 0; i < epsz.size(); i++)
+    std::cout <<"epsz("<< i+1 <<") ="<< epsz[i] <<"a(u^,w"<< i+1
+              <<"): "<< pnorm[ip-epsz.size()-1+i] << std::endl;
 #endif
 
   size_t j, k;
@@ -1123,10 +1129,8 @@ size_t ElasticityNorm::getNoFields (int group) const
     return this->NormBase::getNoFields();
   else if (group == 1 || group == -1)
   {
-    size_t nfld = anasol ? 5 : 3;
-    if (static_cast<Elasticity&>(myProblem).getExtrFunction())
-      nfld++;
-    return nfld;
+    size_t nExt = static_cast<Elasticity&>(myProblem).numExtrFunction();
+    return nExt + (anasol ? 5 : 3);
   }
   else if (group > 0 || !prjsol[-group-2].empty())
     return anasol ? 6 : 4;
@@ -1138,7 +1142,8 @@ size_t ElasticityNorm::getNoFields (int group) const
 std::string ElasticityNorm::getName (size_t i, size_t j,
                                      const char* prefix) const
 {
-  if (i == 0 || j == 0 || j > 6)
+  size_t nx = i > 1 ? 1 : static_cast<Elasticity&>(myProblem).numExtrFunction();
+  if (i == 0 || j == 0 || j > 5+nx)
     return this->NormBase::getName(i,j,prefix);
 
   static const char* u[6] = {
@@ -1163,9 +1168,15 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
   if (i == 1)
   {
     if (!anasol)
-      if (j > 2 && j < 5) j += 2;
-    if (!static_cast<Elasticity&>(myProblem).getExtrFunction())
-      if (j > 4 && j < 6) j++;
+      if (j > 2 && j < 4+nx) j += 2;
+    if (j == 5+nx)
+      j = 6;
+    else if (j > 4 && nx > 1)
+    {
+      char comp[16];
+      sprintf(comp,"a(u^h,w%zu)",j-4);
+      return comp;
+    }
   }
   if (!prefix)
     return s[j-1];
