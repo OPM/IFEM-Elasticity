@@ -50,6 +50,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   fluxFld = nullptr;
   bodyFld = nullptr;
   pDirBuf = nullptr;
+  dualRHS = nullptr;
 
   gamma = 1.0;
 }
@@ -144,12 +145,16 @@ void Elasticity::setMaterial (Material* mat)
 
 void Elasticity::addExtrFunction (FunctionBase* extr)
 {
-  if (!extr)
-    dualFld.clear();
+  if (dynamic_cast<VecFunc*>(extr))
+  {
+    dualFld.push_back(extr);
+    this->setNoSolutions(1+dualFld.size(),true);
+    if (!dualRHS) dualRHS = extr;
+  }
   else
   {
-    dualFld.push_back(static_cast<VecFunc*>(extr));
-    this->setNoSolutions(1+dualFld.size(),true);
+    dualFld.clear();
+    dualRHS = nullptr;
   }
 }
 

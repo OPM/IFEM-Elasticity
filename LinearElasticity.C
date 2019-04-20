@@ -88,10 +88,33 @@ bool LinearElasticity::initElement (const std::vector<int>& MNPC,
                                     const FiniteElement&, const Vec3& XC,
                                     size_t, LocalIntegral& elmInt)
 {
-  if (dualFld.empty() || dualFld.front()->inDomain(XC))
-    return this->Elasticity::initElement(MNPC,elmInt);
-  else // the extraction function is zero in this element
+  size_t nsol = primsol.size();
+  while (nsol > 1 && primsol[nsol-1].empty()) nsol--;
+  if (nsol <= 1)
     return this->initElement1(MNPC,elmInt.vec);
+
+  int ierr = 0;
+  elmInt.vec.resize(nsol);
+  for (size_t i = 0; i < nsol && ierr == 0; i++)
+    if (!primsol[i].empty())
+    {
+      bool haveValues = true;
+      if (i == 1 && m_mode == SIM::STATIC)
+        haveValues = (dualRHS && dualRHS->inDomain(XC));
+      else if (i > 0 && m_mode >= SIM::RECOVERY)
+        haveValues = (i <= dualFld.size() && dualFld[i-1]->inDomain(XC));
+      if (haveValues)
+        ierr = utl::gather(MNPC,npv,primsol[i],elmInt.vec[i]);
+#if INT_DEBUG > 2
+      std::cout <<"Element solution vector "<< i+1 << elmInt.vec[i];
+#endif
+    }
+
+  if (ierr == 0) return true;
+
+  std::cerr <<" *** LinearElasticity::initElement: Detected "
+            << ierr <<" node numbers out of range."<< std::endl;
+  return false;
 }
 
 

@@ -150,6 +150,9 @@ protected:
     if (Dim::opt.discretization < ASM::Spline)
       Elasticity::wantPrincipalStress = false;
 
+    if (Dim::dualField)
+      this->getIntegrand()->setDualRHS(Dim::dualField);
+
     if (!Dim::mySol) return;
 
     // Define analytical boundary condition fields

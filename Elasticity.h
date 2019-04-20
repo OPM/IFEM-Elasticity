@@ -70,6 +70,8 @@ public:
   void setTraction(VecFunc* tf) { fluxFld = tf; }
   //! \brief Defines the body force field.
   void setBodyForce(VecFunc* bf) { bodyFld = bf; }
+  //! \brief Defines the extraction function of the dual problem.
+  void setDualRHS(FunctionBase* df) { dualRHS = df; }
   //! \brief Defines an extraction function for VCP.
   void addExtrFunction(FunctionBase* exf);
   //! \brief Returns the number of extraction functions.
@@ -321,7 +323,8 @@ protected:
   VecFunc*      bodyFld;  //!< Pointer to body force field
   Vec3Vec*      pDirBuf;  //!< Principal stress directions buffer
 
-  std::vector<VecFunc*> dualFld; //!< Pointers to extraction functions
+  FunctionBase*              dualRHS; //!< Pointer to extraction function for dual RHS
+  std::vector<FunctionBase*> dualFld; //!< Pointer to extraction functions for VCP
 
   mutable std::vector<PointValue> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values
