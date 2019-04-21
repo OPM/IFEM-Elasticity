@@ -39,14 +39,4 @@
     </resultpoints>
   </postprocessing>
 
-  <adaptive>
-    <maxstep>3</maxstep>
-    <beta type="maximum">90</beta>
-    <maxdof>100000</maxdof>
-    <errtol>0.0001</errtol>
-    <knot_mult>1</knot_mult>
-    <scheme>isotropic_function</scheme>
-    <use_norm>1</use_norm>
-  </adaptive>
-
 </simulation>
