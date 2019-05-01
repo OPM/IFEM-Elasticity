@@ -263,12 +263,13 @@ bool KirchhoffLove::writeGlvT (VTF* vtf, int iStep,
   else if (!vtf)
     return false;
 
+  static int partID = 1+geoBlk;
   if (!tracVal.empty())
     // Write boundary tractions as discrete point vectors to the VTF-file
-    return vtf->writeVectors(tracVal,geoBlk,++nBlock,"Tractions",iStep);
+    return vtf->writeVectors(tracVal,partID,geoBlk,++nBlock,"Tractions",iStep);
   else
     // Write surface pressures as discrete point vectors to the VTF-file
-    return vtf->writeVectors(presVal,geoBlk,++nBlock,"Pressure",iStep);
+    return vtf->writeVectors(presVal,partID,geoBlk,++nBlock,"Pressure",iStep);
 }
 
 
