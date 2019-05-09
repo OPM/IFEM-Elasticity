@@ -98,7 +98,8 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
                               model.opt.restartInc);
 
   // Now invoke the main solution driver
-  int status = simulator.solveProblem(writer,restart,nullptr,0.0,zero_tol,outPrec);
+  int status = simulator.solveProblem(writer,restart,nullptr,0.0,
+                                      zero_tol,outPrec);
 
   delete writer;
   return status;
@@ -128,6 +129,7 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
   \arg -ztol \a eps : Zero tolerance for printing of solution norms
   \arg -stopTime \a t : Run simulation only up to specified stop time
   \arg -arclen : Use the path-following arc-length solution driver
+  \arg -adap : Use adaptive simulation driver with LR-splines discretization
 */
 
 int main (int argc, char** argv)
@@ -136,6 +138,7 @@ int main (int argc, char** argv)
 
   int outPrec = 3;
   bool arclen = false;
+  bool adaptiv = false;
   double zero_tol = 1.0e-8;
   double stopTime = 0.0;
   char* infile = nullptr;
@@ -151,6 +154,8 @@ int main (int argc, char** argv)
       zero_tol = atof(argv[++i]);
     else if (!strcmp(argv[i],"-arclen"))
       arclen = true;
+    else if (!strncmp(argv[i],"-adap",5))
+      adaptiv = true;
     else if (!strcmp(argv[i],"-stopTime") && i < argc-1)
       stopTime = atof(argv[++i]);
     else if (!strcmp(argv[i],"-check"))
@@ -164,13 +169,14 @@ int main (int argc, char** argv)
   {
     std::cout <<"usage: "<< argv[0]
               <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n"
-              <<"       [-nGauss <n>] [-arclen] [-check] [-hdf5]\n"
+              <<"       [-nGauss <n>] [-arclen] [-adap] [-check] [-hdf5]\n"
               <<"       [-vtf <format> [-nviz <nviz>] [-nu <nu>] [-nv <nv>]]\n"
               <<"       [-saveInc <dtSave>] [-outPrec <nd>] [-stopTime <t>]\n";
     return 0;
   }
 
-  IFEM::getOptions().discretization = ASM::SplineC1;
+  if (IFEM::getOptions().discretization < ASM::LRSpline)
+    IFEM::getOptions().discretization = adaptiv ? ASM::LRSpline : ASM::SplineC1;
   IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
   if (outPrec > 3)
@@ -184,13 +190,13 @@ int main (int argc, char** argv)
   if (arclen)
   {
     IFEM::cout <<"\nUsing arc-length simulation driver."<< std::endl;
-    ArcLengthDriver simulator(model);
+    ArcLengthDriver simulator(model,false,adaptiv);
     runSimulator(simulator,model,infile,stopTime,zero_tol,outPrec);
   }
   else
   {
     IFEM::cout <<"\nUsing fixed load step simulation driver."<< std::endl;
-    NonlinearDriver simulator(model);
+    NonlinearDriver simulator(model,false,adaptiv);
     runSimulator(simulator,model,infile,stopTime,zero_tol,outPrec);
   }
 }

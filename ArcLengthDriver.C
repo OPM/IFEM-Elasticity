@@ -21,7 +21,8 @@
 #include <iomanip>
 
 
-ArcLengthDriver::ArcLengthDriver (SIMbase& sim, bool) : NonlinearDriver(sim)
+ArcLengthDriver::ArcLengthDriver (SIMbase& sim, bool, bool adaptive)
+  : NonlinearDriver(sim,false,adaptive)
 {
   nRHSvec = 2; // 0: residual force, 1: load gradient
 

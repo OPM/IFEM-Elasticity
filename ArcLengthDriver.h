@@ -19,7 +19,7 @@
 
 /*!
   \brief Arc-length solution driver for nonlinear isogeometric FEM simulators.
-  \details This class overrides the \a solveStep method of the parent class,
+  \details This class overrides the NonlinearDriver::solveStep() method,
   which does nonlinear quasi-static simulations with prescribed increment size,
   to implement a path-following solution procedure using the arc-length method.
   This can be used to solve nonlinear problems with instabilities, such as
@@ -30,7 +30,9 @@ class ArcLengthDriver : public NonlinearDriver
 {
 public:
   //! \brief The constructor forwards to the parent class constructor.
-  explicit ArcLengthDriver(SIMbase& sim, bool = false);
+  //! \param sim Reference to the spline FE model
+  //! \param[in] adaptive If \e true, use adaptive mesh refinement
+  explicit ArcLengthDriver(SIMbase& sim, bool = false, bool adaptive = false);
   //! \brief Empty destructor.
   virtual ~ArcLengthDriver() {}
 

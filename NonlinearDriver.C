@@ -13,6 +13,8 @@
 
 #include "NonlinearDriver.h"
 #include "SIMoutput.h"
+#include "AdaptiveSetup.h"
+#include "ASMunstruct.h"
 #include "Elasticity.h"
 #include "DataExporter.h"
 #include "HDF5Restart.h"
@@ -20,13 +22,34 @@
 #include "tinyxml.h"
 
 
-NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear) : NonLinSIM(sim)
+NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
+  : NonLinSIM(sim), proSol(1), adap(nullptr)
 {
-  opt.pSolOnly = true;
-  calcEn = true;
+  calcEn = opt.pSolOnly = true;
+
   if (linear)
     iteNorm = NONE;
+
+  if (adaptive)
+  {
+    adap = new AdaptiveSetup(static_cast<SIMoutput&>(sim));
+    calcEn = false;
+  }
 }
+
+
+NonlinearDriver::~NonlinearDriver ()
+{
+  delete adap;
+}
+
+
+bool NonlinearDriver::read (const char* fileName)
+{
+  if (adap) inpfile = fileName;
+  return this->NonLinSIM::read(fileName);
+}
+
 
 bool NonlinearDriver::parse (char* keyWord, std::istream& is)
 {
@@ -36,6 +59,8 @@ bool NonlinearDriver::parse (char* keyWord, std::istream& is)
     calcEn = false; // switch off energy norm calculation
   else if (!strncasecmp(keyWord,"ENERGY2",7))
     calcEn = 2; // also print the square of the global norm values
+  else if (!strncasecmp(keyWord,"ADAPTIVE",8) && adap)
+    return adap->parse(keyWord,is);
   else
     return this->NonLinSIM::parse(keyWord,is);
 
@@ -56,6 +81,9 @@ bool NonlinearDriver::parse (const TiXmlElement* elem)
       else
         params.parse(child);
   }
+  else if (!strcasecmp(elem->Value(),"adaptive") && adap)
+    return adap->parse(elem);
+
   else if (!strcasecmp(elem->Value(),"postprocessing"))
     if (elem->FirstChildElement("direct2nd"))
       opt.pSolOnly = false;
@@ -73,12 +101,10 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
 
   size_t iMax[nsd];
   double dMax[nsd];
-  double normL2 = model.solutionNorms(solution.front(),dMax,iMax);
-
   RealArray RF, Fext;
+  double normL2 = model.solutionNorms(solution.front(),dMax,iMax);
   bool haveReac = model.getCurrentReactions(RF,solution.front());
 
-  Vectors gNorm;
   if (calcEn)
   {
     model.setMode(SIM::NORMS);
@@ -86,6 +112,8 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
     if (!model.solutionNorms(time,solution,gNorm))
       gNorm.clear();
   }
+  else
+    gNorm.clear();
 
   if (myPid > 0) return true;
 
@@ -162,9 +190,10 @@ void NonlinearDriver::printNorms (const Vector& norm, utl::LogStream& os) const
 
 
 /*!
-  This method controls the load incrementation loop of the finite deformation
-  simulation. It uses the automatic increment size adjustment of the TimeStep
-  class and supports iteration cut-back in case of divergence.
+  This method controls the load incrementation loop of the nonlinear simulation.
+  It uses the automatic increment size adjustment of the TimeStep class
+  and supports iteration cut-back in case of divergence.
+  It also supports adaptive mesh refinement based on error indicators.
 */
 
 int NonlinearDriver::solveProblem (DataExporter* writer,
@@ -179,24 +208,36 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
   double nextSave = params.time.t + opt.dtSave;
   bool getMaxVals = opt.format >= 0 && !opt.pSolOnly;
   const Elasticity* elp = dynamic_cast<const Elasticity*>(model.getProblem());
-  if (!elp) getMaxVals = false;
+  SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
+  if (!elp)
+    getMaxVals = false;
+  else if (pit != opt.project.end())
+    getMaxVals = true;
 
-  int iStep = 0; // Save initial state to VTF
+  // Initialize the linear solver
+  if (!this->initEqSystem(true,model.getNoFields()))
+    return 3;
+
+  int iStep = aStep = 0; // Save initial state to VTF
   if (opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)
     if (!this->saveStep(-(++iStep),params.time.t))
       return 4;
 
-  // Initialize the linear solver
-  this->initEqSystem(true,model.getNoFields());
+  // Initialize mesh adaptation parameters
+  if (adap && !adap->initPrm(1))
+    return 5;
 
-  SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
-  if (pit != opt.project.end() && elp) getMaxVals = true;
-
-  // Invoke the time-step loop
+  // Start the load incrementation loop
   SIM::ConvStatus stat = SIM::OK;
   while (this->advanceStep(params))
   {
-    do
+    int bStep = aStep; // Check for mesh adaptation
+    if (params.step > 1 && !this->adaptMesh(aStep))
+      return 6;
+    else if (aStep > bStep)
+      IFEM::cout <<"\nResuming nonlinear solution on the new mesh"<< std::endl;
+
+    do // Cut-back loop
     {
       if (stat == SIM::DIVERGED)
       {
@@ -214,17 +255,31 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
     while (stat == SIM::DIVERGED);
 
     if (stat != SIM::CONVERGED)
-      return 5;
+      return 7;
 
     if (pit != opt.project.end())
     {
       // Project the secondary results onto the spline basis
       model.setMode(SIM::RECOVERY);
-      if (!model.project(proSol,solution.front(),pit->first,params.time))
-        return 6;
+      Matrix projs(proSol.front());
+      if (!model.project(projs,solution.front(),pit->first,params.time))
+        return 8;
+    }
+
+    if (adap)
+    {
+      // Evaluate error norms
+      model.setMode(SIM::NORMS);
+      model.setQuadratureRule(opt.nGauss[1]);
+      if (!model.solutionNorms(params.time,solution,proSol,gNorm,&eNorm))
+        return 9;
+
+      IFEM::cout << std::endl;
+      adap->printNorms(gNorm,eNorm);
     }
 
     // Print solution components at the user-defined points
+    model.setMode(SIM::RECOVERY);
     this->dumpResults(params.time.t,IFEM::cout,outPrec);
 
     if (params.hasReached(nextDump))
@@ -244,12 +299,20 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
       if (opt.format >= 0)
       {
         if (!this->saveStep(++iStep,params.time.t))
-          return 7;
+          return 10;
 
-        // Write projected solution fields to VTF-file
-        if (!model.writeGlvP(proSol,iStep,nBlock,110,pit->second.c_str(),
-                             elp ? elp->getMaxVals() : nullptr))
-          return 8;
+        if (pit != opt.project.end())
+        {
+          // Write projected solution fields to VTF-file
+          if (!model.writeGlvP(proSol.front(),iStep,
+                               nBlock,110,pit->second.c_str(),
+                               elp ? elp->getMaxVals() : nullptr))
+            return 10;
+
+          // Write element norms
+          if (!model.writeGlvN(eNorm,iStep,nBlock,{pit->second}))
+            return 10;
+        }
       }
 
       // Save solution variables to HDF5
@@ -262,7 +325,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
 
         dstat &= writer->dumpTimeLevel(&params);
         if (!dstat)
-          return 9;
+          return 11;
       }
 
       nextSave = params.time.t + opt.dtSave;
@@ -272,10 +335,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
     else if (getMaxVals)
     {
       if (!model.eval2ndSolution(solution.front(),params.time.t))
-        return 10;
+        return 12;
 
-      if (!model.evalProjSolution(proSol,*elp->getMaxVals()))
-        return 11;
+      if (!model.evalProjSolution(proSol.front(),*elp->getMaxVals()))
+        return 13;
     }
 
     // Print out the maximum von Mises stress, etc., if present
@@ -302,4 +365,50 @@ bool NonlinearDriver::serialize (SerializeMap& data) const
 bool NonlinearDriver::deSerialize (const SerializeMap& data)
 {
   return params.deSerialize(data) && this->NonLinSIM::deSerialize(data);
+}
+
+
+bool NonlinearDriver::adaptMesh (int& aStep)
+{
+  if (!adap) return true; // No mesh-refinement, silently ignore
+
+  // Check for adaptive mesh refinement and extract refinement indicators
+  LR::RefineData prm;
+  int ierr = adap->calcRefinement(prm,aStep+1,gNorm,eNorm.getRow(adap->eIdx()));
+  if (ierr < 0)
+    return false;
+  else if (ierr == 0)
+    return true; // The mesh is fine, continue simulation on current mesh
+
+  // Save the size of the solution vector array for the solution transfer log,
+  // because refine() will resize it according to the refined mesh
+  size_t nsol = solution.size();
+  size_t nsv1 = solution.empty() ? 0 : solution.front().size();
+
+  // Do the mesh refinement
+  if (!(model.refine(prm,solution) & adap->writeMesh(++aStep)))
+    return false;
+
+  // Read the input file again to set up the refined model
+  model.clearProperties();
+  if (!model.readModel(inpfile.c_str()))
+    return false;
+
+  if (!model.preprocess())
+    return false;
+
+  if (!this->initEqSystem(true,model.getNoFields()))
+    return false;
+
+  // Transfer primary solution variables onto the new mesh
+  IFEM::cout <<"\nTransferring ";
+  if (nsol > 1) IFEM::cout << nsol <<"x";
+  IFEM::cout << nsv1 <<" solution variables to the new mesh"<< std::endl;
+  Vectors soli(nsol,Vector(model.getNoDOFs()));
+  for (size_t i = 0; i < nsol; i++)
+    for (int p = 0; p < model.getNoPatches(); p++)
+      model.injectPatchSolution(soli[i],solution[p*nsol+i],model.getPatch(p+1));
+
+  // Write updated geometry and (homogeneous) Dirichlet BCs to VTF-file
+  return opt.format < 0 ? true : this->saveModel(geoBlk,nBlock);
 }

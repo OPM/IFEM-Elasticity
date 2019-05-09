@@ -19,14 +19,17 @@
 
 class DataExporter;
 class HDF5Restart;
+class AdaptiveSetup;
 
 
 /*!
   \brief Nonlinear driver for isogeometric finite deformation FEM analysis.
   \details This class is derived from NonLinSIM of the IFEM kernel.
-  It reimplements the \a solutionNorms method to also compute the energy norm
+  It reimplements the solutionNorms() method to also compute the energy norm
   and other norms of the stress field. In addition, it has the method
-  \a solveProblem to manage the pseudo-time step loop.
+  solveProblem() to manage the pseudo-time step loop.
+  The driver is also equipped with methods for adaptive mesh refinement based
+  on error estimates, through the AdaptiveSetup member.
 */
 
 class NonlinearDriver : public NonLinSIM
@@ -34,10 +37,11 @@ class NonlinearDriver : public NonLinSIM
 public:
   //! \brief The constructor forwards to the parent class constructor.
   //! \param sim Reference to the spline FE model
-  //! \param linear If \e true, use a linear driver (no Newton iterations)
-  explicit NonlinearDriver(SIMbase& sim, bool linear = false);
-  //! \brief Empty destructor.
-  virtual ~NonlinearDriver() {}
+  //! \param[in] linear If \e true, use a linear driver (no Newton iterations)
+  //! \param[in] adaptive If \e true, use adaptive mesh refinement
+  NonlinearDriver(SIMbase& sim, bool linear, bool adaptive = false);
+  //! \brief The destructor deletes the heap-allocated adaptive setup member.
+  virtual ~NonlinearDriver();
 
 protected:
   //! \brief Parses a data section from an input stream.
@@ -60,7 +64,13 @@ protected:
   //! \param[in] os The output stream to write the norms to
   virtual void printNorms(const Vector& norm, utl::LogStream& os) const;
 
+  //! \brief Adapts the mesh and restarts solution on new mesh.
+  bool adaptMesh(int& aStep);
+
 public:
+  //! \brief Reads model data from the specified input file \a *fileName.
+  virtual bool read(const char* fileName);
+
   //! \brief Invokes the main pseudo-time stepping simulation loop.
   //! \param writer HDF5 results exporter
   //! \param restart HDF5 restart handler
@@ -68,8 +78,9 @@ public:
   //! \param[in] dtDump Time increment for dump of ASCII results
   //! \param[in] zero_tol Truncate norm values smaller than this to zero
   //! \param[in] outPrec Number of digits after the decimal point in norm print
-  int solveProblem(DataExporter* writer, HDF5Restart* restart, utl::LogStream* oss,
-                   double dtDump, double zero_tol, std::streamsize outPrec);
+  int solveProblem(DataExporter* writer, HDF5Restart* restart,
+                   utl::LogStream* oss, double dtDump,
+                   double zero_tol, std::streamsize outPrec);
 
   //! \brief Serialize solution state for restarting purposes.
   //! \param data Container for serialized data
@@ -79,7 +90,7 @@ public:
   virtual bool deSerialize(const SerializeMap& data);
 
   //! \brief Accesses the projected solution.
-  const Vector& getProjection() const { return proSol; }
+  const Vector& getProjection() const { return proSol.front(); }
 
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
@@ -90,8 +101,14 @@ public:
 
 private:
   TimeStep params; //!< Time stepping parameters
+  Vectors  proSol; //!< Projected secondary solution
+  Matrix   eNorm;  //!< Element norms
+  Vectors  gNorm;  //!< Global norms
   char     calcEn; //!< Flag for calculation of solution energy norm
-  Matrix   proSol; //!< Projected secondary solution
+  int      aStep;  //!< Adaptive mesh refinement step
+
+  AdaptiveSetup* adap; //!< Data and methods for adaptive simulation
+  std::string inpfile; //!< Model input file, used when adapting mesh
 };
 
 #endif
