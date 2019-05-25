@@ -25,6 +25,7 @@
 #include "AnaSol.h"
 #include "Functions.h"
 #include "Utilities.h"
+#include "Vec3Oper.h"
 #include "tinyxml.h"
 
 typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
@@ -45,7 +46,7 @@ public:
   explicit SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,checkRHS)
   {
     myContext = "elasticity";
-    aCode = bCode = 0;
+    aCode = 0;
   }
 
   //! \brief The destructor frees the dynamically allocated material properties.
@@ -80,6 +81,8 @@ public:
       Dim::myVectors.erase(aCode);
     aCode = 0;
 
+    bCode.clear();
+
     Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
     if (elp)
     {
@@ -97,6 +100,27 @@ public:
     this->Dim::clearProperties();
   }
 
+  //! \brief Calculates surface traction resultants.
+  //! \param[out] f Calculated traction resultants
+  //! \param[in] sol Primary solution vectors
+  //!
+  //! \details The boundaries for which the traction is calculated are
+  //! identified by the property set codes in \a bCode, which are
+  //! assigned values by parsing `<boundaryforce>` tags in the input file.
+  virtual bool calcBouForces(Vectors& f, const Vectors& sol)
+  {
+    f.clear();
+    f.reserve(bCode.size());
+    TimeDomain time;
+    for (const std::pair<int,Vec3>& c : bCode)
+    {
+      f.push_back(SIM::getBoundaryForce(sol,this,c.first,time,&c.second));
+      Dim::adm.allReduceAsSum(f.back());
+    }
+
+    return !f.empty();
+  }
+
   //! \brief Calculates the traction resultant associated with a given boundary.
   //! \param[out] f Calculated traction resultant
   //! \param[in] sol Primary solution vectors
@@ -104,12 +128,13 @@ public:
   //!
   //! \details The boundary for which the traction is calculated is identified
   //! by the property set code \a bCode which is assigned value by parsing
-  //! the `<boundaryforce>` tag in the input file.
+  //! the first `<boundaryforce>` tag in the input file.
   bool getBoundaryForce(Vector& f, const Vectors& sol, const TimeStep& tp)
   {
-    if (bCode == 0) return false;
+    if (bCode.empty())
+      return false;
 
-    f = SIM::getBoundaryForce(sol,this,bCode,tp.time);
+    f = SIM::getBoundaryForce(sol,this,bCode.begin()->first,tp.time);
     Dim::adm.allReduceAsSum(f);
     return true;
   }
@@ -119,12 +144,13 @@ public:
   //!
   //! \details The boundary for which the reaction force is returned
   //! is identified by the property set code \a bCode which is assigned value
-  //! by parsing the `<boundaryforce>` tag in the input file.
+  //! by parsing the first `<boundaryforce>` tag in the input file.
   bool getBoundaryReactions(Vector& rf)
   {
-    if (bCode == 0) return false;
+    if (bCode.empty())
+      return false;
 
-    bool ok = this->getCurrentReactions(rf,bCode);
+    bool ok = this->getCurrentReactions(rf,bCode.begin()->first);
     Dim::adm.allReduceAsSum(rf);
     return ok;
   }
@@ -137,13 +163,14 @@ public:
 
 protected:
   //! \brief Performs some pre-processing tasks on the FE model.
-  //! \details This method is reimplemented inserting a call to \a getIntegrand.
+  //! \details This method is reimplemented inserting a call to getIntegrand().
   //! This makes sure the integrand has been allocated in case of minimum input.
   //! It also resolves inhomogeneous boundary condition fields in case they are
   //! derived from the analytical solution.
   virtual void preprocessA()
   {
-    this->getIntegrand();
+    Elasticity* elInt = this->getIntegrand();
+
     this->printProblem();
 
     // Deactivate principal stress ouput for Lagrange/Spectral interpolations
@@ -151,7 +178,7 @@ protected:
       Elasticity::wantPrincipalStress = false;
 
     if (Dim::dualField)
-      this->getIntegrand()->setDualRHS(Dim::dualField);
+      elInt->setDualRHS(Dim::dualField);
 
     if (!Dim::mySol) return;
 
@@ -189,13 +216,61 @@ protected:
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented to ensure that threading groups are
   //! established for the patch faces subjected to boundary force integration.
+  //! In addition, the reference point for moment calculation \b X0 of each
+  //! boundary is calculated based on the control/nodal point coordinates.
   virtual bool preprocessB()
   {
-    if (bCode == 0) return true;
+    size_t iSec = 0;
+    for (std::pair<int,Vec3>&& code : bCode)
+    {
+      Vec3Vec Xnodes;
+      for (const Property& p : Dim::myProps)
+        if (code.first == p.pindx)
+        {
+          this->generateThreadGroups(p,Dim::msgLevel < 2);
+          ASMbase* pch = this->getPatch(p.patch);
+          if (pch)
+          {
+            // Get coordinates of all nodal points on this patch boundary
+            IntVec nodes;
+            pch->getBoundaryNodes(p.lindx,nodes,1,1,0,true);
+            for (int n : nodes)
+              Xnodes.push_back(pch->getCoord(n));
+          }
+        }
 
-    for (const Property& p : Dim::myProps)
-      if (bCode == p.pindx)
-        this->generateThreadGroups(p,Dim::msgLevel < 2);
+      if (Xnodes.empty()) continue;
+
+      // Find the centre of all boundary control/nodal points
+      Vec3& X0 = code.second;
+      for (const Vec3& X : Xnodes) X0 += X;
+      X0 /= Xnodes.size();
+
+      // Find the location of the point which is furthest away from the centre
+      Vec3 X1(X0);
+      double d, dmax = 0.0;
+      for (const Vec3& X : Xnodes)
+        if ((d = (X-X0).length2()) > dmax)
+        {
+          dmax = d;
+          X1 = X;
+        }
+
+      // Find the location of the point which is furthest away from X1
+      Vec3 X2(X1);
+      for (const Vec3& X : Xnodes)
+        if ((d = (X-X1).length2()) > dmax)
+        {
+          dmax = d;
+          X2 = X;
+        }
+
+      // Assuming X1 and X2 now are the end points of the straight 1D boundary,
+      // or the diameter of the smallest subscribing circle of a 2D boundary,
+      // the reference point X0 is taken as the mid-point between X1 and X2
+      X0 = 0.5*(X1+X2);
+      IFEM::cout <<"Boundary section "<< ++iSec <<": X0 = "<< X0 << std::endl;
+    }
 
     return true;
   }
@@ -440,15 +515,18 @@ protected:
       {
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         std::string set;
+        int code = 0;
         if (utl::getAttribute(child,"set",set))
-          bCode = this->getUniquePropertyCode(set);
-        else if (!utl::getAttribute(child,"code",bCode) || bCode == 0)
+          code = this->getUniquePropertyCode(set);
+        else if (!utl::getAttribute(child,"code",code) || code == 0)
           continue;
 
         IFEM::cout <<"\tBoundary force ";
         if (!set.empty()) IFEM::cout <<"\""<< set <<"\" ";
-        IFEM::cout <<"code "<< bCode << std::endl;
-        this->setPropertyType(bCode,Property::OTHER);
+        IFEM::cout <<"code "<< code << std::endl;
+        this->setPropertyType(code,Property::OTHER);
+
+        bCode[code] = Vec3();
       }
 
       else if (!strcasecmp(child->Value(),"dualfield"))
@@ -547,7 +625,7 @@ protected:
 
 private:
   int aCode; //!< Analytical BC code (used by destructor)
-  int bCode; //!< Property set code for boundary traction resultant calculation
+  std::map<int,Vec3> bCode; //!< Property codes for boundary traction resultants
 };
 
 #endif

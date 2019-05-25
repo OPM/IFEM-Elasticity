@@ -388,6 +388,23 @@ int main (int argc, char** argv)
       lelp->printMaxVals(outPrec,j+1);
   };
 
+  // Lambda function to calculate and print out boundary forces
+  auto&& printBoundaryForces = [model](const Vector& sol)
+  {
+    Vectors forces;
+    if (!model->calcBouForces(forces,Vectors(1,sol)))
+      return false;
+
+    size_t sec = 0;
+    for (const Vector& force : forces)
+    {
+      IFEM::cout <<"\nBoundary tractions at section "<< ++sec <<":";
+      for (double f : force) IFEM::cout <<" "<< f;
+    }
+    IFEM::cout << std::endl;
+    return true;
+  };
+
   switch (args.adap ? 10 : iop+model->opt.eig) {
   case 0:
   case 5:
@@ -507,6 +524,8 @@ int main (int argc, char** argv)
                      << dNorm.front()(1);
       }
 
+      printBoundaryForces(displ.front());
+
       size_t j = 1;
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); ++pit,j++)
       {
@@ -584,12 +603,15 @@ int main (int argc, char** argv)
   case 10:
     // Adaptive simulation
     for (int iStep = 1; aSim && aSim->adaptMesh(iStep,outPrec); iStep++)
+    {
       if (!aSim->solveStep(infile,iStep,true,outPrec))
         return terminate(10);
-      else if (!aSim->writeGlv(infile,iStep))
+      printBoundaryForces(aSim->getSolution());
+      if (!aSim->writeGlv(infile,iStep))
         return terminate(11);
-      else if (exporter)
+      if (exporter)
         exporter->dumpTimeLevel(nullptr,true);
+    }
 
   case 100:
     break; // Model check
@@ -675,7 +697,7 @@ int main (int argc, char** argv)
     {
       std::vector<std::string> prefix = { "Dual projected" };
       if (!model->writeGlvN(fNorm,1,nBlock,prefix,300,"Dual"))
-        return false;
+        return terminate(19);
     }
 
     model->writeGlvStep(1);

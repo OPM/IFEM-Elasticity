@@ -10,9 +10,6 @@ Parsing <geometry>
   Generating linear geometry on unit parameter domain \[0,1]^2
 	Length in X = 2
 	Length in Y = 0.4
-  Parsing <refine>
-  Parsing <raiseorder>
-  Parsing <refine>
   Parsing <topologysets>
 	Topology sets: fixed (1,1,1D)
   Parsing <refine>
@@ -24,12 +21,9 @@ Parsing <geometry>
   Parsing <topologysets>
 Parsing <boundaryconditions>
   Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
   Parsing <propertycodes>
   Parsing <neumann>
 	Neumann code 1001 direction 1 (expression): F0=-1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; -F0\*(L\*H/I)\*Y
-  Parsing <neumann>
 	Neumann code 1002 direction 2 (expression): F0=-1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
 	Constraining P1 point at 0 0 with code 1
 	Constraining P1 point at 0 0.5 with code 12
@@ -44,6 +38,9 @@ Parsing <elasticity>
 	X0     = 0.8 0 0
 	normal = 1 0 0
 	depth  = 0.2, width = 0
+	comp   = 1
+	comp   = 2
+	comp   = 3
   Parsing <boundaryforce>
 	Boundary force "fixed" code 1000000
 Parsing input file succeeded.
@@ -58,6 +55,7 @@ Number of elements    80
 Number of nodes       154
 Number of dofs        308
 Number of unknowns    304
+Boundary section 1: X0 = 0 0.2 0
 Number of quadrature points 900 30
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
@@ -78,3 +76,4 @@ Exact error a(e,e)^0.5, e=u-u^h      : 0.213733
 Exact relative error (%) : 0.428096
 Recovered section force a(u^h,w2)    : 1e+06
 Recovered section force a(u^h,w3)    : 1.2e+06
+Boundary tractions at section 1: .* -1.02409e+06 -1.99981e+06

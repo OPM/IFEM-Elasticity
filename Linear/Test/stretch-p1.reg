@@ -21,7 +21,6 @@ Parsing <geometry>
 Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 1: (fixed)
-  Parsing <dirichlet>
 	Dirichlet code 2: (fixed)
   Parsing <neumann>
 	Neumann code 1000000 direction 1: 1e+08
@@ -44,6 +43,7 @@ Number of elements    8
 Number of nodes       15
 Number of dofs        30
 Number of unknowns    26
+Boundary section 1: X0 = 0 0.2 0
 Number of quadrature points 32 4
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
@@ -57,3 +57,4 @@ Max Y-displacement : 6e-05
 Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 200
 External energy ((f,u^h)+(t,u^h)^0.5 : 200
+Boundary tractions at section 1: -4e+07 .* 8e+06
