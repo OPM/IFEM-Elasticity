@@ -215,10 +215,21 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual std::string getField2Name(size_t i, const char* prefix = 0) const;
 
-  typedef std::pair<Vec3,double> PointValue; //!< Convenience type
+  typedef std::pair<Vec3,double>  PointValue;  //!< Convenience type
+  typedef std::vector<PointValue> PointValues; //!< Convenience type
+
+  //! \brief Initializes the maximum stress values buffer.
+  //! \param[in] nP Number of patches in the model, or 1 if global maximum
+  //!
+  //! \details This method allocates and/or initializes the internal array used
+  //! to calculate the maximum stress values in the model. If the argument \a nP
+  //! is equal to 1, only the global maximum over all patches in the model are
+  //! determined. Otherwise, if it equals the number of patches in the model,
+  //! the maximum value is computed for each patch separately.
+  void initMaxVals(size_t nP = 1);
 
   //! \brief Returns a pointer to the max values for external update.
-  std::vector<PointValue>* getMaxVals() const { return &maxVal; }
+  std::vector<PointValues>* getMaxVals() const { return &maxVal; }
 
   //! \brief Prints out the maximum secondary solution values to the log stream.
   //! \param[in] precision Number of digits after the decimal point
@@ -323,11 +334,11 @@ protected:
   VecFunc*      bodyFld;  //!< Pointer to body force field
   Vec3Vec*      pDirBuf;  //!< Principal stress directions buffer
 
-  FunctionBase*              dualRHS; //!< Pointer to extraction function for dual RHS
-  std::vector<FunctionBase*> dualFld; //!< Pointer to extraction functions for VCP
+  FunctionBase*              dualRHS; //!< Extraction function for dual RHS
+  std::vector<FunctionBase*> dualFld; //!< Extraction functions for VCP
 
-  mutable std::vector<PointValue> maxVal;  //!< Maximum result values
-  mutable std::vector<Vec3Pair>   tracVal; //!< Traction field point values
+  mutable std::vector<PointValues> maxVal;  //!< Maximum result values
+  mutable std::vector<Vec3Pair>    tracVal; //!< Traction field point values
 
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
   bool       axiSymmetry; //!< \e true if the problem is axi-symmetric

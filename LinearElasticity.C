@@ -62,10 +62,7 @@ bool LinearElasticity::parse (const TiXmlElement* elem)
 void LinearElasticity::setMode (SIM::SolutionMode mode)
 {
   if (mode >= SIM::RECOVERY && m_mode != mode)
-  {
-    maxVal.resize(this->getNoFields(2));
-    std::fill(maxVal.begin(),maxVal.end(),PointValue(Vec3(),0.0));
-  }
+    this->initMaxVals();
 
   this->ElasticBase::setMode(mode);
 

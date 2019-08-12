@@ -700,8 +700,11 @@ bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
   // which is a member of the Elasticity class. Therefore the critical pragma.
 #pragma omp critical
   for (size_t j = 0; j < s.size() && j < maxVal.size(); j++)
-    if (fabs(s[j]) > fabs(maxVal[j].second))
-      maxVal[j] = std::make_pair(X,s[j]);
+  {
+    size_t pidx = maxVal[j].size() > 1 ? LocalSystem::patch : 0;
+    if (pidx < maxVal[j].size() && fabs(s[j]) > fabs(maxVal[j][pidx].second))
+      maxVal[j][pidx] = std::make_pair(X,s[j]);
+  }
 
   return true;
 }
@@ -922,6 +925,15 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
 }
 
 
+void Elasticity::initMaxVals (size_t nP)
+{
+  if (maxVal.empty() && nP > 0)
+    maxVal.resize(this->getNoFields(2),PointValues(nP,PointValue(Vec3(),0.0)));
+  else for (PointValues& pval : maxVal)
+    std::fill(pval.begin(),pval.end(),PointValue(Vec3(),0.0));
+}
+
+
 void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
 {
   size_t i1 = 1, i2 = maxVal.size();
@@ -930,21 +942,32 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
   else if (comp > 0)
     i1 = i2 = comp;
 
-  std::string blank(":                ");
+  std::streamsize fldWidth = 8 + precision;
   utl::LogStream& os = IFEM::cout;
   for (size_t i = i1-1; i < i2; i++)
   {
-    if (maxVal[i].second == 0.0) continue; // no value
+    if (maxVal[i].empty())
+      continue;
+    else if (maxVal[i].size() == 1 && maxVal[i].front().second == 0.0)
+      continue; // no value
+
     std::string name = this->getField2Name(i);
-    os <<"  Max "<< name
-       << blank.substr(0, name.size() < 16 ? 17-name.size() : 1);
-    std::streamsize flWidth = 8 + precision;
-    std::streamsize oldPrec = os.precision(precision);
-    std::ios::fmtflags oldF = os.flags(std::ios::scientific | std::ios::right);
-    os << std::setw(flWidth) << maxVal[i].second;
-    os.precision(oldPrec);
-    os.flags(oldF);
-    os <<"  X = "<< maxVal[i].first << std::endl;
+    os <<"  Max "<< name <<":";
+    if (name.size() < 16)
+      os << std::string(16-name.size(),' ');
+    for (size_t p = 0; p < maxVal[i].size(); p++)
+    {
+      std::streamsize oldPrec = os.precision(precision);
+      std::ios::fmtflags oldF = os.flags(std::ios::scientific|std::ios::right);
+      if (p > 0) os << std::string(23,' ');
+      os << std::setw(fldWidth) << maxVal[i][p].second;
+      os.precision(oldPrec);
+      os.flags(oldF);
+      os <<"  X = "<< maxVal[i][p].first;
+      if (maxVal[i].size() > 1)
+	os <<"\tPatch "<< p+1;
+      os << std::endl;
+    }
   }
 }
 

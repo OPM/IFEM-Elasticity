@@ -52,6 +52,7 @@
   \arg -nw \a nw : Number of visualization points per knot-span in w-direction
   \arg -hdf5 : Write primary and projected secondary solution to HDF5 file
   \arg -printMax : Print out maximum point-wise stresses
+  \arg -printMaxPatch : Print out patch-wise maximum point-wise stresses
   \arg -dumpASC : Dump model and solution to ASCII files for external processing
   \arg -dumpMatlab \a [topologySets] : Dump grid to Matlab file
   \arg -outPrec \a nDigit : Number of digits in solution component printout
@@ -98,7 +99,7 @@ int main (int argc, char** argv)
   bool checkRHS = false;
   bool vizRHS = false;
   bool fixDup = false;
-  bool printMax = false;
+  char printMax = false;
   bool dumpASCII = false;
   bool dumpMatlab = false;
   bool KLp = false;
@@ -119,7 +120,9 @@ int main (int argc, char** argv)
     else if (SIMoptions::ignoreOldOptions(argc,argv,i))
       ; // ignore the obsolete option
     else if (!strcmp(argv[i],"-printMax"))
-      printMax = true;
+      printMax = 'G';
+    else if (!strcmp(argv[i],"-printMaxPatch"))
+      printMax = 'P';
     else if (!strcmp(argv[i],"-dumpASC"))
       dumpASCII = myPid == 0; // not for parallel runs
     else if (!strcmp(argv[i],"-dumpMatlab"))
@@ -204,8 +207,9 @@ int main (int argc, char** argv)
               <<"adap] [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
               <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
               <<"\n       [-ignore <p1> <p2> ...] [-fixDup]"
-              <<" [-dual] [-checkRHS] [-check] [-printMax] [-dumpASC]\n      "
-              <<" [-dumpMatlab [<setnames>]] [-outPrec <nd>] [-ztol <eps>]\n";
+              <<" [-dual] [-checkRHS] [-check]\n      "
+              <<" [-printMax[Patch]] [-dumpASC] [-dumpMatlab [<setnames>]]"
+              <<"\n       [-outPrec <nd>] [-ztol <eps>]\n";
     return 0;
   }
 
@@ -376,9 +380,14 @@ int main (int argc, char** argv)
       v[j] = 0.0;
   };
 
+  size_t numPatch = 1;
   const LinearElasticity* lelp;
   if (!(lelp = dynamic_cast<const LinearElasticity*>(model->getProblem())))
     printMax = false;
+  else if (printMax == 'P')
+    numPatch = model->getFEModel().size();
+  if (printMax)
+    const_cast<LinearElasticity*>(lelp)->initMaxVals(numPatch);
 
   // Lambda function to print out max stress values
   auto&& printMaxStress = [lelp,outPrec](const char* heading)
@@ -666,11 +675,12 @@ int main (int argc, char** argv)
       if (!model->writeGlvS1(displ[1],1,nBlock,0.0,"Dual solution",90,-1))
         return terminate(16);
 
-    std::vector<PointValue>* maxVals = lelp ? lelp->getMaxVals() : nullptr;
+    std::vector<PointValues>* maxVals = lelp ? lelp->getMaxVals() : nullptr;
     if (printMax)
     {
       printMaxStress("Maximum stresses in visualization points");
-      std::fill(maxVals->begin(),maxVals->end(),PointValue(Vec3(),0.0));
+      for (PointValues& pv : *maxVals)
+        std::fill(pv.begin(),pv.end(),PointValue(Vec3(),0.0));
     }
 
     // Write projected solution fields to VTF-file
