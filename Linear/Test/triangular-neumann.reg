@@ -46,8 +46,8 @@ Number of unknowns    87
 Number of quadrature points 1024 48
 Solving the equation system ...
 	Condition number: 7674.38
-L2-norm            : 3.15823e-06
-Max X-displacement : 1.63774e-06
-Max Y-displacement : 7.11785e-06
-Energy norm |u^h| = a(u^h,u^h)^0.5   : 5.48718
-External energy ((f,u^h)+(t,u^h)^0.5 : 5.48718
+L2-norm            : 3.15507e-06
+Max X-displacement : 1.6361e-06
+Max Y-displacement : 7.11073e-06
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 5.48443
+External energy ((f,u^h)+(t,u^h)^0.5 : 5.48443
