@@ -59,8 +59,12 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
   if (stopTime < 0.0)
     return 0; // Data check only, no simulation
 
-  // Initialize the linear equation solver and solution vectors
+  // Initialize the solution vectors
   simulator.initSol();
+
+  // Initialize the linear equation solver
+  if (!simulator.initEqSystem(true,model.getNoFields()))
+    return 3;
 
   if (!model.opt.restartFile.empty())
   {
@@ -98,7 +102,7 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
                               model.opt.restartInc);
 
   // Now invoke the main solution driver
-  int status = simulator.solveProblem(writer,restart,nullptr,0.0,
+  int status = simulator.solveProblem(writer,restart,nullptr,false,0.0,
                                       zero_tol,outPrec);
 
   delete writer;

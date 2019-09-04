@@ -14,6 +14,9 @@
 #ifndef _NEWMARK_DRIVER_H
 #define _NEWMARK_DRIVER_H
 
+#include "IFEM.h"
+#include "SIMoutput.h"
+#include "SIMenums.h"
 #include "DataExporter.h"
 #include "HDF5Restart.h"
 #include "TimeStep.h"
@@ -55,7 +58,14 @@ protected:
         utl::getAttribute(respts,"file",pointfile);
     }
 
-    return this->Newmark::parse(elem);
+    bool ok = this->Newmark::parse(elem);
+    if (ok && !strcasecmp(elem->Value(),"newmarksolver"))
+      IFEM::cout <<"\talpha1 = "<< Newmark::alpha1
+                 <<"  alpha2 = "<< Newmark::alpha2
+                 <<"\n\tbeta = "<< Newmark::beta
+                 <<"  gamma = "<< Newmark::gamma << std::endl;
+
+    return ok;
   }
 
 public:
@@ -65,7 +75,7 @@ public:
   //! \param[in] ztol Truncate norm values smaller than this to zero
   //! \param[in] outPrec Number of digits after the decimal point in norm print
   int solveProblem(DataExporter* writer, HDF5Restart* restart,
-                   utl::LogStream*, double,
+                   utl::LogStream*, bool, double,
                    double ztol = 1.0e-8, std::streamsize outPrec = 0)
   {
     return this->solveProblem(writer,restart,ztol,outPrec);
@@ -79,9 +89,6 @@ public:
   int solveProblem(DataExporter* writer, HDF5Restart* restart,
                    double ztol = 1.0e-8, std::streamsize outPrec = 0)
   {
-    // Initialize the linear solver
-    this->initEqSystem();
-
     // Calculate initial accelerations
     if (doInitAcc && !this->initAcc(ztol,outPrec))
       return 4;
@@ -140,18 +147,20 @@ public:
             status += 7;
 
         // Save solution variables to HDF5
-        if (writer)
-        {
-          HDF5Restart::SerializeData data;
-          if (restart && restart->dumpStep(params) && this->serialize(data))
-            status += restart->writeData(params,data) ? 0 : 8;
-
-          status += writer->dumpTimeLevel(&params) ? 0 : 8;
-        }
+        if (writer && !writer->dumpTimeLevel(&params))
+          status += 8;
 
         nextSave = params.time.t + Newmark::opt.dtSave;
         if (nextSave > params.stopTime)
           nextSave = params.stopTime; // Always save the final step
+      }
+
+      // Save solution state to restart file
+      if (restart && restart->dumpStep(params))
+      {
+        HDF5Restart::SerializeData data;
+        if (this->serialize(data) && !restart->writeData(params,data))
+          status += 9;
       }
     }
 

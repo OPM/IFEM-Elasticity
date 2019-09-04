@@ -196,10 +196,10 @@ void NonlinearDriver::printNorms (const Vector& norm, utl::LogStream& os) const
   It also supports adaptive mesh refinement based on error indicators.
 */
 
-int NonlinearDriver::solveProblem (DataExporter* writer,
-                                   HDF5Restart* restart,
-                                   utl::LogStream* oss, double dtDump,
-                                   double zero_tol, std::streamsize outPrec)
+int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
+                                   utl::LogStream* oss, bool printMax,
+                                   double dtDump, double zero_tol,
+                                   std::streamsize outPrec)
 {
   std::streamsize normPrec = outPrec > 3 ? outPrec : 0;
 
@@ -210,13 +210,9 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
   const Elasticity* elp = dynamic_cast<const Elasticity*>(model.getProblem());
   SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
   if (!elp)
-    getMaxVals = false;
+    getMaxVals = printMax = false;
   else if (pit != opt.project.end())
     getMaxVals = true;
-
-  // Initialize the linear solver
-  if (!this->initEqSystem(true,model.getNoFields()))
-    return 3;
 
   int iStep = aStep = 0; // Save initial state to VTF
   if (opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)
@@ -342,7 +338,9 @@ int NonlinearDriver::solveProblem (DataExporter* writer,
     }
 
     // Print out the maximum von Mises stress, etc., if present
-    if (getMaxVals && myPid == 0)
+    if (printMax && myPid == 0)
+      elp->printMaxVals(outPrec); // Print all components
+    else if (getMaxVals && myPid == 0)
     {
       size_t id = elp->getNoFields(3) + 1;
       elp->printMaxVals(outPrec,id);   // von Mises stress
