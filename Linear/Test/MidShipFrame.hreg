@@ -4,16 +4,16 @@ MidShipFrame.xinp -2D -noProj
 /0                       Group
 /0/Elasticity-1          Group
 /0/Elasticity-1/basis    Group
-/0/Elasticity-1/basis/1  Dataset {6968}
-/0/Elasticity-1/basis/10 Dataset {6291}
-/0/Elasticity-1/basis/2  Dataset {3229}
-/0/Elasticity-1/basis/3  Dataset {5488}
-/0/Elasticity-1/basis/4  Dataset {17584}
-/0/Elasticity-1/basis/5  Dataset {9320}
-/0/Elasticity-1/basis/6  Dataset {3998}
-/0/Elasticity-1/basis/7  Dataset {3519}
-/0/Elasticity-1/basis/8  Dataset {12992}
-/0/Elasticity-1/basis/9  Dataset {3612}
+/0/Elasticity-1/basis/1  Dataset {5053}
+/0/Elasticity-1/basis/10 Dataset {4403}
+/0/Elasticity-1/basis/2  Dataset {2089}
+/0/Elasticity-1/basis/3  Dataset {3585}
+/0/Elasticity-1/basis/4  Dataset {11491}
+/0/Elasticity-1/basis/5  Dataset {6225}
+/0/Elasticity-1/basis/6  Dataset {3611}
+/0/Elasticity-1/basis/7  Dataset {3241}
+/0/Elasticity-1/basis/8  Dataset {11971}
+/0/Elasticity-1/basis/9  Dataset {2512}
 /0/Elasticity-1/fields   Group
 /0/Elasticity-1/fields/P1 Group
 /0/Elasticity-1/fields/P1/1 Dataset {100}

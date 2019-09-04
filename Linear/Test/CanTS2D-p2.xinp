@@ -29,12 +29,14 @@
       </code>
     </propertycodes>
     <neumann code="1001" direction="1" type="expression">
-      F0=-1000000; L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
-     -F0*(L*H/I)*Y
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=1000000;
+      F0*(L*H/I)*Y
     </neumann>
     <neumann code="1002" direction="2" type="expression">
-      F0=-1000000; L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
-      F0*(H*H/I)*(0.5-x/L)*(0.25-Y*Y)
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=1000000;
+     -F0*(H*H/I)*(0.5-x/L)*(0.25-Y*Y)
     </neumann>
   </boundaryconditions>
 
