@@ -127,10 +127,7 @@ void ElasticBase::setIntegrationPrm (unsigned short int i, double prm)
 
 double ElasticBase::getIntegrationPrm (unsigned short int i) const
 {
-  if (i < sizeof(intPrm)/sizeof(double) && m_mode == SIM::DYNAMIC)
-    return intPrm[i];
-  else
-    return 0.0;
+  return i < sizeof(intPrm)/sizeof(double) ? intPrm[i] : 0.0;
 }
 
 
