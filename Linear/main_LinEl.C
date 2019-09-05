@@ -326,8 +326,8 @@ int main (int argc, char** argv)
   SIMoptions::ProjectionMap::const_iterator pit;
 
   // Set default projection method (tensor splines only)
-  bool staticSol = iop + model->opt.eig%5 == 0 || args.adap;
-  if (model->opt.discretization < ASM::Spline || !staticSol || noProj)
+  bool statSol = iop + model->opt.eig%5 == 0 || args.adap;
+  if (model->opt.discretization < ASM::Spline || !(statSol || dynSol) || noProj)
     pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
   else if (model->opt.discretization == ASM::Spline && pOpt.empty())
     if (args.dim > 1) pOpt[SIMoptions::GLOBAL] = "Greville point projection";
@@ -371,7 +371,7 @@ int main (int argc, char** argv)
     exporter = new DataExporter(true);
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
                                             model->getProcessAdm()));
-    if (staticSol)
+    if (statSol)
     {
       exporter->registerField("u", "solution", DataExporter::SIM, results);
       exporter->setFieldValue("u", model,

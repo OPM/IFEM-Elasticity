@@ -53,15 +53,11 @@ public:
     if (Dim::myProblem->getMode() == SIM::VIBRATION)
       return this->Dim::assembleSystem(TimeDomain(),Vectors());
 
-    // Calculate the dynamic solution from the previous modal solution
-    if (!this->expandSolution(mSol,sol))
-      return false;
+    if (time.it > 0)
+      // Swap back to the full equation system for assembly of load vector
+      this->swapSystem(Dim::myEqSys,Dim::mySam);
 
-    // Swap back the to the full equation system for assembly of load vector.
-    // Does nothing in the first call when the modal system is not allocated.
-    this->swapSystem(Dim::myEqSys,Dim::mySam);
-
-    if (time.it == 0)
+    else
     {
       // Assemble the load vector of this time step.
       // We need to do this in the first iteration only, as for linear systems
@@ -84,6 +80,37 @@ public:
     // operates on the modal system
     return this->swapSystem(Dim::myEqSys,Dim::mySam);
   }
+
+  using SIMmodal::expandSolution;
+  //! \brief Expands and returns the current dynamic solution.
+  //! \param[in] mSol Current modal solution
+  //! \param[in] swapBack If \e true, the equation systems are swapped
+  virtual const Vectors& expandSolution(const Vectors& mSol, bool swapBack)
+  {
+    if (!this->expandSolution(mSol,sol))
+      sol.clear();
+
+    // Swap back to the full equation system data for postprocessing
+    // and assembly of load vector for the next time step
+    if (swapBack)
+      this->swapSystem(Dim::myEqSys,Dim::mySam);
+
+    return sol;
+  }
+
+  //! \brief Returns the current expanded dynamic solution.
+  //! \param[in] idx Solution vector index
+  virtual const Vector& expandedSolution(int idx) const
+  {
+    if (idx >= 0 && idx < (int)sol.size())
+      return sol[idx];
+
+    static Vector empty;
+    return empty;
+  }
+
+  //! \brief Returns the number of expanded dynamic solution vectors.
+  virtual size_t numExpSolution() const { return sol.size(); }
 
 protected:
   //! \brief Returns the actual integrand.

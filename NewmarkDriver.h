@@ -117,7 +117,7 @@ public:
       {
         // Project the secondary results onto the spline basis
         Newmark::model.setMode(SIM::RECOVERY);
-        if (!Newmark::model.project(proSol,Newmark::solution.front(),
+        if (!Newmark::model.project(proSol,this->realSolution(),
                                     pi->first,params.time))
           status += 6;
       }
@@ -135,20 +135,11 @@ public:
       {
         // Save solution variables to VTF
         if (Newmark::opt.format >= 0)
-          if (!this->saveStep(++iStep,params.time.t) ||
-              !Newmark::model.writeGlvS1(this->getVelocity(),iStep,
-                                         Newmark::nBlock,params.time.t,
-                                         "velocity",20) ||
-              !Newmark::model.writeGlvS1(this->getAcceleration(),iStep,
-                                         Newmark::nBlock,params.time.t,
-                                         "acceleration",30) ||
-              !Newmark::model.writeGlvP(proSol,iStep,Newmark::nBlock,110,
-                                        pi->second.c_str()))
-            status += 7;
+          status += this->saveStep(++iStep,pi->second);
 
         // Save solution variables to HDF5
         if (writer && !writer->dumpTimeLevel(&params))
-          status += 8;
+          status += 11;
 
         nextSave = params.time.t + Newmark::opt.dtSave;
         if (nextSave > params.stopTime)
@@ -160,7 +151,7 @@ public:
       {
         HDF5Restart::SerializeData data;
         if (this->serialize(data) && !restart->writeData(params,data))
-          status += 9;
+          status += 12;
       }
     }
 
@@ -188,6 +179,32 @@ public:
 
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
+
+protected:
+  using Newmark::saveStep;
+  //! \brief Saves the converged solution to VTF file.
+  int saveStep(int iStep, const std::string& prefix)
+  {
+    if (!this->saveStep(iStep,params.time.t))
+      return 7;
+
+    int ip = this->numSolution() - 2;
+    if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
+                                   Newmark::nBlock,params.time.t,
+                                   "velocity",20))
+      return 8;
+
+    if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
+                                   Newmark::nBlock,params.time.t,
+                                   "acceleration",30))
+      return 9;
+
+    if (!Newmark::model.writeGlvP(proSol,iStep,Newmark::nBlock,110,
+                                  prefix.c_str()))
+      return 10;
+
+    return 0;
+  }
 
 private:
   TimeStep params; //!< Time stepping parameters
