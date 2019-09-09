@@ -32,7 +32,7 @@ public:
   //! \param[in] modes Array of eigenmodes for the elasticity problem
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
   SIMLinElModal(std::vector<Mode>& modes, bool checkRHS = false)
-    : SIMLinEl<Dim>(checkRHS,false), SIMmodal(modes) {}
+    : SIMLinEl<Dim>(checkRHS,false), SIMmodal(modes) { parsed = false; }
   //! \brief Empty destructor.
   virtual ~SIMLinElModal() {}
 
@@ -112,6 +112,18 @@ public:
   //! \brief Returns the number of expanded dynamic solution vectors.
   virtual size_t numExpSolution() const { return sol.size(); }
 
+  //! \brief Serialization support, for the eigenmodes.
+  virtual bool serialize(std::map<std::string,std::string>& data) const
+  {
+    return this->saveModes(data);
+  }
+
+  //! \brief Deserialization support (for simulation restart).
+  virtual bool deSerialize(const std::map<std::string,std::string>& data)
+  {
+    return this->restoreModes(data);
+  }
+
 protected:
   //! \brief Returns the actual integrand.
   //! \details Same as the parent class method, but sets the \a isModal flag.
@@ -131,7 +143,7 @@ protected:
   //! during the second time parsing for the time integration setup only.
   virtual bool parse(const TiXmlElement* elem)
   {
-    if (Dim::myEqSys)
+    if (parsed)
     {
       IFEM::cout <<"\t(skipped)"<< std::endl;
       return true;
@@ -140,7 +152,19 @@ protected:
     return this->SIMLinEl<Dim>::parse(elem);
   }
 
+  //! \brief Performs some pre-processing tasks on the FE model.
+  //! \details In addition to invoking the inherited method,
+  //! this method only set the \a parsed flag, such that the model parsing
+  //! is skipped when the input file is parsed for the second time,
+  //! for the time integration setup.
+  virtual bool preprocessB()
+  {
+    parsed = true;
+    return this->SIMLinEl<Dim>::preprocessB();
+  }
+
 private:
+  bool parsed; //!< Set to \e true after the model has been initialized
   Vector  Rhs; //!< Current right-hand-side load vector of the dynamic system
   Vectors sol; //!< Expanded solution vectors from the modal solution
 };

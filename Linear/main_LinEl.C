@@ -332,6 +332,9 @@ int main (int argc, char** argv)
   else if (model->opt.discretization == ASM::Spline && pOpt.empty())
     if (args.dim > 1) pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
+  if (!model->opt.restartFile.empty() && dynSol)
+    iop = 100-model->opt.eig; // Skip eigenvalue analysis in restart runs
+
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
   {
     IFEM::cout <<"\n ** HDF5 output is available for spline discretization only"

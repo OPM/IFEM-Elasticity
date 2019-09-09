@@ -66,26 +66,15 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
   if (!simulator.initEqSystem(true,model.getNoFields()))
     return 3;
 
-  if (!model.opt.restartFile.empty())
-  {
-    HDF5Restart::SerializeData data;
-    HDF5Restart hdf(model.opt.restartFile,model.getProcessAdm(),1);
-    int restartStep = hdf.readData(data,model.opt.restartStep);
-    if (restartStep >= 0 && simulator.deSerialize(data))
-      IFEM::cout <<"\n === Restarting from a serialized state ==="
-                 <<"\n     file = "<< model.opt.restartFile
-                 <<"\n     step = "<< restartStep << std::endl;
-    else
-    {
-      std::cerr <<" *** Failed to read restart data."<< std::endl;
-      return restartStep;
-    }
-  }
+  // Load solution state from serialized data in case of restart
+  if (!simulator.checkForRestart())
+    return 4;
 
+  // Open HDF5 result database
   DataExporter* writer = nullptr;
+  HDF5Restart* restart = nullptr;
   if (model.opt.dumpHDF5(infile))
   {
-    // Open HDF5 result database
     const std::string& fileName = model.opt.hdf5;
     IFEM::cout <<"\nWriting HDF5 file "<< fileName <<".hdf5"<< std::endl;
 
@@ -96,16 +85,24 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
     writer->registerWriter(new HDF5Writer(fileName,model.getProcessAdm()));
   }
 
-  HDF5Restart* restart = nullptr;
   if (model.opt.restartInc > 0)
-    restart = new HDF5Restart(model.opt.hdf5+"_restart",model.getProcessAdm(),
+  {
+    std::string hdf5file(infile);
+    if (!model.opt.hdf5.empty())
+      hdf5file = model.opt.hdf5 + "_restart";
+    else
+      hdf5file.replace(hdf5file.find_last_of('.'),std::string::npos,"_restart");
+    IFEM::cout <<"\nWriting HDF5 file "<< hdf5file <<".hdf5"<< std::endl;
+    restart = new HDF5Restart(hdf5file,model.getProcessAdm(),
                               model.opt.restartInc);
+  }
 
   // Now invoke the main solution driver
   int status = simulator.solveProblem(writer,restart,nullptr,false,0.0,
                                       zero_tol,outPrec);
 
   delete writer;
+  delete restart;
   return status;
 }
 
