@@ -69,6 +69,7 @@ if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.vreg)
 endif()
+list(REMOVE_ITEM LINEL_TESTFILES CanTS2D-p2-restart.reg)
 
 if(NOT HDF5_FOUND)
   list(REMOVE_ITEM LINEL_TESTFILES CanTS2D-fields-p2.reg)
@@ -84,6 +85,10 @@ if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   foreach(HDF5FILE ${LINEL_HDF5_FILES})
     ifem_add_hdf5_test(${HDF5FILE} LinEl)
   endforeach()
+endif()
+
+if(HDF5_FOUND AND CEREAL_FOUND)
+  ifem_add_restart_test(CanTS2D-p2-restart.reg LinEl 15)
 endif()
 
 list(APPEND TEST_APPS LinEl)

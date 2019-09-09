@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- 2D Cantilever beam with a tip shear load. Dynamic simulation. !-->
+
+<simulation>
+
+  <geometry dim="2" Lx="2.0" Ly="0.4">
+    <refine patch="1" v="1"/>
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="7" v="1"/>
+  </geometry>
+
+  <boundaryconditions>
+    <fixpoint patch="1" rx="0.0" ry="0.0" code="1"/>
+    <fixpoint patch="1" rx="0.0" ry="0.5" code="12"/>
+    <fixpoint patch="1" rx="0.0" ry="1.0" code="1"/>
+    <propertycodes>
+      <code value="1001">
+        <patch index="1" edge="1"/>
+      </code>
+      <code value="1002">
+        <patch index="1" edge="1"/>
+        <patch index="1" edge="2"/>
+      </code>
+    </propertycodes>
+    <neumann code="1001" direction="1" type="expression">
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=if(above(t,0.5),0,-1000000)*sin(3.14159265*t);
+      F0*(L*H/I)*Y
+    </neumann>
+    <neumann code="1002" direction="2" type="expression">
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=if(above(t,0.5),0,-1000000)*sin(3.14159265*t);
+     -F0*(H*H/I)*(0.5-x/L)*(0.25-Y*Y)
+    </neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.068e9" nu="0.29" rho="7820.0"/>
+  </elasticity>
+
+  <eigensolver mode="4"/>
+
+  <discretization>
+    <nGauss>3</nGauss>
+  </discretization>
+
+  <newmarksolver>
+    <timestepping>
+      <step start="0.0" end="2.0">0.05</step>
+    </timestepping>
+  </newmarksolver>
+
+</simulation>
