@@ -31,14 +31,15 @@
 
 /*!
   \brief Driver for modal simulation of linear dynamics problems.
-  \param infile The input file to parse for time integration setup
-  \param nM Number of eigenmodes
+  \param[in] infile The input file to parse for time integration setup
+  \param[in] nM Number of eigenmodes
+  \param[in] dumpModes If \e true, dump projected eigenmode solutions
   \param model The isogeometric finite element model
   \param exporter Result export handler
   \return Exit status
 */
 
-int modalSim (char* infile, size_t nM,
+int modalSim (char* infile, size_t nM, bool dumpModes,
               SIMoutput* model, DataExporter* exporter);
 
 
@@ -77,6 +78,7 @@ int modalSim (char* infile, size_t nM,
   \arg -shift \a shf : Shift value to use in the eigenproblem solver
   \arg -free : Ignore all boundary conditions (use in free vibration analysis)
   \arg -dynamic : Solve the linear dynamics problem using modal transformation
+  \arg -dumpModes : Dump projected eigenmode solution
   \arg -check : Data check only, read model and output to VTF (no solution)
   \arg -checkRHS : Check that the patches are modelled in a right-hand system
   \arg -vizRHS : Save the right-hand-side load vector on the VTF-file
@@ -123,6 +125,7 @@ int main (int argc, char** argv)
   bool noError = false;
   bool dualSol = false;
   bool dynSol = false;
+  bool dumpModes = false;
   char* infile = nullptr;
   Elasticity::wantPrincipalStress = true;
   SIMargsBase args("elasticity");
@@ -201,6 +204,8 @@ int main (int argc, char** argv)
       dualSol = true;
     else if (!strncmp(argv[i],"-dyn",4))
       dynSol = true;
+    else if (!strcmp(argv[i],"-dumpModes"))
+      dumpModes = true;
     else if (!infile)
     {
       infile = argv[i];
@@ -226,7 +231,7 @@ int main (int argc, char** argv)
               <<" [-dynamic]\n       [-ignore <p1> <p2> ...] [-fixDup]"
               <<" [-dual] [-checkRHS] [-check]\n      "
               <<" [-printMax[Patch]] [-dumpASC] [-dumpMatlab [<setnames>]]"
-              <<"\n       [-outPrec <nd>] [-ztol <eps>]\n";
+              <<" [-dumpModes]\n       [-outPrec <nd>] [-ztol <eps>]\n";
     return 0;
   }
 
@@ -669,7 +674,7 @@ int main (int argc, char** argv)
   }
 
   if (dynSol) // Solve the dynamics problem using modal transformation
-    return terminate(modalSim(infile,modes.size(),model,exporter));
+    return terminate(modalSim(infile,modes.size(),dumpModes,model,exporter));
 
   utl::profiler->start("Postprocessing");
 

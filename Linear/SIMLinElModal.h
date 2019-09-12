@@ -36,6 +36,7 @@ public:
   //! \brief Empty destructor.
   virtual ~SIMLinElModal() {}
 
+  using SIMLinEl<Dim>::assembleSystem;
   //! \brief Administers assembly of the linear equation system.
   //! \param[in] time Parameters for time-dependent simulations
   //! \param[in] mSol Previous modal solution vectors
@@ -122,6 +123,26 @@ public:
   virtual bool deSerialize(const std::map<std::string,std::string>& data)
   {
     return this->restoreModes(data);
+  }
+
+  //! \brief Projects the secondary solution associated with the eigenmodes.
+  //! \param[out] sesol Control point values of the secondary eigen solutions
+  //! \param[out] names Secondary solution component names
+  //! \param[in] pMethod Projection method to use
+  virtual bool projectModes(Matrices& sesol,
+                            std::vector<std::string>& names,
+                            SIMoptions::ProjectionMethod pMethod)
+  {
+    sesol.resize(myModes.size());
+    names.resize(Dim::myProblem->getNoFields(2));
+    for (size_t c = 0; c < names.size(); c++)
+      names[c] = Dim::myProblem->getField2Name(c);
+
+    bool ok = this->setMode(SIM::RECOVERY);
+    for (size_t i = 0; i < myModes.size() && ok; i++)
+      ok = this->project(sesol[i],myModes[i].eigVec,pMethod);
+
+    return ok;
   }
 
 protected:

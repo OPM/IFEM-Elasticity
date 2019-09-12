@@ -11,63 +11,91 @@
 //!
 //==============================================================================
 
-#include "NewmarkDriver.h"
-#include "NewmarkSIM.h"
+#include "ModalDriver.h"
 #include "SIMmodal.h"
 
 
-/*!
-  \brief Driver for modal analysis of linear dynamic problems.
-*/
-
-class ModalDriver : public NewmarkDriver<NewmarkSIM>
+const Vectors& ModalDriver::realSolutions ()
 {
-public:
-  //! \brief The constructor forwards to the parent class constructor.
-  //! \param sim Reference to the spline FE model
-  explicit ModalDriver(SIMbase& sim) : NewmarkDriver<NewmarkSIM>(sim) {}
-  //! \brief Empty destructor.
-  virtual ~ModalDriver() {}
+  return dynamic_cast<SIMmodal*>(&model)->expandSolution(solution,true);
+}
 
-  //! \brief Returns the number of solution vectors.
-  virtual size_t numSolution() const
+
+const Vector& ModalDriver::realSolution (int i) const
+{
+  return dynamic_cast<SIMmodal*>(&model)->expandedSolution(i);
+}
+
+
+size_t ModalDriver::numSolution () const
+{
+  return dynamic_cast<SIMmodal*>(&model)->numExpSolution();
+}
+
+
+bool ModalDriver::serialize (HDF5Restart::SerializeData& data) const
+{
+  return (model.serialize(data) &&
+          this->NewmarkDriver<NewmarkSIM>::serialize(data));
+}
+
+
+bool ModalDriver::deSerialize (const HDF5Restart::SerializeData& data)
+{
+  return (model.deSerialize(data) &&
+          this->NewmarkDriver<NewmarkSIM>::deSerialize(data));
+}
+
+
+void ModalDriver::dumpResults (double time, utl::LogStream& os,
+                               std::streamsize precision, bool formatted) const
+{
+  model.dumpResults(this->realSolution(),time,os,formatted,precision);
+}
+
+
+void ModalDriver::dumpModes (utl::LogStream& os,
+                             std::streamsize precision) const
+{
+  // Project the secondary eigensolution
+  SIMoptions::ProjectionMap::const_iterator pit = model.opt.project.begin();
+  if (pit == model.opt.project.end()) return; // No projection specified
+
+  Matrices sesol;
+  std::vector<std::string> names;
+  if (!dynamic_cast<SIMmodal*>(&model)->projectModes(sesol,names,pit->first))
+    return; // Projection failure (ignored).
+
+  // Formatted output, use scientific notation with fixed field width
+  std::streamsize flWidth = 8 + precision;
+  std::streamsize oldPrec = os.precision(precision);
+  std::ios::fmtflags oldF = os.flags(std::ios::scientific | std::ios::right);
+  int modeNo = 0;
+  for (const Matrix& ssol : sesol)
   {
-    return dynamic_cast<SIMmodal*>(&model)->numExpSolution();
+    os <<"\n\n >>> Secondary solution for mode "<< ++modeNo <<":\n\nCtrl.pt.";
+    for (const std::string& cmp : names) os << std::setw(flWidth) << cmp;
+    for (size_t ipt = 1; ipt <= ssol.cols(); ipt++)
+    {
+      os <<"\n"<< std::setw(7) << ipt <<" ";
+      for (size_t cmp = 1; cmp <= ssol.rows(); cmp++)
+        os << std::setw(flWidth) << utl::trunc(ssol(cmp,ipt));
+    }
   }
-
-  //! \brief Calculates the current real solution vectors.
-  virtual const Vectors& realSolutions()
-  {
-    return dynamic_cast<SIMmodal*>(&model)->expandSolution(solution,true);
-  }
-
-  //! \brief Returns a const reference to the current real solution vector.
-  virtual const Vector& realSolution(int i = 0) const
-  {
-    return dynamic_cast<SIMmodal*>(&model)->expandedSolution(i);
-  }
-
-  //! \brief Serialize solution state for restarting purposes.
-  //! \param data Container for serialized data
-  virtual bool serialize(HDF5Restart::SerializeData& data) const
-  {
-    return (model.serialize(data) &&
-            this->NewmarkDriver<NewmarkSIM>::serialize(data));
-  }
-
-  //! \brief Set solution from a serialized state.
-  //! \param[in] data Container for serialized data
-  virtual bool deSerialize(const HDF5Restart::SerializeData& data)
-  {
-    return (model.deSerialize(data) &&
-            this->NewmarkDriver<NewmarkSIM>::deSerialize(data));
-  }
-};
+  os <<"\n"<< std::endl;
+  os.precision(oldPrec);
+  os.flags(oldF);
+}
 
 
-int modalSim (char* infile, size_t nM, SIMoutput* model, DataExporter* exporter)
+int modalSim (char* infile, size_t nM, bool dumpModes,
+              SIMoutput* model, DataExporter* exporter)
 {
   ModalDriver simulator(*model);
+
+  // Print out control point stresses for the eigenmodes
+  if (dumpModes)
+    simulator.dumpModes(IFEM::cout,10);
 
   // Read time integration setup
   if (!strcasestr(infile,".xinp") || !simulator.readXML(infile))
