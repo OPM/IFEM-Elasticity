@@ -32,7 +32,11 @@ public:
   //! \param[in] modes Array of eigenmodes for the elasticity problem
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
   SIMLinElModal(std::vector<Mode>& modes, bool checkRHS = false)
-    : SIMLinEl<Dim>(checkRHS,false), SIMmodal(modes) { parsed = false; }
+    : SIMLinEl<Dim>(checkRHS,false), SIMmodal(modes)
+  {
+    parsed = false;
+    alpha1 = alpha2 = 0.0;
+  }
   //! \brief Empty destructor.
   virtual ~SIMLinElModal() {}
 
@@ -74,7 +78,8 @@ public:
     // Assemble the modal equation system
     if (!this->assembleModalSystem(time,mSol,Rhs,
                                    Dim::myProblem->getIntegrationPrm(2),
-                                   Dim::myProblem->getIntegrationPrm(3)))
+                                   Dim::myProblem->getIntegrationPrm(3),
+                                   alpha1,alpha2))
       return false;
 
     // Swap the equation systems such that the dynamic simulation driver
@@ -165,27 +170,36 @@ protected:
   virtual bool parse(const TiXmlElement* elem)
   {
     if (parsed)
-    {
       IFEM::cout <<"\t(skipped)"<< std::endl;
-      return true;
+    else if (!strcasecmp(elem->Value(),"newmarksolver"))
+    {
+      utl::getAttribute(elem,"alpha1",alpha1);
+      utl::getAttribute(elem,"alpha2",alpha2);
     }
+    else
+      return this->SIMLinEl<Dim>::parse(elem);
 
-    return this->SIMLinEl<Dim>::parse(elem);
+    return true;
   }
 
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details In addition to invoking the inherited method,
-  //! this method only set the \a parsed flag, such that the model parsing
+  //! this method sets the \a parsed flag, such that the model parsing
   //! is skipped when the input file is parsed for the second time,
   //! for the time integration setup.
   virtual bool preprocessB()
   {
     parsed = true;
+    this->setIntegrationPrm(0,alpha1);
+    this->setIntegrationPrm(1,alpha2);
     return this->SIMLinEl<Dim>::preprocessB();
   }
 
 private:
-  bool parsed; //!< Set to \e true after the model has been initialized
+  bool   parsed; //!< Set to \e true after the model has been initialized
+  double alpha1; //!< Mass-proportional damping parameter
+  double alpha2; //!< Stiffness-proportional damping parameter
+
   Vector  Rhs; //!< Current right-hand-side load vector of the dynamic system
   Vectors sol; //!< Expanded solution vectors from the modal solution
 };
