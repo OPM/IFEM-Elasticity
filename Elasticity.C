@@ -31,6 +31,7 @@
 #define epsR 1.0e-16
 #endif
 
+bool Elasticity::wantStrain          = false;
 bool Elasticity::wantPrincipalStress = false;
 bool Elasticity::asolProject         = false;
 
@@ -737,13 +738,19 @@ bool Elasticity::evalSol (Vector& s, const Vectors& eV, const FiniteElement& fe,
   double epsT = this->getThermalStrain(eV.back(),fe.N,X);
   if (epsT != 0.0) eps -= epsT;
 
-  // Calculate the stress tensor through the constitutive relation
-  Matrix Cmat;
-  SymmTensor sigma(nsd, axiSymmetry || material->isPlaneStrain()); double U;
-  if (!material->evaluate(Cmat,sigma,U,fe,X,dUdX,eps))
-    return false;
-  else if (epsT != 0.0 && nsd == 2 && material->isPlaneStrain())
-    sigma(3,3) -= material->getStiffness(X)*epsT;
+  SymmTensor sigma(nsd, axiSymmetry || material->isPlaneStrain());
+  if (wantStrain)
+    sigma.copy(eps);
+  else
+  {
+    // Calculate the stress tensor through the constitutive relation
+    Matrix Cmat;
+    double U = 0.0;
+    if (!material->evaluate(Cmat,sigma,U,fe,X,dUdX,eps))
+      return false;
+    else if (epsT != 0.0 && nsd == 2 && material->isPlaneStrain())
+      sigma(3,3) -= material->getStiffness(X)*epsT;
+  }
 
   Vec3 p;
   bool havePval = false;
@@ -905,9 +912,13 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
   else if (i == 2 && nStress == 3)
     name += s[3]; // No s_zz when plane stress
   else if (i < nStress)
+  {
+    size_t j = name.size();
     name += axiSymmetry ? r[i] : s[i];
+    if (wantStrain) name[j] = 'e';
+  }
   else if (i == nStress)
-    name += "von Mises stress";
+    name += "von Mises " + std::string(wantStrain ? "strain" : "stress");
   else if ((int)(i -= nStress) <= material->getNoIntVariables())
   {
     char varName[32];
@@ -965,7 +976,7 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
       os.flags(oldF);
       os <<"  X = "<< maxVal[i][p].first;
       if (maxVal[i].size() > 1)
-	os <<"\tPatch "<< p+1;
+        os <<"\tPatch "<< p+1;
       os << std::endl;
     }
   }

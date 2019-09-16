@@ -223,9 +223,9 @@ public:
   //!
   //! \details This method allocates and/or initializes the internal array used
   //! to calculate the maximum stress values in the model. If the argument \a nP
-  //! is equal to 1, only the global maximum over all patches in the model are
+  //! is equal to 1, only the global maxima over all patches in the model are
   //! determined. Otherwise, if it equals the number of patches in the model,
-  //! the maximum value is computed for each patch separately.
+  //! the maximum values are computed for each patch separately.
   void initMaxVals(size_t nP = 1);
 
   //! \brief Returns a pointer to the max values for external update.
@@ -345,6 +345,7 @@ protected:
   double           gamma; //!< Numeric stabilization parameter
 
 public:
+  static bool wantStrain;          //!< Option for output of strain, not stress
   static bool wantPrincipalStress; //!< Option for principal stress calculation
   static bool asolProject;         //!< Analytical solution projection flag
 };
