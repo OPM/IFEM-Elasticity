@@ -207,11 +207,13 @@ protected:
   }
 
 private:
-  TimeStep params; //!< Time stepping parameters
-  Matrix   proSol; //!< Projected secondary solution
-
   std::string pointfile; //!< Name of output file for point results
   bool        doInitAcc; //!< If \e true, calculate initial accelerations
+
+  Matrix proSol; //!< Projected secondary solution
+
+protected:
+  TimeStep params; //!< Time stepping parameters
 };
 
 #endif
