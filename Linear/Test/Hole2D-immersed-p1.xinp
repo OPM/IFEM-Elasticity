@@ -9,7 +9,7 @@
 
   <!-- General - geometry definitions !-->
   <geometry dim="2" Lx="4" Ly="4">
-    <immersedboundary max_depth="5" stabilization="1">
+    <immersedboundary max_depth="5">
       <Hole R="1.0"/>
     </immersedboundary>
     <refine patch="1" u="7" v="7"/>
@@ -48,7 +48,6 @@
   <!-- Problem specific block !-->
   <elasticity>
     <isotropic E="1000" nu="0.3"/>
-    <stabilization gamma="0.001"/>
     <anasol type="expression">
       <variables>nu=0.3;F0=10;a=1;
                  R=sqrt(x*x+y*y);

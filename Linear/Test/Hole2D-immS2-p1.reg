@@ -1,4 +1,4 @@
-Hole2D-immS2-p1.xinp -2D
+Hole2D-immS2-p1.xinp
 
 Input file: Hole2D-immS2-p1.xinp
 Equation solver: 2
@@ -34,7 +34,7 @@ Parsing <postprocessing>
   Parsing <projection>
 Parsing <elasticity>
   Parsing <isotropic>
-	Material code 0: 1000 0.3 0
+	Material code 0: 1000 0.3
 	Stabilization parameter 0.001
 	Analytical solution: Expression
 	Variables=nu=0.3;F0=10;a=1; R=sqrt(x\*x+y\*y); R2=if(above(R,a),a\*a/(R\*R),1); R4=if(above(R,a),R2\*R2,1); th=atan2(y,x); C2=cos(2\*th); C4=cos(4\*th); S2=sin(2\*th); S4=sin(4\*th);
@@ -45,7 +45,7 @@ Number of Gauss points: 2
 Enabled projection(s): Continuous global L2-projection
 Problem definition:
 Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 0, alpha = 1.2e-07
+LinIsotropic: plane stress, E = 1000, nu = 0.3, rho = 7850, alpha = 1.2e-07
  Element 1 is completely outside the domain
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 1
