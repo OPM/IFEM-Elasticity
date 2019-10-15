@@ -1,0 +1,459 @@
+Lshape-adap-p2.xinp -2Dpstrain -adap
+
+Input file: Lshape-adap-p2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Solution component output zero tolerance: 1e-06
+Parsing input file Lshape-adap-p2.xinp
+Parsing <geometry>
+  Parsing <patch>
+	Reading inlined patch geometry definition
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <patch>
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 3 3
+Parsing <boundaryconditions>
+  Parsing <propertycodes>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+	Constraining P1 point at 0.5 0 with code 2
+	Prescribing node 2 at X = -1 -1 0
+	Constraining P1 point at 0.5 1 with code 12
+	Prescribing node 13 at X = 0 0 0
+Parsing <discretization>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+	Refinement percentage: 3 type=6 (eps = 1e-06)
+	Refinement scheme: 2
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 100000 0.3
+	Analytical solution: Lshape a=1 F0=100000 nu=0.3
+	Neumann code 1000: Analytical traction
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+LR-spline basis functions are used
+Enabled projection(s): Greville point projection
+                       Discrete global L2-projection
+                       Continuous global L2-projection
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 100000, nu = 0.3, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    32
+Number of nodes       66
+Number of dofs        132
+Number of unknowns    129
+ >>> Starting adaptive simulation based on
+     Discrete global L2-projection error estimates (norm group 2) <<<
+Adaptive step 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Assembling Neumann matrix terms for boundary 3 on P1
+Solving the equation system ...
+	Condition number: 6381.71
+ >>> Solution summary <<<
+L2-norm            : 1.28152
+Max X-displacement : 2.40162
+Max Y-displacement : 2.75692
+Projecting secondary solution ...
+	Greville point projection
+Projecting secondary solution ...
+	Discrete global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(u^h,u^h)^0.5 : 892.893
+External energy((f,u^h)+(t,u^h))^0.5 : 892.893
+Exact norm                a(u,u)^0.5 : 914.208
+Exact error      a(e,e)^0.5, e=u-u^h : 155.238
+Exact relative error (%) : 16.9806
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 873.337
+Error norm a(e,e)^0.5, e=u^r-u^h     : 88.7839
+ relative error (% of |u|)   : 9.71156
+Exact error a(e,e)^0.5, e=u-u^r      : 175.978
+ relative error (% of |u|)   : 19.2492
+Effectivity index             : 0.571923
+>>> Error estimates based on Discrete global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 890.87
+Error norm a(e,e)^0.5, e=u^r-u^h     : 59.9484
+ relative error (% of |u|)   : 6.55742
+Exact error a(e,e)^0.5, e=u-u^r      : 134.119
+ relative error (% of |u|)   : 14.6705
+Effectivity index             : 0.386172
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 891.02
+Error norm a(e,e)^0.5, e=u^r-u^h     : 57.8132
+ relative error (% of |u|)   : 6.32386
+Exact error a(e,e)^0.5, e=u-u^r      : 139.264
+ relative error (% of |u|)   : 15.2333
+Effectivity index             : 0.372418
+Error estimate a(e,e)^0.5, e=u^r-u^h : 59.9484
+Relative error (%) : 6.69887
+Effectivity index  : 0.386172
+Root mean square (RMS) of error      : 0.85861
+Min element error                    : 2.09991
+Max element error                    : 29.5931
+Average element error                : 8.04037
+Refining 3 basis functions with errors in range \[105.883,111.314] 
+Refined mesh: 86 elements 117 nodes.
+Adaptive step 2
+Parsing input file Lshape-adap-p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+Parsing <boundaryconditions>
+  Parsing <propertycodes>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+	Constraining P1 point at 0.5 0 with code 2
+	Prescribing node 2 at X = -1 -1 0
+	Constraining P1 point at 0.5 1 with code 12
+	Prescribing node 18 at X = 0 0 0
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 100000 0.3
+	Analytical solution: Lshape a=1 F0=100000 nu=0.3
+	Neumann code 1000: Analytical traction
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 100000, nu = 0.3, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    86
+Number of nodes       117
+Number of dofs        234
+Number of unknowns    231
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Assembling Neumann matrix terms for boundary 3 on P1
+Solving the equation system ...
+	Condition number: 8254.75
+ >>> Solution summary <<<
+L2-norm            : 1.19173
+Max X-displacement : 2.56962
+Max Y-displacement : 3.09413
+Projecting secondary solution ...
+	Greville point projection
+Projecting secondary solution ...
+	Discrete global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(u^h,u^h)^0.5 : 902.164
+External energy((f,u^h)+(t,u^h))^0.5 : 902.164
+Exact norm                a(u,u)^0.5 : 912.594
+Exact error      a(e,e)^0.5, e=u-u^h : 111.092
+Exact relative error (%) : 12.1733
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 892.447
+Error norm a(e,e)^0.5, e=u^r-u^h     : 63.2443
+ relative error (% of |u|)   : 6.93017
+Exact error a(e,e)^0.5, e=u-u^r      : 123.973
+ relative error (% of |u|)   : 13.5846
+Effectivity index             : 0.569295
+>>> Error estimates based on Discrete global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 901.341
+Error norm a(e,e)^0.5, e=u^r-u^h     : 43.7327
+ relative error (% of |u|)   : 4.79213
+Exact error a(e,e)^0.5, e=u-u^r      : 94.6845
+ relative error (% of |u|)   : 10.3753
+Effectivity index             : 0.393661
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 901.178
+Error norm a(e,e)^0.5, e=u^r-u^h     : 42.1734
+ relative error (% of |u|)   : 4.62127
+Exact error a(e,e)^0.5, e=u-u^r      : 99.0331
+ relative error (% of |u|)   : 10.8518
+Effectivity index             : 0.379625
+Error estimate a(e,e)^0.5, e=u^r-u^h : 43.7327
+Relative error (%) : 4.84185
+Effectivity index  : 0.393661
+Root mean square (RMS) of error      : 1.17939
+Min element error                    : 0.392073
+Max element error                    : 20.0131
+Average element error                : 3.0498
+Refining 4 basis functions with errors in range \[63.7836,76.2899] 
+Refined mesh: 140 elements 168 nodes.
+Adaptive step 3
+Parsing input file Lshape-adap-p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+Parsing <boundaryconditions>
+  Parsing <propertycodes>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+	Constraining P1 point at 0.5 0 with code 2
+	Prescribing node 2 at X = -1 -1 0
+	Constraining P1 point at 0.5 1 with code 12
+	Prescribing node 12 at X = 0 0 0
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 100000 0.3
+	Analytical solution: Lshape a=1 F0=100000 nu=0.3
+	Neumann code 1000: Analytical traction
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 100000, nu = 0.3, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    140
+Number of nodes       168
+Number of dofs        336
+Number of unknowns    333
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Assembling Neumann matrix terms for boundary 3 on P1
+Solving the equation system ...
+	Condition number: 11370.2
+ >>> Solution summary <<<
+L2-norm            : 1.08741
+Max X-displacement : 2.65264
+Max Y-displacement : 3.29831
+Projecting secondary solution ...
+	Greville point projection
+Projecting secondary solution ...
+	Discrete global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(u^h,u^h)^0.5 : 906.891
+External energy((f,u^h)+(t,u^h))^0.5 : 906.891
+Exact norm                a(u,u)^0.5 : 911.991
+Exact error      a(e,e)^0.5, e=u-u^h : 78.9382
+Exact relative error (%) : 8.6556
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 901.543
+Error norm a(e,e)^0.5, e=u^r-u^h     : 47.0262
+ relative error (% of |u|)   : 5.15644
+Exact error a(e,e)^0.5, e=u-u^r      : 87.7095
+ relative error (% of |u|)   : 9.61737
+Effectivity index             : 0.595735
+>>> Error estimates based on Discrete global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 906.601
+Error norm a(e,e)^0.5, e=u^r-u^h     : 33.0392
+ relative error (% of |u|)   : 3.62275
+Exact error a(e,e)^0.5, e=u-u^r      : 66.9505
+ relative error (% of |u|)   : 7.34114
+Effectivity index             : 0.418544
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 906.334
+Error norm a(e,e)^0.5, e=u^r-u^h     : 31.7811
+ relative error (% of |u|)   : 3.48481
+Exact error a(e,e)^0.5, e=u-u^r      : 69.9751
+ relative error (% of |u|)   : 7.67279
+Effectivity index             : 0.402607
+Error estimate a(e,e)^0.5, e=u^r-u^h : 33.0392
+Relative error (%) : 3.64071
+Effectivity index  : 0.418544
+Root mean square (RMS) of error      : 1.05903
+Min element error                    : 0.381052
+Max element error                    : 13.5697
+Average element error                : 1.91707
+Refining 6 basis functions with errors in range \[42.5811,53.4439] 
+Refined mesh: 194 elements 219 nodes.
+Adaptive step 4
+Parsing input file Lshape-adap-p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+Parsing <boundaryconditions>
+  Parsing <propertycodes>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+	Constraining P1 point at 0.5 0 with code 2
+	Prescribing node 2 at X = -1 -1 0
+	Constraining P1 point at 0.5 1 with code 12
+	Prescribing node 24 at X = 0 0 0
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 100000 0.3
+	Analytical solution: Lshape a=1 F0=100000 nu=0.3
+	Neumann code 1000: Analytical traction
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 100000, nu = 0.3, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    194
+Number of nodes       219
+Number of dofs        438
+Number of unknowns    435
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Assembling Neumann matrix terms for boundary 3 on P1
+Solving the equation system ...
+	Condition number: 14852.1
+ >>> Solution summary <<<
+L2-norm            : 0.996334
+Max X-displacement : 2.69296
+Max Y-displacement : 3.42378
+Projecting secondary solution ...
+	Greville point projection
+Projecting secondary solution ...
+	Discrete global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(u^h,u^h)^0.5 : 909.219
+External energy((f,u^h)+(t,u^h))^0.5 : 909.219
+Exact norm                a(u,u)^0.5 : 911.742
+Exact error      a(e,e)^0.5, e=u-u^h : 56.3583
+Exact relative error (%) : 6.18139
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 905.881
+Error norm a(e,e)^0.5, e=u^r-u^h     : 37.4277
+ relative error (% of |u|)   : 4.10508
+Exact error a(e,e)^0.5, e=u-u^r      : 62.9317
+ relative error (% of |u|)   : 6.90235
+Effectivity index             : 0.664103
+>>> Error estimates based on Discrete global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 909.142
+Error norm a(e,e)^0.5, e=u^r-u^h     : 26.6673
+ relative error (% of |u|)   : 2.92487
+Exact error a(e,e)^0.5, e=u-u^r      : 47.3612
+ relative error (% of |u|)   : 5.19459
+Effectivity index             : 0.473174
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 908.858
+Error norm a(e,e)^0.5, e=u^r-u^h     : 25.6301
+ relative error (% of |u|)   : 2.81111
+Exact error a(e,e)^0.5, e=u-u^r      : 49.3085
+ relative error (% of |u|)   : 5.40816
+Effectivity index             : 0.454771
+Error estimate a(e,e)^0.5, e=u^r-u^h : 26.6673
+Relative error (%) : 2.93173
+Effectivity index  : 0.473174
+Root mean square (RMS) of error      : 0.900673
+Min element error                    : 0.247778
+Max element error                    : 9.25212
+Average element error                : 1.42264
+Refining 7 basis functions with errors in range \[29.6653,40.0182] 
+Refined mesh: 284 elements 329 nodes.
+Adaptive step 5
+Parsing input file Lshape-adap-p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <patch>
+  Parsing <raiseorder>
+  Parsing <refine>
+Parsing <boundaryconditions>
+  Parsing <propertycodes>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+	Constraining P1 point at 0.5 0 with code 2
+	Prescribing node 2 at X = -1 -1 0
+	Constraining P1 point at 0.5 1 with code 12
+	Prescribing node 20 at X = 0 0 0
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 100000 0.3
+	Analytical solution: Lshape a=1 F0=100000 nu=0.3
+	Neumann code 1000: Analytical traction
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 100000, nu = 0.3, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    284
+Number of nodes       329
+Number of dofs        658
+Number of unknowns    655
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Assembling Neumann matrix terms for boundary 3 on P1
+Solving the equation system ...
+	Condition number: 32900
+ >>> Solution summary <<<
+L2-norm            : 1.02918
+Max X-displacement : 2.71657
+Max Y-displacement : 3.50802
+Projecting secondary solution ...
+	Greville point projection
+Projecting secondary solution ...
+	Discrete global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Energy norm           a(u^h,u^h)^0.5 : 910.42
+External energy((f,u^h)+(t,u^h))^0.5 : 910.42
+Exact norm                a(u,u)^0.5 : 911.634
+Exact error      a(e,e)^0.5, e=u-u^h : 39.3304
+Exact relative error (%) : 4.31428
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 908.039
+Error norm a(e,e)^0.5, e=u^r-u^h     : 27.0568
+ relative error (% of |u|)   : 2.96794
+Exact error a(e,e)^0.5, e=u-u^r      : 43.9174
+ relative error (% of |u|)   : 4.81744
+Effectivity index             : 0.687934
+>>> Error estimates based on Discrete global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 910.411
+Error norm a(e,e)^0.5, e=u^r-u^h     : 18.9526
+ relative error (% of |u|)   : 2.07897
+Exact error a(e,e)^0.5, e=u-u^r      : 32.5128
+ relative error (% of |u|)   : 3.56643
+Effectivity index             : 0.481882
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 910.235
+Error norm a(e,e)^0.5, e=u^r-u^h     : 18.3586
+ relative error (% of |u|)   : 2.01382
+Exact error a(e,e)^0.5, e=u-u^r      : 33.9736
+ relative error (% of |u|)   : 3.72667
+Effectivity index             : 0.466779
+Error estimate a(e,e)^0.5, e=u^r-u^h : 18.9526
+Relative error (%) : 2.0813
+Effectivity index  : 0.481882
+Root mean square (RMS) of error      : 0.913466
+Min element error                    : 0.0827711
+Max element error                    : 6.33294
+Average element error                : 0.83035
