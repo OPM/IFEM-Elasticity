@@ -119,14 +119,6 @@ public:
                        const Vec3& X, const Vec3& normal) const;
 
   using ElasticBase::evalSol;
-  //! \brief Evaluates the secondary solution at a result point.
-  //! \param[out] s The solution field values at current point
-  //! \param[in] fe Finite element data at current point
-  //! \param[in] X Cartesian coordinates of current point
-  //! \param[in] MNPC Nodal point correspondance for the basis function values
-  virtual bool evalSol(Vector& s, const FiniteElement& fe, const Vec3& X,
-                       const std::vector<int>& MNPC) const;
-
   //! \brief Evaluates the finite element (FE) solution at an integration point.
   //! \param[out] s The FE stress values at current point
   //! \param[in] eV Element solution vectors
@@ -190,18 +182,21 @@ public:
   //! manually when leaving the scope of the pointer variable receiving the
   //! returned pointer value.
   //! \param[in] asol Pointer to analytical solution fields (optional)
-  virtual NormBase* getNormIntegrand(AnaSol* asol = 0) const;
+  virtual NormBase* getNormIntegrand(AnaSol* asol = nullptr) const;
 
   //! \brief Returns a pointer to an Integrand for boundary force evaluation.
   //! \note The Integrand is allocated dynamically and has to be deleted
   //! manually when leaving the scope of the pointer returned.
   //! \param[in] x Reference point for torque calculation
   //! \param[in] asol Pointer to analytical solution fields (optional)
-  virtual ForceBase* getForceIntegrand(const Vec3* x, AnaSol* asol = 0) const;
+  virtual ForceBase* getForceIntegrand(const Vec3* x, AnaSol* asol) const;
   //! \brief Returns a pointer to an Integrand for nodal force evaluation.
   //! \note The Integrand is allocated dynamically and has to be deleted
   //! manually when leaving the scope of the pointer returned.
   virtual ForceBase* getForceIntegrand() const;
+
+  //! \brief Returns norm index of the integrated volume.
+  virtual size_t getVolumeIndex(bool withAnaSol) const;
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
@@ -209,11 +204,11 @@ public:
   //! \brief Returns the name of a primary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField1Name(size_t i, const char* prefix = 0) const;
+  virtual std::string getField1Name(size_t i, const char* prefix) const;
   //! \brief Returns the name of a secondary solution field component.
   //! \param[in] i Field component index
   //! \param[in] prefix Name prefix for all components
-  virtual std::string getField2Name(size_t i, const char* prefix = 0) const;
+  virtual std::string getField2Name(size_t i, const char* prefix) const;
 
   typedef std::pair<Vec3,double>  PointValue;  //!< Convenience type
   typedef std::vector<PointValue> PointValues; //!< Convenience type
@@ -305,8 +300,8 @@ protected:
   //! \param[in] eV Element solution vectors
   //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
-  bool evalSol2(Vector& s, const Vectors& eV,
-                const FiniteElement& fe, const Vec3& X) const;
+  virtual bool evalSol2(Vector& s, const Vectors& eV,
+                        const FiniteElement& fe, const Vec3& X) const;
 
   //! \brief Performs pull-back of traction (interface for nonlinear problems).
   virtual bool pullBackTraction(Vec3&) const { return true; }
@@ -398,7 +393,7 @@ public:
   //! \brief Returns the number of norm groups or size of a specified group.
   //! \param[in] group The norm group to return the size of
   //! (if zero, return the number of groups)
-  virtual size_t getNoFields(int group = 0) const;
+  virtual size_t getNoFields(int group) const;
 
   //! \brief Returns the name of a norm quantity.
   //! \param[in] i The norm group (one-based index)

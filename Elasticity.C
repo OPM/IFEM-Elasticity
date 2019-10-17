@@ -645,26 +645,6 @@ bool Elasticity::formCmat (Matrix& C, const FiniteElement& fe,
 }
 
 
-bool Elasticity::evalSol (Vector& s, const FiniteElement& fe, const Vec3& X,
-			  const std::vector<int>& MNPC) const
-{
-  // Extract element displacements
-  Vectors eV(1);
-  if (!primsol.empty() && !primsol.front().empty())
-  {
-    int ierr = utl::gather(MNPC,nsd,primsol.front(),eV.front());
-    if (ierr > 0)
-    {
-      std::cerr <<" *** Elasticity::evalSol: Detected "<< ierr
-                <<" node numbers out of range."<< std::endl;
-      return false;
-    }
-  }
-
-  return this->evalSol2(s,eV,fe,X);
-}
-
-
 bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
                            const FiniteElement& fe, const Vec3& X) const
 {
@@ -962,7 +942,7 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
     else if (maxVal[i].size() == 1 && maxVal[i].front().second == 0.0)
       continue; // no value
 
-    std::string name = this->getField2Name(i);
+    std::string name = this->getField2Name(i,nullptr);
     os <<"  Max "<< name <<":";
     if (name.size() < 16)
       os << std::string(16-name.size(),' ');
@@ -1002,6 +982,12 @@ ForceBase* Elasticity::getForceIntegrand (const Vec3* X0, AnaSol* asol) const
 ForceBase* Elasticity::getForceIntegrand () const
 {
    return new ElasticityForce(*const_cast<Elasticity*>(this));
+}
+
+
+size_t Elasticity::getVolumeIndex (bool withAnaSol) const
+{
+  return (withAnaSol ? 5 : 3) + dualFld.size();
 }
 
 
