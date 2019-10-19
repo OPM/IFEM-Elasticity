@@ -112,6 +112,9 @@ public:
   virtual bool solveStep(TimeStep& tp) = 0;
 
   using SIMsolution::getSolution;
+
+  //! \brief Overrides the parent class method to do nothing.
+  virtual bool postProcessNorms(Vectors&, Matrix*) { return true; }
 };
 
 #endif

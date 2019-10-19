@@ -227,3 +227,12 @@ bool SIMLinElKL::haveAnaSol () const
   else
     return false;
 }
+
+
+size_t SIMLinElKL::getVolumeIndex () const
+{
+  if (dynamic_cast<KirchhoffLovePlate*>(myProblem))
+    return this->haveAnaSol() ? 6 : 3;
+  else
+    return 0;
+}

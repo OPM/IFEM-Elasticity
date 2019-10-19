@@ -46,6 +46,9 @@ protected:
 
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual void preprocessA();
+
+  //! \brief Returns norm index of the integrated volume.
+  virtual size_t getVolumeIndex() const;
 };
 
 #endif

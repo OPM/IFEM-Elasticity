@@ -126,6 +126,9 @@ protected:
   //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& u, const TimeDomain& time) const;
 
+  //! \brief Returns norm index of the integrated volume.
+  virtual size_t getVolumeIndex() const { return 0; }
+
 private:
   //! \brief Assembles consistent nodal forces due to an element point load.
   //! \param[in] patch 1-based patch index
