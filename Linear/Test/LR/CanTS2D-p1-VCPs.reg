@@ -1,0 +1,559 @@
+CanTS2D-p1-VCPs.xinp -dualadap
+
+Input file: CanTS2D-p1-VCPs.xinp
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Solution component output zero tolerance: 1e-06
+Parsing input file CanTS2D-p1-VCPs.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+	Length in Y = 0.4
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed (1,1,1D)
+	               loaded (1,1,1D) (1,2,1D)
+  Parsing <refine>
+	Refining P1 19 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <neumann>
+	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Prescribing node 1 at X = 0 0 0
+	Constraining P1 point at 0 0.5 with code 12
+	Prescribing node 43 at X = 0 0.2 0
+	Constraining P1 point at 0 1 with code 1
+	Prescribing node 22 at X = 0 0.4 0
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+	Analytical solution: Expression
+	Variables=F0=1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5;
+	Stress=F0\*(L\*H/I)\*(x/L-1)\*Y | 0 | F0\*(H\*H/I)\*0.5\*(0.25-Y\*Y)
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4 0 0
+	X2     = 0.5 0.1 0
+	comp   = 1
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4 0 0
+	X2     = 0.5 0.1 0
+	comp   = 6
+  Parsing <boundaryforce>
+	Boundary force "fixed" code 3000000
+Parsing <discretization>
+Parsing <adaptive>
+	Refinement percentage: 2 type=6
+	Refinement scheme: 2
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    80
+Number of nodes       105
+Number of dofs        210
+Number of unknowns    206
+Boundary section 1: X0 = 0 0.2 0
+ >>> Starting adaptive simulation based on
+     Continuous global L2-projection error estimates (norm group 1) <<<
+Adaptive step 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Solving the equation system ...
+	Condition number: 135067
+ >>> Solution summary <<<
+L2-norm            : 0.00086166
+Max X-displacement : 0.000351307
+Max Y-displacement : 0.00240491
+Reaction force     : 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.158205
+Max X-displacement : 0.0931458
+Max Y-displacement : 0.423241
+Projecting secondary solution ...
+	Continuous global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Boundary tractions at section 1: 2.79397e-08 -3.70168e+06 -1.90388e+06
+Energy norm           a(u^h,u^h)^0.5 : 49.1731
+External energy((f,u^h)+(t,u^h))^0.5 : 49.1731
+Exact norm                a(u,u)^0.5 : 49.926
+Exact error      a(e,e)^0.5, e=u-u^h : 8.63734
+Exact relative error (%) : 17.3003
+VCP quantity               a(u^h,w1) : 4.23255e+07
+VCP quantity                 a(u,w1) : 4.35938e+07
+VCP quantity               a(u^h,w2) : 1.59016e+06
+VCP quantity                 a(u,w2) : 1.5625e+06
+Vol(D1) : 0.01
+Vol(D2) : 0.01
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.486
+Error norm a(e,e)^0.5, e=u^r-u^h     : 8.19187
+ relative error (% of |u|)   : 16.408
+Exact error a(e,e)^0.5, e=u-u^r      : 2.73803
+ relative error (% of |u|)   : 5.48419
+Effectivity index             : 0.948426
+Error estimate a(e,e)^0.5, e=u^r-u^h : 8.19187
+Relative error (%) : 16.4328
+Effectivity index  : 0.948426
+Error estimate, dual solution    (z) : 26125.5
+Relative error (%) : 52.5458
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 97186.4
+Root mean square (RMS) of error      : 0.505958
+Min element error                    : 0.163159
+Max element error                    : 1.6604
+Average element error                : 0.81723
+Refining 3 basis functions with errors in range \[35112.3,47234.8]
+Refined mesh: 98 elements 121 nodes.
+Adaptive step 2
+Parsing input file CanTS2D-p1-VCPs.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed (1,1,1D)
+	               loaded (1,1,1D) (1,2,1D)
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <neumann>
+	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Prescribing node 1 at X = 0 0 0
+	Constraining P1 point at 0 0.5 with code 12
+	Prescribing node 58 at X = 0 0.2 0
+	Constraining P1 point at 0 1 with code 1
+	Prescribing node 25 at X = 0 0.4 0
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+	Analytical solution: Expression
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4 0 0
+	X2     = 0.5 0.1 0
+	comp   = 1
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4 0 0
+	X2     = 0.5 0.1 0
+	comp   = 6
+  Parsing <boundaryforce>
+	Boundary force "fixed" code 3000000
+Parsing <adaptive>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    98
+Number of nodes       121
+Number of dofs        242
+Number of unknowns    238
+Boundary section 1: X0 = 0 0.2 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Solving the equation system ...
+	Condition number: 196007
+ >>> Solution summary <<<
+L2-norm            : 0.000806782
+Max X-displacement : 0.000352099
+Max Y-displacement : 0.00241125
+Reaction force     : 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.149493
+Max X-displacement : 0.0905276
+Max Y-displacement : 0.428172
+Projecting secondary solution ...
+	Continuous global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Boundary tractions at section 1: -1568.89 -3.70174e+06 -1.90355e+06
+Energy norm           a(u^h,u^h)^0.5 : 49.2377
+External energy((f,u^h)+(t,u^h))^0.5 : 49.2377
+Exact norm                a(u,u)^0.5 : 49.926
+Exact error      a(e,e)^0.5, e=u-u^h : 8.26165
+Exact relative error (%) : 16.5478
+VCP quantity               a(u^h,w1) : 4.28208e+07
+VCP quantity                 a(u,w1) : 4.35938e+07
+VCP quantity               a(u^h,w2) : 1.55854e+06
+VCP quantity                 a(u,w2) : 1.5625e+06
+Vol(D1) : 0.01
+Vol(D2) : 0.01
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.6173
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.79137
+ relative error (% of |u|)   : 15.6058
+Exact error a(e,e)^0.5, e=u-u^r      : 2.74777
+ relative error (% of |u|)   : 5.50369
+Effectivity index             : 0.943078
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.79137
+Relative error (%) : 15.6295
+Effectivity index  : 0.943078
+Error estimate, dual solution    (z) : 17081
+Relative error (%) : 36.6837
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 36811.9
+Root mean square (RMS) of error      : 0.576257
+Min element error                    : 0.163159
+Max element error                    : 1.68193
+Average element error                : 0.681926
+Refining 3 basis functions with errors in range \[6691.23,7616.77]
+Refined mesh: 122 elements 143 nodes.
+Adaptive step 3
+Parsing input file CanTS2D-p1-VCPs.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed (1,1,1D)
+	               loaded (1,1,1D) (1,2,1D)
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <neumann>
+	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Prescribing node 1 at X = 0 0 0
+	Constraining P1 point at 0 0.5 with code 12
+	Prescribing node 66 at X = 0 0.2 0
+	Constraining P1 point at 0 1 with code 1
+	Prescribing node 29 at X = 0 0.4 0
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+	Analytical solution: Expression
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4375 0.0375 0
+	X2     = 0.4625 0.0625 0
+	comp   = 1
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4375 0.0375 0
+	X2     = 0.4625 0.0625 0
+	comp   = 6
+  Parsing <boundaryforce>
+	Boundary force "fixed" code 3000000
+Parsing <adaptive>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    122
+Number of nodes       143
+Number of dofs        286
+Number of unknowns    282
+Boundary section 1: X0 = 0 0.2 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Solving the equation system ...
+	Condition number: 220125
+ >>> Solution summary <<<
+L2-norm            : 0.00074484
+Max X-displacement : 0.000352167
+Max Y-displacement : 0.00241181
+Reaction force     : 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.00788565
+Max X-displacement : 0.00799825
+Max Y-displacement : 0.0243787
+Projecting secondary solution ...
+	Continuous global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Boundary tractions at section 1: -1749.59 -3.70175e+06 -1.90352e+06
+Energy norm           a(u^h,u^h)^0.5 : 49.2433
+External energy((f,u^h)+(t,u^h))^0.5 : 49.2433
+Exact norm                a(u,u)^0.5 : 49.926
+Exact error      a(e,e)^0.5, e=u-u^h : 8.22796
+Exact relative error (%) : 16.4803
+VCP quantity               a(u^h,w1) : 3.90028e+07
+VCP quantity                 a(u,w1) : 3.96387e+07
+VCP quantity               a(u^h,w2) : 1.94655e+06
+VCP quantity                 a(u,w2) : 1.97266e+06
+Vol(D1) : 0.000625
+Vol(D2) : 0.000625
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.6285
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.75716
+ relative error (% of |u|)   : 15.5373
+Exact error a(e,e)^0.5, e=u-u^r      : 2.74355
+ relative error (% of |u|)   : 5.49524
+Effectivity index             : 0.94278
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.75716
+Relative error (%) : 15.5608
+Effectivity index  : 0.94278
+Error estimate, dual solution    (z) : 5618.51
+Relative error (%) : 56.0378
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 3426.11
+Root mean square (RMS) of error      : 0.789106
+Min element error                    : 0.0715201
+Max element error                    : 1.68129
+Average element error                : 0.551322
+Refining 3 basis functions with errors in range \[718.669,815.554]
+Refined mesh: 146 elements 161 nodes.
+Adaptive step 4
+Parsing input file CanTS2D-p1-VCPs.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed (1,1,1D)
+	               loaded (1,1,1D) (1,2,1D)
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <neumann>
+	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Prescribing node 1 at X = 0 0 0
+	Constraining P1 point at 0 0.5 with code 12
+	Prescribing node 71 at X = 0 0.2 0
+	Constraining P1 point at 0 1 with code 1
+	Prescribing node 29 at X = 0 0.4 0
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+	Analytical solution: Expression
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4375 0.0375 0
+	X2     = 0.4625 0.0625 0
+	comp   = 1
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.4375 0.0375 0
+	X2     = 0.4625 0.0625 0
+	comp   = 6
+  Parsing <boundaryforce>
+	Boundary force "fixed" code 3000000
+Parsing <adaptive>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    146
+Number of nodes       161
+Number of dofs        322
+Number of unknowns    318
+Boundary section 1: X0 = 0 0.2 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Solving the equation system ...
+	Condition number: 217635
+ >>> Solution summary <<<
+L2-norm            : 0.000703708
+Max X-displacement : 0.000352188
+Max Y-displacement : 0.00241197
+Reaction force     : 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.00396729
+Max X-displacement : 0.00573711
+Max Y-displacement : 0.0128677
+Projecting secondary solution ...
+	Continuous global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Boundary tractions at section 1: -1775.13 -3.70175e+06 -1.90351e+06
+Energy norm           a(u^h,u^h)^0.5 : 49.245
+External energy((f,u^h)+(t,u^h))^0.5 : 49.245
+Exact norm                a(u,u)^0.5 : 49.926
+Exact error      a(e,e)^0.5, e=u-u^h : 8.2179
+Exact relative error (%) : 16.4602
+VCP quantity               a(u^h,w1) : 4.11767e+07
+VCP quantity                 a(u,w1) : 4.17773e+07
+VCP quantity               a(u^h,w2) : 1.83239e+06
+VCP quantity                 a(u,w2) : 1.81152e+06
+Vol(D1) : 0.0003125
+Vol(D2) : 0.0003125
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.6322
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.74454
+ relative error (% of |u|)   : 15.512
+Exact error a(e,e)^0.5, e=u-u^r      : 2.74908
+ relative error (% of |u|)   : 5.50631
+Effectivity index             : 0.942398
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.74454
+Relative error (%) : 15.5356
+Effectivity index  : 0.942398
+Error estimate, dual solution    (z) : 2653.32
+Relative error (%) : 50.4349
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 1182.01
+Root mean square (RMS) of error      : 0.961148
+Min element error                    : 0.0152681
+Max element error                    : 1.68169
+Average element error                : 0.462102
+Refining 4 basis functions with errors in range \[134.798,196.533]
+Refined mesh: 173 elements 186 nodes.
+Adaptive step 5
+Parsing input file CanTS2D-p1-VCPs.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed (1,1,1D)
+	               loaded (1,1,1D) (1,2,1D)
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <neumann>
+	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Prescribing node 1 at X = 0 0 0
+	Constraining P1 point at 0 0.5 with code 12
+	Prescribing node 84 at X = 0 0.2 0
+	Constraining P1 point at 0 1 with code 1
+	Prescribing node 29 at X = 0 0.4 0
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+	Analytical solution: Expression
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.44375 0.04375 0
+	X2     = 0.45625 0.05625 0
+	comp   = 1
+  Parsing <dualfield>
+	patch  = 1
+	X0     = 0.45 0.05 0
+	X1     = 0.44375 0.04375 0
+	X2     = 0.45625 0.05625 0
+	comp   = 6
+  Parsing <boundaryforce>
+	Boundary force "fixed" code 3000000
+Parsing <adaptive>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    173
+Number of nodes       186
+Number of dofs        372
+Number of unknowns    368
+Boundary section 1: X0 = 0 0.2 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Assembling Neumann matrix terms for boundary 2 on P1
+Solving the equation system ...
+	Condition number: 243047
+ >>> Solution summary <<<
+L2-norm            : 0.000658212
+Max X-displacement : 0.000352873
+Max Y-displacement : 0.00241763
+Reaction force     : 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.00187477
+Max X-displacement : 0.00344775
+Max Y-displacement : 0.00645549
+Projecting secondary solution ...
+	Continuous global L2-projection
+Projecting secondary solution ...
+	Continuous global L2-projection
+Boundary tractions at section 1: -350.969 -3.70167e+06 -1.90389e+06
+Energy norm           a(u^h,u^h)^0.5 : 49.3024
+External energy((f,u^h)+(t,u^h))^0.5 : 49.3024
+Exact norm                a(u,u)^0.5 : 49.926
+Exact error      a(e,e)^0.5, e=u-u^h : 7.86609
+Exact relative error (%) : 15.7555
+VCP quantity               a(u^h,w1) : 4.13158e+07
+VCP quantity                 a(u,w1) : 4.16089e+07
+VCP quantity               a(u^h,w2) : 1.89923e+06
+VCP quantity                 a(u,w2) : 1.81152e+06
+Vol(D1) : 0.00015625
+Vol(D2) : 0.00015625
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.7513
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.35125
+ relative error (% of |u|)   : 14.7243
+Exact error a(e,e)^0.5, e=u-u^r      : 2.79949
+ relative error (% of |u|)   : 5.60727
+Effectivity index             : 0.934549
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.35125
+Relative error (%) : 14.7475
+Effectivity index  : 0.934549
+Error estimate, dual solution    (z) : 2823.59
+Relative error (%) : 56.2949
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 550.415
+Root mean square (RMS) of error      : 1.02686
+Min element error                    : 0.0155591
+Max element error                    : 1.70624
+Average element error                : 0.389934

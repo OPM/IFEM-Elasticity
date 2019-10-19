@@ -7,21 +7,24 @@
   <geometry dim="2" Lx="2.0" Ly="0.4">
     <refine patch="1" u="19" v="3"/>
     <topologysets>
-      <set name="support" type="vertex">
-        <item patch="1">1</item>
-      </set>
       <set name="fixed" type="edge">
         <item patch="1">1</item>
       </set>
       <set name="loaded" type="edge">
-        <item patch="1">2</item>
+        <item patch="1">1 2</item>
       </set>
     </topologysets>
   </geometry>
 
   <boundaryconditions>
-    <dirichlet set="fixed" component="1"/>
-    <dirichlet set="support" component="2"/>
+    <fixpoint patch="1" rx="0.0" ry="0.0" code="1"/>
+    <fixpoint patch="1" rx="0.0" ry="0.5" code="12"/>
+    <fixpoint patch="1" rx="0.0" ry="1.0" code="1"/>
+    <neumann set="fixed" direction="1" type="expression">
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=1000000;
+      F0*(L*H/I)*Y
+    </neumann>
     <neumann set="loaded" direction="2" type="expression">
       L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
       F0=1000000;
@@ -35,7 +38,10 @@
       <variables>F0=1000000; L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5</variables>
       <stress>F0*(L*H/I)*(x/L-1)*Y | 0 | F0*(H*H/I)*0.5*(0.25-Y*Y)</stress>
     </anasol>
-    <dualfield X0="0.6" depth="0.2" dmin="0.05" comp="2" weight="1.0"/>
+    <dualfield X0="0.45 0.05" X1="0.4 0.0" X2="0.5 0.1"
+               dmin="0.01" skip="2" comp="1" weight="1.0"/>
+    <dualfield X0="0.45 0.05" X1="0.4 0.0" X2="0.5 0.1"
+               dmin="0.01" skip="2" comp="6"/>
     <boundaryforce set="fixed"/>
   </elasticity>
 
