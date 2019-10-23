@@ -987,7 +987,7 @@ ForceBase* Elasticity::getForceIntegrand () const
 
 size_t Elasticity::getVolumeIndex (bool withAnaSol) const
 {
-  return (withAnaSol ? 5 : 3) + dualFld.size();
+  return withAnaSol ? 5 : 3;
 }
 
 
@@ -1057,20 +1057,25 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     pnorm[ip++] += error.dot(Cinv*error)*detJW;
   }
 
-  for (const Vector& eps : epsz)
-    // Evaluate the variational-consistent postprocessing quantity, a(u^h,w)
-    // (typically a sectional force component)
-    pnorm[ip++] += sigmah.dot(eps)*detJW;
-
   // Integrate the volume
   pnorm[ip++] += detJW;
+
+  for (const Vector& eps : epsz)
+  {
+    // Evaluate the variational-consistent postprocessing quantity, a(u^h,w)
+    // (typically a sectional force component, or a mean stress component)
+    pnorm[ip++] += sigmah.dot(eps)*detJW;
+    if (anasol) // Evaluate the corresponding exact quantity, a(u,w)
+      pnorm[ip++] += sigma.dot(eps)*detJW;
+  }
 
 #if INT_DEBUG > 3
   std::cout <<"\nElasticityNorm::evalInt(X = "<< X <<")\nsigma^h ="<< sigmah;
   if (anasol) std::cout <<"sigma ="<< sigma;
-  for (size_t i = 0; i < epsz.size(); i++)
-    std::cout <<"epsz("<< i+1 <<") ="<< epsz[i] <<"a(u^,w"<< i+1
-              <<"): "<< pnorm[ip-epsz.size()-1+i] << std::endl;
+  size_t jp = anasol ? 5 : 3;
+  for (size_t i = 0; i < epsz.size(); i++, j += (anasol ? 2 : 1))
+    std::cout <<"epsz("<< i+1 <<") ="<< epsz[i]
+              <<"a(u^,w"<< i+1 <<"): "<< pnorm[jp] << std::endl;
 #endif
 
   size_t j, k;
@@ -1161,7 +1166,7 @@ size_t ElasticityNorm::getNoFields (int group) const
   else if (group == 1 || group == -1)
   {
     size_t nExt = static_cast<Elasticity&>(myProblem).numExtrFunction();
-    return nExt + (anasol ? 5 : 3);
+    return anasol ? 5 + 2*nExt : 3 + nExt;
   }
   else if (group > 0 || !prjsol[-group-2].empty())
     return anasol ? 6 : 4;
@@ -1174,16 +1179,18 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
                                      const char* prefix) const
 {
   size_t nx = i > 1 ? 1 : static_cast<Elasticity&>(myProblem).numExtrFunction();
+  if (i == 1 && anasol) nx *= 2;
   if (i == 0 || j == 0 || j > 5+nx)
     return this->NormBase::getName(i,j,prefix);
 
-  static const char* u[8] = {
+  static const char* u[9] = {
     "a(u^h,u^h)^0.5",
     "((f,u^h)+(t,u^h))^0.5",
     "a(u,u)^0.5",
     "a(e,e)^0.5, e=u-u^h",
-    "a(u^h,w)",
     "volume",
+    "a(u^h,w)",
+    "a(u,w)",
     "a(z^h,z^h)^0.5",
     "(E(u)*E(z))^0.5, E(v)=a(e,e), e=v^r-v^h"
   };
@@ -1200,19 +1207,25 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
   const char** s = i > 1 ? p : u;
   if (i == 1)
   {
-    if (!anasol)
-      if (j > 2 && j < 4+nx) j += 2;
-    if (j == 5+nx)
-      j = 6;
-    else if (j > 4 && nx > 1)
+    if (anasol)
+      nx /= 2;
+    else if (j > 2 && j < 4)
+      j += 2;
+    if (j > 5 && nx > 1)
     {
+      j -= 5;
       char comp[16];
-      sprintf(comp,"a(u^h,w%zu)",j-4);
+      if (!anasol)
+        sprintf(comp,"a(u^h,w%zu)",j);
+      else if (j%2)
+        sprintf(comp,"a(u^h,w%zu)",j/2+1);
+      else
+        sprintf(comp,"a(u,w%zu)",j/2);
       return comp;
     }
     else if (j <= 2 && prefix)
       if (!strncmp(prefix,"Dual",4))
-        return s[5+j];
+        return s[6+j];
   }
   if (!prefix)
     return s[j-1];

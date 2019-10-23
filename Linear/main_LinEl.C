@@ -42,7 +42,7 @@
   \return Exit status
 */
 
-int modalSim (char* infile, size_t nM, bool dumpModes, bool qStatic,
+int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
               SIMoutput* model, DataExporter* exporter,
               double zero_tol, std::streamsize outPrec);
 
@@ -276,7 +276,7 @@ int main (int argc, char** argv)
   utl::profiler->start("Model input");
 
   // Create the simulation model
-  SIMoutput* model;
+  SIMgeneric*       model;
   std::vector<Mode> modes;
   if (args.dim == 1)
   {
@@ -574,14 +574,28 @@ int main (int argc, char** argv)
                      <<"\nExact relative error (%) : "<< norm(4)*Rel;
         size_t iSec = model->getVCPindex();
         if (iSec && norm.size() >= iSec)
+        {
           IFEM::cout <<"\nRecovered section force a(u^h,w)     : "<< norm(iSec);
+          if (model->haveAnaSol() && norm.size() >= ++iSec)
+            IFEM::cout <<"\nExact section force a(u,w)           : "
+                       << norm(iSec);
+        }
         else if (model->haveAnaSol() && norm.size() >= 6)
           IFEM::cout <<"\nResidual error (r(u) + J(u))^0.5 : "<< norm(5)
                      <<"\n- relative error (% of |u|) : "<< norm(5)*Rel;
-        for (size_t i = 2; (iSec = model->getVCPindex(i)); i++)
-          if (norm.size() >= iSec)
-            IFEM::cout <<"\nRecovered section force a(u^h,w"<< i <<")    : "
-                       << norm(iSec);
+        size_t i = model->haveAnaSol() ? 2 : 1;
+        while ((iSec = model->getVCPindex(++i)) && norm.size() >= iSec)
+        {
+          if (model->haveAnaSol() && i%2 == 0)
+            IFEM::cout <<"\nExact section force       a(u,w";
+          else
+            IFEM::cout <<"\nRecovered section force a(u^h,w";
+          if (model->haveAnaSol())
+            IFEM::cout << (i-1)/2 + 1;
+          else
+            IFEM::cout << i;
+          IFEM::cout <<")    : "<< norm(iSec);
+        }
         if (!dNorm.empty())
           IFEM::cout <<"\nEnergy norm |z^h| = a(z^h,z^h)^0.5   : "
                      << dNorm.front()(1);
