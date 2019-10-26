@@ -60,13 +60,12 @@ public:
 
     // Assemble the reaction forces. Strictly, we only need to assemble those
     // elements that have nodes on the Dirichlet boundaries, but...
-    prob->setReactionIntegral(new ReactionsOnly(myReact,Dim::mySam));
+    prob->setReactionIntegral(new ReactionsOnly(myReact,Dim::mySam,Dim::adm));
     AlgEqSystem* tmpEqSys = Dim::myEqSys;
     Dim::myEqSys = nullptr;
     int oldlevel = Dim::msgLevel;
     Dim::msgLevel = 1;
-    this->setMode(SIM::RHS_ONLY);
-    bool ok = this->assembleSystem(Vectors(1,solution));
+    bool ok = this->setMode(SIM::RHS_ONLY) && this->assembleSystem({solution});
 
     // Print out the reaction forces
     Vector Rforce;
