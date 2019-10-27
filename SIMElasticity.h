@@ -598,51 +598,7 @@ protected:
   //! \brief Reverts the square-root operation on the volume and VCP quantities.
   virtual bool postProcessNorms(Vectors& gNorm, Matrix* eNorm)
   {
-    if (gNorm.empty())
-      return false;
-
-    size_t iVol = this->getVolumeIndex();
-    if (iVol > gNorm.front().size())
-      iVol = 0;
-    else if (iVol > 0)
-    {
-      // Undo the square-root final operation for the global and element volumes
-      gNorm.front()(iVol) *= gNorm.front()(iVol);
-      if (!eNorm || iVol > eNorm->rows())
-        iVol = 0;
-      else for (size_t j = 1; j <= eNorm->cols(); j++)
-        (*eNorm)(iVol,j) *= (*eNorm)(iVol,j);
-    }
-
-    size_t i, k = 0;
-    while ((i = this->getVCPindex(++k)))
-    {
-      double Dvol = 0.0; // Volume of support of the extraction function
-      if (eNorm && i <= eNorm->rows())
-        for (size_t j = 1; j <= eNorm->cols(); j++)
-        {
-          double& vcpq = (*eNorm)(i,j);
-          // Check if element is within the support of the extraction function
-          if (fabs(vcpq) > 1.0e-12 && iVol > 0)
-            Dvol += (*eNorm)(iVol,j);
-          vcpq = copysign(vcpq*vcpq,vcpq);
-        }
-
-      if (i <= gNorm.front().size())
-      {
-        double& vcpq = gNorm.front()(i);
-        // Divide by the volume to obtain volume-averaged stress
-        // if we are doing point-wise stress extraction.
-        // Notice that this is done _before_ the square-ing.
-        // This is because the final sqrt-operation has not been
-        // performed yet on the global norm quantities.
-        if (Dvol > 0.0 && Dim::extrFunc[k-1]->getType() == 3)
-          vcpq /= Dvol;
-        vcpq = copysign(vcpq*vcpq,vcpq);
-      }
-    }
-
-    return true;
+    return this->revertSqrt(gNorm,eNorm);
   }
 
 public:
