@@ -14,6 +14,8 @@
 #include "ModalDriver.h"
 #include "SIMmodal.h"
 
+using Parent = NewmarkDriver<NewmarkSIM>; //!< Convenience renaming
+
 
 const Vectors& ModalDriver::realSolutions ()
 {
@@ -35,15 +37,13 @@ size_t ModalDriver::numSolution () const
 
 bool ModalDriver::serialize (HDF5Restart::SerializeData& data) const
 {
-  return (model.serialize(data) &&
-          this->NewmarkDriver<NewmarkSIM>::serialize(data));
+  return model.serialize(data) && this->Parent::serialize(data);
 }
 
 
 bool ModalDriver::deSerialize (const HDF5Restart::SerializeData& data)
 {
-  return (model.deSerialize(data) &&
-          this->NewmarkDriver<NewmarkSIM>::deSerialize(data));
+  return model.deSerialize(data) && this->Parent::deSerialize(data);
 }
 
 
@@ -88,11 +88,36 @@ void ModalDriver::dumpModes (utl::LogStream& os,
 }
 
 
-int modalSim (char* infile, size_t nM, bool dumpModes,
+bool ModalDriver::predictStep (TimeStep& tp)
+{
+  return qstatic ? true : this->Parent::predictStep(tp);
+}
+
+
+bool ModalDriver::correctStep (TimeStep& tp, bool)
+{
+  if (qstatic)
+  {
+    solution.front() = linsol;
+    model.updateRotations(solution.front());
+    return model.updateConfiguration(solution.front());
+  }
+  else
+    return this->Parent::correctStep(tp);
+}
+
+
+SIM::ConvStatus ModalDriver::checkConvergence (TimeStep& tp)
+{
+  return qstatic ? SIM::CONVERGED : this->Parent::checkConvergence(tp);
+}
+
+
+int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
               SIMoutput* model, DataExporter* exporter,
               double zero_tol, std::streamsize outPrec)
 {
-  ModalDriver simulator(*model);
+  ModalDriver simulator(*model,qstatic);
 
   // Print out control point stresses for the eigenmodes
   if (dumpModes)
@@ -104,7 +129,9 @@ int modalSim (char* infile, size_t nM, bool dumpModes,
 
   // Initialize the modal time-domain simulation
   simulator.initPrm();
-  simulator.initSolution(nM,3);
+  // Set beta=0 for quasi-static simulation
+  if (qstatic) model->setIntegrationPrm(2,0.0);
+  simulator.initSolution(nM, qstatic ? 1 : 3);
   simulator.printProblem();
 
   // Save FE model to VTF file for visualization

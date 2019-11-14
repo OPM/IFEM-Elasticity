@@ -34,6 +34,7 @@
   \param[in] infile The input file to parse for time integration setup
   \param[in] nM Number of eigenmodes
   \param[in] dumpModes If \e true, dump projected eigenmode solutions
+  \param[in] qstatic If \e true, use quasi-static simulation mode
   \param model The isogeometric finite element model
   \param exporter Result export handler
   \param[in] zero_tol Truncate result values smaller than this to zero
@@ -41,7 +42,7 @@
   \return Exit status
 */
 
-int modalSim (char* infile, size_t nM, bool dumpModes,
+int modalSim (char* infile, size_t nM, bool dumpModes, bool qStatic,
               SIMoutput* model, DataExporter* exporter,
               double zero_tol, std::streamsize outPrec);
 
@@ -81,6 +82,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes,
   \arg -shift \a shf : Shift value to use in the eigenproblem solver
   \arg -free : Ignore all boundary conditions (use in free vibration analysis)
   \arg -dynamic : Solve the linear dynamics problem using modal transformation
+  \arg -qstatic : Solve the linear dynamics problem as quasi-static
   \arg -dumpModes : Dump projected eigenmode solution
   \arg -strain : Output strains instead of stresses to VTF and result points
   \arg -check : Data check only, read model and output to VTF (no solution)
@@ -128,7 +130,7 @@ int main (int argc, char** argv)
   bool noProj = false;
   bool noError = false;
   bool dualSol = false;
-  bool dynSol = false;
+  char dynSol = false;
   bool dumpModes = false;
   char* infile = nullptr;
   Elasticity::wantStrain = false;
@@ -212,7 +214,9 @@ int main (int argc, char** argv)
     else if (!strncmp(argv[i],"-dual",5))
       dualSol = true;
     else if (!strncmp(argv[i],"-dyn",4))
-      dynSol = true;
+      dynSol = 'd';
+    else if (!strncmp(argv[i],"-qstat",6))
+      dynSol = 's';
     else if (!strcmp(argv[i],"-dumpModes"))
       dumpModes = true;
     else if (!infile)
@@ -237,7 +241,7 @@ int main (int argc, char** argv)
               <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]|-dual"
               <<"adap] [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
               <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
-              <<" [-dynamic]\n       [-ignore <p1> <p2> ...] [-fixDup]"
+              <<" [-dynamic|-qstatic]\n       [-ignore <p1> <p2> ...] [-fixDup]"
               <<" [-dual] [-checkRHS] [-check]\n      "
               <<" [-printMax[Patch]] [-dumpASC] [-dumpMatlab [<setnames>]]"
               <<" [-dumpModes]\n       [-outPrec <nd>] [-ztol <eps>] [-strain]"
@@ -689,7 +693,7 @@ int main (int argc, char** argv)
   }
 
   if (dynSol) // Solve the dynamics problem using modal transformation
-    return terminate(modalSim(infile,modes.size(),dumpModes,
+    return terminate(modalSim(infile,modes.size(),dumpModes,dynSol=='s',
                               model,exporter,zero_tol,outPrec));
 
   utl::profiler->start("Postprocessing");

@@ -26,7 +26,9 @@ class ModalDriver : public NewmarkDriver<NewmarkSIM>
 {
 public:
   //! \brief The constructor forwards to the parent class constructor.
-  explicit ModalDriver(SIMbase& sim) : NewmarkDriver<NewmarkSIM>(sim) {}
+  explicit ModalDriver(SIMbase& sim, bool qs = false)
+    : NewmarkDriver<NewmarkSIM>(sim) { qstatic = qs; }
+
   //! \brief Empty destructor.
   virtual ~ModalDriver() {}
 
@@ -48,6 +50,16 @@ public:
 
   //! \brief Dumps the projected secondary solution for the eigenmodes.
   void dumpModes(utl::LogStream& os, std::streamsize precision) const;
+
+  //! \brief Checks whether the corrector iterations have converged or diverged.
+  SIM::ConvStatus checkConvergence(TimeStep& tp);
+  //! \brief Calculates predicted velocities and accelerations.
+  virtual bool predictStep(TimeStep& tp);
+  //! \brief Updates configuration variables (solution vector) in an iteration.
+  virtual bool correctStep(TimeStep& tp, bool);
+
+private:
+  bool qstatic; //!< If \e true, use quasi-static simulation driver
 };
 
 #endif

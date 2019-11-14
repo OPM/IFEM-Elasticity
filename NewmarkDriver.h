@@ -189,15 +189,18 @@ protected:
       return 7;
 
     int ip = this->numSolution() - 2;
-    if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
-                                   Newmark::nBlock,params.time.t,
-                                   "velocity",20))
-      return 8;
+    if (ip > 0)
+    {
+      if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
+                                     Newmark::nBlock,params.time.t,
+                                     "velocity",20))
+        return 8;
 
-    if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
-                                   Newmark::nBlock,params.time.t,
-                                   "acceleration",30))
-      return 9;
+      if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
+                                     Newmark::nBlock,params.time.t,
+                                     "acceleration",30))
+        return 9;
+    }
 
     if (!Newmark::model.writeGlvP(proSol,iStep,Newmark::nBlock,110,
                                   prefix.c_str()))
