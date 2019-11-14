@@ -36,11 +36,14 @@
   \param[in] dumpModes If \e true, dump projected eigenmode solutions
   \param model The isogeometric finite element model
   \param exporter Result export handler
+  \param[in] zero_tol Truncate result values smaller than this to zero
+  \param[in] outPrec Number of digits after the decimal point in result print
   \return Exit status
 */
 
 int modalSim (char* infile, size_t nM, bool dumpModes,
-              SIMoutput* model, DataExporter* exporter);
+              SIMoutput* model, DataExporter* exporter,
+              double zero_tol, std::streamsize outPrec);
 
 
 /*!
@@ -79,6 +82,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes,
   \arg -free : Ignore all boundary conditions (use in free vibration analysis)
   \arg -dynamic : Solve the linear dynamics problem using modal transformation
   \arg -dumpModes : Dump projected eigenmode solution
+  \arg -strain : Output strains instead of stresses to VTF and result points
   \arg -check : Data check only, read model and output to VTF (no solution)
   \arg -checkRHS : Check that the patches are modelled in a right-hand system
   \arg -vizRHS : Save the right-hand-side load vector on the VTF-file
@@ -127,6 +131,7 @@ int main (int argc, char** argv)
   bool dynSol = false;
   bool dumpModes = false;
   char* infile = nullptr;
+  Elasticity::wantStrain = false;
   Elasticity::wantPrincipalStress = true;
   SIMargsBase args("elasticity");
 
@@ -194,6 +199,10 @@ int main (int argc, char** argv)
       args.dim = 2;
       Elastic::axiSymmetry = true;
     }
+    else if (!strcmp(argv[i],"-strain"))
+      Elasticity::wantStrain = true;
+    else if (!strncmp(argv[i],"-noPrin",7))
+      Elasticity::wantPrincipalStress = false;
     else if (!strncmp(argv[i],"-noP",4))
       noProj = true;
     else if (!strncmp(argv[i],"-noE",4))
@@ -231,7 +240,8 @@ int main (int argc, char** argv)
               <<" [-dynamic]\n       [-ignore <p1> <p2> ...] [-fixDup]"
               <<" [-dual] [-checkRHS] [-check]\n      "
               <<" [-printMax[Patch]] [-dumpASC] [-dumpMatlab [<setnames>]]"
-              <<" [-dumpModes]\n       [-outPrec <nd>] [-ztol <eps>]\n";
+              <<" [-dumpModes]\n       [-outPrec <nd>] [-ztol <eps>] [-strain]"
+              << std::endl;
     return 0;
   }
 
@@ -318,6 +328,11 @@ int main (int argc, char** argv)
   // Load vector visualization is not available when using additional viz-points
   if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
     vizRHS = false;
+
+  // Analytical solutions are assumed provided as stress fields,
+  // therefore strain output can not be used
+  if (Elasticity::wantStrain && model->haveAnaSol())
+    Elasticity::wantStrain = false;
 
   model->opt.print(IFEM::cout,true) << std::endl;
 
@@ -674,7 +689,8 @@ int main (int argc, char** argv)
   }
 
   if (dynSol) // Solve the dynamics problem using modal transformation
-    return terminate(modalSim(infile,modes.size(),dumpModes,model,exporter));
+    return terminate(modalSim(infile,modes.size(),dumpModes,
+                              model,exporter,zero_tol,outPrec));
 
   utl::profiler->start("Postprocessing");
 

@@ -637,11 +637,11 @@ Vec3 Elasticity::evalSol (const Vector& eV, const Vector& N) const
 }
 
 
-bool Elasticity::formCinverse (Matrix& Cinv, const FiniteElement& fe,
-                               const Vec3& X) const
+bool Elasticity::formCmat (Matrix& C, const FiniteElement& fe,
+                           const Vec3& X, bool inverted) const
 {
   SymmTensor dummy(nsd,axiSymmetry); double U;
-  return material->evaluate(Cinv,dummy,U,fe,X,dummy,dummy,-1);
+  return material->evaluate(C,dummy,U,fe,X,dummy,dummy, inverted ? -1 : 0);
 }
 
 
@@ -1020,7 +1020,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 
   // Evaluate the inverse constitutive matrix at this point
   Matrix Cinv;
-  if (!problem.formCinverse(Cinv,fe,X))
+  if (!problem.formCmat(Cinv,fe,X,!Elasticity::wantStrain))
     return false;
 
   // Evaluate the finite element stress field
@@ -1103,6 +1103,12 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
       error = sigmar - sigmah;
       pnorm[ip++] += error.dot(Cinv*error)*detJW;
 
+      if (Elasticity::wantStrain)
+      {
+        // Convert to stresses, for L2-enorm
+        sigmar = Cinv*sigmar;
+        error  = Cinv*error;
+      }
       double l2u = sigmar.norm2();
       double l2e = error.norm2();
 

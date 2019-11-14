@@ -89,7 +89,8 @@ void ModalDriver::dumpModes (utl::LogStream& os,
 
 
 int modalSim (char* infile, size_t nM, bool dumpModes,
-              SIMoutput* model, DataExporter* exporter)
+              SIMoutput* model, DataExporter* exporter,
+              double zero_tol, std::streamsize outPrec)
 {
   ModalDriver simulator(*model);
 
@@ -136,7 +137,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes,
   }
 
   // Run the modal time integration
-  int status = simulator.solveProblem(exporter,restart);
+  int status = simulator.solveProblem(exporter,restart,zero_tol,outPrec);
 
   delete restart;
   return status;
