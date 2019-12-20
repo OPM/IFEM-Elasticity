@@ -96,7 +96,7 @@ Projecting secondary solution ...
 	Continuous global L2-projection
 Projecting secondary solution ...
 	Continuous global L2-projection
-Boundary tractions at section 1: 2.79397e-08 -3.70168e+06 -1.90388e+06
+Boundary tractions at section 1: 0 -3.70168e+06 -1.90388e+06
 Energy norm           a(u^h,u^h)^0.5 : 49.1731
 External energy((f,u^h)+(t,u^h))^0.5 : 49.1731
 Exact norm                a(u,u)^0.5 : 49.926

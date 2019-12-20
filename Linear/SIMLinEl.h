@@ -72,7 +72,7 @@ public:
     if (ok && this->getBoundaryReactions(Rforce))
     {
       IFEM::cout <<"Reaction force     :";
-      for (double f : Rforce) IFEM::cout <<" "<< f;
+      for (double f : Rforce) IFEM::cout <<" "<< utl::trunc(f);
       IFEM::cout << std::endl;
     }
 

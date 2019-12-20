@@ -452,19 +452,23 @@ int main (int argc, char** argv)
   };
 
   // Lambda function to calculate and print out boundary forces
-  auto&& printBoundaryForces = [model](const Vector& sol)
+  auto&& printBoundaryForces = [model,zero_tol](const Vector& sol)
   {
     Vectors forces;
     if (!model->calcBouForces(forces,Vectors(1,sol)))
       return false;
 
+    double old_tol = utl::zero_print_tol;
+    if (zero_tol > 0.0) utl::zero_print_tol = zero_tol;
+
     size_t sec = 0;
     for (const Vector& force : forces)
     {
       IFEM::cout <<"\nBoundary tractions at section "<< ++sec <<":";
-      for (double f : force) IFEM::cout <<" "<< f;
+      for (double f : force) IFEM::cout <<" "<< utl::trunc(f);
     }
     IFEM::cout << std::endl;
+    utl::zero_print_tol = old_tol;
     return true;
   };
 
