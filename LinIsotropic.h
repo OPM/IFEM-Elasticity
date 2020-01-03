@@ -40,7 +40,7 @@ public:
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
   LinIsotropic(double E, double v = 0.0, double densty = 0.0,
                bool ps = false, bool ax = false)
-    : Efunc(nullptr), Efield(nullptr), Emod(E), nu(v), rho(densty),
+    : Efunc(nullptr), Efield(nullptr), Emod(E), nuC(v), nuF(nullptr), rho(densty),
       Cpfunc(nullptr), heatcapacity(0.0), Afunc(nullptr), alpha(0.0),
       condFunc(nullptr), conductivity(0.0), planeStress(ps), axiSymmetry(ax) {}
   //! \brief Constructor initializing the material parameters.
@@ -120,7 +120,8 @@ protected:
   RealFunc* Efunc;      //!< Young's modulus (spatial function)
   Field*    Efield;     //!< Young's modulus (spatial field)
   double Emod;          //!< Young's modulus (constant)
-  double nu;            //!< Poisson's ratio
+  double nuC;           //!< Poisson's ratio (constant)
+  RealFunc* nuF;        //!< Poisson's ratio (spatial function)
   double rho;           //!< Mass density
   ScalarFunc* Cpfunc;   //!< Specific heat capacity function
   double heatcapacity;  //!< Specific heat capacity (constant)

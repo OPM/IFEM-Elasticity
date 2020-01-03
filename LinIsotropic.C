@@ -15,8 +15,10 @@
 #include "FiniteElement.h"
 #include "Field.h"
 #include "Functions.h"
-#include "Utilities.h"
+#include "FiniteElement.h"
+#include "IFEM.h"
 #include "Tensor.h"
+#include "Utilities.h"
 #include "Vec3.h"
 #include "IFEM.h"
 #include "tinyxml.h"
@@ -24,13 +26,13 @@
 
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 {
-  Efunc = nullptr;
+  Efunc = nuF = nullptr;
   Efield = nullptr;
   Cpfunc = Afunc = condFunc = nullptr;
 
   // Default material properties - typical values for steel (SI units)
   Emod = 2.05e11;
-  nu = 0.29;
+  nuC = 0.29;
   rho = 7.85e3;
   alpha = 1.2e-7;
   heatcapacity = conductivity = 1.0;
@@ -38,8 +40,9 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 
 
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
-  : Efunc(E), Efield(nullptr), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(E), Efield(nullptr), nuC(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
+  nuF = nullptr;
   Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
@@ -49,9 +52,10 @@ LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
 
 
 LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
-  : Efunc(nullptr), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
+  : Efunc(nullptr), Efield(E), nuC(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
   Cpfunc = Afunc = condFunc = nullptr;
+  nuF = nullptr;
 
   Emod = -1.0; // Should not be referenced
   alpha = 1.2e-7;
@@ -66,6 +70,7 @@ LinIsotropic::~LinIsotropic ()
   delete Afunc;
   delete Cpfunc;
   delete condFunc;
+  delete nuF;
 }
 
 
@@ -73,8 +78,8 @@ void LinIsotropic::parse (const TiXmlElement* elem)
 {
   if (Emod >= 0.0 && utl::getAttribute(elem,"E",Emod))
     IFEM::cout <<" "<< Emod;
-  if (utl::getAttribute(elem,"nu",nu))
-    IFEM::cout <<" "<< nu;
+  if (utl::getAttribute(elem,"nu",nuC))
+    IFEM::cout <<" "<< nuC;
   if (utl::getAttribute(elem,"rho",rho))
     IFEM::cout <<" "<< rho;
   if (utl::getAttribute(elem,"alpha",alpha))
@@ -131,7 +136,7 @@ void LinIsotropic::printLog () const
     IFEM::cout <<"axial-symmetric, ";
   else if (planeStress)
     IFEM::cout <<"plane stress, ";
-  IFEM::cout <<"E = "<< Emod <<", nu = "<< nu <<", rho = "<< rho
+  IFEM::cout <<"E = "<< Emod <<", nu = "<< nuC <<", rho = "<< rho
              <<", alpha = "<< alpha << std::endl;
 }
 
@@ -188,6 +193,10 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
     E = Efield->valueFE(fe);
   else if (Efunc)
     E = (*Efunc)(X);
+
+  double nu = nuC;
+  if (nuF)
+    nu = (*nuF)(X);
 
   if (nsd == 1)
   {
@@ -289,6 +298,10 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 bool LinIsotropic::evaluate (double& lambda, double& mu,
                              const FiniteElement& fe, const Vec3& X) const
 {
+  double nu = nuC;
+  if (nuF)
+    nu = (*nuF)(X);
+
   if (nu < 0.0 || nu >= 0.5)
   {
     std::cerr <<" *** LinIsotropic::evaluate: Poisson's ratio "<< nu
@@ -320,6 +333,7 @@ double LinIsotropic::getStiffness (const Vec3& X) const
 double LinIsotropic::getPlateStiffness (const Vec3& X, double t) const
 {
   double E = Efunc ? (*Efunc)(X) : Emod;
+  double nu = nuF ? (*nuF)(X) : nuC;
   return E*t*t*t / (12.0 - 12.0*nu*nu);
 }
 
