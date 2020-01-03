@@ -13,6 +13,7 @@
 
 #include "Elasticity.h"
 #include "IsotropicTextureMat.h"
+#include "IsotropicPropertyMat.h"
 #include "FiniteElement.h"
 #include "HHTMats.h"
 #include "BDFMats.h"
@@ -107,6 +108,8 @@ Material* Elasticity::parseMatProp (const TiXmlElement* elem, bool planeStrain)
 {
   if (!strcasecmp(elem->Value(),"texturematerial"))
     material = new IsotropicTextureMat(!planeStrain,axiSymmetry);
+  else if (!strcasecmp(elem->Value(),"propertymaterial"))
+    material = new IsotropicPropertyMat(!planeStrain,axiSymmetry);
   else
     material = new LinIsotropic(!planeStrain,axiSymmetry);
   material->parse(elem);

@@ -475,6 +475,7 @@ protected:
         continue;
 
       else if (!strcasecmp(child->Value(),"isotropic") ||
+               !strcasecmp(child->Value(),"propertymaterial") ||
                !strcasecmp(child->Value(),"texturematerial"))
       {
         if (!strcasecmp(child->Value(),"texturematerial"))
