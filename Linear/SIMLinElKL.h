@@ -36,13 +36,13 @@ protected:
   //! \brief Returns the actual integrand.
   virtual KirchhoffLove* getProblem(int version = 1);
 
-  //! \brief Parses a data section from the input stream.
+  //! \brief Parses the analytical solution from an input stream.
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from
-  virtual bool parse(char* keyWord, std::istream& is);
-  //! \brief Parses a data section from an XML element.
+  virtual bool parseAnaSol(char* keyWord, std::istream& is);
+  //! \brief Parses the analytical solution from an XML element.
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parseAnaSol(const TiXmlElement* elem);
 
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual void preprocessA();

@@ -283,10 +283,22 @@ protected:
 
   //! \brief Returns the actual integrand.
   virtual Elasticity* getIntegrand() = 0;
-  //! \brief Parses a dimension-specific data section from an input file.
-  virtual bool parseDimSpecific(char*, std::istream&) { return false; }
-  //! \brief Parses a dimension-specific data section from an XML element.
-  virtual bool parseDimSpecific(const TiXmlElement*) { return false; }
+
+  //! \brief Parses the analytical solution from an input stream.
+  virtual bool parseAnaSol(char*, std::istream&)
+  {
+    std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
+              << std::endl;
+    return false;
+  }
+
+  //! \brief Parses the analytical solution from an XML element.
+  virtual bool parseAnaSol(const TiXmlElement*)
+  {
+    std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
+              << std::endl;
+    return false;
+  }
 
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
@@ -298,10 +310,7 @@ protected:
     int nConstPress = 0;
     int nLinearPress = 0;
 
-    if (this->parseDimSpecific(keyWord,is))
-      return true;
-
-    else if (!strncasecmp(keyWord,"ISOTROPIC",9))
+    if (!strncasecmp(keyWord,"ISOTROPIC",9))
     {
       nmat = atoi(keyWord+10);
       IFEM::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
@@ -359,7 +368,7 @@ protected:
         press.lindx = atoi(strtok(nullptr," "));
         if (press.lindx < 1 || press.lindx > 2*Dim::dimension)
         {
-          std::cerr <<" *** SIMElasticity3D::parse: Invalid face index "
+          std::cerr <<" *** SIMElasticity::parse: Invalid face index "
                     << (int)press.lindx << std::endl;
           return false;
         }
@@ -431,6 +440,9 @@ protected:
       this->getIntegrand()->parseLocalSystem(keyWord+i);
     }
 
+    else if (!strncasecmp(keyWord,"ANASOL",6))
+      return this->parseAnaSol(keyWord,is);
+
     else
       return this->Dim::parse(keyWord,is);
 
@@ -471,11 +483,9 @@ protected:
     bool result = true;
     const TiXmlElement* child = elem->FirstChildElement();
     for (; child; child = child->NextSiblingElement())
-      if (this->parseDimSpecific(child))
-        continue;
 
-      else if (!strcasecmp(child->Value(),"isotropic") ||
-               !strcasecmp(child->Value(),"texturematerial"))
+      if (!strcasecmp(child->Value(),"isotropic") ||
+          !strcasecmp(child->Value(),"texturematerial"))
       {
         if (!strcasecmp(child->Value(),"texturematerial"))
         {
@@ -534,6 +544,9 @@ protected:
 
         bCode[code] = Vec3();
       }
+
+      else if (!strcasecmp(child->Value(),"anasol"))
+        result &= this->parseAnaSol(child);
 
       else if (!strcasecmp(child->Value(),"dualfield"))
         this->getIntegrand()->addExtrFunction(this->parseDualTag(child,2));

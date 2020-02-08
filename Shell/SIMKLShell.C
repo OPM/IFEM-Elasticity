@@ -177,6 +177,9 @@ bool SIMKLShell::parse (char* keyWord, std::istream& is)
     }
   }
 
+  else if (!strncasecmp(keyWord,"ANASOL",6))
+    return this->parseAnaSol(keyWord,is);
+
   else
     return this->SIM2D::parse(keyWord,is);
 
@@ -312,6 +315,9 @@ bool SIMKLShell::parse (const TiXmlElement* elem)
           klp->setPressure(myScalars[code]);
       }
     }
+
+    else if (!strcasecmp(child->Value(),"anasol"))
+      ok = this->parseAnaSol(child);
 
     else if (!klp->parse(child))
       ok = this->SIM2D::parse(child);
