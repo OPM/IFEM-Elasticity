@@ -1073,7 +1073,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   std::cout <<"\nElasticityNorm::evalInt(X = "<< X <<")\nsigma^h ="<< sigmah;
   if (anasol) std::cout <<"sigma ="<< sigma;
   size_t jp = anasol ? 5 : 3;
-  for (size_t i = 0; i < epsz.size(); i++, j += (anasol ? 2 : 1))
+  for (size_t i = 0; i < epsz.size(); i++, jp += (anasol ? 2 : 1))
     std::cout <<"epsz("<< i+1 <<") ="<< epsz[i]
               <<"a(u^,w"<< i+1 <<"): "<< pnorm[jp] << std::endl;
 #endif
