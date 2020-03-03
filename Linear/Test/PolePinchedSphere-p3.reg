@@ -1,0 +1,92 @@
+PolePinchedSphere-p3.xinp -2DKLshell
+
+Input file: PolePinchedSphere-p3.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
+Parsing input file PolePinchedSphere-p3.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file ../../Shell/Test/hemisphere-symmZ.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: hemisphere (1,0,2D)
+	               pole (1,2,1D)
+	               polevx (1,2,0D)
+	               symmXY (1,1,1D)
+	               symmXZ (1,3,1D)
+	               symmYZ (1,4,1D)
+  Parsing <collapse>
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 7 7
+  Parsing <topologysets>
+  Parsing <collapse>
+	Collapsed edge P1 E2
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12000: (fixed)
+	Dirichlet code 3: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 31000: (fixed)
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 23000: (fixed)
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 123000: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 1000003: -0.1
+Parsing <KirchhoffLove>
+	Material code 0: 2e+11 0.3 1 0.001
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.001, gravity = 0
+LinIsotropic: plane stress, E = 2e+11, nu = 0.3, rho = 1, alpha = 0
+Renumbered 90 nodes.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V2 in direction(s) 3 code = 1000003
+	Constraining P1 E1 in direction(s) 12000
+	Constraining P1 E1 in direction(s) 3
+	Constraining P1 E3 in direction(s) 31000
+	Constraining P1 E3 in direction(s) 2
+	Constraining P1 E4 in direction(s) 23000
+	Constraining P1 E4 in direction(s) 1
+	Constraining P1 E2 in direction(s) 123000
+	Constraining P1 E2 in direction(s) 12
+Resolved 14 MPC chains.
+Result point #1: patch #1 (u,v)=(1,1), node #11, X = 0 0 1
+ >>> SAM model summary <<<
+Number of elements    64
+Number of nodes       111
+Number of dofs        333
+Number of constraints 84
+Number of unknowns    216
+Number of quadrature points 1024
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+   \* Sum external load: 2566960.75328991 2566960.75328991 -528489.784144521
+Solving the equation system ...
+	Condition number: 974.2
+ >>> Solution summary <<<
+L2-norm            : 0.0191465
+Max X-displacement : 0.00795086
+Max Y-displacement : 0.00795086
+Max Z-displacement : 0.1
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 161.256
+  Node #11:	sol1 =  0.000000e+00  0.000000e+00 -1.000000e-01
