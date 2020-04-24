@@ -66,13 +66,6 @@ Resolving Dirichlet boundary conditions
 	Constraining P1 E4 in direction(s) 1
 	Constraining P1 E2 in direction(s) 123000
 	Constraining P1 E2 in direction(s) 12
-Multiple threads are utilized during element assembly.
- Thread group 1
-	thread 1: 8 elements
-	thread 2: 8 elements
- Thread group 2
-	thread 1: 8 elements
-	thread 2: 8 elements
 Result point #1: patch #1 (u,v)=(1,1), node #10, X = 0 0 1
  >>> SAM model summary <<<
 Number of elements    32
