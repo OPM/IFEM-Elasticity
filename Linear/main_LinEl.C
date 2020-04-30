@@ -389,11 +389,11 @@ int main (int argc, char** argv)
     // Include secondary results only if no projection has been requested.
     // The secondary results will be projected anyway, but without the
     // nodal averaging across patch boundaries in case of multiple patches.
-    int results = DataExporter::PRIMARY |
-                  DataExporter::NORMS   |
-                  DataExporter::DISPLACEMENT;
+    int results = DataExporter::PRIMARY | DataExporter::DISPLACEMENT;
     if (pOpt.empty() && !model->opt.pSolOnly)
       results |= DataExporter::SECONDARY;
+    if (args.adap || !noError)
+      results |= DataExporter::NORMS;
 
     exporter = new DataExporter(true);
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
@@ -401,23 +401,19 @@ int main (int argc, char** argv)
     if (statSol)
     {
       exporter->registerField("u", "solution", DataExporter::SIM, results);
-      exporter->setFieldValue("u", model,
-                              aSim ? &aSim->getSolution() : &displ.front(),
-                              projs.empty() ? nullptr : &projs,
-                              results & DataExporter::NORMS ? &eNorm : nullptr);
-      for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
-      {
-        exporter->registerField(prefix[i], "projected", DataExporter::SIM,
-                                DataExporter::SECONDARY, prefix[i]);
-        exporter->setFieldValue(prefix[i], model,
-                                aSim ? &aSim->getProjection(i) : &projs[i]);
-      }
+      if (aSim)
+        exporter->setFieldValue("u", model,
+                                &aSim->getSolution(),
+                                &aSim->getProjections(),
+                                &aSim->getEnorm());
+      else
+        exporter->setFieldValue("u", model, &displ.front(), &projs, &eNorm);
       exporter->setNormPrefixes(prefix);
     }
     if (model->opt.eig > 0)
     {
-      exporter->registerField("eig", "eigenmode", DataExporter::SIM,
-                              DataExporter::EIGENMODES);
+      results = DataExporter::EIGENMODES;
+      exporter->registerField("eig", "eigenmode", DataExporter::SIM, results);
       exporter->setFieldValue("eig", model, &modes);
     }
   }
