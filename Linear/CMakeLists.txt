@@ -61,13 +61,15 @@ file(GLOB LINEL_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/*.reg)
 file(GLOB LINEL_VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/*.vreg)
-file(GLOB LINEL_HDF5_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+file(GLOB LINEL_HDF5FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/*.hreg)
 if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.reg)
   file(GLOB LRE_VTF_FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.vreg)
+  file(GLOB LRE_HDF5FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/LR/*.hreg)
 endif()
 list(REMOVE_ITEM LINEL_TESTFILES CanTS2D-p2-restart.reg)
 
@@ -79,11 +81,11 @@ if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
     ifem_add_test(${TESTFILE} LinEl)
   endforeach()
-  foreach(VTFFILE ${LINEL_VTF_FILES} ${LRE_VTF_FILES})
-    ifem_add_vtf_test(${VTFFILE} LinEl)
+  foreach(TESTFILE ${LINEL_VTF_FILES} ${LRE_VTF_FILES})
+    ifem_add_vtf_test(${TESTFILE} LinEl)
   endforeach()
-  foreach(HDF5FILE ${LINEL_HDF5_FILES})
-    ifem_add_hdf5_test(${HDF5FILE} LinEl)
+  foreach(TESTFILE ${LINEL_HDF5FILES} ${LRE_HDF5FILES})
+    ifem_add_hdf5_test(${TESTFILE} LinEl)
   endforeach()
 endif()
 

@@ -1,0 +1,473 @@
+Lshape-adap-p2.xinp -2Dpstrain -adap
+
+/                        Group
+/0                       Group
+/0/Elasticity-1          Group
+/0/Elasticity-1/basis    Group
+/0/Elasticity-1/basis/1  Dataset {6341}
+/0/Elasticity-1/fields   Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1 Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1/1 Dataset {66}
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2 Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2/1 Dataset {66}
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx/1 Dataset {66}
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy/1 Dataset {66}
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy/1 Dataset {66}
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz/1 Dataset {66}
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress Group
+/0/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1 Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2 Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz/1 Dataset {66}
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress Group
+/0/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ P1 Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ P1/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ P2 Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ P2/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_xx Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_xx/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_xy Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_xy/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_yy Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_yy/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_zz Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ s_zz/1 Dataset {66}
+/0/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress Group
+/0/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress/1 Dataset {66}
+/0/Elasticity-1/fields/displacement Group
+/0/Elasticity-1/fields/displacement/1 Dataset {132}
+/0/Elasticity-1/knotspan Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {32}
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index Group
+/0/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index/1 Dataset {32}
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {32}
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index Group
+/0/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index/1 Dataset {32}
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5 Group
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r Group
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {32}
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5 Group
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index Group
+/0/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index/1 Dataset {32}
+/0/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h Group
+/0/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h/1 Dataset {32}
+/0/Elasticity-1/knotspan/a(u,u)^0.5 Group
+/0/Elasticity-1/knotspan/a(u,u)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/0/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {32}
+/0/Elasticity-1/knotspan/volume Group
+/0/Elasticity-1/knotspan/volume/1 Dataset {32}
+/1                       Group
+/1/Elasticity-1          Group
+/1/Elasticity-1/basis    Group
+/1/Elasticity-1/basis/1  Dataset {15128}
+/1/Elasticity-1/fields   Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1 Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1/1 Dataset {117}
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2 Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2/1 Dataset {117}
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx/1 Dataset {117}
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy/1 Dataset {117}
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy/1 Dataset {117}
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz/1 Dataset {117}
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress Group
+/1/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1 Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2 Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz/1 Dataset {117}
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress Group
+/1/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ P1 Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ P1/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ P2 Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ P2/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_xx Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_xx/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_xy Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_xy/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_yy Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_yy/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_zz Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ s_zz/1 Dataset {117}
+/1/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress Group
+/1/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress/1 Dataset {117}
+/1/Elasticity-1/fields/displacement Group
+/1/Elasticity-1/fields/displacement/1 Dataset {234}
+/1/Elasticity-1/knotspan Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {86}
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index Group
+/1/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index/1 Dataset {86}
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {86}
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index Group
+/1/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index/1 Dataset {86}
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5 Group
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r Group
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {86}
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5 Group
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index Group
+/1/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index/1 Dataset {86}
+/1/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h Group
+/1/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h/1 Dataset {86}
+/1/Elasticity-1/knotspan/a(u,u)^0.5 Group
+/1/Elasticity-1/knotspan/a(u,u)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/1/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {86}
+/1/Elasticity-1/knotspan/volume Group
+/1/Elasticity-1/knotspan/volume/1 Dataset {86}
+/2                       Group
+/2/Elasticity-1          Group
+/2/Elasticity-1/basis    Group
+/2/Elasticity-1/basis/1  Dataset {25024}
+/2/Elasticity-1/fields   Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1 Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1/1 Dataset {168}
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2 Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2/1 Dataset {168}
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx/1 Dataset {168}
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy/1 Dataset {168}
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy/1 Dataset {168}
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz/1 Dataset {168}
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress Group
+/2/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1 Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2 Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz/1 Dataset {168}
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress Group
+/2/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ P1 Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ P1/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ P2 Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ P2/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_xx Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_xx/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_xy Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_xy/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_yy Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_yy/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_zz Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ s_zz/1 Dataset {168}
+/2/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress Group
+/2/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress/1 Dataset {168}
+/2/Elasticity-1/fields/displacement Group
+/2/Elasticity-1/fields/displacement/1 Dataset {336}
+/2/Elasticity-1/knotspan Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {140}
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index Group
+/2/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index/1 Dataset {140}
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {140}
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index Group
+/2/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index/1 Dataset {140}
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5 Group
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r Group
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {140}
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5 Group
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index Group
+/2/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index/1 Dataset {140}
+/2/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h Group
+/2/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h/1 Dataset {140}
+/2/Elasticity-1/knotspan/a(u,u)^0.5 Group
+/2/Elasticity-1/knotspan/a(u,u)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/2/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {140}
+/2/Elasticity-1/knotspan/volume Group
+/2/Elasticity-1/knotspan/volume/1 Dataset {140}
+/3                       Group
+/3/Elasticity-1          Group
+/3/Elasticity-1/basis    Group
+/3/Elasticity-1/basis/1  Dataset {35655}
+/3/Elasticity-1/fields   Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1 Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1/1 Dataset {219}
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2 Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2/1 Dataset {219}
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx/1 Dataset {219}
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy/1 Dataset {219}
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy/1 Dataset {219}
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz/1 Dataset {219}
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress Group
+/3/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1 Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2 Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz/1 Dataset {219}
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress Group
+/3/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ P1 Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ P1/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ P2 Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ P2/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_xx Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_xx/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_xy Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_xy/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_yy Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_yy/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_zz Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ s_zz/1 Dataset {219}
+/3/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress Group
+/3/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress/1 Dataset {219}
+/3/Elasticity-1/fields/displacement Group
+/3/Elasticity-1/fields/displacement/1 Dataset {438}
+/3/Elasticity-1/knotspan Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {194}
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index Group
+/3/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index/1 Dataset {194}
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {194}
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index Group
+/3/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index/1 Dataset {194}
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5 Group
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r Group
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {194}
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5 Group
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index Group
+/3/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index/1 Dataset {194}
+/3/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h Group
+/3/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h/1 Dataset {194}
+/3/Elasticity-1/knotspan/a(u,u)^0.5 Group
+/3/Elasticity-1/knotspan/a(u,u)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/3/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {194}
+/3/Elasticity-1/knotspan/volume Group
+/3/Elasticity-1/knotspan/volume/1 Dataset {194}
+/4                       Group
+/4/Elasticity-1          Group
+/4/Elasticity-1/basis    Group
+/4/Elasticity-1/basis/1  Dataset {54793}
+/4/Elasticity-1/fields   Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1 Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ P1/1 Dataset {329}
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2 Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ P2/1 Dataset {329}
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xx/1 Dataset {329}
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_xy/1 Dataset {329}
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_yy/1 Dataset {329}
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ s_zz/1 Dataset {329}
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress Group
+/4/Elasticity-1/fields/Continuous\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1 Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ P1/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2 Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ P2/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xx/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_xy/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_yy/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ s_zz/1 Dataset {329}
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress Group
+/4/Elasticity-1/fields/Discrete\ global\ L2-projection\ von\ Mises\ stress/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ P1 Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ P1/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ P2 Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ P2/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_xx Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_xx/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_xy Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_xy/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_yy Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_yy/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_zz Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ s_zz/1 Dataset {329}
+/4/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress Group
+/4/Elasticity-1/fields/Greville\ point\ projection\ von\ Mises\ stress/1 Dataset {329}
+/4/Elasticity-1/fields/displacement Group
+/4/Elasticity-1/fields/displacement/1 Dataset {658}
+/4/Elasticity-1/knotspan Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {284}
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index Group
+/4/Elasticity-1/knotspan/Continuous\ global\ L2-projection\ effectivity\ index/1 Dataset {284}
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5 Group
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ (u^r,u^r)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r Group
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {284}
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5 Group
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ a(u^r,u^r)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index Group
+/4/Elasticity-1/knotspan/Discrete\ global\ L2-projection\ effectivity\ index/1 Dataset {284}
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h Group
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ (e,e)^0.5,\ e=u^r-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5 Group
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ (u^r,u^r)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r Group
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u-u^r/1 Dataset {284}
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h Group
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ a(e,e)^0.5,\ e=u^r-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5 Group
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ a(u^r,u^r)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index Group
+/4/Elasticity-1/knotspan/Greville\ point\ projection\ effectivity\ index/1 Dataset {284}
+/4/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h Group
+/4/Elasticity-1/knotspan/a(e,e)^0.5,\ e=u-u^h/1 Dataset {284}
+/4/Elasticity-1/knotspan/a(u,u)^0.5 Group
+/4/Elasticity-1/knotspan/a(u,u)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/a(u^h,u^h)^0.5 Group
+/4/Elasticity-1/knotspan/a(u^h,u^h)^0.5/1 Dataset {284}
+/4/Elasticity-1/knotspan/volume Group
+/4/Elasticity-1/knotspan/volume/1 Dataset {284}
