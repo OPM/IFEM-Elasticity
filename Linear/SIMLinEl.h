@@ -101,17 +101,86 @@ protected:
     return dynamic_cast<Elasticity*>(Dim::myProblem);
   }
 
-  //! \brief Parses a data section from an input file.
-  //! \details This function allows for specialization of the template
-  //! while still reusing as much code as possible.
-  //! Only put dimension-specific code in here.
-  virtual bool parseDimSpecific(char* keyWord, std::istream& is);
+  //! \brief Parses the analytical solution from an input stream.
+  virtual bool parseAnaSol(char* keyWord, std::istream& is)
+  {
+    int code = -1;
+    char* cline = strtok(keyWord+6," ");
+    if (!strncasecmp(cline,"EXPRESSION",10))
+    {
+      IFEM::cout <<"\nAnalytical solution: Expression"<< std::endl;
+      int lines = (cline = strtok(nullptr," ")) ? atoi(cline) : 0;
+      code = (cline = strtok(nullptr," ")) ? atoi(cline) : 0;
+      if (!Dim::mySol)
+        Dim::mySol = new AnaSol(is,lines,false);
+    }
+    else if (!this->parseDimSpecific(cline))
+    {
+      std::cerr <<"  ** SIMLinEl::parse: Invalid analytical solution "
+                << cline <<" (ignored)"<< std::endl;
+      return true;
+    }
 
-  //! \brief Parses a data section from an XML element.
+    // Define the analytical boundary traction field
+    if (code == -1)
+      code = (cline = strtok(nullptr," ")) ? atoi(cline) : 0;
+    if (code > 0 && Dim::mySol->getStressSol())
+    {
+      IFEM::cout <<"Pressure code "<< code
+                 <<": Analytical traction"<< std::endl;
+      this->setPropertyType(code,Property::NEUMANN);
+      Dim::myTracs[code] = new TractionField(*Dim::mySol->getStressSol());
+    }
+
+    return true;
+  }
+
+  //! \brief Parses the analytical solution from an XML element.
+  virtual bool parseAnaSol(const TiXmlElement* elem)
+  {
+    IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
+
+    std::string type;
+    utl::getAttribute(elem,"type",type,true);
+    if (type == "expression" || type == "fields")
+    {
+      type[0] = toupper(type[0]);
+      IFEM::cout <<"\tAnalytical solution: "<< type << std::endl;
+      if (!Dim::mySol)
+        Dim::mySol = new AnaSol(elem,false);
+    }
+    else if (!this->parseDimSpecific(elem,type))
+    {
+      std::cerr <<"  ** SIMLinEl::parse: Invalid analytical solution "
+                << type <<" (ignored)"<< std::endl;
+      return true;
+    }
+
+    // Define the analytical boundary traction field
+    int code = 0;
+    utl::getAttribute(elem,"code",code);
+    if (code > 0 && Dim::mySol && Dim::mySol->getStressSol())
+    {
+      IFEM::cout <<"\tNeumann code "<< code
+                 <<": Analytical traction"<< std::endl;
+      this->setPropertyType(code,Property::NEUMANN);
+      Dim::myTracs[code] = new TractionField(*Dim::mySol->getStressSol());
+    }
+
+    return true;
+  }
+
+  //! \brief Parses the analytical solution from an input stream.
   //! \details This function allows for specialization of the template
   //! while still reusing as much code as possible.
   //! Only put dimension-specific code in here.
-  virtual bool parseDimSpecific(const TiXmlElement* elem);
+  bool parseDimSpecific(char* cline);
+
+  //! \brief Parses the analytical solution from an XML element.
+  //! \details This function allows for specialization of the template
+  //! while still reusing as much code as possible.
+  //! Only put dimension-specific code in here.
+  bool parseDimSpecific(const TiXmlElement* elem, const std::string& type);
 
 public:
   //! \brief Returns whether a dual solution is available or not.
@@ -127,13 +196,15 @@ typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
 typedef SIMLinEl<SIM3D> SIMLinEl3D; //!< 3D specific driver
 
 //! \brief Template specialization - 2D specific input parsing.
-template<> bool SIMLinEl2D::parseDimSpecific(char* keyWord, std::istream& is);
+template<> bool SIMLinEl2D::parseDimSpecific(char* cline);
 //! \brief Template specialization - 2D specific input parsing.
-template<> bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* elem);
+template<> bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* elem,
+                                             const std::string& type);
 
 //! \brief Template specialization - 3D specific input parsing.
-template<> bool SIMLinEl3D::parseDimSpecific(char* keyWord, std::istream& is);
+template<> bool SIMLinEl3D::parseDimSpecific(char* cline);
 //! \brief Template specialization - 3D specific input parsing.
-template<> bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem);
+template<> bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem,
+                                             const std::string& type);
 
 #endif

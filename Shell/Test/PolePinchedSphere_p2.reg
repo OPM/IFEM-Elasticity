@@ -1,0 +1,187 @@
+PolePinchedSphere_p2.xinp
+
+Input file: PolePinchedSphere_p2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Using fixed load step simulation driver.
+Parsing input file PolePinchedSphere_p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file hemisphere-symmZ.g2
+	Reading patch 1
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: hemisphere (1,0,2D)
+	               pole (1,2,1D)
+	               polevx (1,2,0D)
+	               symmXY (1,1,1D)
+	               symmXZ (1,3,1D)
+	               symmYZ (1,4,1D)
+  Parsing <collapse>
+  Parsing <patchfile>
+  Parsing <refine>
+	Refining P1 7 3
+  Parsing <topologysets>
+  Parsing <collapse>
+	Collapsed edge P1 E2
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12000: (fixed)
+	Dirichlet code 3: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 31000: (fixed)
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 23000: (fixed)
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 123000: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 1000003 (linear): -1\*t
+Parsing <KirchhoffLove>
+	Material code 0: 2e+11 0.3 1 0.001
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 0.001, gravity = 0
+LinIsotropic: plane stress, E = 2e+11, nu = 0.3, rho = 1, alpha = 0
+Renumbered 36 nodes.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V2 in direction(s) 3 code = 1000003
+	Constraining P1 E1 in direction(s) 12000
+	Constraining P1 E1 in direction(s) 3
+	Constraining P1 E3 in direction(s) 31000
+	Constraining P1 E3 in direction(s) 2
+	Constraining P1 E4 in direction(s) 23000
+	Constraining P1 E4 in direction(s) 1
+	Constraining P1 E2 in direction(s) 123000
+	Constraining P1 E2 in direction(s) 12
+Result point #1: patch #1 (u,v)=(1,1), node #10, X = 0 0 1
+ >>> SAM model summary <<<
+Number of elements    32
+Number of nodes       55
+Number of dofs        165
+Number of constraints 55
+Number of unknowns    84
+  step=1  time=0.1
+   \* Sum external load: 4878158.45213981 4878158.45213981 -1488145.03222315
+  Primary solution summary: L2-norm            : 0.0208224
+                            Max X-displacement : 0.00682988
+                            Max Y-displacement : 0.00682988
+                            Max Z-displacement : 0.1
+  Total reaction forces: Sum(R) = -28.009 -28.009 209.449
+  displacement\*reactions: (R,u) = -2970.56
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 89.766
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -54.5029
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -1.000e-01
+		reac =  2.490e+04  2.490e+04  1.034e+04
+  step=2  time=0.2
+  Primary solution summary: L2-norm            : 0.043658
+                            Max X-displacement : 0.0117215
+                            Max Y-displacement : 0.0117215
+                            Max Z-displacement : 0.2
+  Total reaction forces: Sum(R) = -1537.71 -1537.71 363.899
+  displacement\*reactions: (R,u) = -44392
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 180.225
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -210.694
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -2.000e-01
+		reac = -5.731e+04 -5.731e+04 -4.406e+03
+  step=3  time=0.3
+  Primary solution summary: L2-norm            : 0.0729681
+                            Max X-displacement : 0.0213413
+                            Max Y-displacement : 0.0213413
+                            Max Z-displacement : 0.3
+  Total reaction forces: Sum(R) = -874.01 -874.01 492.054
+  displacement\*reactions: (R,u) = -56245.3
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 278.503
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -237.161
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -3.000e-01
+		reac = -1.036e+05 -1.036e+05 -2.824e+04
+  step=4  time=0.4
+  Primary solution summary: L2-norm            : 0.103899
+                            Max X-displacement : 0.0267316
+                            Max Y-displacement : 0.0267316
+                            Max Z-displacement : 0.4
+  Total reaction forces: Sum(R) = 8730.53 8730.53 565.32
+  displacement\*reactions: (R,u) = -130154
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 354.379
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -360.769
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -4.000e-01
+		reac =  8.521e+04  8.521e+04  2.592e+04
+  step=5  time=0.5
+  Primary solution summary: L2-norm            : 0.134298
+                            Max X-displacement : 0.0345113
+                            Max Y-displacement : 0.0345113
+                            Max Z-displacement : 0.5
+  Total reaction forces: Sum(R) = 11700 11700 628.809
+  displacement\*reactions: (R,u) = -273919
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 461.611
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -523.373
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -5.000e-01
+		reac =  2.067e+05  2.067e+05  6.738e+04
+  step=6  time=0.6
+  Primary solution summary: L2-norm            : 0.168545
+                            Max X-displacement : 0.0396292
+                            Max Y-displacement : 0.0396292
+                            Max Z-displacement : 0.6
+  Total reaction forces: Sum(R) = 7165.8 7165.8 676.959
+  displacement\*reactions: (R,u) = -259470
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 569.557
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -509.382
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -6.000e-01
+		reac =  1.620e+05  1.620e+05  5.631e+04
+  step=7  time=0.7
+  Primary solution summary: L2-norm            : 0.205116
+                            Max X-displacement : 0.0472019
+                            Max Y-displacement : 0.0472019
+                            Max Z-displacement : 0.7
+  Total reaction forces: Sum(R) = 7160.91 7160.91 695.637
+  displacement\*reactions: (R,u) = -318729
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 628.321
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -564.561
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -7.000e-01
+		reac =  5.496e+04  5.496e+04  2.646e+04
+  step=8  time=0.8
+  Primary solution summary: L2-norm            : 0.237987
+                            Max X-displacement : 0.0585707
+                            Max Y-displacement : 0.0585707
+                            Max Z-displacement : 0.8
+  Total reaction forces: Sum(R) = -3979.91 -3979.91 735.132
+  displacement\*reactions: (R,u) = -765137
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 730.831
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -874.721
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -8.000e-01
+		reac =  1.060e+05  1.060e+05  5.864e+04
+  step=9  time=0.9
+  Primary solution summary: L2-norm            : 0.275216
+                            Max X-displacement : 0.0612524
+                            Max Y-displacement : 0.0612524
+                            Max Z-displacement : 0.9
+  Total reaction forces: Sum(R) = -75824.3 -75824.3 758.879
+  displacement\*reactions: (R,u) = -922204
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 867.283
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -960.315
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -9.000e-01
+		reac =  1.147e+05  1.147e+05  6.106e+04
+  step=10  time=1
+  Primary solution summary: L2-norm            : 0.323218
+                            Max X-displacement : 0.0639186
+                            Max Y-displacement : 0.0639186
+                            Max Z-displacement : 1
+  Total reaction forces: Sum(R) = -144876 -144876 750.4
+  displacement\*reactions: (R,u) = -259030
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 938.275
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -508.95
+  Node #10:	sol1 =  0.000e+00  0.000e+00 -1.000e+00
+		reac =  3.772e+04  3.772e+04  1.345e+04
+  Time integration completed.
