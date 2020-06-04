@@ -24,7 +24,7 @@
 
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 {
-  Efunc = nullptr;
+  Efunc  = nuFunc = rhoFunc = nullptr;
   Efield = nullptr;
   Cpfunc = Afunc = condFunc = nullptr;
 
@@ -40,6 +40,7 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
   : Efunc(E), Efield(nullptr), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
+  nuFunc = rhoFunc = nullptr;
   Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
@@ -51,6 +52,7 @@ LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
 LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
   : Efunc(nullptr), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
+  nuFunc = rhoFunc = nullptr;
   Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
@@ -63,6 +65,8 @@ LinIsotropic::~LinIsotropic ()
 {
   delete Efield;
   delete Efunc;
+  delete nuFunc;
+  delete rhoFunc;
   delete Afunc;
   delete Cpfunc;
   delete condFunc;
@@ -84,43 +88,43 @@ void LinIsotropic::parse (const TiXmlElement* elem)
   if (utl::getAttribute(elem,"kappa",conductivity))
     IFEM::cout <<" "<< conductivity;
 
-  const TiXmlNode* aval = nullptr;
+  // Lambda function for parsing a spatial property function.
+  auto&& parseSpatialFunc = [](const TiXmlElement* child, const char* name)
+  {
+    std::string type;
+    utl::getAttribute(child,"type",type,true);
+    IFEM::cout <<"\n\t  "<< name <<" function ("<< type <<") ";
+    const TiXmlNode* aval = child->FirstChild();
+    return aval ? utl::parseRealFunc(aval->Value(),type) : nullptr;
+  };
+
+  // Lambda function for parsing a scalar property function.
+  auto&& parseScalarFunc = [](const TiXmlElement* child)
+  {
+    std::string type;
+    utl::getAttribute(child,"type",type,true);
+    IFEM::cout <<" ";
+    const TiXmlNode* aval = child->FirstChild();
+    return aval ? utl::parseTimeFunc(aval->Value(),type) : nullptr;
+  };
+
   const TiXmlElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (Emod >= 0.0 && !Efunc && !strcasecmp(child->Value(),"stiffness"))
-    {
-      std::string type;
-      utl::getAttribute(child,"type",type,true);
-      IFEM::cout <<"\n\t  Stiffness function ("<< type <<") ";
-      if ((aval = child->FirstChild()))
-        Efunc = utl::parseRealFunc(aval->Value(),type);
-    }
+      Efunc = parseSpatialFunc(child,"Stiffness");
+    else if (!strcasecmp(child->Value(),"poisson"))
+      nuFunc = parseSpatialFunc(child,"Poisson's ratio");
+    else if (!strcasecmp(child->Value(),"density"))
+      rhoFunc = parseSpatialFunc(child,"Mass density");
     else if (!strcasecmp(child->Value(),"thermalexpansion"))
-    {
-      IFEM::cout <<" ";
-      std::string type;
-      utl::getAttribute(child,"type",type,true);
-      if ((aval = child->FirstChild()))
-        Afunc = utl::parseTimeFunc(aval->Value(),type);
-    }
+      Afunc = parseScalarFunc(child);
     else if (!strcasecmp(child->Value(),"heatcapacity"))
-    {
-      IFEM::cout <<" ";
-      std::string type;
-      utl::getAttribute(child,"type",type,true);
-      if ((aval = child->FirstChild()))
-        Cpfunc = utl::parseTimeFunc(aval->Value(),type);
-    }
+      Cpfunc = parseScalarFunc(child);
     else if (!strcasecmp(child->Value(),"conductivity"))
-    {
-      IFEM::cout <<" ";
-      std::string type;
-      utl::getAttribute(child,"type",type,true);
-      if ((aval = child->FirstChild()))
-        condFunc = utl::parseTimeFunc(aval->Value(),type);
-    }
+      condFunc = parseScalarFunc(child);
 
-  if (!aval) IFEM::cout << std::endl;
+  if (!Efunc && !nuFunc && !rhoFunc && !Afunc && !Cpfunc && !condFunc)
+    IFEM::cout << std::endl;
 }
 
 
@@ -188,6 +192,9 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
     E = Efield->valueFE(fe);
   else if (Efunc)
     E = (*Efunc)(X);
+
+  if (nuFunc)
+    const_cast<LinIsotropic*>(this)->nu = (*nuFunc)(X);
 
   if (nsd == 1)
   {
@@ -289,6 +296,9 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 bool LinIsotropic::evaluate (double& lambda, double& mu,
                              const FiniteElement& fe, const Vec3& X) const
 {
+  if (nuFunc)
+    const_cast<LinIsotropic*>(this)->nu = (*nuFunc)(X);
+
   if (nu < 0.0 || nu >= 0.5)
   {
     std::cerr <<" *** LinIsotropic::evaluate: Poisson's ratio "<< nu
@@ -320,7 +330,14 @@ double LinIsotropic::getStiffness (const Vec3& X) const
 double LinIsotropic::getPlateStiffness (const Vec3& X, double t) const
 {
   double E = Efunc ? (*Efunc)(X) : Emod;
-  return E*t*t*t / (12.0 - 12.0*nu*nu);
+  double v = nuFunc ? (*nuFunc)(X) : nu;
+  return E*t*t*t / (12.0 - 12.0*v*v);
+}
+
+
+double LinIsotropic::getMassDensity (const Vec3& X) const
+{
+  return rhoFunc ? (*rhoFunc)(X) : rho;
 }
 
 

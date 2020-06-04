@@ -40,7 +40,8 @@ public:
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
   LinIsotropic(double E, double v = 0.0, double densty = 0.0,
                bool ps = false, bool ax = false)
-    : Efunc(nullptr), Efield(nullptr), Emod(E), nu(v), rho(densty),
+    : Efunc(nullptr), Efield(nullptr), Emod(E), nuFunc(nullptr), nu(v),
+      rhoFunc(nullptr), rho(densty),
       Cpfunc(nullptr), heatcapacity(0.0), Afunc(nullptr), alpha(0.0),
       condFunc(nullptr), conductivity(0.0), planeStress(ps), axiSymmetry(ax) {}
   //! \brief Constructor initializing the material parameters.
@@ -76,7 +77,7 @@ public:
   //! \brief Evaluates the plate stiffness parameter at current point.
   virtual double getPlateStiffness(const Vec3& X, double t) const;
   //! \brief Evaluates the mass density at current point.
-  virtual double getMassDensity(const Vec3&) const { return rho; }
+  virtual double getMassDensity(const Vec3&) const;
   //! \brief Evaluates the heat capacity for given temperature.
   virtual double getHeatCapacity(double T) const;
   //! \brief Evaluates the thermal conductivity for given temperature.
@@ -119,9 +120,11 @@ protected:
   // Material properties
   RealFunc* Efunc;      //!< Young's modulus (spatial function)
   Field*    Efield;     //!< Young's modulus (spatial field)
-  double Emod;          //!< Young's modulus (constant)
-  double nu;            //!< Poisson's ratio
-  double rho;           //!< Mass density
+  double    Emod;       //!< Young's modulus (constant)
+  RealFunc* nuFunc;     //!< Poisson's ratio (spatial function)
+  double    nu;         //!< Poisson's ratio (constant)
+  RealFunc* rhoFunc;    //!< Mass density (spatial function)
+  double    rho;        //!< Mass density (constant)
   ScalarFunc* Cpfunc;   //!< Specific heat capacity function
   double heatcapacity;  //!< Specific heat capacity (constant)
   ScalarFunc* Afunc;    //!< Thermal expansion coefficient function
