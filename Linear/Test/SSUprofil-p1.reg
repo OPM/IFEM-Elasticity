@@ -1,0 +1,86 @@
+SSUprofil-p1.xinp
+
+Input file: SSUprofil-p1.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file SSUprofil-p1.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file Uprofil.g2
+	Reading patch 1
+	Reading patch 2
+	Reading patch 3
+  Parsing <refine>
+  Parsing <topology>
+  Parsing <topologysets>
+	Topology sets: P1 (0,0,0D) 0.2 0.3 0.2
+	               P2 (0,1,0D) 4.8 0.3 0.2
+	               fixed (1,5,2D) (2,5,2D) (3,5,2D)
+	               free (1,6,2D) (2,6,2D) (3,6,2D)
+	               loaded (2,4,2D)
+  Parsing <patchfile>
+  Parsing <refine>
+	Refining P1 3 1 9
+	Refining P2 3 1 9
+	Refining P3 3 1 9
+  Parsing <topology>
+	Connecting P2 F1 to P1 F2 orient 0
+	Connecting P3 F1 to P2 F2 orient 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12346: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2346: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 0: -1e+08
+Parsing <elasticity>
+  Parsing <rigid>
+	Slave code 2000000 (P1): Master point index 0 (0.2 0.3 0.2)
+  Parsing <rigid>
+	Slave code 3000000 (P2): Master point index 1 (4.8 0.3 0.2)
+Parsing <postprocessing>
+  Parsing <resultpoints>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 3D, gravity = 0 0 0
+LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Renumbered 297 nodes.
+Resolving Dirichlet boundary conditions
+Deleted 36 MPC equations.
+ >>> SAM model summary <<<
+Number of elements    240
+Number of nodes       431
+Number of dofs        1299
+Number of D-dofs      1287
+Number of X-dofs      12
+Number of constraints 234
+Number of unknowns    1056
+Number of quadrature points 15360 640
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Assembling Neumann matrix terms for boundary 4 on P2
+Solving the equation system ...
+	Condition number: 3.2725e+06
+ >>> Solution summary <<<
+L2-norm            : 0.162275
+Max X-displacement : 0.0854199
+Max Y-displacement : 0.00303922
+Max Z-displacement : 0.42883
+Projecting secondary solution ...
+	Greville point projection
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 7050.13
+External energy ((f,u^h)+(t,u^h)^0.5 : 7050.13
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 9121.25
+Error norm a(e,e)^0.5, e=u^r-u^h     : 8560.19
+ relative error (% of |u^r|) : 93.8489
+L2-norm |s^r| = (s^r,s^r)^0.5        : 3.29042e+09
+L2-error (e,e)^0.5, e=s^r-s^h        : 2.51269e+09
+ relative error (% of |s^r|) : 76.3639

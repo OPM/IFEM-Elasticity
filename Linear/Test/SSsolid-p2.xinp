@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported solid beam with uniform load.
+     The boundary conditions are implemented through rigid couplings !-->
+
+<simulation>
+
+  <geometry dim="3" Lx="2.0" Ly="0.4" Lz="0.2">
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine patch="1" u="19" v="3" w="1"/>
+    <topologysets>
+      <set name="fixed" type="face">
+        <item patch="1">1</item>
+      </set>
+      <set name="free" type="face">
+        <item patch="1">2</item>
+      </set>
+      <set name="loaded" type="face">
+        <item patch="1">4</item>
+      </set>
+      <set name="P1" type="vertex">
+        <point>0.1 0.2 0.1</point>
+      </set>
+      <set name="P2" type="vertex">
+        <point>1.9 0.2 0.1</point>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="P1" component="12345"/>
+    <dirichlet set="P2" component="2345"/>
+    <neumann set="loaded" component="2">-1.0e8</neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.068e11" nu="0.29"/>
+    <rigid slave="fixed" master="P1" comp="123"/>
+    <rigid slave="free"  master="P2" comp="123"/>
+  </elasticity>
+
+  <discretization>
+    <nGauss>3 4</nGauss>
+  </discretization>
+
+</simulation>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported 2D membrane with uniform load.
+     The boundary conditions are implemented through rigid couplings !-->
+
+<simulation>
+
+  <geometry dim="2" Lx="2.0" Ly="0.4">
+    <refine patch="1" u="19" v="3"/>
+    <topologysets>
+      <set name="fixed" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="free" type="edge">
+        <item patch="1">2</item>
+      </set>
+      <set name="loaded" type="edge">
+        <item patch="1">4</item>
+      </set>
+      <set name="P1" type="vertex">
+        <point>0.1 0.2</point>
+      </set>
+      <set name="P2" type="vertex">
+        <point>1.9 0.2</point>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="P1" component="12"/>
+    <dirichlet set="P2" component="2"/>
+    <neumann set="loaded" component="2">-1.0e8</neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.068e11" nu="0.29"/>
+    <rigid slave="fixed" master="P1" comp="12"/>
+    <rigid slave="free"  master="P2" comp="12"/>
+  </elasticity>
+
+  <discretization>
+    <nGauss>2 3</nGauss>
+  </discretization>
+
+</simulation>

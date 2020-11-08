@@ -15,6 +15,7 @@
 #define _SIM_ELASTICITY_H
 
 #include "IFEM.h"
+#include "TopologySet.h"
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
@@ -219,6 +220,48 @@ protected:
       }
   }
 
+  //! Discrete master point topology container
+  typedef std::map<int,TopEntity::const_iterator> MasterMap;
+
+  //! \brief Specialized preprocessing performed before assembly initialization.
+  //! \details This method creates the multi-point constraint equations
+  //! representing the rigid couplings in the model.
+  virtual bool preprocessBeforeAsmInit(int& ngnod)
+  {
+    for (const Property& p : Dim::myProps)
+      if (p.pcode == Property::RIGID)
+      {
+        MasterMap::const_iterator mit = myMasters.find(p.pindx);
+        if (mit == myMasters.end())
+        {
+          std::cerr <<" *** SIMElasticity::preprocessBeforeAsmInit: Local error"
+                    <<", unknown rigid code "<< p.pindx << std::endl;
+          return false;
+        }
+        else if (mit->second->patch > 0)
+        {
+          IFEM::cout <<" *** SIMElasticity::preprocessBeforeAsmInit:"
+                     <<" Sorry, patch vertex as master not implemented yet."
+                     << std::endl;
+          return false;
+        }
+        else if (mit->second->item >= 0 &&
+                 mit->second->item < (int)Dim::myTopPts.size())
+        {
+          // Find master point
+          std::pair<int,Vec3>& mst = Dim::myTopPts[mit->second->item];
+
+          // Create a rigid coupling in the affected patch
+          ASMbase* pch = this->getPatch(p.patch);
+          if (pch)
+            if (pch->addRigidCpl(p.lindx,p.ldim,p.basis,mst.first,mst.second))
+              ++ngnod;
+        }
+      }
+
+    return true;
+  }
+
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented to ensure that threading groups are
   //! established for the patch faces subjected to boundary force integration.
@@ -298,6 +341,47 @@ protected:
     std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
               << std::endl;
     return false;
+  }
+
+  //! \brief Parses a rigid coupling definition from an XML element.
+  bool parseRigid(const TiXmlElement* elem)
+  {
+    IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
+
+    std::string master, slave;
+    utl::getAttribute(elem,"set",slave);
+    utl::getAttribute(elem,"slave",slave);
+    utl::getAttribute(elem,"master",master);
+
+    int islave = this->getUniquePropertyCode(slave);
+    if (islave == 0) return false;
+
+    TopologySet::const_iterator tit = Dim::myEntitys.find(master);
+    if (tit == Dim::myEntitys.end())
+    {
+      std::cerr <<" *** SIMElasticity::parseRigid: Undefined topology set \""
+                << master <<"\"."<< std::endl;
+      return false;
+    }
+
+    TopEntity::const_iterator titem = tit->second.begin();
+    if (tit->second.size() != 1 || titem->idim > 0)
+    {
+      std::cerr <<" *** SIMElasticity::parseRigid: Invalid topology set \""
+                << master <<"\". It should contain a single point."<< std::endl;
+      return false;
+    }
+
+    IFEM::cout <<"\tSlave code "<< islave <<" ("<< master <<"):";
+    if (titem->patch > 0)
+      IFEM::cout <<" Patch/item index "<< titem->patch <<", "<< titem->item;
+    else
+      IFEM::cout <<" Master point index "<< titem->item
+                 <<" ("<< Dim::myTopPts[titem->item].second <<")";
+    this->setPropertyType(islave,Property::RIGID);
+    IFEM::cout << std::endl;
+    myMasters[islave] = titem;
+    return true;
   }
 
   //! \brief Parses a data section from the input stream.
@@ -545,6 +629,9 @@ protected:
         bCode[code] = Vec3();
       }
 
+      else if (!strcasecmp(child->Value(),"rigid"))
+        result &= this->parseRigid(child);
+
       else if (!strcasecmp(child->Value(),"anasol"))
         result &= this->parseAnaSol(child);
 
@@ -555,6 +642,43 @@ protected:
         result &= this->Dim::parse(child);
 
     return result;
+  }
+
+  //! \brief Preprocesses a user-defined Dirichlet boundary property.
+  //! \param[in] patch 1-based index of the patch to receive the property
+  //! \param[in] lndx Local index of the boundary item to receive the property
+  //! \param[in] ldim Dimension of the boundary item to receive the property
+  //! \param[in] dirs Which local DOFs to constrain
+  //! \param[in] code In-homegeneous Dirichlet condition property code
+  //! \param ngnod Total number of global nodes in the model (might be updated)
+  //! \param[in] basis Which basis to apply the constraint to (mixed methods)
+  //!
+  //! \details This method is overridden to handle dirichlet conditions on
+  //! the explicit master nodes of rigid couplings which not are regular nodes
+  //! in a patch. These nodes may also have rotational degrees of freedom.
+  virtual bool addConstraint(int patch, int lndx, int ldim,
+                             int dirs, int code, int& ngnod, char basis)
+  {
+    if (patch == 0 && ldim == 0)
+    {
+      bool found = false;
+      if (lndx >= 0 && lndx < (int)Dim::myTopPts.size())
+        for (ASMbase* pch : Dim::myModel)
+        {
+          // Check if this patch has master points that should be constrained.
+          // Must increase the number of field variables temporarily to account
+          // for the rotational degrees of freedom
+          unsigned char oldnf = pch->getNoFields();
+          pch->setNoFields(pch->getNoSpaceDim()*(pch->getNoSpaceDim()+1)/2);
+          found = pch->constrainXnode(Dim::myTopPts[lndx].first,dirs,code);
+          pch->setNoFields(oldnf);
+          if (found) break;
+        }
+
+      return found;
+    }
+
+    return this->Dim::addConstraint(patch,lndx,ldim,dirs,code,ngnod,basis);
   }
 
   //! \brief Initializes material properties for integration of interior terms.
@@ -628,6 +752,7 @@ public:
 protected:
   MaterialVec mVec;      //!< Material data
   std::string myContext; //!< XML-tag to search for problem inputs within
+  MasterMap   myMasters; //!< Discrete master points
 
 private:
   int aCode; //!< Analytical BC code (used by destructor)

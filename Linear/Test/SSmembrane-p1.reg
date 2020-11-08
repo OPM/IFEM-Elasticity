@@ -1,0 +1,73 @@
+SSmembrane-p1.xinp
+
+Input file: SSmembrane-p1.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file SSmembrane-p1.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+	Length in Y = 0.4
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: P1 (0,0,0D) 0.1 0.2 0
+	               P2 (0,1,0D) 1.9 0.2 0
+	               fixed (1,1,1D)
+	               free (1,2,1D)
+	               loaded (1,4,1D)
+  Parsing <refine>
+	Refining P1 19 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 0: -1e+08
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+11 0.29
+  Parsing <rigid>
+	Slave code 2000000 (P1): Master point index 0 (0.1 0.2 0)
+  Parsing <rigid>
+	Slave code 3000000 (P2): Master point index 1 (1.9 0.2 0)
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 2 3
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    80
+Number of nodes       107
+Number of dofs        216
+Number of D-dofs      210
+Number of X-dofs      6
+Number of constraints 20
+Number of unknowns    193
+Number of quadrature points 320 40
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 4 on P1
+Solving the equation system ...
+	Condition number: 14374.7
+ >>> Solution summary <<<
+L2-norm            : 0.00647113
+Max X-displacement : 0.00429873
+Max Y-displacement : 0.0134522
+Projecting secondary solution ...
+	Greville point projection
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 1242.96
+External energy ((f,u^h)+(t,u^h)^0.5 : 1242.96
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1259.24
+Error norm a(e,e)^0.5, e=u^r-u^h     : 445.42
+ relative error (% of |u^r|) : 35.3722
+L2-norm |s^r| = (s^r,s^r)^0.5        : 5.50499e+08
+L2-error (e,e)^0.5, e=s^r-s^h        : 1.461e+08
+ relative error (% of |s^r|) : 26.5396

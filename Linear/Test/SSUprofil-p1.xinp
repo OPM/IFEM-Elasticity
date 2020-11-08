@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported U-profiled beam with uniform load.
+     The boundary conditions are implemented through rigid couplings !-->
+
+<simulation>
+
+  <geometry>
+    <patchfile>Uprofil.g2</patchfile>
+    <refine lowerpatch="1" upperpatch="3" u="3" v="1" w="9"/>
+    <topology>
+      <connection master="1" slave="2" midx="2" sidx="1"/>
+      <connection master="2" slave="3" midx="2" sidx="1"/>
+    </topology>
+    <topologysets>
+      <set name="fixed" type="face">
+        <item patch="1">5</item>
+        <item patch="2">5</item>
+        <item patch="3">5</item>
+      </set>
+      <set name="free" type="face">
+        <item patch="1">6</item>
+        <item patch="2">6</item>
+        <item patch="3">6</item>
+      </set>
+      <set name="loaded" type="face">
+        <item patch="2">4</item>
+      </set>
+      <set name="P1" type="vertex">
+        <point>0.2 0.3 0.2</point>
+      </set>
+      <set name="P2" type="vertex">
+        <point>4.8 0.3 0.2</point>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="P1" component="12346"/>
+    <dirichlet set="P2" component="2346"/>
+    <neumann set="loaded" component="3">-1.0e8</neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <rigid slave="fixed" master="P1"/>
+    <rigid slave="free"  master="P2"/>
+  </elasticity>
+
+  <postprocessing>
+    <resultpoints vtfsize="0.01"/>
+  </postprocessing>
+
+</simulation>
