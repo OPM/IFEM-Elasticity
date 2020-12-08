@@ -15,7 +15,7 @@
 #define _SIM_ELASTICITY_H
 
 #include "IFEM.h"
-#include "TopologySet.h"
+#include "SIMRigid.h"
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
@@ -27,6 +27,7 @@
 #include "Functions.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
+#include "VTF.h"
 #include "tinyxml.h"
 
 typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
@@ -39,7 +40,7 @@ typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
   and some property initialization methods of the parent class.
 */
 
-template<class Dim> class SIMElasticity : public Dim
+template<class Dim> class SIMElasticity : public Dim, private SIMRigid
 {
 public:
   //! \brief Default constructor.
@@ -48,6 +49,7 @@ public:
   {
     myContext = "elasticity";
     aCode = 0;
+    plotRgd = false;
   }
 
   //! \brief The destructor frees the dynamically allocated material properties.
@@ -220,46 +222,12 @@ protected:
       }
   }
 
-  //! Discrete master point topology container
-  typedef std::map<int,TopEntity::const_iterator> MasterMap;
-
   //! \brief Specialized preprocessing performed before assembly initialization.
   //! \details This method creates the multi-point constraint equations
   //! representing the rigid couplings in the model.
   virtual bool preprocessBeforeAsmInit(int& ngnod)
   {
-    for (const Property& p : Dim::myProps)
-      if (p.pcode == Property::RIGID)
-      {
-        MasterMap::const_iterator mit = myMasters.find(p.pindx);
-        if (mit == myMasters.end())
-        {
-          std::cerr <<" *** SIMElasticity::preprocessBeforeAsmInit: Local error"
-                    <<", unknown rigid code "<< p.pindx << std::endl;
-          return false;
-        }
-        else if (mit->second->patch > 0)
-        {
-          IFEM::cout <<" *** SIMElasticity::preprocessBeforeAsmInit:"
-                     <<" Sorry, patch vertex as master not implemented yet."
-                     << std::endl;
-          return false;
-        }
-        else if (mit->second->item >= 0 &&
-                 mit->second->item < (int)Dim::myTopPts.size())
-        {
-          // Find master point
-          std::pair<int,Vec3>& mst = Dim::myTopPts[mit->second->item];
-
-          // Create a rigid coupling in the affected patch
-          ASMbase* pch = this->getPatch(p.patch);
-          if (pch)
-            if (pch->addRigidCpl(p.lindx,p.ldim,p.basis,mst.first,mst.second))
-              ++ngnod;
-        }
-      }
-
-    return true;
+    return this->addRigidMPCs(this,ngnod);
   }
 
   //! \brief Performs some pre-processing tasks on the FE model.
@@ -341,47 +309,6 @@ protected:
     std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
               << std::endl;
     return false;
-  }
-
-  //! \brief Parses a rigid coupling definition from an XML element.
-  bool parseRigid(const TiXmlElement* elem)
-  {
-    IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
-
-    std::string master, slave;
-    utl::getAttribute(elem,"set",slave);
-    utl::getAttribute(elem,"slave",slave);
-    utl::getAttribute(elem,"master",master);
-
-    int islave = this->getUniquePropertyCode(slave);
-    if (islave == 0) return false;
-
-    TopologySet::const_iterator tit = Dim::myEntitys.find(master);
-    if (tit == Dim::myEntitys.end())
-    {
-      std::cerr <<" *** SIMElasticity::parseRigid: Undefined topology set \""
-                << master <<"\"."<< std::endl;
-      return false;
-    }
-
-    TopEntity::const_iterator titem = tit->second.begin();
-    if (tit->second.size() != 1 || titem->idim > 0)
-    {
-      std::cerr <<" *** SIMElasticity::parseRigid: Invalid topology set \""
-                << master <<"\". It should contain a single point."<< std::endl;
-      return false;
-    }
-
-    IFEM::cout <<"\tSlave code "<< islave <<" ("<< master <<"):";
-    if (titem->patch > 0)
-      IFEM::cout <<" Patch/item index "<< titem->patch <<", "<< titem->item;
-    else
-      IFEM::cout <<" Master point index "<< titem->item
-                 <<" ("<< Dim::myTopPts[titem->item].second <<")";
-    this->setPropertyType(islave,Property::RIGID);
-    IFEM::cout << std::endl;
-    myMasters[islave] = titem;
-    return true;
   }
 
   //! \brief Parses a data section from the input stream.
@@ -561,6 +488,14 @@ protected:
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem)
   {
+    if (!strcasecmp(elem->Value(),"postprocessing"))
+    {
+      const TiXmlElement* child = elem->FirstChildElement();
+      for (; child && !plotRgd; child = child->NextSiblingElement())
+        if (!strcasecmp(child->Value(),"plot_rigid"))
+          plotRgd = true;
+    }
+
     if (strcasecmp(elem->Value(),myContext.c_str()))
       return this->Dim::parse(elem);
 
@@ -630,7 +565,7 @@ protected:
       }
 
       else if (!strcasecmp(child->Value(),"rigid"))
-        result &= this->parseRigid(child);
+        result &= this->parseRigid(child,this);
 
       else if (!strcasecmp(child->Value(),"anasol"))
         result &= this->parseAnaSol(child);
@@ -662,7 +597,8 @@ protected:
     if (patch == 0 && ldim == 0)
     {
       bool found = false;
-      if (lndx >= 0 && lndx < (int)Dim::myTopPts.size())
+      typename Dim::IdxVec3* masterPt = this->getDiscretePoint(lndx);
+      if (masterPt)
         for (ASMbase* pch : Dim::myModel)
         {
           // Check if this patch has master points that should be constrained.
@@ -670,7 +606,7 @@ protected:
           // for the rotational degrees of freedom
           unsigned char oldnf = pch->getNoFields();
           pch->setNoFields(pch->getNoSpaceDim()*(pch->getNoSpaceDim()+1)/2);
-          found = pch->constrainXnode(Dim::myTopPts[lndx].first,dirs,code);
+          found = pch->constrainXnode(masterPt->first,dirs,code);
           pch->setNoFields(oldnf);
           if (found) break;
         }
@@ -749,13 +685,34 @@ public:
     Elastic::printNorms(gNorm,rNorm,prjName,this);
   }
 
+public:
+  //! \brief Writes current model geometry to the VTF-file.
+  //! \param nBlock Running result block counter
+  //! \param[in] inpFile File name used to construct the VTF-file name from
+  //! \param[in] doClear If \e true, clear geometry block if \a inpFile is null
+  //!
+  //! \details This method is overrriden to also account for rigid couplings.
+  virtual bool writeGlvG(int& nBlock, const char* inpFile, bool doClear = true)
+  {
+    if (!this->Dim::writeGlvG(nBlock,inpFile,doClear))
+      return false;
+    else if (!plotRgd)
+      return true;
+
+    ElementBlock* rgd = rigidGeometry(this);
+    if (!rgd) return true;
+
+    return this->getVTF()->writeGrid(rgd,"Rigid couplings",
+                                     Dim::nGlPatches*2+3,++nBlock);
+  }
+
 protected:
   MaterialVec mVec;      //!< Material data
   std::string myContext; //!< XML-tag to search for problem inputs within
-  MasterMap   myMasters; //!< Discrete master points
 
 private:
-  int aCode; //!< Analytical BC code (used by destructor)
+  bool plotRgd; //!< If \e true, output rigid couplings as VTF geometry
+  int  aCode;   //!< Analytical BC code (used by destructor)
   std::map<int,Vec3> bCode; //!< Property codes for boundary traction resultants
 };
 
