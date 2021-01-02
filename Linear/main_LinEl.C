@@ -373,7 +373,7 @@ int main (int argc, char** argv)
 
   Matrix eNorm, fNorm;
   Vectors displ(model->getNoRHS());
-  Vectors load(vizRHS ? displ.size() : 0);
+  Vectors load(vizRHS && statSol ? displ.size() : 0);
   Vectors projs(pOpt.size()), gNorm;
   Vectors projx(pOpt.size()), xNorm;
   Vectors projd(model->haveDualSol() ? pOpt.size() : 0), dNorm;
@@ -721,7 +721,7 @@ int main (int argc, char** argv)
       return terminate(12);
 
     // Write boundary tractions, if any
-    if (!model->writeGlvT(1,geoBlk,nBlock))
+    if (statSol && !model->writeGlvT(1,geoBlk,nBlock))
       return terminate(13);
 
     // Write Dirichlet boundary conditions
@@ -783,7 +783,7 @@ int main (int argc, char** argv)
         return terminate(19);
     }
 
-    model->writeGlvStep(1);
+    model->writeGlvStep(1,0.0,-1);
   }
   model->closeGlv();
   if (exporter && !args.adap)

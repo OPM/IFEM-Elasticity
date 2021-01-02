@@ -606,7 +606,7 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
   Vec3 T = this->getTraction(X,normal);
 
   // Store traction value for visualization
-  if (fe.iGP < tracVal.size() && !T.isZero())
+  if (fe.iGP < tracVal.size())
   {
     tracVal[fe.iGP].first = X;
     tracVal[fe.iGP].second += T;
