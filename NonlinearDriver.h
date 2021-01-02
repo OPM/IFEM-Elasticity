@@ -95,10 +95,6 @@ public:
 
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
-  //! \brief Flag calculation of solution energy norms.
-  void calculateEnergy(char flag) { calcEn = flag; }
-  //! \brief Flag that we are doing a linear analysis only.
-  void setLinear() { iteNorm = NONE; }
 
 private:
   TimeStep params; //!< Time stepping parameters
@@ -107,6 +103,7 @@ private:
   Vectors  gNorm;  //!< Global norms
   char     calcEn; //!< Flag for calculation of solution energy norm
   int      aStep;  //!< Adaptive mesh refinement step
+  bool     save0;  //!< If \e true, also save initial configuration
 
   AdaptiveSetup* adap; //!< Data and methods for adaptive simulation
   std::string inpfile; //!< Model input file, used when adapting mesh

@@ -25,7 +25,7 @@
 NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
   : NonLinSIM(sim), proSol(1), adap(nullptr)
 {
-  calcEn = opt.pSolOnly = true;
+  calcEn = save0 = opt.pSolOnly = true;
 
   if (linear)
     iteNorm = NONE;
@@ -70,9 +70,12 @@ bool NonlinearDriver::parse (char* keyWord, std::istream& is)
 
 bool NonlinearDriver::parse (const TiXmlElement* elem)
 {
+  if (adap && !strcasecmp(elem->Value(),"adaptive"))
+    return adap->parse(elem);
+
+  const TiXmlElement* child = elem->FirstChildElement();
   if (!strcasecmp(elem->Value(),"nonlinearsolver"))
   {
-    const TiXmlElement* child = elem->FirstChildElement();
     for (; child; child = child->NextSiblingElement())
       if (!strncasecmp(child->Value(),"noEnergy",8))
         calcEn = false; // switch off energy norm calculation
@@ -81,12 +84,15 @@ bool NonlinearDriver::parse (const TiXmlElement* elem)
       else
         params.parse(child);
   }
-  else if (!strcasecmp(elem->Value(),"adaptive") && adap)
-    return adap->parse(elem);
 
   else if (!strcasecmp(elem->Value(),"postprocessing"))
-    if (elem->FirstChildElement("direct2nd"))
-      opt.pSolOnly = false;
+  {
+    for (; child; child = child->NextSiblingElement())
+      if (!strcasecmp(child->Value(),"direct2nd"))
+        opt.pSolOnly = false;
+      else if (!strcasecmp(child->Value(),"skipInit"))
+        save0 = false;
+  }
 
   return this->NonLinSIM::parse(elem);
 }
@@ -215,7 +221,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
     getMaxVals = true;
 
   int iStep = aStep = 0; // Save initial state to VTF
-  if (opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)
+  if (save0 && opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)
     if (!this->saveStep(-(++iStep),params.time.t))
       return 4;
 
