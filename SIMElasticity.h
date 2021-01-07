@@ -27,6 +27,7 @@
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "tinyxml.h"
+#include "SIMMultiPatchModelGen.h"
 
 typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
 
@@ -38,12 +39,13 @@ typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
   and some property initialization methods of the parent class.
 */
 
-template<class Dim> class SIMElasticity : public Dim
+template<class Dim> class SIMElasticity : public SIMMultiPatchModelGen<Dim>
 {
 public:
   //! \brief Default constructor.
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  explicit SIMElasticity(bool checkRHS = false) : Dim(Dim::dimension,checkRHS)
+  explicit SIMElasticity(bool checkRHS = false) :
+    SIMMultiPatchModelGen<Dim>(Dim::dimension,checkRHS)
   {
     myContext = "elasticity";
     aCode = 0;
