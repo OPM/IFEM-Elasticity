@@ -73,6 +73,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   \arg -printMaxPatch : Print out patch-wise maximum point-wise stresses
   \arg -dumpASC : Dump model and solution to ASCII files for external processing
   \arg -dumpMatlab \a [topologySets] : Dump grid to Matlab file
+  \arg -dumpNodeMap : Dump Local-to-global node number mapping to HDF5
   \arg -outPrec \a nDigit : Number of digits in solution component printout
   \arg -ztol \a eps : Zero tolerance for printing of solution components
   \arg -ignore \a p1, \a p2, ... : Ignore these patches in the analysis
@@ -132,6 +133,7 @@ int main (int argc, char** argv)
   bool dualSol = false;
   char dynSol = false;
   bool dumpModes = false;
+  bool dumpNodeMap = false;
   char* infile = nullptr;
   Elasticity::wantStrain = false;
   Elasticity::wantPrincipalStress = true;
@@ -156,6 +158,8 @@ int main (int argc, char** argv)
       while (i < argc-1 && argv[i+1][0] != '-')
         topSets.push_back(argv[++i]);
     }
+    else if (!strncmp(argv[i],"-dumpNod",8))
+      dumpNodeMap = true;
     else if (!strcmp(argv[i],"-outPrec") && i < argc-1)
       outPrec = atoi(argv[++i]);
     else if (!strcmp(argv[i],"-ztol") && i < argc-1)
@@ -234,18 +238,40 @@ int main (int argc, char** argv)
 
   if (!infile)
   {
-    std::cout <<"usage: "<< argv[0]
-              <<" <inputfile> [-dense|-spr|-superlu[<nt>]|-samg|-petsc]\n      "
-              <<" [-lag|-spec|-LR] [-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]"
-              <<" [-nGauss <n>]\n       [-hdf5] [-vtf <format> [-nviz <nviz>]"
-              <<" [-nu <nu>] [-nv <nv>] [-nw <nw>]]\n       [-adap[<i>]|-dual"
-              <<"adap] [-DGL2] [-CGL2] [-SCR] [-VDSA] [-LSQ] [-QUASI]\n      "
-              <<" [-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]"
-              <<" [-dynamic|-qstatic]\n       [-ignore <p1> <p2> ...] [-fixDup]"
-              <<" [-dual] [-checkRHS] [-check]\n      "
-              <<" [-printMax[Patch]] [-dumpASC] [-dumpMatlab [<setnames>]]"
-              <<" [-dumpModes]\n       [-outPrec <nd>] [-ztol <eps>] [-strain]"
-              << std::endl;
+    // Lambda function for nicely print of usage.
+    auto&& showUsage = [argv](const std::vector<const char*>& args)
+    {
+      const size_t width = 80;
+      size_t col = 7 + strlen(argv[0]);
+      std::cout <<"usage: "<< argv[0];
+      for (const char* arg : args)
+      {
+        size_t w = strlen(arg);
+        if (col+w <= width)
+        {
+          std::cout <<" "<< arg;
+          col += 1+w;
+        }
+        else
+        {
+          std::cout <<"\n       "<< arg;
+          col = 7+w;
+        }
+      }
+      std::cout << std::endl;
+    };
+
+    showUsage({"<inputfile>","[-dense|-spr|-superlu[<nt>]|-samg|-petsc]",
+               "[-lag|-spec|-LR]","[-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]",
+               "[-nGauss <n>]","[-hdf5 [<filename>] [-dumpNodeMap]]",
+               "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
+               "[-adap[<i>]|-dualadap]",
+               "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
+               "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
+               "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
+               "[-dual]","[-checkRHS]","[-check]","[-printMax[Patch]]",
+               "[-dumpASC]","[-dumpMatlab [<setnames>]]","[-dumpModes]",
+               "[-outPrec <nd>]","[-ztol <eps>]","[-strain]"});
     return 0;
   }
 
@@ -394,6 +420,8 @@ int main (int argc, char** argv)
       results |= DataExporter::SECONDARY;
     if (args.adap || !noError)
       results |= DataExporter::NORMS;
+    if (dumpNodeMap)
+      results |= DataExporter::L2G_NODE;
 
     exporter = new DataExporter(true);
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
