@@ -133,8 +133,9 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
   if (!bar && !beam)
     return false;
 
+  bool ok = true;
   const TiXmlElement* child = elem->FirstChildElement();
-  for (; child; child = child->NextSiblingElement())
+  for (; child && ok; child = child->NextSiblingElement())
   {
     IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
     if (!strcasecmp(child->Value(),"gravity"))
@@ -265,11 +266,11 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
       }
     }
 
-    else
-      myProblem->parse(child);
+    else if (!myProblem->parse(child))
+      ok = this->SIM1D::parse(child);
   }
 
-  return true;
+  return ok;
 }
 
 
@@ -388,7 +389,7 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
                                            const TimeDomain& time)
 {
   bool ok = true;
-  if (itg != myProblem)
+  if (itg != myProblem || !myEqSys)
     return ok;
 
   SystemVector* R = myEqSys->getVector(2); // External load vector

@@ -161,17 +161,20 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
     myProblem = klp = new KirchhoffLovePlate(1,version);
   }
 
+  bool ok = true;
   const TiXmlElement* child = elem->FirstChildElement();
-  for (; child; child = child->NextSiblingElement())
+  for (; child && ok; child = child->NextSiblingElement())
 
-    if (!strcasecmp(child->Value(),"gravity")) {
+    if (!strcasecmp(child->Value(),"gravity"))
+    {
       double g = 0.0;
       utl::getAttribute(child,"g",g);
       klp->setGravity(g);
       IFEM::cout <<"\tGravitation constant: "<< g << std::endl;
     }
 
-    else if (!strcasecmp(child->Value(),"isotropic")) {
+    else if (!strcasecmp(child->Value(),"isotropic"))
+    {
       int code = this->parseMaterialSet(child,mVec.size());
 
       double E = 1000.0, rho = 1.0, thk = 0.1;
@@ -188,8 +191,10 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
         klp->setThickness(tVec.front());
     }
 
-    else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild()) {
-      PointLoad load;
+    else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild())
+    {
+      myLoads.resize(myLoads.size()+1);
+      PointLoad& load = myLoads.back();
       bool allowElementPointLoad = false;
       load.pload = atof(child->FirstChild()->Value());
       if (utl::getAttribute(child,"patch",load.patch))
@@ -200,15 +205,16 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
       utl::getAttribute(child,"onElement",allowElementPointLoad);
       IFEM::cout <<" xi = "<< load.xi <<" load = "<< load.pload << std::endl;
       if (allowElementPointLoad) load.inod = -1;
-      myLoads.push_back(load);
     }
 
-    else if (!strcasecmp(child->Value(),"pressure") && child->FirstChild()) {
+    else if (!strcasecmp(child->Value(),"pressure") && child->FirstChild())
+    {
       std::string set, type;
       utl::getAttribute(child,"set",set);
       int code = this->getUniquePropertyCode(set,1);
       if (code == 0) utl::getAttribute(child,"code",code);
-      if (code > 0) {
+      if (code > 0)
+      {
         utl::getAttribute(child,"type",type,true);
         IFEM::cout <<"\tPressure code "<< code;
         if (!type.empty()) IFEM::cout <<" ("<< type <<")";
@@ -218,10 +224,12 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
       }
     }
 
-    else if (!strcasecmp(child->Value(),"anasol")) {
+    else if (!strcasecmp(child->Value(),"anasol"))
+    {
       std::string type;
       utl::getAttribute(child,"type",type,true);
-      if (type == "expression") {
+      if (type == "expression")
+      {
         IFEM::cout <<"\tAnalytical solution: Expression"<< std::endl;
         if (!mySol)
           mySol = new AnaSol(child);
@@ -231,7 +239,10 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
                   << type <<" (ignored)"<< std::endl;
     }
 
-  return true;
+    else if (!klp->parse(child))
+      ok = this->SIM1D::parse(child);
+
+  return ok;
 }
 
 
@@ -321,6 +332,8 @@ bool SIMLinElBeamC1::preprocessB ()
 bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase*,
                                             const TimeDomain&)
 {
+  if (!myEqSys) return true; // silently ignore if no equation system defined
+
   SystemVector* b = myEqSys->getVector();
   if (!b) return false;
 
