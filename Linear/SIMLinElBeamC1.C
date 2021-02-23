@@ -224,6 +224,9 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
       }
     }
 
+    else if (!strcasecmp(child->Value(),"rigid"))
+      ok &= this->parseRigid(child,this);
+
     else if (!strcasecmp(child->Value(),"anasol"))
     {
       std::string type;

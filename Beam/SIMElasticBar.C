@@ -26,13 +26,14 @@
 #include <cstring>
 
 
-SIMElasticBar::SIMElasticBar (unsigned char n) : SIMElastic1D(3)
+SIMElasticBar::SIMElasticBar (const char* hd, unsigned char n) : SIMElastic1D(3)
 {
   nsd = 3;
   nsv = n;
   twist = nullptr;
   printed = false;
   lcStiff = false;
+  if (hd) myHeading = hd;
 }
 
 

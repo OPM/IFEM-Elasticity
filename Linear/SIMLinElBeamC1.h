@@ -27,7 +27,7 @@ class SIMLinElBeamC1 : public SIMElastic1D
 {
 public:
   //! \brief Default constructor.
-  SIMLinElBeamC1() {}
+  explicit SIMLinElBeamC1(const char* h = nullptr) { if (h) myHeading = h; }
   //! \brief Empty destructor.
   virtual ~SIMLinElBeamC1() {}
 

@@ -25,7 +25,7 @@ class SIMShell : public SIMKLShell
 {
 public:
   //! \brief Default constructor.
-  SIMShell() : SIMKLShell(true) {}
+  explicit SIMShell(const char* heading = nullptr) : SIMKLShell(heading) {}
   //! \brief Empty destructor.
   virtual ~SIMShell() {}
 

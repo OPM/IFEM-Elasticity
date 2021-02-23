@@ -20,6 +20,12 @@
 #include "IFEM.h"
 
 
+bool SIMElastic1D::preprocessBeforeAsmInit (int& ngnod)
+{
+  return this->addRigidMPCs(this,ngnod);
+}
+
+
 int SIMElastic1D::findLoadPoint (int ipt, int patch, double& u, bool onElement)
 {
   IFEM::cout <<"\nLoad point #"<< ipt <<": patch #"<< patch <<" u="<< u;

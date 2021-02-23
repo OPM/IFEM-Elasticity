@@ -40,7 +40,7 @@ typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
   and some property initialization methods of the parent class.
 */
 
-template<class Dim> class SIMElasticity : public Dim, private SIMRigid
+template<class Dim> class SIMElasticity : public Dim, protected SIMRigid
 {
 public:
   //! \brief Default constructor.
@@ -685,7 +685,6 @@ public:
     Elastic::printNorms(gNorm,rNorm,prjName,this);
   }
 
-public:
   //! \brief Writes current model geometry to the VTF-file.
   //! \param nBlock Running result block counter
   //! \param[in] inpFile File name used to construct the VTF-file name from
@@ -699,7 +698,7 @@ public:
     else if (!plotRgd)
       return true;
 
-    ElementBlock* rgd = rigidGeometry(this);
+    ElementBlock* rgd = this->rigidGeometry(this);
     if (!rgd) return true;
 
     return this->getVTF()->writeGrid(rgd,"Rigid couplings",++nBlock);

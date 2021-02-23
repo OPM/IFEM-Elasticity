@@ -24,8 +24,8 @@
 class SIMLinElKL : public SIMKLShell
 {
 public:
-  //! \brief Default constructor.
-  explicit SIMLinElKL(bool shell = false) : SIMKLShell(shell) {}
+  //! \brief The constructor forwards to the parent class constructor.
+  SIMLinElKL(const char* heading, bool shell) : SIMKLShell(heading,shell) {}
   //! \brief Empty destructor.
   virtual ~SIMLinElKL() {}
 

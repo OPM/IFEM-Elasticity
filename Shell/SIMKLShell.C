@@ -27,16 +27,20 @@
 #include "tinyxml.h"
 
 
-SIMKLShell::SIMKLShell (bool shell)
+SIMKLShell::SIMKLShell (const char* heading, bool isShell)
 {
-  if (shell) nsd = 3;
+  if (heading) myHeading = heading;
+  if (isShell) nsd = 3;
 
-  nf[0] = shell ? 3 : 1;
+  myContext = "kirchhofflove";
+
+  nf[0] = isShell ? 3 : 1;
   if (opt.discretization == ASM::LRSpline)
   {
     nf.push_back('C');
     nf.push_back('1');
   }
+
   aCode[0] = aCode[1] = aCode[2] = 0;
 }
 
@@ -189,8 +193,8 @@ bool SIMKLShell::parse (char* keyWord, std::istream& is)
 
 bool SIMKLShell::parse (const TiXmlElement* elem)
 {
-  if (strcasecmp(elem->Value(),"kirchhofflove"))
-    return this->SIM2D::parse(elem);
+  if (strcasecmp(elem->Value(),myContext.c_str()))
+    return this->SIMElasticity<SIM2D>::parse(elem);
 
   int version = 1;
   utl::getAttribute(elem,"version",version);
@@ -315,6 +319,9 @@ bool SIMKLShell::parse (const TiXmlElement* elem)
           klp->setPressure(myScalars[code]);
       }
     }
+
+    else if (!strcasecmp(child->Value(),"rigid"))
+      ok &= this->parseRigid(child,this);
 
     else if (!strcasecmp(child->Value(),"anasol"))
       ok = this->parseAnaSol(child);
@@ -447,6 +454,8 @@ bool SIMKLShell::preprocessB ()
 bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase* itg,
                                         const TimeDomain& time)
 {
+  if (!myEqSys) return true; // silently ignore if no equation system defined
+
   SystemVector* b = myEqSys->getVector();
   if (!b) return false;
 

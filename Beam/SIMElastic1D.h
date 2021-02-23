@@ -15,13 +15,14 @@
 #define _SIM_ELASTIC_1D_H
 
 #include "SIM1D.h"
+#include "SIMRigid.h"
 
 
 /*!
   \brief Base class for 1D elastic solution drivers.
 */
 
-class SIMElastic1D : public SIM1D
+class SIMElastic1D : public SIM1D, protected SIMRigid
 {
 protected:
   //! \brief Default constructor.
@@ -29,6 +30,11 @@ protected:
   explicit SIMElastic1D(unsigned char n1 = 1) : SIM1D(n1) {}
   //! \brief Empty destructor.
   virtual ~SIMElastic1D() {}
+
+  //! \brief Specialized preprocessing performed before assembly initialization.
+  //! \details This method creates the multi-point constraint equations
+  //! representing the rigid couplings in the model.
+  virtual bool preprocessBeforeAsmInit(int& ngnod);
 
   //! \brief Finds the (closest) node or element of a specified point load.
   //! \param[in] ipt Load point identifier

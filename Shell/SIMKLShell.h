@@ -62,7 +62,7 @@ protected:
 
 public:
   //! \brief Default constructor.
-  explicit SIMKLShell(bool shell = true);
+  explicit SIMKLShell(const char* heading, bool isShell = true);
   //! \brief The destructor deletes the nodal point load functions.
   virtual ~SIMKLShell();
 
