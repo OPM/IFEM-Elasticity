@@ -16,6 +16,7 @@
 #include "SIMLinElBeamC1.h"
 #include "SIMLinElModal.h"
 #include "SIMElasticBar.h"
+#include "SIMmcStatic.h"
 #include "SIMargsBase.h"
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
@@ -195,6 +196,11 @@ int main (int argc, char** argv)
       isC1 = KLp = true;
       shell = !strncmp(argv[i]+5,"shel",4);
     }
+    else if (!strncmp(argv[i],"-1D2DKL",5))
+    {
+      args.dim = 12;
+      isC1 = KLp = true;
+    }
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
       args.dim = 2;
@@ -263,7 +269,8 @@ int main (int argc, char** argv)
 
     showUsage({"<inputfile>","[-dense|-spr|-superlu[<nt>]|-samg|-petsc]",
                "[-lag|-spec|-LR]","[-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]",
-               "[-nGauss <n>]","[-hdf5 [<filename>] [-dumpNodeMap]]",
+               "[-1D2DKL]","[-nGauss <n>]",
+               "[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
                "[-adap[<i>]|-dualadap]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
@@ -302,7 +309,9 @@ int main (int argc, char** argv)
   utl::profiler->start("Model input");
 
   // Create the simulation model
-  SIMgeneric*       model;
+  SIMmcStatic* mSim = nullptr;
+  SIMgeneric* model = nullptr;
+  SIMadmin*  theSim = nullptr;
   std::vector<Mode> modes;
   if (args.dim == 1)
   {
@@ -311,8 +320,14 @@ int main (int argc, char** argv)
     else
       model = new SIMElasticBar();
   }
+  else if (args.dim == 12 && KLp)
+  {
+    const char* heading1D = "Euler-Bernoulli beam solver";
+    model  = new SIMLinElKL("Kirchhoff-Love plate solver",false);
+    theSim = mSim = new SIMmcStatic({model,new SIMLinElBeamC1(heading1D)});
+  }
   else if (KLp)
-    model = new SIMLinElKL(shell);
+    model = new SIMLinElKL(nullptr,shell);
   else if (dynSol)
   {
     if (args.dim == 2)
@@ -325,19 +340,26 @@ int main (int argc, char** argv)
   else
     model = new SIMLinEl3D(checkRHS, dualSol || args.adap < 0);
 
-  SIMadmin* theSim = model;
   AdaptiveSIM* aSim = nullptr;
-  if (args.adap)
-    theSim = aSim = new AdaptiveSIM(*model);
+  if (!theSim)
+  {
+    if (args.adap)
+      theSim = aSim = new AdaptiveSIM(*model);
+    else
+      theSim = model;
+  }
 
   DataExporter* exporter = nullptr;
 
   // Lambda function for cleaning the heap-allocated objects on termination.
   // To ensure that their destructors are invoked also on simulation failure.
-  auto&& terminate = [aSim,model,exporter](int status)
+  auto&& terminate = [aSim,mSim,model,exporter](int status)
   {
     delete aSim;
-    delete model;
+    if (mSim)
+      delete mSim;
+    else
+      delete model;
     delete exporter;
     return status;
   };
@@ -353,11 +375,12 @@ int main (int argc, char** argv)
   else if (args.adap || KLp || args.dim < 2)
     dynSol = false; // not for adaptive grids, Kirchhoff-Love or 1D problems
 
-  for (i = args.dim; i < 3; i++) model->opt.nViz[i] = 1;
-
   // Load vector visualization is not available when using additional viz-points
-  if (model->opt.nViz[0] >2 || model->opt.nViz[1] >2 || model->opt.nViz[2] >2)
-    vizRHS = false;
+  for (i = 0; i < 3; i++)
+    if (i >= args.dim%10)
+      model->opt.nViz[i] = 1;
+    else if (model->opt.nViz[i] > 2)
+      vizRHS = false;
 
   // Analytical solutions are assumed provided as stress fields,
   // therefore strain output can not be used
@@ -369,7 +392,7 @@ int main (int argc, char** argv)
   utl::profiler->stop("Model input");
 
   // Establish the FE data structures
-  if (!model->preprocess(ignoredPatches,fixDup))
+  if (!theSim->preprocess(ignoredPatches,fixDup))
     return terminate(2);
 
   SIMoptions::ProjectionMap& pOpt = model->opt.project;
@@ -397,15 +420,18 @@ int main (int argc, char** argv)
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
       prefix[i] = pit->second;
 
+  if (mSim) // Solve the multi-dimensional elasticity problem
+    return terminate(mSim->solveStatic(infile,zero_tol,outPrec));
+
+  if (aSim && !aSim->initAdaptor(abs(args.adap)-1))
+    return terminate(3);
+
   Matrix eNorm, fNorm;
   Vectors displ(model->getNoRHS());
   Vectors load(vizRHS && statSol ? displ.size() : 0);
   Vectors projs(pOpt.size()), gNorm;
   Vectors projx(pOpt.size()), xNorm;
   Vectors projd(model->haveDualSol() ? pOpt.size() : 0), dNorm;
-
-  if (aSim && !aSim->initAdaptor(abs(args.adap)-1))
-    return terminate(3);
 
   if (model->opt.dumpHDF5(infile))
   {
