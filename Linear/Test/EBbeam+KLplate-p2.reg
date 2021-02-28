@@ -1,0 +1,132 @@
+EBbeam+KLplate-p2.xinp -1D2DKL
+
+Input file: EBbeam+KLplate-p2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
+1. Coupled linear static solver
+Parsing input file EBbeam+KLplate-p2.xinp
+Parsing <KirchhoffLove>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Corner = 3 -0.5 0
+	Length in X = 2
+	Length in Y = 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: P1 (0,0,0D) 3 0 0
+	               P2 (0,1,0D) 5 0 0
+	               left (1,1,1D)
+	               plate (1,0,2D)
+	               right (1,2,1D)
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 3 2
+  Parsing <topologysets>
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 1000002: (fixed)
+  Parsing <rigid>
+	Slave code 1000000 (P1): Master point index 0 (3 0 0)
+  Parsing <rigid>
+	Slave code 2000000 (P2): Master point index 1 (5 0 0)
+	Material code 0: 2.1e+11 0.3 7850 0.1
+	Gravitation constant: -9.81
+Parsing <EulerBernoulli>
+  Parsing <patches>
+	Reading inlined patch geometry definition
+	Reading patch 1
+	Reading patch 2
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: Q1 (0,0,0D) 3 0 0
+	               Q2 (0,1,0D) 5 0 0
+	               end1 (1,2,0D)
+	               end2 (2,1,0D)
+	               support (1,1,0D) (2,2,0D)
+  Parsing <patches>
+  Parsing <raiseorder>
+	Raising order of P1 1
+	Raising order of P2 1
+  Parsing <refine>
+	Refining P1 3
+	Refining P2 3
+  Parsing <topologysets>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <rigid>
+	Slave code 1000000 (Q1): Master point index 0 (3 0 0)
+  Parsing <rigid>
+	Slave code 2000000 (Q2): Master point index 1 (5 0 0)
+	Material code 0: 2.1e+11 7850 0.1
+	Gravitation constant: -9.81
+Parsing <coupling>
+  Parsing <connection>
+	Master point: "P1" (0,0,0D)
+	Slave point:  "Q1" (0,0,0D)
+  Parsing <connection>
+	Master point: "P2" (0,1,0D)
+	Slave point:  "Q2" (0,1,0D)
+Parsing <discretization>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+11. Kirchhoff-Love plate solver
+Problem definition:
+KirchhoffLovePlate: thickness = 0.1, gravity = -9.81
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850, alpha = 0
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    12
+Number of nodes       32
+Number of dofs        36
+Number of D-dofs      30
+Number of X-dofs      6
+Number of constraints 20
+Number of unknowns    14
+12. Euler-Bernoulli beam solver
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P2 V2 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    8
+Number of nodes       14
+Number of dofs        18
+Number of D-dofs      12
+Number of X-dofs      6
+Number of constraints 4
+Number of unknowns    12
+13. Coupled linear static solver
+Coupling node mapping:
+	45 -> 31
+	46 -> 32
+ >>> SAM model summary <<<
+Number of elements    20
+Number of nodes       46
+Number of dofs        48
+Number of D-dofs      42
+Number of X-dofs      6
+Number of constraints 24
+Number of unknowns    20
+21. Kirchhoff-Love plate solver
+Number of quadrature points 48
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+   \* Sum external load: -108934.940625
+22. Euler-Bernoulli beam solver
+Number of quadrature points 16
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+   \* Sum external load: -287378.07421875
+23. Coupled linear static solver
+Solving the equation system ...
+	Condition number: 65308
+ >>> Solution summary <<<
+L2-norm            : 0.019989
+Max displacement   : 0.0228033

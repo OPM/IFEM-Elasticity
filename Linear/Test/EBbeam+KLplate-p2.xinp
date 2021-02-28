@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Combined Euler-Bernoulli beam and Kirchhoff-Love plate test.
+     Simply supported beam/plate with gravity load.
+     Quadratic spline Kirchhoff-Love thin plate elements. !-->
+
+<simulation>
+
+  <KirchhoffLove>
+    <geometry dim="2" X0="3.0 -0.5" Lx="2.0" Ly="1.0">
+      <raiseorder patch="1" u="1" v="1"/>
+      <refine patch="1" u="3" v="2"/>
+      <topologysets>
+        <set name="left" type="edge">
+          <item patch="1">1</item>
+        </set>
+        <set name="right" type="edge">
+          <item patch="1">2</item>
+        </set>
+        <set name="plate" type="face">
+          <item patch="1"/>
+        </set>
+        <set name="P1" type="vertex">
+          <point>3.0 0.0</point>
+        </set>
+        <set name="P2" type="vertex">
+          <point>5.0 0.0</point>
+        </set>
+      </topologysets>
+    </geometry>
+    <boundaryconditions>
+      <dirichlet set="P1" component="2"/>
+      <dirichlet set="P2" component="2"/>
+    </boundaryconditions>
+    <rigid slave="left"  master="P1"/>
+    <rigid slave="right" master="P2"/>
+    <isotropic E="2.1e11" nu="0.3" rho="7850.0" thickness="0.1"/>
+    <gravity g="-9.81"/>
+  </KirchhoffLove>
+
+  <EulerBernoulli>
+    <geometry dim="1">
+      <patches>
+        100 1 0 0 1 0 2 2 0 0 1 1 0.0 3.0\
+        100 1 0 0 1 0 2 2 0 0 1 1 5.0 8.0\
+      </patches>
+      <raiseorder lowerpatch="1" upperpatch="2" u="1"/>
+      <refine lowerpatch="1" upperpatch="2" u="3"/>
+      <topologysets>
+        <set name="support" type="vertex">
+          <item patch="1">1</item>
+          <item patch="2">2</item>
+        </set>
+        <set name="end1" type="vertex">
+          <item patch="1">2</item>
+        </set>
+        <set name="end2" type="vertex">
+          <item patch="2">1</item>
+        </set>
+        <set name="Q1" type="vertex">
+          <point>3.0</point>
+        </set>
+        <set name="Q2" type="vertex">
+          <point>5.0</point>
+        </set>
+      </topologysets>
+    </geometry>
+    <boundaryconditions>
+      <dirichlet set="support" comp="1"/>
+    </boundaryconditions>
+    <rigid slave="end1" master="Q1"/>
+    <rigid slave="end2" master="Q2"/>
+    <isotropic E="2.1e11" rho="7850.0" thickness="0.1"/>
+    <gravity g="-9.81"/>
+  </EulerBernoulli>
+
+  <coupling>
+    <connection master="P1" slave="Q1"/>
+    <connection master="P2" slave="Q2"/>
+  </coupling>
+
+  <discretization>
+    <nGauss default="-1"/>
+  </discretization>
+
+</simulation>
