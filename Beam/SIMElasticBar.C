@@ -23,6 +23,7 @@
 #include "Vec3Oper.h"
 #include "IFEM.h"
 #include "tinyxml.h"
+#include <cstring>
 
 
 SIMElasticBar::SIMElasticBar (unsigned char n) : SIMElastic1D(3)
@@ -75,6 +76,26 @@ ElasticBeam* SIMElasticBar::getBeamIntegrand (const std::string&)
   opt.nGauss[0] = opt.nGauss[1] = 1;
 
   return dynamic_cast<ElasticBeam*>(myProblem);
+}
+
+
+const char** SIMElasticBar::getPrioritizedTags () const
+{
+  static std::vector<const char*> special;
+  if (special.empty())
+  {
+    for (const char** p = this->SIMElastic1D::getPrioritizedTags(); *p; ++p)
+    {
+      // The <beam> tag has to be parsed before the <geometry> tag,
+      // in order to generate array of nodal rotation matrices
+      if (!strcmp(*p,"geometry"))
+        special.push_back("beam");
+      special.push_back(*p);
+    }
+    special.push_back(nullptr);
+  }
+
+  return special.data();
 }
 
 

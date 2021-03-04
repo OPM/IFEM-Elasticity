@@ -61,6 +61,9 @@ protected:
   //! \brief Returns the actual beam problem integrand.
   virtual ElasticBeam* getBeamIntegrand(const std::string&);
 
+  //! \brief Returns a list of prioritized XML-tags.
+  virtual const char** getPrioritizedTags() const;
+
   using SIM1D::parse;
   //! \brief Parses a data section from an XML element.
   virtual bool parse(const TiXmlElement* elem);
