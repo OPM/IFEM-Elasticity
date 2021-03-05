@@ -76,7 +76,7 @@ Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: p (p = polynomial degree of basis)
 Spline basis with C1-continuous patch interfaces is used
-11. Kirchhoff-Love plate solver
+11. Kirchhoff-Love plate/shell solver
 Problem definition:
 KirchhoffLovePlate: thickness = 0.1, gravity = -9.81
 LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850, alpha = 0
@@ -113,7 +113,7 @@ Number of D-dofs      42
 Number of X-dofs      6
 Number of constraints 24
 Number of unknowns    20
-21. Kirchhoff-Love plate solver
+21. Kirchhoff-Love plate/shell solver
 Number of quadrature points 48
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1

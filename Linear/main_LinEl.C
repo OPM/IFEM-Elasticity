@@ -200,6 +200,7 @@ int main (int argc, char** argv)
     {
       args.dim = 12;
       isC1 = KLp = true;
+      shell = !strncmp(argv[i]+7,"shel",4);
     }
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
@@ -269,7 +270,7 @@ int main (int argc, char** argv)
 
     showUsage({"<inputfile>","[-dense|-spr|-superlu[<nt>]|-samg|-petsc]",
                "[-lag|-spec|-LR]","[-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]",
-               "[-1D2DKL]","[-nGauss <n>]",
+               "[-1D2DKL[shel]]","[-nGauss <n>]",
                "[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
                "[-adap[<i>]|-dualadap]",
@@ -322,9 +323,16 @@ int main (int argc, char** argv)
   }
   else if (args.dim == 12 && KLp)
   {
-    const char* heading1D = "Euler-Bernoulli beam solver";
-    model  = new SIMLinElKL("Kirchhoff-Love plate solver",false);
-    theSim = mSim = new SIMmcStatic({model,new SIMLinElBeamC1(heading1D)});
+    SIMoutput* model1D = nullptr;
+    if (shell)
+    {
+      model1D = new SIMElasticBar("Linear Elastic Beam solver");
+      model1D->opt.discretization = ASM::Lagrange;
+    }
+    else
+      model1D = new SIMLinElBeamC1("Euler-Bernoulli beam solver");
+    model  = new SIMLinElKL("Kirchhoff-Love plate/shell solver",shell);
+    theSim = mSim = new SIMmcStatic({model,model1D});
   }
   else if (KLp)
     model = new SIMLinElKL(nullptr,shell);

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Combined linear elastic beam and Kirchhoff-Love shell test.
+     Simply supported beam/shell with uniform transverse load.
+     Cubic spline Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <KirchhoffLove>
+    <geometry dim="3">
+      <patchfile>halfcyl.g2</patchfile>
+      <raiseorder patch="1" u="1" v="1"/>
+      <refine patch="1" u="3" v="3"/>
+      <topologysets>
+        <set name="left" type="edge">
+          <item patch="1">3</item>
+        </set>
+        <set name="right" type="edge">
+          <item patch="1">4</item>
+        </set>
+        <set name="plate" type="face">
+          <item patch="1"/>
+        </set>
+        <set name="P1" type="vertex">
+          <point>3.0 0.0 0.0</point>
+        </set>
+        <set name="P2" type="vertex">
+          <point>5.0 0.0 0.0</point>
+        </set>
+      </topologysets>
+    </geometry>
+    <rigid slave="left"  master="P1"/>
+    <rigid slave="right" master="P2"/>
+    <isotropic E="2.1e11" nu="0.3" rho="7850.0" thickness="0.01"/>
+    <pressure set="plate">1.0e4</pressure>
+    <discretization>
+      <nGauss default="-1"/>
+    </discretization>
+  </KirchhoffLove>
+
+  <beam>
+    <geometry dim="3">
+      <patches>
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 0.0 0.0 3.0 0.0 0.0\
+        100 1 0 0 3 0 2 2 0 0 1 1 5.0 0.0 0.0 8.0 0.0 0.0\
+      </patches>
+      <refine lowerpatch="1" upperpatch="2" u="3"/>
+      <topologysets>
+        <set name="support" type="vertex">
+          <item patch="1">1</item>
+          <item patch="2">2</item>
+        </set>
+        <set name="end1" type="vertex">
+          <item patch="1">2</item>
+        </set>
+        <set name="end2" type="vertex">
+          <item patch="2">1</item>
+        </set>
+      </topologysets>
+    </geometry>
+    <boundaryconditions>
+      <dirichlet set="support" comp="12345"/>
+    </boundaryconditions>
+    <material E="2.1e11" nu="0.3" rho="7850.0"/>
+    <properties R="0.1" t="0.01"/>
+  </beam>
+
+  <coupling>
+    <connection master="P1" slave="end1"/>
+    <connection master="P2" slave="end2"/>
+  </coupling>
+
+  <postprocessing>
+    <resultpoints vtfsize="0.01"/>
+    <plot_rigid/>
+  </postprocessing>
+
+</simulation>
