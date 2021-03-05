@@ -112,6 +112,8 @@ ElementBlock* SIMRigid::rigidGeometry (SIMinput* mySim) const
     imap[master.first] = inod++;
   }
 
+  int slvThick = mySim->opt.discretization == ASM::SplineC1 ? 2 : 1;
+
   PropertyVec::const_iterator pit;
   std::map<int,TopItem>::const_iterator mit;
   for (pit = mySim->begin_prop(); pit != mySim->end_prop(); ++pit)
@@ -124,7 +126,7 @@ ElementBlock* SIMRigid::rigidGeometry (SIMinput* mySim) const
           if (mst && pch)
           {
             IntVec nodes;
-            pch->getBoundaryNodes(pit->lindx,nodes,pit->basis,1,0,true);
+            pch->getBoundaryNodes(pit->lindx,nodes,pit->basis,slvThick,0,true);
             for (int node : nodes)
               rgd->addLine(imap[mit->first],pch->getCoord(node));
           }
