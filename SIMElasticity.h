@@ -702,8 +702,7 @@ public:
     ElementBlock* rgd = rigidGeometry(this);
     if (!rgd) return true;
 
-    return this->getVTF()->writeGrid(rgd,"Rigid couplings",
-                                     Dim::nGlPatches*2+3,++nBlock);
+    return this->getVTF()->writeGrid(rgd,"Rigid couplings",++nBlock);
   }
 
 protected:

@@ -144,10 +144,8 @@ bool LinearElasticity::writeGlvT (VTF* vtf, int iStep,
 {
   bool ok = this->Elasticity::writeGlvT(vtf,iStep,geoBlk,nBlock);
   if (ok && vtf && myItgPts && !myItgPts->empty())
-  {
-    static int partID = 1+geoBlk;
-    ok = vtf->writePoints(*myItgPts,partID,geoBlk);
-  }
+    ok = vtf->writePoints(*myItgPts,geoBlk);
+
   return ok;
 }
 
