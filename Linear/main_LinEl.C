@@ -202,6 +202,8 @@ int main (int argc, char** argv)
       isC1 = KLp = true;
       shell = !strncmp(argv[i]+7,"shel",4);
     }
+    else if (!strcmp(argv[i],"-1D3D"))
+      args.dim = 13;
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
       args.dim = 2;
@@ -270,7 +272,7 @@ int main (int argc, char** argv)
 
     showUsage({"<inputfile>","[-dense|-spr|-superlu[<nt>]|-samg|-petsc]",
                "[-lag|-spec|-LR]","[-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]",
-               "[-1D2DKL[shel]]","[-nGauss <n>]",
+               "[-1D2DKL[shel]|-1D3D]","[-nGauss <n>]",
                "[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
                "[-adap[<i>]|-dualadap]",
@@ -332,6 +334,12 @@ int main (int argc, char** argv)
     else
       model1D = new SIMLinElBeamC1("Euler-Bernoulli beam solver");
     model  = new SIMLinElKL("Kirchhoff-Love plate/shell solver",shell);
+    theSim = mSim = new SIMmcStatic({model,model1D});
+  }
+  else if (args.dim == 13)
+  {
+    SIMoutput* model1D = new SIMElasticBar("Linear Elastic Beam solver");
+    model  = new SIMLinEl3D("3D continuum solver",checkRHS);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
   else if (KLp)

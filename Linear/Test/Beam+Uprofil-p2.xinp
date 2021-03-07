@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Combined linear elastic beam and 3D elastic continuum test.
+     Simply supported U-profiled beam with uniform load.
+     Quadratic spline continuum elements. !-->
+
+<simulation>
+
+  <elasticity>
+    <geometry dim="3">
+      <patchfile>Uprofil.g2</patchfile>
+      <raiseorder lowerpatch="1" upperpatch="3" u="1" v="1" w="1"/>
+      <refine lowerpatch="1" upperpatch="3" u="2" v="1" w="4"/>
+      <topology>
+        <connection master="1" slave="2" midx="2" sidx="1"/>
+        <connection master="2" slave="3" midx="2" sidx="1"/>
+      </topology>
+      <topologysets>
+        <set name="left" type="face">
+          <item patch="1">5</item>
+          <item patch="2">5</item>
+          <item patch="3">5</item>
+        </set>
+        <set name="right" type="face">
+          <item patch="1">6</item>
+          <item patch="2">6</item>
+          <item patch="3">6</item>
+        </set>
+        <set name="loaded" type="face">
+          <item patch="2">4</item>
+        </set>
+        <set name="P1" type="vertex">
+          <point>0.0 0.3 0.2</point>
+        </set>
+        <set name="P2" type="vertex">
+          <point>5.0 0.3 0.2</point>
+        </set>
+      </topologysets>
+    </geometry>
+    <boundaryconditions>
+      <neumann set="loaded" direction="3">-1.0e6</neumann>
+    </boundaryconditions>
+    <rigid slave="left"  master="P1"/>
+    <rigid slave="right" master="P2"/>
+    <isotrophic E="2.1e11" nu="0.3" rho="7850.0"/>
+    <discretization>
+      <nGauss default="0"/>
+    </discretization>
+  </elasticity>
+
+  <beam>
+    <geometry dim="3">
+      <patches>
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 0.3 0.2 -10.0 0.3 0.2\
+        100 1 0 0 3 0 2 2 0 0 1 1 5.0 0.3 0.2  15.0 0.3 0.2\
+      </patches>
+      <refine lowerpatch="1" upperpatch="2" u="3"/>
+      <topologysets>
+        <set name="support" type="vertex">
+          <item patch="1">2</item>
+          <item patch="2">2</item>
+        </set>
+        <set name="end1" type="vertex">
+          <item patch="1">1</item>
+        </set>
+        <set name="end2" type="vertex">
+          <item patch="2">1</item>
+        </set>
+      </topologysets>
+    </geometry>
+    <boundaryconditions>
+      <dirichlet set="support" comp="12346"/>
+    </boundaryconditions>
+    <material E="2.1e11" nu="0.3" rho="7850.0"/>
+    <properties B="0.6" H="0.2"/>
+  </beam>
+
+  <coupling>
+    <connection master="P1" slave="end1"/>
+    <connection master="P2" slave="end2"/>
+  </coupling>
+
+  <postprocessing>
+    <resultpoints vtfsize="0.02"/>
+    <plot_rigid/>
+  </postprocessing>
+
+</simulation>

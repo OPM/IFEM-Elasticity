@@ -32,6 +32,15 @@ public:
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
   //! \param[in] ds If \e true, also solve the dual problem
   SIMLinEl(bool checkRHS, bool ds) : SIMElasticity<Dim>(checkRHS), dualS(ds) {}
+  //! \brief Constructor for coupled multi-dimensional simulators.
+  //! \param[in] head Header identifying this sub-simulator.
+  //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
+  SIMLinEl(const char* head, bool checkRHS) : SIMElasticity<Dim>(checkRHS)
+  {
+    Dim::myHeading = head;
+    dualS = false;
+  }
+
   //! \brief Empty destructor.
   virtual ~SIMLinEl() {}
 
