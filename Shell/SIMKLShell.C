@@ -534,6 +534,14 @@ double SIMKLShell::externalEnergy (const Vectors& u,
 }
 
 
+void SIMKLShell::shiftGlobalNums (int nshift, int)
+{
+  for (PointLoad& load : myLoads)
+    if (load.ldof.second > 0)
+      load.ldof.first += nshift;
+}
+
+
 bool SIMKLShell::assemblePoint (int patch, const double* u, double f, int ldof)
 {
   ASMbase* pch = this->getPatch(patch,true);

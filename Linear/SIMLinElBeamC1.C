@@ -378,6 +378,13 @@ double SIMLinElBeamC1::externalEnergy (const Vectors& u,
 }
 
 
+void SIMLinElBeamC1::shiftGlobalNums (int nshift, int)
+{
+  for (PointLoad& load : myLoads)
+    if (load.inod > 0) load.inod += nshift;
+}
+
+
 void SIMLinElBeamC1::printNormGroup (const Vector& gNorm, const Vector& rNorm,
                                      const std::string& prjName) const
 {

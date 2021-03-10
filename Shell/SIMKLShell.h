@@ -126,6 +126,9 @@ protected:
   //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& u, const TimeDomain& time) const;
 
+  //! \brief Shifts global node numbers by a constant offset.
+  virtual void shiftGlobalNums(int nshift, int);
+
   //! \brief Returns norm index of the integrated volume.
   virtual size_t getVolumeIndex() const { return 0; }
 

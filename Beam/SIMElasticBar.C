@@ -525,3 +525,11 @@ bool SIMElasticBar::getExtLoad (RealArray& extloa, const TimeDomain& time) const
 
   return true;
 }
+
+
+void SIMElasticBar::shiftGlobalNums (int nshift, int)
+{
+  for (PointLoad& load : myLoads)
+    if (load.inod > 0 && load.ldof > 0)
+      load.inod += nshift;
+}

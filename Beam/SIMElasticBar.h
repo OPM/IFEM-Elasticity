@@ -93,6 +93,9 @@ protected:
   virtual bool assembleDiscreteTerms(const IntegrandBase* itg,
                                      const TimeDomain& time);
 
+  //! \brief Shifts global node numbers by a constant offset.
+  virtual void shiftGlobalNums(int nshift, int);
+
 private:
   //! \brief Struct defining a nodal point load.
   struct PointLoad

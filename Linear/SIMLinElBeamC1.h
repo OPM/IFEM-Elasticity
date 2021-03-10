@@ -64,6 +64,9 @@ protected:
   //! \brief Computes problem-dependent external energy contributions.
   virtual double externalEnergy(const Vectors& u, const TimeDomain& time) const;
 
+  //! \brief Shifts global node numbers by a constant offset.
+  virtual void shiftGlobalNums(int nshift, int);
+
 public:
   //! \brief Prints a norm group to the log stream.
   //! \param[in] gNorm The norm values to print
