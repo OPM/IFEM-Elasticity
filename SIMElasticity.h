@@ -608,10 +608,13 @@ protected:
           pch->setNoFields(pch->getNoSpaceDim()*(pch->getNoSpaceDim()+1)/2);
           found = pch->constrainXnode(masterPt->first,dirs,code);
           pch->setNoFields(oldnf);
-          if (found) break;
+          if (found) return true;
         }
 
-      return found;
+      std::cerr <<" *** SIMElasticity::addConstraint: Master point "
+                << masterPt->first <<" ("<< masterPt->second
+                <<") is not present in any patch.\n";
+      return false;
     }
 
     return this->Dim::addConstraint(patch,lndx,ldim,dirs,code,ngnod,basis);
