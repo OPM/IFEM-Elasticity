@@ -353,17 +353,21 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
 
   Vec3 e2(fe.Tn[0][1]+fe.Tn[1][1]); // Sum of the nodal Y-axes
   Vec3 e3(fe.Tn[0][2]+fe.Tn[1][2]); // Sum of the nodal Z-axes
-  if (e3*e1 < e2*e1)
+  if (fabs(e3.x) < fabs(e2.x))
   {
-    e2.cross(e3,e1); // Local Y-axis = e3xe1 / |e3xe1|
+    // Local Y-axis = e3xe1 / |e3xe1|
+    e2.cross(fe.Te*e3,e1);
     e2.normalize();
-    e3.cross(e1,e2); // Local Z-axis = e1xe2
+    // Local Z-axis = e1xe2
+    e3.cross(e1,e2);
   }
   else
   {
-    e3.cross(e1,e2); // Local Z-axis = e1xe2 / |e1xe2|
+    // Local Z-axis = e1xe2 / |e1xe2|
+    e3.cross(e1,fe.Te*e2);
     e3.normalize();
-    e2.cross(e3,e1); // Local Y-axis = e3xe1
+    // Local Y-axis = e3xe1
+    e2.cross(e3,e1);
   }
 
   Matrix& Tlg = this->getLocalAxes(elmInt);
@@ -655,21 +659,14 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   {
     // External (gravitation) forces
     Vector& S = elMat.b[eS-1];
-    Vec3 gvec = (0.5*rhoA*L0)*gravity; // Nodal gravity force at each end
+    Vec3 gvec = (0.5*rhoA*L0) * (gravity*this->getLocalAxes(elmInt));
     for (unsigned short int i = 1; i <= 3; i++)
       S(i) = S(npv+i) = gvec[i-1];
 
+    // If the centre of gravity has an offset w.r.t. the neutral axis,
+    // it will result in an additional torque load on the element
     if (CG_y != 0.0 || CG_z != 0.0)
-    {
-      // The centre of gravity has an offset w.r.t. the neutral axis and will
-      // therefore result in an additional torque load on the element
-      Tensor Tlg(this->getLocalAxes(elmInt)); // Local-to-global transformation
-      Vec3   gloc = gvec * Tlg; // Nodal gravity force in local element axes
-      double Tgrav = gloc.z*CG_y - gloc.y*CG_z; // Torque from eccentric gravity
-      Vec3   gmom = Tgrav*Tlg[0]; // Global moment from the eccentric gravity
-      for (unsigned short int i = 4; i <= 6; i++)
-        S(i) = S(npv+i) = gmom[i-4];
-    }
+      S(4) = S(npv+4) = gvec.z*CG_y - gvec.y*CG_z;
 #if INT_DEBUG > 1
     std::cout <<"ElasticBeam: S_ext"<< S << std::endl;
 #endif

@@ -2,22 +2,13 @@ NREL_5MW_blade.xinp -1D -eig 4
 
 Input file: NREL_5MW_blade.xinp
 Equation solver: 2
-Number of Gauss points: 4
 Eigenproblem solver: 4
 Number of eigenvalues: 10
 Number of Arnoldi vectors: 20
 Shift value: 0
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
 Parsing input file NREL_5MW_blade.xinp
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: end1 (1,1,0D)
-  Parsing <refine>
-	Refining P1 122
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <dirichlet>
-	Dirichlet code 123456: (fixed)
 Parsing <beam>
   Parsing <twist>
     Continuous twist angle: (Interpolate1D): (1\*Interpolate1D(NREL_5MW_blade-properties.dat,column #4,X)
@@ -38,13 +29,26 @@ Parsing <beam>
 	Node 6 dof 2 Load: -1e+06
   Parsing <gravity>
 	Gravitation vector: 0 0 -9.81
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1\]
+	X0 = 1.5 0.0 0.0
+	X1 = 63.0 0.0 0.0
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,1,0D)
+  Parsing <refine>
+	Refining P1 122
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123456: (fixed)
 Parsing input file succeeded.
 Equation solver: 2
-Number of Gauss points: 1
 Eigenproblem solver: 4
 Number of eigenvalues: 10
 Number of Arnoldi vectors: 20
 Shift value: 0
+Number of Gauss points: 1
 Problem definition:
 ElasticBeam: E = 2.05e+11, G = 7.94e+10, rho = 7850
              A = 0.1 Ix = 0, Iy = 0.001, Iz = 0.001, It = 0.002
@@ -56,18 +60,19 @@ Number of elements    123
 Number of nodes       124
 Number of dofs        744
 Number of unknowns    738
+Number of quadrature points 123
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Solving the eigenvalue problem ...
  >>> Computed Eigenvalues <<<
      Mode	Frequency \[Hz]
-     1		0.692033
-     2		1.10889
-     3		1.99029
-     4		4.07975
-     5		4.62091
-     6		8.14226
-     7		9.48211
-     8		12.7549
+     1		0.691351
+     2		1.11248
+     3		1.98478
+     4		4.11687
+     5		4.57987
+     6		8.16854
+     7		9.45434
+     8		12.7642
      9		14.8821
-     10		16.8513
+     10		16.8528
