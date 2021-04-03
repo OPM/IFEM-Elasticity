@@ -16,6 +16,7 @@
 #include "SIMLinElBeamC1.h"
 #include "SIMLinElModal.h"
 #include "SIMElasticBar.h"
+#include "SIMsupel.h"
 #include "SIMmcStatic.h"
 #include "SIMargsBase.h"
 #include "ImmersedBoundaries.h"
@@ -204,6 +205,8 @@ int main (int argc, char** argv)
     }
     else if (!strcmp(argv[i],"-1D3D"))
       args.dim = 13;
+    else if (!strcmp(argv[i],"-1Dsup"))
+      args.dim = 14;
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
       args.dim = 2;
@@ -272,7 +275,7 @@ int main (int argc, char** argv)
 
     showUsage({"<inputfile>","[-dense|-spr|-superlu[<nt>]|-samg|-petsc]",
                "[-lag|-spec|-LR]","[-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]",
-               "[-1D2DKL[shel]|-1D3D]","[-nGauss <n>]",
+               "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]",
                "[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
                "[-adap[<i>]|-dualadap]",
@@ -340,6 +343,12 @@ int main (int argc, char** argv)
   {
     SIMoutput* model1D = new SIMElasticBar("Linear Elastic Beam solver");
     model  = new SIMLinEl3D("3D continuum solver",checkRHS);
+    theSim = mSim = new SIMmcStatic({model,model1D});
+  }
+  else if (args.dim == 14)
+  {
+    SIMoutput* model1D = new SIMElasticBar("Linear Elastic Beam solver");
+    model  = new SIMsupel("3D superelement solver");
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
   else if (KLp)

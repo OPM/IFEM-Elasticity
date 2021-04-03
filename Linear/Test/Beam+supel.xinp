@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Combined linear elastic beam and superelement test.
+     This test is set up to produce the same results as the
+     SSbeam.xinp file, but where the middle beam element is
+     replaced by a superelement read from a data file. !-->
+
+<simulation>
+  <superelem>
+
+    <geometry dim="3">
+      <patchfile>Supel.dat</patchfile>
+      <topologysets>
+        <set name="P1" type="nodes">
+          <item patch="1">1</item>
+        </set>
+        <set name="P2" type="nodes">
+          <item patch="1">2</item>
+        </set>
+      </topologysets>
+    </geometry>
+
+  </superelem>
+  <beam>
+
+    <geometry dim="3">
+      <patches>
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 0.3 0.2 -10.0 0.3 0.2\
+        100 1 0 0 3 0 2 2 0 0 1 1 5.0 0.3 0.2  15.0 0.3 0.2\
+      </patches>
+      <refine lowerpatch="1" upperpatch="2" u="3"/>
+      <topologysets>
+        <set name="support" type="vertex">
+          <item patch="1">2</item>
+          <item patch="2">2</item>
+        </set>
+        <set name="end1" type="vertex">
+          <item patch="1">1</item>
+        </set>
+        <set name="end2" type="vertex">
+          <item patch="2">1</item>
+        </set>
+      </topologysets>
+    </geometry>
+
+    <boundaryconditions>
+      <dirichlet set="support" comp="12346"/>
+    </boundaryconditions>
+
+    <material E="2.1e11" nu="0.3" rho="7850.0"/>
+    <properties B="0.6" H="0.2"/>
+    <gravity z="-9.81"/>
+
+  </beam>
+  <coupling>
+
+    <connection master="P1" slave="end1"/>
+    <connection master="P2" slave="end2"/>
+
+  </coupling>
+</simulation>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported beam with gravity load. !-->
+
+<simulation>
+  <beam>
+
+    <geometry dim="3">
+      <patches>
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 0.3 0.2   5.0 0.3 0.2\
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 0.3 0.2 -10.0 0.3 0.2\
+        100 1 0 0 3 0 2 2 0 0 1 1 5.0 0.3 0.2  15.0 0.3 0.2\
+      </patches>
+      <refine lowerpatch="2" upperpatch="3" u="3"/>
+      <topology>
+        <connection master="1" slave="2" midx="1" sidx="1"/>
+        <connection master="1" slave="3" midx="2" sidx="1"/>
+      </topology>
+      <topologysets>
+        <set name="support" type="vertex">
+          <item patch="2">2</item>
+          <item patch="3">2</item>
+        </set>
+        <set name="end1" type="vertex">
+          <item patch="1">1</item>
+        </set>
+        <set name="end2" type="vertex">
+          <item patch="2">1</item>
+        </set>
+      </topologysets>
+    </geometry>
+
+    <boundaryconditions>
+      <dirichlet set="support" comp="12346"/>
+    </boundaryconditions>
+
+    <material E="2.1e11" nu="0.3" rho="7850.0"/>
+    <properties B="0.6" H="0.2"/>
+    <gravity z="-9.81"/>
+
+  </beam>
+</simulation>
