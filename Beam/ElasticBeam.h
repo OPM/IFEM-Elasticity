@@ -15,9 +15,9 @@
 #define _ELASTIC_BEAM_H
 
 #include "ElasticBase.h"
+#include "BeamProperty.h"
 
 class VecFunc;
-class RealFunc;
 class TiXmlElement;
 
 
@@ -47,12 +47,9 @@ public:
   //! \brief Parses line load defintion from an XML-element.
   void parseBeamLoad(const TiXmlElement* prop);
   //! \brief Parses beam cross section properties from an XML-element.
-  void parseBeamProperties(const TiXmlElement* prop);
-  //! \brief Parses circular cross section properties from an XML-element.
-  static bool parsePipe(const TiXmlElement* prop, double& A, double& I);
-  //! \brief Parses massive box cross section properties from an XML-element.
-  static bool parseBox(const TiXmlElement* prop, double& A,
-                       double& Iy, double& Iz);
+  BeamProperty* parseProp(const TiXmlElement* p) { return new BeamProperty(p); }
+  //! \brief Defines the actual beam cross section properties to use.
+  void setProperty(BeamProperty* prop) { myProp = prop; }
 
   //! \brief Defines which FE quantities are needed by the integrand.
   virtual int getIntegrandType() const
@@ -100,57 +97,38 @@ public:
   virtual Vec3 displacement(const FiniteElement& fe, const Vector& eV) const;
 
 protected:
-  //! \brief Initializes the property function pointers to nullptr.
+  //! \brief Initializes the property function pointers.
   void initPropFunc();
 
   //! \brief Returns the local-to-global transformation matrix for an element.
   Matrix& getLocalAxes(LocalIntegral& elmInt) const;
 
   //! \brief Calculates the material stiffness matrix of the beam element.
-  void getMaterialStiffness(Matrix& EK, double EA, double GIt,
-                            double EIy, double EIz, double L) const;
+  void getMaterialStiffness(Matrix& EK, double L,
+                            double EA,  double GIt,
+                            double EIy, double EIz,
+                            double ALy, double ALz) const;
   //! \brief Calculates the geometric stiffness matrix of the beam element.
-  void getGeometricStiffness(Matrix& EK, double EIy, double EIz,
-                             double L, double N) const;
+  void getGeometricStiffness(Matrix& EK, double N, double L,
+                             double EIy, double EIz,
+                             double ALy, double ALz) const;
   //! \brief Calculates the mass matrix of the beam element.
   void getMassMatrix(Matrix& EM, double rhoA, double Ixx,
                      double Iyy, double Izz, double L) const;
 
 protected:
-  //! If \e true, the element matrices are established in local axes
-  //! and must be transformed to global axis directions before assembly
-  bool inLocalAxes;
-
-  VecFunc* lineLoad; //!< Time and/or space-dependent line load
-  VecFunc* cplLoad;  //!< Time and/or space-dependent moment load
-
-  // Physical properties (continuous)
-  RealFunc* EAfunc;  //!< Axial stiffness
-  RealFunc* EIyfunc; //!< Bending stiffness about local Y-axis
-  RealFunc* EIzfunc; //!< Bending stiffness about local Z-axis
-  RealFunc* GItfunc; //!< Torsional stiffness
-  RealFunc* rhofunc; //!< Mass density (line mass)
-  RealFunc* Ixfunc;  //!< Polar inertia
-  RealFunc* Iyfunc;  //!< Inertia about local Y-axis
-  RealFunc* Izfunc;  //!< Inertia about local Z-axis
-  RealFunc* CGyfunc; //!< Mass center location along local Y-axis
-  RealFunc* CGzfunc; //!< Mass center location along local Z-axis
-
-  // Physical property parameters (constant)
+  // Material property parameters (constant)
   double E;   //!< Young's modulus
   double G;   //!< Shear modulus
   double rho; //!< Mass density
 
-  double A;  //!< Cross section area
-  double Ix; //!< Second area moment around local X-axis
-  double Iy; //!< Second area moment around local Y-axis
-  double Iz; //!< Second area moment around local Z-axis
-  double It; //!< Torsional constant
+  BeamProperty* myProp;   //!< Geometric and constitutive beam properties
+  VecFunc*      lineLoad; //!< Time and/or space-dependent line load
+  VecFunc*      cplLoad;  //!< Time and/or space-dependent moment load
 
-  double Sy; //!< Shear centre offset in local Y-direction
-  double Sz; //!< Shear centre offset in local Z-direction
-  double Ky; //!< Shear reduction factor in local Y-direction
-  double Kz; //!< Shear reduction factor in local Z-direction
+  //! If \e true, the element matrices are established in local axes
+  //! and must be transformed to global axis directions before assembly
+  bool inLocalAxes;
 };
 
 
@@ -164,7 +142,7 @@ public:
   //! \brief The only constructor initializes its data members.
   //! \param[in] p The elastic beam problem to evaluate norms for
   //! \param[in] a The analytical displacement field
-  ElasticBeamNorm(ElasticBeam& p, VecFunc* a = nullptr) : NormBase(p), anasol(a) {}
+  ElasticBeamNorm(ElasticBeam& p, VecFunc* a) : NormBase(p), anasol(a) {}
   //! \brief Empty destructor.
   virtual ~ElasticBeamNorm() {}
 

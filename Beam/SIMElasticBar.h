@@ -18,6 +18,7 @@
 
 class ElasticBar;
 class ElasticBeam;
+class BeamProperty;
 class Tensor;
 
 
@@ -76,6 +77,9 @@ protected:
   //! \brief Preprocessing performed after the FEM model generation.
   virtual bool preprocessB();
 
+  //! \brief Initializes beam properties for integration of interior terms.
+  //! \param[in] propInd Physical property index
+  virtual bool initMaterial(size_t propInd);
   //! \brief Initializes for integration of Neumann terms for a given property.
   //! \param[in] propInd Physical property index
   virtual bool initNeumann(size_t propInd);
@@ -100,7 +104,8 @@ private:
     PointLoad(int n = 0) : inod(n), ldof(0), xi(-1.0), p(nullptr) {}
   };
 
-  std::vector<PointLoad> myLoads; //!< Nodal/element point loads
+  std::vector<PointLoad>     myLoads; //!< Nodal/element point loads
+  std::vector<BeamProperty*> myBCSec; //!< Beam cross section properties
 
   mutable bool printed; //!< If \e true, the problem definition as been printed
   char         lcStiff; //!< Flag for inclusion of load correction stiffness

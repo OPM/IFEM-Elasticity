@@ -80,16 +80,9 @@ ElasticBeam::ElasticBeam (unsigned short int n) : inLocalAxes(true)
   nSV = n; // Number of solution vectors in core
 
   // Default material parameters
-  E = 2.05e11;
-  G = 7.94e10;
+  E   = 2.05e11;
+  G   = 7.94e10;
   rho = 7.85e3;
-
-  // Default cross section parameters
-  A  = 0.1;
-  Ix = It = 0.002;
-  Iy = Iz = 0.001;
-  Ky = Kz = 0.0;
-  Sy = Sz = 0.0;
 
   this->initPropFunc();
 }
@@ -99,35 +92,34 @@ ElasticBeam::~ElasticBeam ()
 {
   delete lineLoad;
   delete cplLoad;
-  delete EAfunc;
-  delete EIyfunc;
-  delete EIzfunc;
-  delete GItfunc;
-  delete rhofunc;
-  delete Ixfunc;
-  delete Iyfunc;
-  delete Izfunc;
-  delete CGyfunc;
-  delete CGzfunc;
 }
 
 
 void ElasticBeam::initPropFunc ()
 {
+  myProp = nullptr;
   lineLoad = cplLoad = nullptr;
-  EAfunc = EIyfunc = EIzfunc = GItfunc = nullptr;
-  rhofunc = Ixfunc = Iyfunc = Izfunc = nullptr;
-  CGyfunc = CGzfunc = nullptr;
 }
 
 
 void ElasticBeam::printLog () const
 {
-  IFEM::cout <<"ElasticBeam: E = "<< E <<", G = "<< G <<", rho = "<< rho
-             <<"\n             A = "<< A <<" Ix = "<< Ix
-             <<", Iy = "<< Iy <<", Iz = "<< Iz <<", It = "<< It
-             <<"\n             Ky = "<< Ky <<", Kz = "<< Kz
-             <<", Sy = "<< Sy <<", Sz = "<< Sz << std::endl;
+  IFEM::cout <<"ElasticBeam: E = "<< E <<", G = "<< G <<", rho = "<< rho;
+  if (!myProp)
+  {
+    // Using default cross section properties
+    static BeamProperty defProp;
+    const_cast<ElasticBeam*>(this)->myProp = &defProp;
+  }
+
+  IFEM::cout <<"\n             A = "<< myProp->A
+             <<", Ix = "<< myProp->Ix
+             <<", Iy = "<< myProp->Iy
+             <<", Iz = "<< myProp->Iz <<", It = "<< myProp->It
+             <<"\n             Ky = "<< myProp->Ky
+             <<", Kz = "<< myProp->Kz
+             <<", Sy = "<< myProp->Sy <<", Sz = "<< myProp->Sz
+             << std::endl;
 }
 
 
@@ -158,116 +150,6 @@ void ElasticBeam::parseBeamLoad (const TiXmlElement* load)
     return;
 
   IFEM::cout << std::endl;
-}
-
-
-bool ElasticBeam::parsePipe (const TiXmlElement* prop, double& A, double& I)
-{
-  double D, R;
-  if (!utl::getAttribute(prop,"R",R))
-  {
-    if (utl::getAttribute(prop,"D",D))
-      R = 0.5*D; // Radius of pipe cross section
-    else
-      return false;
-  }
-
-  double R2 = R*R, r2 = 0.0, t = 0.0;
-  if (utl::getAttribute(prop,"t",t))
-    r2 = (R-t)*(R-t); // Inner radius of hollow pipe
-
-  A = M_PI*(R2-r2);
-  I = M_PI*(R2*R2-r2*r2)*0.25;
-  return true;
-}
-
-
-bool ElasticBeam::parseBox (const TiXmlElement* prop,
-                            double& A, double& Iy, double& Iz)
-{
-  double H = 0.0;
-  if (!utl::getAttribute(prop,"H",H))
-    return false;
-
-  double B = H;
-  utl::getAttribute(prop,"B",B);
-
-  A  = B*H;
-  Iy = A*H*H/12.0;
-  Iz = A*B*B/12.0;
-  return true;
-}
-
-
-void ElasticBeam::parseBeamProperties (const TiXmlElement* prop)
-{
-  if (ElasticBeam::parsePipe(prop,A,Iz))
-  {
-    Iy = Iz;
-    It = Ix = Iz*2.0;
-    Ky = Kz = 2.0;
-  }
-  else if (ElasticBeam::parseBox(prop,A,Iy,Iz))
-  {
-    It = Ix = Iy + Iz;
-    Ky = Kz = 1.2;
-  }
-
-  utl::getAttribute(prop,"A",A);
-  utl::getAttribute(prop,"Ix",Ix);
-  utl::getAttribute(prop,"Iy",Iy);
-  utl::getAttribute(prop,"Iz",Iz);
-  utl::getAttribute(prop,"It",It);
-  utl::getAttribute(prop,"Sy",Sy);
-  utl::getAttribute(prop,"Sz",Sz);
-  utl::getAttribute(prop,"Ky",Ky);
-  utl::getAttribute(prop,"Kz",Kz);
-  IFEM::cout <<"    Constant beam properties:"
-             <<"\n\tCross section area = "<< A
-             <<", moments of inertia = "<< Ix <<" "<< Iy <<" "<< Iz <<" "<< It
-             <<"\n\tShear parameters = "<< Sy <<" "<< Sz <<" "<< Ky <<" "<< Kz
-             << std::endl;
-
-  RealFunc** pf = nullptr;
-  const TiXmlElement* child = prop->FirstChildElement();
-  for (; child; child = child->NextSiblingElement())
-    if (child->FirstChild())
-    {
-      if (!pf)
-        IFEM::cout <<"    Continuous beam properties:\n";
-      IFEM::cout <<"\t"<< child->Value();
-      if (!strcmp(child->Value(),"EA"))
-        pf = &EAfunc;
-      else if (!strcmp(child->Value(),"EIy"))
-        pf = &EIyfunc;
-      else if (!strcmp(child->Value(),"EIz"))
-        pf = &EIzfunc;
-      else if (!strcmp(child->Value(),"GIt"))
-        pf = &GItfunc;
-      else if (!strcmp(child->Value(),"rho"))
-        pf = &rhofunc;
-      else if (!strcmp(child->Value(),"Ix"))
-        pf = &Ixfunc;
-      else if (!strcmp(child->Value(),"Iy"))
-        pf = &Iyfunc;
-      else if (!strcmp(child->Value(),"Iz"))
-        pf = &Izfunc;
-      else if (!strcmp(child->Value(),"CGy"))
-        pf = &CGyfunc;
-      else if (!strcmp(child->Value(),"CGz"))
-        pf = &CGzfunc;
-      else
-      {
-        IFEM::cout <<" (ignored)"<< std::endl;
-        continue;
-      }
-
-      std::string type;
-      utl::getAttribute(child,"type",type);
-      if (!type.empty()) IFEM::cout <<" ("<< type <<")";
-      *pf = utl::parseRealFunc(child->FirstChild()->Value(),type);
-      IFEM::cout << std::endl;
-    }
 }
 
 
@@ -406,16 +288,12 @@ Matrix& ElasticBeam::getLocalAxes (LocalIntegral& elmInt) const
   http://people.duke.edu/~hpgavin/cee421/frame-finite-def.pdf
 */
 
-void ElasticBeam::getMaterialStiffness (Matrix& EK, double EA, double GIt,
-                                        double EIy, double EIz, double L) const
+void ElasticBeam::getMaterialStiffness (Matrix& EK, double L,
+                                        double EA,  double GIt,
+                                        double EIy, double EIz,
+                                        double Aly, double Alz) const
 {
-  double L2  = L*L;
-  double L3  = L*L2;
-  double Aly = 12.0*EIy*Ky/(G*A*L2);
-  double Alz = 12.0*EIz*Kz/(G*A*L2);
-#if INT_DEBUG > 1
-  std::cout <<"ElasticBeam: Alpha_y = "<< Aly <<" Alpha_z = "<< Alz;
-#endif
+  double L3 = L*L*L;
 
   EK.resize(12,12,true);
   EK( 1, 1) =  EK( 7, 7) =  EA/L;
@@ -444,16 +322,16 @@ void ElasticBeam::getMaterialStiffness (Matrix& EK, double EA, double GIt,
     for (j = 1; j < i; j++)
       EK(i,j) = EK(j,i);
 
-  if (fabs(Sy) + fabs(Sz) > 0.00001*sqrt(A))
+  if (fabs(myProp->Sy) + fabs(myProp->Sz) > 0.00001*sqrt(myProp->A))
   {
     // Adjustment due to non-symmetric cross section
     for (j = 1; j <= 12; j++)
       for (i = 0; i <= 6; i += 6)
-        EK(i+4,j) -= Sz*EK(i+2,j) + Sy*EK(i+3,j);
+        EK(i+4,j) -= myProp->Sz*EK(i+2,j) + myProp->Sy*EK(i+3,j);
 
     for (i = 1; i <= 12; i++)
       for (j = 0; j <= 6; j += 6)
-        EK(i,j+4) -= EK(i,j+2)*Sz + EK(i,j+3)*Sy;
+        EK(i,j+4) -= EK(i,j+2)*myProp->Sz + EK(i,j+3)*myProp->Sy;
   }
 
 #if INT_DEBUG > 1
@@ -467,19 +345,18 @@ void ElasticBeam::getMaterialStiffness (Matrix& EK, double EA, double GIt,
   http://people.duke.edu/~hpgavin/cee421/frame-finite-def.pdf
 */
 
-void ElasticBeam::getGeometricStiffness (Matrix& EK, double EIy, double EIz,
-                                         double L, double N) const
+void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
+                                         double EIy, double EIz,
+                                         double Aly, double Alz) const
 {
-  double L2  = L*L;
-  double Aly = 12.0*EIy*Ky/(G*A*L2);
-  double Alz = 12.0*EIz*Kz/(G*A*L2);
-  double Cy  = N/(L*(1.0+Aly)*(1.0+Aly));
-  double Cz  = N/(L*(1.0+Alz)*(1.0+Alz));
+  double L2 = L*L;
+  double Cy = N/(L*(1.0+Aly)*(1.0+Aly));
+  double Cz = N/(L*(1.0+Alz)*(1.0+Alz));
 
   EK.resize(12,12,true);
   EK( 2, 2) =  EK( 8, 8) =  Cy*(1.2+Aly*(2.0+Aly));
   EK( 3, 3) =  EK( 9, 9) =  Cz*(1.2+Alz*(2.0+Alz));
-  EK( 4, 4) =  EK(10,10) =  N*It/(A*L);
+  EK( 4, 4) =  EK(10,10) =  N*myProp->It/(myProp->A*L);
   EK( 5, 5) =  EK(11,11) =  Cz*L2*(0.4+Alz*(0.5+0.25*Alz))/3.0;
   EK( 6, 6) =  EK(12,12) =  Cy*L2*(0.4+Aly*(0.5+0.25*Aly))/3.0;
 
@@ -501,16 +378,16 @@ void ElasticBeam::getGeometricStiffness (Matrix& EK, double EIy, double EIz,
     for (j = 1; j < i; j++)
       EK(i,j) = EK(j,i);
 
-  if (fabs(Sy) + fabs(Sz) > 0.00001*sqrt(A))
+  if (fabs(myProp->Sy) + fabs(myProp->Sz) > 0.00001*sqrt(myProp->A))
   {
     // Adjustment due to non-symmetric cross section
     for (j = 1; j <= 12; j++)
       for (i = 0; i <= 6; i += 6)
-        EK(i+4,j) -= Sz*EK(i+2,j) + Sy*EK(i+3,j);
+        EK(i+4,j) -= myProp->Sz*EK(i+2,j) + myProp->Sy*EK(i+3,j);
 
     for (i = 1; i <= 12; i++)
       for (j = 0; j <= 6; j += 6)
-        EK(i,j+4) -= EK(i,j+2)*Sz + EK(i,j+3)*Sy;
+        EK(i,j+4) -= EK(i,j+2)*myProp->Sz + EK(i,j+3)*myProp->Sy;
   }
 
 #if INT_DEBUG > 1
@@ -630,25 +507,23 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 #endif
   }
 
-  // Evaluate beam stiffness properties at this point
-  double EA  = EAfunc  ? (*EAfunc)(X)  : E*A;
-  double EIy = EIyfunc ? (*EIyfunc)(X) : E*Iy;
-  double EIz = EIzfunc ? (*EIzfunc)(X) : E*Iz;
-  double GIt = GItfunc ? (*GItfunc)(X) : G*It;
+  if (!myProp)
+  {
+    std::cerr <<" *** ElasticBeam::evalInt: No properties."<< std::endl;
+    return false;
+  }
+
+  // Evaluate beam stiffness and mass properties at this point
+  double EA, EIy, EIz, GIt, Aly, Alz;
+  double rhoA, I_xx, I_yy, I_zz, CG_y, CG_z;
+  bool hasGrF = gravity.isZero() ? false : eS > 0;
+  myProp->eval(X, L0, E, G, rho, hasGrF, eM > 0,
+               EA, EIy, EIz, GIt, Aly, Alz,
+               rhoA, CG_y, CG_z, I_xx, I_yy, I_zz);
 #if INT_DEBUG > 1
   std::cout <<"\n             EA = "<< EA
-            <<" EI = "<< EIy <<" "<< EIz <<" GIt = "<< GIt;
-#endif
-
-  // Evaluate the beam mass properties (if needed) at this point
-  bool hasGrF = gravity.isZero() ? false : eS > 0;
-  double rhoA = rhofunc && (eM > 0 || hasGrF) ? (*rhofunc)(X) : rho*A;
-  double I_xx = Ixfunc  &&  eM > 0            ? (*Ixfunc)(X)  : rho*Ix;
-  double I_yy = Iyfunc  &&  eM > 0            ? (*Iyfunc)(X)  : rho*Iy;
-  double I_zz = Izfunc  &&  eM > 0            ? (*Izfunc)(X)  : rho*Iz;
-  double CG_y = CGyfunc && (eM > 0 || hasGrF) ? (*CGyfunc)(X) : 0.0;
-  double CG_z = CGzfunc && (eM > 0 || hasGrF) ? (*CGzfunc)(X) : 0.0;
-#if INT_DEBUG > 1
+            <<" EI = "<< EIy <<" "<< EIz <<" GIt = "<< GIt
+            <<", Alpha_y = "<< Aly <<" Alpha_z = "<< Alz;
   std::cout <<", rho*A = "<< rhoA <<" rho*I = "<< I_xx <<" "<< I_yy <<" "<< I_zz
             <<", CoG = "<< CG_y <<" "<< CG_z << std::endl;
 #endif
@@ -673,7 +548,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   }
 
   if (eKm) // Evaluate the material stiffness matrix
-    this->getMaterialStiffness(elMat.A[eKm-1],EA,GIt,EIy,EIz,L0);
+    this->getMaterialStiffness(elMat.A[eKm-1],L0,EA,GIt,EIy,EIz,Aly,Alz);
 
   Vector v;
   double N = 0.0;
@@ -698,7 +573,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 
     // Internal forces, S_int = Km*v
     Matrix tmpKm;
-    if (!eKm) this->getMaterialStiffness(tmpKm,EA,GIt,EIy,EIz,L0);
+    if (!eKm) this->getMaterialStiffness(tmpKm,L0,EA,GIt,EIy,EIz,Aly,Alz);
     Matrix& Km = eKm ? elMat.A[eKm-1] : tmpKm;
     if (!Km.multiply(v,elMat.b[iS-1],false,iS == eS))
       return false;
@@ -721,11 +596,11 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
     if (eKg == eKm)
     {
       Matrix Kg(12,12);
-      this->getGeometricStiffness(Kg,EIy,EIz,L0,N);
+      this->getGeometricStiffness(Kg,N,L0,EIy,EIz,Aly,Alz);
       elMat.A[eKm-1].add(Kg);
     }
     else
-      this->getGeometricStiffness(elMat.A[eKg-1],EIy,EIz,L0,N);
+      this->getGeometricStiffness(elMat.A[eKg-1],N,L0,EIy,EIz,Aly,Alz);
   }
 
   if (eM)

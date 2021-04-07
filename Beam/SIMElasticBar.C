@@ -39,6 +39,8 @@ SIMElasticBar::SIMElasticBar (unsigned char n) : SIMElastic1D(3)
 SIMElasticBar::~SIMElasticBar ()
 {
   delete twist;
+  for (BeamProperty* prop : myBCSec)
+    delete prop;
   for (PointLoad& load : myLoads)
     delete load.p;
 }
@@ -180,7 +182,7 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
       if (bar)
       {
         double A = 1.0, I = 0.0, EA = 0.0, EI = 0.0, rhoA = 0.0;
-        ElasticBeam::parsePipe(child,A,I); // "D" or "R" and optionally "t"
+        BeamProperty::parsePipe(child,A,I); // "D" or "R" and optionally "t"
         if (!utl::getAttribute(child,"EA",EA))
         {
           utl::getAttribute(child,"A",A);
@@ -220,7 +222,11 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
     }
 
     else if (beam && !strcasecmp(child->Value(),"properties"))
-      beam->parseBeamProperties(child);
+    {
+      this->parseMaterialSet(child,myBCSec.size());
+      myBCSec.push_back(beam->parseProp(child));
+      beam->setProperty(myBCSec.back());
+    }
 
     else if (beam && !strcasecmp(child->Value(),"lineload"))
       beam->parseBeamLoad(child);
@@ -339,6 +345,16 @@ bool SIMElasticBar::createFEMmodel (char)
       ok = pch->generateFEMTopology();
 
   return ok;
+}
+
+
+bool SIMElasticBar::initMaterial (size_t propInd)
+{
+  ElasticBeam* beam = dynamic_cast<ElasticBeam*>(myProblem);
+  if (beam && propInd < myBCSec.size())
+    beam->setProperty(myBCSec[propInd]);
+
+  return true;
 }
 
 

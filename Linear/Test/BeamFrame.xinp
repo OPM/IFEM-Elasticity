@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test.
+     Simple spatial frame (tripod and vertical column) with top point load.
+
+     Note: The <geometry> context has to be placed within the <beam>
+           context when different properties are assigned to topological sets,
+           because <beam> is parsed before <geometry> on the same level. !-->
+
+<simulation>
+  <beam>
+
+    <geometry dim="3">
+      <patches>
+        100 1 0 0 3 0 2 2 0 0 1 1 -0.7071 -0.7071 0.0 0.0 0.0 2.0\
+        100 1 0 0 3 0 2 2 0 0 1 1 1.0 0.0 0.0 0.0 0.0 2.0\
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 1.0 0.0 0.0 0.0 2.0\
+        100 1 0 0 3 0 2 2 0 0 1 1 0.0 0.0 2.0 0.0 0.0 4.0\
+      </patches>
+      <refine lowerpatch="1" upperpatch="4" u="4"/>
+      <topology>
+        <connection master="4" midx="1" slave="1" sidx="2"/>
+        <connection master="4" midx="1" slave="2" sidx="2"/>
+        <connection master="4" midx="1" slave="3" sidx="2"/>
+      </topology>
+      <topologysets>
+        <set name="tripod" type="curve">
+          <item lowerpatch="1" upperpatch="3"/>
+        </set>
+        <set name="column" type="curve">
+          <item patch="4"/>
+        </set>
+        <set name="support" type="vertex">
+          <item patch="1">1</item>
+          <item patch="2">1</item>
+          <item patch="3">1</item>
+        </set>
+      </topologysets>
+    </geometry>
+
+    <boundaryconditions>
+      <dirichlet set="support" comp="123"/>
+    </boundaryconditions>
+
+    <material E="2.1e11" u="0.3" rho="7850.0"/>
+    <properties set="tripod" R="0.03" t="0.004"/>
+    <properties set="column" R="0.05" t="0.005"/>
+    <pointload patch="4" dof="1" u="1.0" type="constant">1000.0</pointload>
+
+  </beam>
+</simulation>
