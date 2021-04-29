@@ -16,6 +16,8 @@
 
 #include "SIMmultiCpl.h"
 
+class DataExporter;
+
 
 /*!
   \brief Class for monolithic coupled linear static simulators.
@@ -33,7 +35,7 @@ public:
   virtual ~SIMmcStatic() {}
 
   //! \brief Solves a linear static fully coupled multi-simulator problem.
-  int solveStatic(const char* inpfile,
+  int solveStatic(const char* inpfile, DataExporter* exporter,
                   double zero_tol, int outPrec);
 };
 

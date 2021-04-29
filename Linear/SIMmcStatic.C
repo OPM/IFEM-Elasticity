@@ -14,12 +14,25 @@
 #include "SIMmcStatic.h"
 #include "SIMoutput.h"
 #include "SIMenums.h"
+#include "DataExporter.h"
 #include "IFEM.h"
 
 
 int SIMmcStatic::solveStatic (const char* inpfile,
+                              DataExporter* exporter,
                               double zero_tol, int outPrec)
 {
+  Vector displ;
+  if (exporter)
+  {
+    std::string fieldName("u0");
+    for (SIMoutput* sim : mySims)
+    {
+      ++fieldName[1];
+      exporter->setFieldValue(fieldName, sim, &displ);
+    }
+  }
+
   // Static solution: Assemble [Km] and {R}
   int substep = 20;
   size_t i, nSim = mySims.size();
@@ -37,7 +50,6 @@ int SIMmcStatic::solveStatic (const char* inpfile,
   }
 
   // Solve the global linear system of equations
-  Vector displ;
   this->printHeading(substep);
   if (!mySims.front()->solveSystem(displ,1))
     return 5;
@@ -52,6 +64,9 @@ int SIMmcStatic::solveStatic (const char* inpfile,
       sim->dumpResults(displ,0.0,IFEM::cout,true,outPrec);
       utl::zero_print_tol = old_tol;
     }
+
+  if (exporter)
+    exporter->dumpTimeLevel();
 
   if (opt.format < 0)
     return 0; // No VTF output

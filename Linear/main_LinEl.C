@@ -440,13 +440,45 @@ int main (int argc, char** argv)
     model->opt.hdf5.clear();
   }
 
-  std::vector<std::string> prefix(pOpt.size());
-  if (model->opt.format >= 0 || model->opt.dumpHDF5(infile))
-    for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
-      prefix[i] = pit->second;
+  if (model->opt.dumpHDF5(infile))
+  {
+    IFEM::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
+               <<".hdf5"<< std::endl;
+
+    exporter = new DataExporter(true);
+    exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
+                                            model->getProcessAdm()));
+
+    if (statSol)
+    {
+      // Include secondary results only if no projection has been requested.
+      // The secondary results will be projected anyway, but without the
+      // nodal averaging across patch boundaries in case of multiple patches.
+      int results = DataExporter::PRIMARY | DataExporter::DISPLACEMENT;
+      if (pOpt.empty() && !model->opt.pSolOnly)
+        results |= DataExporter::SECONDARY;
+      if (args.adap || !noError)
+        results |= DataExporter::NORMS;
+      if (dumpNodeMap)
+        results |= DataExporter::L2G_NODE;
+      if (mSim)
+      {
+        exporter->registerField("u1", "solution", DataExporter::SIM, results);
+        exporter->registerField("u2", "solution", DataExporter::SIM, results);
+      }
+      else
+        exporter->registerField("u", "solution", DataExporter::SIM, results);
+    }
+
+    if (model->opt.eig > 0)
+    {
+      int results = DataExporter::EIGENMODES;
+      exporter->registerField("eig", "eigenmode", DataExporter::SIM, results);
+    }
+  }
 
   if (mSim) // Solve the multi-dimensional elasticity problem
-    return terminate(mSim->solveStatic(infile,zero_tol,outPrec));
+    return terminate(mSim->solveStatic(infile,exporter,zero_tol,outPrec));
 
   if (aSim && !aSim->initAdaptor(abs(args.adap)-1))
     return terminate(3);
@@ -458,28 +490,10 @@ int main (int argc, char** argv)
   Vectors projx(pOpt.size()), xNorm;
   Vectors projd(model->haveDualSol() ? pOpt.size() : 0), dNorm;
 
-  if (model->opt.dumpHDF5(infile))
+  if (exporter)
   {
-    IFEM::cout <<"\nWriting HDF5 file "<< model->opt.hdf5
-               <<".hdf5"<< std::endl;
-
-    // Include secondary results only if no projection has been requested.
-    // The secondary results will be projected anyway, but without the
-    // nodal averaging across patch boundaries in case of multiple patches.
-    int results = DataExporter::PRIMARY | DataExporter::DISPLACEMENT;
-    if (pOpt.empty() && !model->opt.pSolOnly)
-      results |= DataExporter::SECONDARY;
-    if (args.adap || !noError)
-      results |= DataExporter::NORMS;
-    if (dumpNodeMap)
-      results |= DataExporter::L2G_NODE;
-
-    exporter = new DataExporter(true);
-    exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
-                                            model->getProcessAdm()));
     if (statSol)
     {
-      exporter->registerField("u", "solution", DataExporter::SIM, results);
       if (aSim)
         exporter->setFieldValue("u", model,
                                 &aSim->getSolution(),
@@ -487,14 +501,9 @@ int main (int argc, char** argv)
                                 &aSim->getEnorm());
       else
         exporter->setFieldValue("u", model, &displ.front(), &projs, &eNorm);
-      exporter->setNormPrefixes(prefix);
     }
     if (model->opt.eig > 0)
-    {
-      results = DataExporter::EIGENMODES;
-      exporter->registerField("eig", "eigenmode", DataExporter::SIM, results);
       exporter->setFieldValue("eig", model, &modes);
-    }
   }
 
   // Lambda function to expand the number of nodal components in an array
@@ -852,8 +861,16 @@ int main (int argc, char** argv)
         return terminate(18);
 
     // Write element norms
-    if (!model->writeGlvN(eNorm,1,nBlock,prefix))
-      return terminate(19);
+    if (!eNorm.empty())
+    {
+      std::vector<std::string> prefix;
+      prefix.reserve(pOpt.size());
+      for (pit = pOpt.begin(); pit != pOpt.end(); ++pit)
+        prefix.push_back(pit->second);
+
+      if (!model->writeGlvN(eNorm,1,nBlock,prefix))
+        return terminate(19);
+    }
 
     if (!fNorm.empty())
     {
