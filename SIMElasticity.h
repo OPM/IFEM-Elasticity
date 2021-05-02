@@ -524,6 +524,7 @@ protected:
         IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
         int code = this->parseMaterialSet(child,mVec.size());
         IFEM::cout <<"\tMaterial code "<< code <<":";
+        utl::getAttribute(child,"planeStrain",Elastic::planeStrain);
         bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
         mVec.push_back(this->getIntegrand()->parseMatProp(child,planeStrain));
       }
