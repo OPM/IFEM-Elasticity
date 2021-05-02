@@ -81,13 +81,31 @@ public:
   //! \brief Serializes current internal state for restarting purposes.
   virtual bool serialize(SerializeMap& data) const
   {
-    return this->saveSolution(data,this->getName());
+    if (!this->saveBasis(data) || !this->saveSolution(data,this->getName()))
+      return false;
+
+    data["Elasticity::Eext"] = SIMsolution::serialize(this->getExtEnerg(),1);
+
+    return true;
   }
 
   //! \brief Restores the internal state from serialized data.
   virtual bool deSerialize(const SerializeMap& data)
   {
-    return this->restoreSolution(data,this->getName());
+    if (!this->restoreSolution(data,this->getName()))
+      return false;
+
+    SerializeMap::const_iterator sit = data.find("Elasticity::Eext");
+    if (sit != data.end())
+      SIMsolution::deSerialize(sit->second,this->theExtEnerg(),1);
+
+    return true;
+  }
+
+  //! \brief Restores the basis from serialized data.
+  bool deSerializeBasis(const SerializeMap& data)
+  {
+    return this->restoreBasis(data);
   }
 
   //! \brief Initializes the linear equation solver and solution vectors.
@@ -111,6 +129,8 @@ public:
   //! \brief Computes the solution for the current time step.
   virtual bool solveStep(TimeStep& tp) = 0;
 
+  // Due to the multiple inheritance, the compiler needs to be told which
+  // version of this method to use (even though they have different signature)
   using SIMsolution::getSolution;
 
   //! \brief Overrides the parent class method to do nothing.
