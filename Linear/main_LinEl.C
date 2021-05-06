@@ -179,6 +179,8 @@ int main (int argc, char** argv)
       Elastic::GIpointsVTF = Immersed::plotCells = true;
     else if (!strcmp(argv[i],"-free"))
       SIMbase::ignoreDirichlet = true;
+    else if (!strncmp(argv[i],"-staticCond",11))
+      iop = 9;
     else if (!strcmp(argv[i],"-check"))
       iop = 100;
     else if (!strcmp(argv[i],"-checkRHS"))
@@ -278,7 +280,7 @@ int main (int argc, char** argv)
                "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]",
                "[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
-               "[-adap[<i>]|-dualadap]",
+               "[-adap[<i>]|-dualadap]","[-staticCond]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
                "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
                "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
@@ -483,7 +485,8 @@ int main (int argc, char** argv)
   if (aSim && !aSim->initAdaptor(abs(args.adap)-1))
     return terminate(3);
 
-  Matrix eNorm, fNorm;
+  Matrix  Kred, eNorm, fNorm;
+  Vector  Rred;
   Vectors displ(model->getNoRHS());
   Vectors load(vizRHS && statSol ? displ.size() : 0);
   Vectors projs(pOpt.size()), gNorm;
@@ -765,6 +768,12 @@ int main (int argc, char** argv)
       return terminate(9);
     break;
 
+  case 9:
+    model->opt.num_threads_SLU = -1; // To avoid pre-assembly
+    if (!model->staticCondensation(Kred,Rred))
+      return terminate(9);
+    break;
+
   case 10:
     // Adaptive simulation
     for (int iStep = 1; aSim && aSim->adaptMesh(iStep,outPrec); iStep++)
@@ -929,6 +938,26 @@ int main (int argc, char** argv)
     std::ofstream osm(strcat(strtok(infile,"."),".m"));
     IFEM::cout <<"\nDumping grid to Matlab file "<< infile << std::endl;
     model->dumpMatlabGrid(osm,"IFEM_mesh",topSets);
+  }
+
+  if (!Kred.empty())
+  {
+    std::ofstream oss(strcat(strtok(infile,"."),"_Ksup.dat"));
+    IFEM::cout <<"\nWriting condensed stiffness matrix to file "
+               << infile << std::endl;
+    oss.precision(16);
+    oss << Kred;
+    oss.close();
+
+    if (!Rred.empty())
+    {
+      infile[strlen(infile)-8] = 'R';
+      oss.open(infile);
+      IFEM::cout <<"\nWriting condensed load vector to file "
+                 << infile << std::endl;
+      oss.precision(16);
+      oss << Rred;
+    }
   }
 
   utl::profiler->stop("Postprocessing");

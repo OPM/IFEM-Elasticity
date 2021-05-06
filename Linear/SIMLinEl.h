@@ -17,6 +17,7 @@
 #include "SIMElasticity.h"
 #include "LinearElasticity.h"
 #include "ReactionsOnly.h"
+#include "AlgEqSystem.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
 
@@ -96,6 +97,22 @@ public:
   virtual const Vector* getReactionForces() const
   {
     return myReact.empty() ? nullptr : &myReact;
+  }
+
+  //! \brief Performs static condensation of the linear equation system.
+  //! \param[out] Kred Reduced System matrix
+  //! \param[out] Rred Associated reduced right-hand-side vector
+  virtual bool staticCondensation(Matrix& Kred, Vector& Rred)
+  {
+    // Assemble [K] and {R}
+    this->setMode(SIM::STATIC);
+    this->setQuadratureRule(Dim::opt.nGauss[0],true,true);
+    if (!this->initSystem(LinAlg::SPARSE))
+      return false;
+    if (!this->assembleSystem())
+      return false;
+
+    return Dim::myEqSys->staticCondensation(Kred,Rred,myRetainNodes);
   }
 
 protected:
@@ -179,6 +196,48 @@ protected:
     return true;
   }
 
+  using SIMElasticity<Dim>::parse;
+  //! \brief Parses a data section from an XML element
+  //! \param[in] elem The XML element to parse
+  virtual bool parse(const TiXmlElement* elem)
+  {
+    // Lambda function for parsing the static condensation tag.
+    auto&& parseSC = [this](const TiXmlElement* elem)
+    {
+      IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
+      std::string rset;
+      const TiXmlElement* child = elem->FirstChildElement();
+      for (; child; child = child->NextSiblingElement())
+        if (!strcasecmp(child->Value(),"retained"))
+          if (utl::getAttribute(child,"set",rset))
+          {
+            const TopEntity& retEnt = this->getEntity(rset);
+            if (retEnt.empty())
+              IFEM::cout <<"  ** Undefined topology set "<< rset << std::endl;
+            else
+            {
+              myRetainSet.insert(retEnt.begin(),retEnt.end());
+              IFEM::cout <<"\tRetained topology set: "<< rset << std::endl;
+            }
+          }
+      return true;
+    };
+
+    if (!this->SIMElasticity<Dim>::parse(elem))
+      return false;
+    else if (!strcasecmp(elem->Value(),"staticCondensation"))
+      return parseSC(elem);
+    else if (strcasecmp(elem->Value(),SIMElasticity<Dim>::myContext.c_str()))
+      return true;
+
+    const TiXmlElement* child = elem->FirstChildElement();
+    for (; child; child = child->NextSiblingElement())
+      if (!strcasecmp(child->Value(),"staticCondensation"))
+        return parseSC(child);
+
+    return true;
+  }
+
   //! \brief Parses the analytical solution from an input stream.
   //! \details This function allows for specialization of the template
   //! while still reusing as much code as possible.
@@ -191,6 +250,32 @@ protected:
   //! Only put dimension-specific code in here.
   bool parseDimSpecific(const TiXmlElement* elem, const std::string& type);
 
+  //! \brief Performs some pre-processing tasks on the FE model.
+  //! \details This method is reimplemented to resolve the topology sets
+  //! into node numbers specified for static condensation.
+  virtual bool preprocessB()
+  {
+    bool ok = SIMElasticity<Dim>::preprocessB();
+    if (!ok) return false;
+
+    for (const TopItem& titem : myRetainSet)
+      if (!this->getTopItemNodes(titem,myRetainNodes))
+      {
+        IFEM::cout <<" *** SIMLinEl::preprocessB: Invalid topology set "
+                   << titem << std::endl;
+        ok = false;
+      }
+
+    if (!ok || myRetainNodes.empty())
+      return ok;
+
+    IFEM::cout <<"\nRetained nodes in static condensation:";
+    for (size_t i = 0; i < myRetainNodes.size(); i++)
+      IFEM::cout << (i%10 ? " " : "\n") << myRetainNodes[i];
+    IFEM::cout <<"\n"<< std::endl;
+    return true;
+  }
+
 public:
   //! \brief Returns whether a dual solution is available or not.
   virtual bool haveDualSol() const { return dualS && Dim::dualField; }
@@ -199,6 +284,9 @@ private:
   bool dualS; //!< If \e true, also solve the dual problem
 
   Vector myReact; //!< Nodal reaction forces
+
+  TopEntity myRetainSet;   //!< Topology set for the retained DOFs
+  IntVec    myRetainNodes; //!< List of retained nodes in static condensation
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
