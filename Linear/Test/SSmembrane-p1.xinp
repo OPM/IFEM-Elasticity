@@ -32,10 +32,15 @@
     <neumann set="loaded" component="2">-1.0e8</neumann>
   </boundaryconditions>
 
+  <staticCondensation supelName="SSmembrane-p1.sup">
+    <retained set="P1"/>
+    <retained set="P2"/>
+  </staticCondensation>
+
   <elasticity>
     <isotropic E="2.068e11" nu="0.29"/>
-    <rigid slave="fixed" master="P1" comp="12"/>
-    <rigid slave="free"  master="P2" comp="12"/>
+    <rigid slave="fixed" master="P1"/>
+    <rigid slave="free"  master="P2"/>
   </elasticity>
 
   <discretization>

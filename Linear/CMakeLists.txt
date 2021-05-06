@@ -14,7 +14,8 @@ if(NOT IFEM_CONFIGURED)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${IFEM_CXX_FLAGS}")
 endif()
 
-include_directories(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}/..
+include_directories(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}
+                                     ${PROJECT_SOURCE_DIR}/..
                                      ${PROJECT_SOURCE_DIR}/../Shell
                                      ${PROJECT_SOURCE_DIR}/../Beam)
 
@@ -96,17 +97,15 @@ endif()
 list(APPEND TEST_APPS LinEl)
 
 # Unit tests
-#IFEM_add_test_app(${PROJECT_SOURCE_DIR}/Test/*.C
-#                  ${PROJECT_SOURCE_DIR}/Test
-#                  LinEl
-#                  Beam Elasticity ${IFEM_LIBRARIES})
+add_library(LinearElasticity STATIC ${PROJECT_SOURCE_DIR}/SIMLinEl2D.C ${PROJECT_SOURCE_DIR}/AnalyticSolutions.C)
+IFEM_add_test_app(${PROJECT_SOURCE_DIR}/Test/*.C
+                  ${PROJECT_SOURCE_DIR}/Test
+                  LinEl
+                  LinearElasticity Elasticity ${IFEM_LIBRARIES})
 
 if(IFEM_COMMON_APP_BUILD)
   set(TEST_APPS ${TEST_APPS} PARENT_SCOPE)
+  set(UNIT_TEST_NUMBER ${UNIT_TEST_NUMBER} PARENT_SCOPE)
 else()
-  # Remove when there are unit tests in this application
-  if(NOT UNIT_TEST_NUMBER)
-    set(UNIT_TEST_NUMBER 0)
-  endif()
   add_check_target()
 endif()
