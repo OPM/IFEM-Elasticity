@@ -150,7 +150,7 @@ public:
       if (restart && restart->dumpStep(params))
       {
         HDF5Restart::SerializeData data;
-        if (this->serialize(data) && !restart->writeData(params,data))
+        if (this->serialize(data) && !restart->writeData(data))
           status += 12;
       }
     }

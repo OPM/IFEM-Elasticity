@@ -317,16 +317,15 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
         }
       }
 
-      // Save solution variables to HDF5
-      if (writer)
-      {
-        bool dstat = true;
-        SerializeMap data;
-        if (restart && restart->dumpStep(params) && this->serialize(data))
-          dstat = restart->writeData(params,data);
+      // Save solution variables to HDF5 file
+      if (writer && !writer->dumpTimeLevel(&params))
+        return 11;
 
-        dstat &= writer->dumpTimeLevel(&params);
-        if (!dstat)
+      // Save solution state to restart HDF5 file
+      if (restart && restart->dumpStep(params))
+      {
+        SerializeMap data;
+        if (this->serialize(data) && !restart->writeData(data))
           return 11;
       }
 
