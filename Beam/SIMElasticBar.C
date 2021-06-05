@@ -382,7 +382,7 @@ void SIMElasticBar::preprocessA ()
 
   this->printProblem();
   for (ASMbase* pch : myModel)
-    pch->setNoFields(nf);
+    pch->setNoFields(nf%10);
 }
 
 
