@@ -160,10 +160,13 @@ void Elasticity::addExtrFunction (FunctionBase* extr)
 }
 
 
-LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t,
+LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
 					     bool neumann) const
 {
-  ElmMats* result;
+  ElmMats* result = nullptr;
+  if (this->inActive(iEl))
+    return result; // element is not in current material group
+
   if (m_mode != SIM::DYNAMIC) // linear or nonlinear (quasi-)static analysis
     result = new ElmMats();
   else if (bdf)

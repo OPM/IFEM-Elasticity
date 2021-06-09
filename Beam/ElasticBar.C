@@ -44,10 +44,13 @@ void ElasticBar::printLog () const
 }
 
 
-LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t,
+LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t iEl,
                                              bool neumann) const
 {
-  ElmMats* result;
+  ElmMats* result = nullptr;
+  if (this->inActive(iEl))
+    return result; // element is not in current material group
+
   if (m_mode != SIM::DYNAMIC)
     result = new ElmMats();
   else if (intPrm[3] > 0.0)

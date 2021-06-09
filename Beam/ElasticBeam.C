@@ -153,9 +153,12 @@ void ElasticBeam::parseBeamLoad (const TiXmlElement* load)
 }
 
 
-LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t, bool) const
+LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
 {
-  ElmMats* result;
+  ElmMats* result = nullptr;
+  if (this->inActive(iEl))
+    return result; // element is not in current material group
+
   if (m_mode != SIM::DYNAMIC)
     result = new BeamElmMats();
   else if (intPrm[3] > 0.0)
@@ -485,7 +488,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
     return false;
   }
 #if INT_DEBUG > 1
-  std::cout <<"ElasticBeam: X = "<< X <<", L0 = "<< L0;
+  std::cout <<"ElasticBeam: iel = "<< fe.iel <<" X = "<< X <<", L0 = "<< L0;
 #endif
 
   const Vector& eV = elmInt.vec.front();

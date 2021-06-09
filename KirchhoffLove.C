@@ -15,6 +15,7 @@
 #include "MaterialBase.h"
 #include "FiniteElement.h"
 #include "ElmMats.h"
+#include "Function.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "Tensor.h"
@@ -132,9 +133,12 @@ void KirchhoffLove::initIntegration (size_t nGp, size_t nBp)
 }
 
 
-LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t,
+LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
                                                 bool neumann) const
 {
+  if (this->inActive(iEl))
+    return nullptr; // element is not in current material group
+
   ElmMats* result = new ElmMats();
   switch (m_mode)
     {

@@ -14,6 +14,7 @@
 #include "ElasticCable.h"
 #include "FiniteElement.h"
 #include "ElmMats.h"
+#include "Function.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "IFEM.h"
@@ -35,11 +36,11 @@ void ElasticCable::printLog () const
 }
 
 
-LocalIntegral* ElasticCable::getLocalIntegral (size_t nen, size_t,
+LocalIntegral* ElasticCable::getLocalIntegral (size_t nen, size_t iEl,
                                                bool neumann) const
 {
-  LocalIntegral* result = this->ElasticBar::getLocalIntegral(nen,0,neumann);
-  if (m_mode == SIM::STATIC && neumann && moment)
+  LocalIntegral* result = this->ElasticBar::getLocalIntegral(nen,iEl,neumann);
+  if (result && m_mode == SIM::STATIC && neumann && moment)
   {
     // Account for load correction stiffness
     ElmMats* elMat = static_cast<ElmMats*>(result);

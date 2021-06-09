@@ -57,8 +57,8 @@ public:
 
   using ElasticBase::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
-  //! \param[in] nen Number of nodes on element
-  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t, bool) const;
+  //! \param[in] iEl Global element number (1-based)
+  virtual LocalIntegral* getLocalIntegral(size_t, size_t iEl, bool) const;
 
   using ElasticBase::initElement;
   //! \brief Initializes current element for numerical integration.

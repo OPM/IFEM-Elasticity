@@ -16,6 +16,8 @@
 
 #include "ElasticBar.h"
 
+class RealFunc;
+
 
 /*!
   \brief Class representing the integrand of a 3D nonlinear elastic cable.
@@ -51,8 +53,9 @@ public:
   using ElasticBar::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
   //! \param[in] nen Number of nodes on element
+  //! \param[in] iEl Global element number (1-based)
   //! \param[in] neumann Whether or not we are assembling Neumann BCs
-  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t,
+  virtual LocalIntegral* getLocalIntegral(size_t nen, size_t iEl,
                                           bool neumann) const;
 
   //! \brief Defines which FE quantities are needed by the integrand.
