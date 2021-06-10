@@ -58,6 +58,7 @@ int SIMmcStatic::solveStatic (const char* inpfile,
   for (SIMoutput* sim : mySims)
     if (sim->hasResultPoints())
     {
+      sim->printHeading(substep);
       double old_tol = utl::zero_print_tol;
       if (zero_tol > 0.0) utl::zero_print_tol = zero_tol;
       sim->setMode(SIM::RECOVERY);
