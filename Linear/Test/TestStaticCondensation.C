@@ -46,8 +46,10 @@ TEST(TestSIMLinEl2D, StaticCondensation)
   Vector Rred;
   scModel.opt.num_threads_SLU = -1; // To avoid pre-assembly
   ASSERT_TRUE(scModel.staticCondensation(Kred,Rred));
+#ifdef INT_DEBUG
   std::cout <<"Kred:"<< Kred;
   std::cout <<"Rred:"<< Rred;
+#endif
 
   // Enforce boundary conditions (super DOFs 1, 2 and 5)
   std::array<size_t,3> fixed{1,2,5};
@@ -58,8 +60,10 @@ TEST(TestSIMLinEl2D, StaticCondensation)
     Kred(i,i) = 1.0;
     Rred(i) = 0.0;
   }
+#ifdef INT_DEBUG
   std::cout <<"Constrained Kred:"<< Kred;
   std::cout <<"Constrained Rred:"<< Rred;
+#endif
 
   // Solve the condensed system
   DenseMatrix Ksup(Kred);
@@ -79,4 +83,26 @@ TEST(TestSIMLinEl2D, StaticCondensation)
     EXPECT_NEAR(displ.front()(idof), Rsup[i], 1.0e-8);
   for (idof = dofs2.first; idof <= dofs2.second; idof++, i++)
     EXPECT_NEAR(displ.front()(idof), Rsup[i], 1.0e-8);
+
+  // Check that the recovery matrix is valid
+  FILE* fd = fopen("SSmembrane-p1.rec","rb");
+  ASSERT_FALSE(fd == nullptr);
+
+  size_t len = 0, n1, n2;
+  char* header = nullptr;
+  ASSERT_GT(getline(&header,&len,fd),0);
+  ASSERT_FALSE(strstr(header,"#IFEM recovery matrix:") == nullptr);
+  EXPECT_EQ(sscanf(header+22,"%zu%zu",&n1,&n2),2);
+  std::cout << header << n1 <<" "<< n2;
+  free(header);
+
+  Matrix Rmat(n1,n2);
+  for (size_t c = 0; c < n2; c++)
+    EXPECT_EQ(fread(Rmat.ptr(c),sizeof(double),n1,fd),n1);
+  fclose(fd);
+#if INT_DEBUG > 2
+  std::cout << Rmat;
+#else
+  std::cout << std::endl;
+#endif
 }

@@ -940,24 +940,20 @@ int main (int argc, char** argv)
     model->dumpMatlabGrid(osm,"IFEM_mesh",topSets);
   }
 
-  if (!Kred.empty())
+  std::string supelName = model->getSupelName();
+  if (!Kred.empty() && !supelName.empty())
   {
-    std::ofstream oss(strcat(strtok(infile,"."),"_Ksup.dat"));
-    IFEM::cout <<"\nWriting condensed stiffness matrix to file "
-               << infile << std::endl;
+    if (supelName.find_last_of('.') == std::string::npos)
+      supelName.append(".sup");
+    IFEM::cout <<"\nWriting condensed stiffness matrix and load vector to file "
+               << supelName << std::endl;
+    std::ofstream oss(supelName.c_str());
     oss.precision(16);
-    oss << Kred;
-    oss.close();
-
+    model->dumpSupernodes(oss);
+    oss << Kred.rows() <<" "<< Kred.cols() << Kred;
     if (!Rred.empty())
-    {
-      infile[strlen(infile)-8] = 'R';
-      oss.open(infile);
-      IFEM::cout <<"\nWriting condensed load vector to file "
-                 << infile << std::endl;
-      oss.precision(16);
-      oss << Rred;
-    }
+      oss << Rred.size() << Rred;
+    oss.close();
   }
 
   utl::profiler->stop("Postprocessing");

@@ -112,7 +112,19 @@ public:
     if (!this->assembleSystem())
       return false;
 
-    return Dim::myEqSys->staticCondensation(Kred,Rred,myRetainNodes);
+    return Dim::myEqSys->staticCondensation(Kred,Rred,myRetainNodes,
+                                            0,recFile.c_str());
+  }
+
+  //! \brief Returns the superelement file name, if any.
+  virtual std::string getSupelName() const { return supelName; }
+
+  //! \brief Dumps the supernode coordinates to file.
+  virtual void dumpSupernodes(std::ostream& os) const
+  {
+    os << myRetainNodes.size() << std::endl;
+    for (int node : myRetainNodes)
+      os << static_cast<Vec3>(this->getNodeCoord(node)) << std::endl;
   }
 
 protected:
@@ -205,6 +217,16 @@ protected:
     auto&& parseSC = [this](const TiXmlElement* elem)
     {
       IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
+      if (utl::getAttribute(elem,"supelName",supelName))
+      {
+        recFile = supelName;
+        size_t idot = recFile.find_last_of('.');
+        if (idot < recFile.size())
+          recFile.replace(idot,std::string::npos,".rec");
+        else
+          recFile.append(".rec");
+      }
+
       std::string rset;
       const TiXmlElement* child = elem->FirstChildElement();
       for (; child; child = child->NextSiblingElement())
@@ -269,6 +291,7 @@ protected:
     if (!ok || myRetainNodes.empty())
       return ok;
 
+    std::sort(myRetainNodes.begin(),myRetainNodes.end());
     IFEM::cout <<"\nRetained nodes in static condensation:";
     for (size_t i = 0; i < myRetainNodes.size(); i++)
       IFEM::cout << (i%10 ? " " : "\n") << myRetainNodes[i];
@@ -287,6 +310,9 @@ private:
 
   TopEntity myRetainSet;   //!< Topology set for the retained DOFs
   IntVec    myRetainNodes; //!< List of retained nodes in static condensation
+
+  std::string supelName; //!< Name of superelement file
+  std::string recFile;   //!< Name of displacement recovery file
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
