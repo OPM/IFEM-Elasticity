@@ -22,6 +22,7 @@
 TEST(TestSIMLinEl2D, StaticCondensation)
 {
   SIMLinEl2D fullModel(false,false), scModel(false,false);
+  Vectors    displ(2);
 
   // Initialize the full model from input file
   ASSERT_TRUE(fullModel.read("SSmembrane-p1.xinp"));
@@ -31,7 +32,6 @@ TEST(TestSIMLinEl2D, StaticCondensation)
   fullModel.setMode(SIM::STATIC);
   fullModel.setQuadratureRule(fullModel.opt.nGauss[0],true,true);
   fullModel.initSystem(LinAlg::SPARSE);
-  Vectors displ(1);
   ASSERT_TRUE(fullModel.assembleSystem());
   ASSERT_TRUE(fullModel.solveSystem(displ,1));
   std::cout <<"Full Solution:"<< displ.front();
@@ -105,4 +105,11 @@ TEST(TestSIMLinEl2D, StaticCondensation)
 #else
   std::cout << std::endl;
 #endif
+
+  // Recover internal displacements and verify against the full solution
+  ASSERT_TRUE(scModel.recoverInternals(Rsup,displ.back()));
+  std::cout <<"Recovered Solution:"<< displ.back();
+  ASSERT_EQ(displ.front().size(),displ.back().size());
+  for (size_t i = 0; i < displ.front().size(); i++)
+    EXPECT_NEAR(displ.front()[i], displ.back()[i], 1.0e-8);
 }

@@ -16,7 +16,7 @@
 #include "SIMLinElBeamC1.h"
 #include "SIMLinElModal.h"
 #include "SIMElasticBar.h"
-#include "SIMsupel.h"
+#include "SIMLinElSup.h"
 #include "SIMmcStatic.h"
 #include "SIMargsBase.h"
 #include "ImmersedBoundaries.h"
@@ -350,7 +350,7 @@ int main (int argc, char** argv)
   else if (args.dim == 14)
   {
     SIMoutput* model1D = new SIMElasticBar("Linear Elastic Beam solver");
-    model  = new SIMsupel("3D superelement solver");
+    model  = new SIMLinElSup("3D superelement solver",fixDup);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
   else if (KLp)

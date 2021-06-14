@@ -116,6 +116,17 @@ public:
                                             0,recFile.c_str());
   }
 
+  //! \brief Recovers internal displacements from supernode displacements.
+  //! \param[in] Sdisp Local displacements at the supernodes
+  //! \param[out] fullDisp Local displacement vector for the entire FE model
+  virtual bool recoverInternals(const Vector& Sdisp, Vector& fullDisp)
+  {
+    if (Rmat.empty() && !AlgEqSystem::readRecoveryMatrix(Rmat,recFile.c_str()))
+      return false;
+
+    return Dim::myEqSys->recoverInternals(Rmat,myRetainNodes,Sdisp,fullDisp);
+  }
+
   //! \brief Returns the superelement file name, if any.
   virtual std::string getSupelName() const { return supelName; }
 
@@ -313,6 +324,8 @@ private:
 
   std::string supelName; //!< Name of superelement file
   std::string recFile;   //!< Name of displacement recovery file
+
+  Matrix Rmat; //!< Static condensation recovery matrix
 };
 
 typedef SIMLinEl<SIM2D> SIMLinEl2D; //!< 2D specific driver
