@@ -16,6 +16,7 @@
 #include "SAM.h"
 #include "ElementBlock.h"
 #include "Utilities.h"
+#include "Tensor.h"
 
 
 SIMLinElSup::~SIMLinElSup()
@@ -67,7 +68,8 @@ bool SIMLinElSup::preprocessB ()
   bool ok = true;
   for (std::pair<const std::string,FEmodel>& sub : mySubSim)
     ok &= (sub.second.sim->preprocess({},fixDup) &&
-           sub.second.sim->initSystem(LinAlg::SPARSE,0,0));
+           sub.second.sim->initSystem(LinAlg::SPARSE,0,0) &&
+           sub.second.sim->setMode(SIM::RECOVERY));
 
   return ok;
 }
@@ -155,6 +157,35 @@ bool SIMLinElSup::recoverInternalDispl (const Vector& glbSol)
 }
 
 
+IntegrandBase* SIMLinElSup::getMyProblem () const
+{
+  for (const std::pair<const std::string,FEmodel>& sub : mySubSim)
+    if (sub.second.sim)
+      return const_cast<IntegrandBase*>(sub.second.sim->getProblem());
+
+  return myProblem;
+}
+
+
+/*!
+  \brief Static helper to write out scalar fields to VTF-file.
+*/
+
+static bool writeFields (const Matrix& field, int geomID,
+                         int& nBlock, std::vector<IntVec>& sID, VTF* vtf)
+{
+  for (size_t j = 1; j <= field.rows(); j++)
+    if (!vtf->writeNres(field.getRow(j), ++nBlock, geomID))
+      return false;
+    else if (j <= sID.size())
+      sID[j-1].push_back(nBlock);
+    else
+      sID.push_back({nBlock});
+
+  return true;
+}
+
+
 int SIMLinElSup::writeGlvS1 (const Vector& psol, int iStep, int& nBlock,
                              double, const char*, int idBlock, int, bool)
 {
@@ -217,21 +248,87 @@ int SIMLinElSup::writeGlvS1 (const Vector& psol, int iStep, int& nBlock,
       vID.push_back(nBlock);
 
     // Output as scalar fields
-    for (size_t j = 1; j <= field.rows(); j++)
-      if (!vtf->writeNres(field.getRow(j), ++nBlock, geomID))
-        return false;
-      else if (j <= sID.size())
-        sID[j-1].push_back(nBlock);
-      else
-        sID.push_back({nBlock});
+    if (!writeFields(field, geomID, nBlock, sID, vtf))
+      return -3;
   }
 
   // Write result block identifications
 
   bool ok = vID.empty() || vtf->writeDblk(vID,"Displacement",idBlock,iStep);
   for (size_t i = 0; i < sID.size() && !sID[i].empty() && ok; i++)
-    ok = vtf->writeSblk(sID[i], myProblem->getField1Name(i).c_str(),
+    ok = vtf->writeSblk(sID[i], this->getMyProblem()->getField1Name(i).c_str(),
                         idBlock++, iStep);
 
   return ok ? idBlock : -4;
+}
+
+
+/*!
+  This method assumes that the internal displacements on the superelements
+  already have been recovered, by calling writeGlvS1() first. Therefore,
+  it does not need access to the global primary solution vector.
+*/
+
+bool SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
+                              double, int idBlock, int)
+{
+  if (adm.dd.isPartitioned() && adm.getProcId() != 0)
+    return true;
+
+  VTF* vtf = this->getVTF();
+  if (!vtf) return false;
+
+  IntegrandBase* problem = this->getMyProblem();
+
+  std::vector<IntVec> sID;
+  sID.reserve(problem->getNoFields(2));
+
+  int geomID = this->getStartGeo();
+  for (size_t pidx = 0; pidx < myModel.size(); pidx++)
+  {
+    SIMoutput* supsim = mySups[pidx].sim;
+    Matrix field, subfield;
+
+    if (supsim)
+      for (ASMbase* pch : supsim->getFEModel())
+      {
+        // Extract displacement vector for this sub-patch
+        pch->extractNodalVec(mySups[pidx].sol, problem->getSolution(),
+                             supsim->getSAM()->getMADOF());
+
+        // Direct evaluation of secondary solution variables
+        LocalSystem::patch = pch->idx+1;
+        supsim->setPatchMaterial(pch->idx);
+        if (!pch->evalSolution(subfield, *problem, supsim->opt.nViz))
+          return false;
+
+        if (field.empty())
+          field = subfield;
+        else
+          field.augmentCols(subfield);
+      }
+    else // Pad with zero values for the supernodes
+      field.resize(problem->getNoFields(2),
+                   myModel[pidx]->getNoNodes()+1);
+
+    if (msgLevel > 1)
+      IFEM::cout <<"Writing secondary solution for patch "
+                 << myModel[pidx]->idx+1 <<" ("<< field.rows()
+                 <<","<< field.cols() <<")"<< std::endl;
+
+    // Output as scalar fields
+    if (!writeFields(field, ++geomID, nBlock, sID, vtf))
+      return false;
+  }
+
+  // Write result block identifications
+
+  if (idBlock <= 20)
+    idBlock = 21; // avoid conflict with blocks from the 1D simulator
+  bool ok = true;
+  for (size_t i = 0; i < sID.size() && !sID[i].empty() && ok; i++)
+    ok = vtf->writeSblk(sID[i], problem->getField2Name(i).c_str(),
+                        idBlock++, iStep);
+
+  return ok;
 }

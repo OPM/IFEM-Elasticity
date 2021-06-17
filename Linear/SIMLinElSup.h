@@ -48,6 +48,9 @@ protected:
   //! \brief Tesselates the superelement associated with specified patch.
   virtual ElementBlock* tesselatePatch(size_t pidx) const;
 
+  //! \brief Returns a pointer to the problem-specific data object.
+  IntegrandBase* getMyProblem() const;
+
   //! \brief Writes primary solution for a given load case to the VTF-file.
   //! \param[in] psol Primary solution vector
   //! \param[in] iStep Load case identifier
@@ -55,6 +58,13 @@ protected:
   //! \param[in] idBlock Starting value of result block numbering
   virtual int writeGlvS1(const Vector& psol, int iStep, int& nBlock,
                          double, const char*, int idBlock, int, bool);
+
+  //! \brief Writes secondary solution for a given load case to the VTF-file.
+  //! \param[in] iStep Load case identifier
+  //! \param nBlock Running result block counter
+  //! \param[in] idBlock Starting value of result block numbering
+  virtual bool writeGlvS2(const Vector&, int iStep, int& nBlock,
+                          double, int idBlock, int);
 
 private:
   //! \brief Struct representing a FE substructure.
