@@ -137,6 +137,7 @@ int main (int argc, char** argv)
   bool dumpModes = false;
   bool dumpNodeMap = false;
   char* infile = nullptr;
+  char* supid = nullptr;
   Elasticity::wantStrain = false;
   Elasticity::wantPrincipalStress = true;
   SIMargsBase args("elasticity");
@@ -180,7 +181,11 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-free"))
       SIMbase::ignoreDirichlet = true;
     else if (!strncmp(argv[i],"-staticCond",11))
+    {
       iop = 9;
+      if (i < argc-1 && argv[i+1][0] != '-')
+        supid = argv[++i];
+    }
     else if (!strcmp(argv[i],"-check"))
       iop = 100;
     else if (!strcmp(argv[i],"-checkRHS"))
@@ -280,7 +285,7 @@ int main (int argc, char** argv)
                "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]",
                "[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
-               "[-adap[<i>]|-dualadap]","[-staticCond]",
+               "[-adap[<i>]|-dualadap]","[-staticCond [<supid>]]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
                "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
                "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
@@ -312,6 +317,9 @@ int main (int argc, char** argv)
     IFEM::cout <<"\nNorm- and component output precision: "<< outPrec;
   IFEM::cout <<"\nSolution component output zero tolerance: "
              << (zero_tol > 0.0 ? zero_tol : utl::zero_print_tol) << std::endl;
+  if (supid)
+    IFEM::cout <<"\nStatic condensation of the superelement \""<< supid
+               <<"\" requested."<< std::endl;
 
   utl::profiler->stop("Initialization");
   utl::profiler->start("Model input");
@@ -363,9 +371,9 @@ int main (int argc, char** argv)
       model = new SIMLinElModal<SIM3D>(modes,checkRHS);
   }
   else if (args.dim == 2)
-    model = new SIMLinEl2D(checkRHS, dualSol || args.adap < 0);
+    model = new SIMLinEl2D(supid, checkRHS, dualSol || args.adap < 0);
   else
-    model = new SIMLinEl3D(checkRHS, dualSol || args.adap < 0);
+    model = new SIMLinEl3D(supid, checkRHS, dualSol || args.adap < 0);
 
   AdaptiveSIM* aSim = nullptr;
   if (!theSim)

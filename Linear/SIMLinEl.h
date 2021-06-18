@@ -30,13 +30,18 @@ template<class Dim> class SIMLinEl : public SIMElasticity<Dim>
 {
 public:
   //! \brief The constructor forwards to the parent class constructor.
-  //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
+  //! \param[in] sid Id of superelement subjected to static condensation
+  //! \param[in] chkRHS If \e true, ensure the model is in a right-hand system
   //! \param[in] ds If \e true, also solve the dual problem
-  SIMLinEl(bool checkRHS, bool ds) : SIMElasticity<Dim>(checkRHS), dualS(ds) {}
+  SIMLinEl(const char* sid, bool chkRHS, bool ds) : SIMElasticity<Dim>(chkRHS)
+  {
+    if (sid) supSC = sid;
+    dualS = ds;
+  }
   //! \brief Constructor for coupled multi-dimensional simulators.
   //! \param[in] head Header identifying this sub-simulator.
-  //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMLinEl(const char* head, bool checkRHS) : SIMElasticity<Dim>(checkRHS)
+  //! \param[in] chkRHS If \e true, ensure the model is in a right-hand system
+  SIMLinEl(const char* head, bool chkRHS) : SIMElasticity<Dim>(chkRHS)
   {
     Dim::myHeading = head;
     dualS = false;
@@ -256,17 +261,31 @@ protected:
       return true;
     };
 
+    // Check for static condensation
+    const TiXmlElement* sctag = nullptr;
+    const TiXmlElement* child = elem->FirstChildElement();
+    if (!strcasecmp(elem->Value(),SIMElasticity<Dim>::myContext.c_str()))
+      for (; child; child = child->NextSiblingElement())
+        if (!strcasecmp(child->Value(),"staticCondensation"))
+          sctag = child; // Delay parsing until the FE data have been parsed
+        else if (!strcasecmp(child->Value(),"superelement"))
+        {
+          std::string sId;
+          if (utl::getAttribute(child,"id",sId))
+          if (!supSC.empty() && sId != supSC)
+          {
+            // Ignore superelements not specified for static condensation
+            IFEM::cout <<"\tIgnoring superelement \""<< sId <<"\""<< std::endl;
+            return true;
+          }
+        }
+
     if (!this->SIMElasticity<Dim>::parse(elem))
       return false;
     else if (!strcasecmp(elem->Value(),"staticCondensation"))
       return parseSC(elem);
-    else if (strcasecmp(elem->Value(),SIMElasticity<Dim>::myContext.c_str()))
-      return true;
-
-    const TiXmlElement* child = elem->FirstChildElement();
-    for (; child; child = child->NextSiblingElement())
-      if (!strcasecmp(child->Value(),"staticCondensation"))
-        return parseSC(child);
+    else if (sctag)
+      return parseSC(sctag);
 
     return true;
   }
@@ -322,6 +341,7 @@ private:
   TopEntity myRetainSet;   //!< Topology set for the retained DOFs
   IntVec    myRetainNodes; //!< List of retained nodes in static condensation
 
+  std::string supSC;     //!< Superelement subjected to static condensation
   std::string supelName; //!< Name of superelement file
   std::string recFile;   //!< Name of displacement recovery file
 

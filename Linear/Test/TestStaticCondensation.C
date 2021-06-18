@@ -21,7 +21,7 @@
 
 TEST(TestSIMLinEl2D, StaticCondensation)
 {
-  SIMLinEl2D fullModel(false,false), scModel(false,false);
+  SIMLinEl2D fullModel(nullptr,false,false), scModel(nullptr,false,false);
   Vectors    displ(2);
 
   // Initialize the full model from input file
