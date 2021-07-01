@@ -34,7 +34,7 @@ class SIMElasticityWrap : public SIMElasticity<Dim>, public SIMsolution
 {
 protected:
   //! \brief The default constructor is protected as this is an interface class.
-  SIMElasticityWrap();
+  explicit SIMElasticityWrap(const std::vector<unsigned char>& = {});
 
 public:
   //! \brief Empty destructor.
