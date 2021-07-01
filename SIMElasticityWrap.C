@@ -22,7 +22,7 @@
 
 
 template<class Dim>
-SIMElasticityWrap<Dim>::SIMElasticityWrap ()
+SIMElasticityWrap<Dim>::SIMElasticityWrap (const std::vector<unsigned char>&)
 {
   Dim::msgLevel = 1;
   Dim::myHeading = "Elasticity solver";
