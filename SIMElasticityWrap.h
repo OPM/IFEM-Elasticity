@@ -31,7 +31,7 @@ class SIMElasticityWrap : public SIMElasticity<Dim>, public SIMsolution
 {
 protected:
   //! \brief The default constructor is protected as this is an interface class.
-  SIMElasticityWrap()
+  SIMElasticityWrap(const std::vector<unsigned char>& = {})
   {
     Dim::msgLevel = 1;
     Dim::myHeading = "Elasticity solver";
