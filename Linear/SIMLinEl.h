@@ -15,11 +15,19 @@
 #define _SIM_LIN_EL_H
 
 #include "SIMElasticity.h"
+#include "ElasticityUtils.h"
 #include "LinearElasticity.h"
 #include "ReactionsOnly.h"
 #include "AlgEqSystem.h"
+#include "AnaSol.h"
+#include "ASMbase.h"
+#include "IFEM.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
+#include "Utilities.h"
+#include "Vec3Oper.h"
+
+#include "tinyxml.h"
 
 
 /*!

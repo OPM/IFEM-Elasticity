@@ -17,6 +17,7 @@
 #include "ElementBlock.h"
 #include "Utilities.h"
 #include "Tensor.h"
+#include "VTF.h"
 
 
 SIMLinElSup::~SIMLinElSup()

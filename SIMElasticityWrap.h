@@ -15,8 +15,10 @@
 #define _SIM_ELASTICITY_WRAP_H_
 
 #include "SIMElasticity.h"
+#include "SIMenums.h"
 #include "SIMsolution.h"
 #include "DataExporter.h"
+#include "TimeStep.h"
 
 
 /*!

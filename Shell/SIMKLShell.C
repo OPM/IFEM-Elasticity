@@ -12,6 +12,8 @@
 //==============================================================================
 
 #include "SIMKLShell.h"
+#include "Elasticity.h"
+#include "ElasticityUtils.h"
 #include "KirchhoffLoveShell.h"
 #include "LinIsotropic.h"
 #include "AlgEqSystem.h"
@@ -21,6 +23,7 @@
 #endif
 #include "SAM.h"
 #include "Functions.h"
+#include "IFEM.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "Property.h"

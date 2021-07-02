@@ -16,6 +16,9 @@
 #include "KirchhoffLoveShell.h"
 #include "AnalyticSolutions.h"
 #include "AnaSol.h"
+#include "IFEM.h"
+#include "Utilities.h"
+
 #include "tinyxml.h"
 
 
