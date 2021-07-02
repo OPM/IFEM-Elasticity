@@ -55,10 +55,10 @@ public:
   virtual bool saveStep(const TimeStep& tp, int& nBlock);
 
   //! \brief Serializes current internal state for restarting purposes.
-  virtual bool serialize(SerializeMap& data) const;
+  bool serialize(SerializeMap& data) const override;
 
   //! \brief Restores the internal state from serialized data.
-  virtual bool deSerialize(const SerializeMap& data);
+  bool deSerialize(const SerializeMap& data) override;
 
   //! \brief Restores the basis from serialized data.
   bool deSerializeBasis(const SerializeMap& data);
@@ -69,7 +69,7 @@ public:
   virtual bool init(const TimeStep& tp, bool withRF = false);
 
   //! \brief Advances the time step one step forward.
-  virtual bool advanceStep(TimeStep& tp);
+  bool advanceStep(TimeStep& tp) override;
 
   //! \brief Computes the solution for the current time step.
   virtual bool solveStep(TimeStep& tp) = 0;
@@ -79,7 +79,7 @@ public:
   using SIMsolution::getSolution;
 
   //! \brief Overrides the parent class method to do nothing.
-  virtual bool postProcessNorms(Vectors&, Matrix*) { return true; }
+  bool postProcessNorms(Vectors&, Matrix*) override { return true; }
 };
 
 #endif
