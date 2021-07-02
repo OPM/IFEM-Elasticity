@@ -265,7 +265,7 @@ protected:
     const TiXmlElement* sctag = nullptr;
     const TiXmlElement* child = elem->FirstChildElement();
     if (!strcasecmp(elem->Value(),SIMElasticity<Dim>::myContext.c_str()))
-      for (; child; child = child->NextSiblingElement())
+      for (; child; child = child->NextSiblingElement()) {
         if (!strcasecmp(child->Value(),"staticCondensation"))
           sctag = child; // Delay parsing until the FE data have been parsed
         else if (!strcasecmp(child->Value(),"superelement"))
@@ -279,6 +279,7 @@ protected:
             return true;
           }
         }
+      }
 
     if (!this->SIMElasticity<Dim>::parse(elem))
       return false;
