@@ -31,6 +31,7 @@ downstreams=(IFEM-BeamEx
              IFEM-ThermoElasticity
              IFEM-PoroElasticity
              IFEM-OpenFrac
+             IFEM-THM
              IFEM-FSI)
 
 declare -A downstreamRev
@@ -39,6 +40,7 @@ downstreamRev[IFEM-FiniteDeformation]=master
 downstreamRev[IFEM-ThermoElasticity]=master
 downstreamRev[IFEM-PoroElasticity]=master
 downstreamRev[IFEM-OpenFrac]=master
+downstreamRev[IFEM-THM]=master
 downstreamRev[IFEM-FSI]=master
 
 IFEM_REVISION=master
