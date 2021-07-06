@@ -188,6 +188,10 @@ int main (int argc, char** argv)
     }
     else if (!strcmp(argv[i],"-check"))
       iop = 100;
+    else if (!strcmp(argv[i],"-ignoreSol"))
+      iop = 200;
+    else if (!strcmp(argv[i],"-RHSonly"))
+      iop = 210;
     else if (!strcmp(argv[i],"-checkRHS"))
       checkRHS = true;
     else if (!strcmp(argv[i],"-vizRHS"))
@@ -255,6 +259,9 @@ int main (int argc, char** argv)
     else
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
 
+  if (iop >= 200)
+    noProj = noError = true;
+
   if (!infile)
   {
     // Lambda function for nicely print of usage.
@@ -289,9 +296,9 @@ int main (int argc, char** argv)
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
                "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
                "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
-               "[-dual]","[-checkRHS]","[-check]","[-printMax[Patch]]",
-               "[-dumpASC]","[-dumpMatlab [<setnames>]]","[-dumpModes]",
-               "[-outPrec <nd>]","[-ztol <eps>]","[-strain]"});
+               "[-dual]","[-checkRHS]","[-check]","[-ignoreSol]","[-RHSOnly]",
+               "[-printMax[Patch]]","[-dumpASC]","[-dumpMatlab [<setnames>]]",
+               "[-dumpModes]","[-outPrec <nd>]","[-ztol <eps>]","[-strain]"});
     return 0;
   }
 
@@ -570,8 +577,10 @@ int main (int argc, char** argv)
   switch (args.adap ? 10 : iop+model->opt.eig) {
   case 0:
   case 5:
+  case 200:
+  case 210:
     // Static solution: Assemble [Km] and {R}
-    model->setMode(SIM::STATIC);
+    model->setMode(iop == 210 ? SIM::RHS_ONLY : SIM::STATIC);
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
     model->initSystem(model->opt.solver,1,displ.size());
     if (!model->assembleSystem())
@@ -582,14 +591,20 @@ int main (int argc, char** argv)
       model->extractLoadVec(load[j],j);
 
     // Solve the linear system of equations
-    if (!model->solveSystem(displ,1))
+    if (iop >= 200)
+    {
+      // No solution, just dump the system matrices to file
+      displ.front().resize(model->getNoEquations());
+      model->dumpEqSys();
+    }
+    else if (!model->solveSystem(displ,1))
       return terminate(5);
 
     // Project the FE stresses onto the splines basis
     noProj = true;
-    model->setMode(SIM::RECOVERY);
     for (i = 0, pit = pOpt.begin(); pit != pOpt.end(); i++, ++pit)
     {
+      if (i == 0) model->setMode(SIM::RECOVERY);
       if (!model->project(projs[i],displ[0],pit->first))
         return terminate(6);
       if (i == 0 && printMax)
@@ -700,7 +715,8 @@ int main (int argc, char** argv)
                      << dNorm.front()(1);
       }
 
-      printBoundaryForces(displ.front());
+      if (iop < 200)
+        printBoundaryForces(displ.front());
 
       size_t j = 1;
       for (pit = pOpt.begin(); pit != pOpt.end() && j < gNorm.size(); ++pit,j++)
@@ -739,7 +755,7 @@ int main (int argc, char** argv)
       IFEM::cout.precision(oldPrec);
     }
 
-    if (model->hasResultPoints())
+    if (model->hasResultPoints() && iop < 200)
     {
       double old_tol = utl::zero_print_tol;
       if (zero_tol > 0.0) utl::zero_print_tol = zero_tol;
@@ -750,7 +766,8 @@ int main (int argc, char** argv)
       utl::zero_print_tol = old_tol;
     }
 
-    if (model->opt.eig == 0) break;
+    if (model->opt.eig == 0 || iop >= 200)
+      break;
 
     // Linearized buckling: Assemble [Km] and [Kg]
     model->setMode(SIM::BUCKLING);
