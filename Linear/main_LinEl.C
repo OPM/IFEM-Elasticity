@@ -466,13 +466,15 @@ int main (int argc, char** argv)
     exporter->registerWriter(new HDF5Writer(model->opt.hdf5,
                                             model->getProcessAdm()));
 
-    if (statSol)
+    if (statSol || dumpNodeMap)
     {
       // Include secondary results only if no projection has been requested.
       // The secondary results will be projected anyway, but without the
       // nodal averaging across patch boundaries in case of multiple patches.
-      int results = DataExporter::PRIMARY | DataExporter::DISPLACEMENT;
-      if (pOpt.empty() && !model->opt.pSolOnly)
+      int results = 0;
+      if (statSol)
+        results |= DataExporter::PRIMARY | DataExporter::DISPLACEMENT;
+      if (statSol && pOpt.empty() && !model->opt.pSolOnly)
         results |= DataExporter::SECONDARY;
       if (args.adap || !noError)
         results |= DataExporter::NORMS;
@@ -510,7 +512,7 @@ int main (int argc, char** argv)
 
   if (exporter)
   {
-    if (statSol)
+    if (statSol || dumpNodeMap)
     {
       if (aSim)
         exporter->setFieldValue("u", model,
