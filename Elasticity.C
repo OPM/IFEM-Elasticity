@@ -1216,7 +1216,7 @@ std::string ElasticityNorm::getName (size_t i, size_t j,
     if (j > 5 && nx > 1)
     {
       j -= 5;
-      char comp[16];
+      char comp[32];
       if (!anasol)
         sprintf(comp,"a(u^h,w%zu)",j);
       else if (j%2)
