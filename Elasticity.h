@@ -20,6 +20,7 @@ class LocalSystem;
 class Material;
 class ElmNorm;
 class ElmMats;
+class FunctionBase;
 class Tensor;
 class SymmTensor;
 class TractionFunc;
