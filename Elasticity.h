@@ -23,6 +23,7 @@ class ElmMats;
 class Tensor;
 class SymmTensor;
 class TractionFunc;
+class FunctionBase;
 class TiXmlElement;
 
 

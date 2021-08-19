@@ -25,6 +25,7 @@
 #include "ASMbase.h"
 #include "AnaSol.h"
 #include "Functions.h"
+#include "TractionField.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "VTF.h"
