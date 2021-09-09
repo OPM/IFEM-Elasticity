@@ -492,9 +492,11 @@ protected:
     if (!strcasecmp(elem->Value(),"postprocessing"))
     {
       const TiXmlElement* child = elem->FirstChildElement();
-      for (; child && !plotRgd; child = child->NextSiblingElement())
+      for (; child; child = child->NextSiblingElement())
         if (!strcasecmp(child->Value(),"plot_rigid"))
           plotRgd = true;
+        else if (!strcasecmp(child->Value(),"strain"))
+          Elasticity::wantStrain = true;
     }
 
     if (strcasecmp(elem->Value(),myContext.c_str()))
