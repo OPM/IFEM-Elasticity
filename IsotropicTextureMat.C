@@ -57,7 +57,7 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
 
 void IsotropicTextureMat::printLog () const
 {
-  for (const std::pair<Doubles,LinIsotropic>& mat : materials)
+  for (const std::pair<const Doubles,LinIsotropic>& mat : materials)
   {
     IFEM::cout <<"Material with range ["
                << mat.first.first <<","<< mat.first.second <<"]:\n";

@@ -116,7 +116,7 @@ public:
     f.clear();
     f.reserve(bCode.size());
     TimeDomain time;
-    for (const std::pair<int,Vec3>& c : bCode)
+    for (const std::pair<const int,Vec3>& c : bCode)
     {
       f.push_back(SIM::getBoundaryForce(sol,this,c.first,time,&c.second));
       Dim::adm.allReduceAsSum(f.back());
