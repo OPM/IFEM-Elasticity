@@ -105,7 +105,7 @@ ElementBlock* SIMRigid::rigidGeometry (SIMinput* mySim) const
   std::map<int,size_t> imap;
   ElementBlock* rgd = new ElementBlock(2);
   rgd->unStructResize(0,myMasters.size());
-  for (const std::pair<int,TopItem>& master : myMasters)
+  for (const std::pair<const int,TopItem>& master : myMasters)
   {
     SIMinput::IdxVec3* mst = mySim->getDiscretePoint(master.second.item);
     if (mst) rgd->setCoor(inod,mst->second);
