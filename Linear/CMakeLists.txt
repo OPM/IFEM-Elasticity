@@ -88,10 +88,9 @@ if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   foreach(TESTFILE ${LINEL_HDF5FILES} ${LRE_HDF5FILES})
     ifem_add_hdf5_test(${TESTFILE} LinEl)
   endforeach()
-endif()
-
-if(HDF5_FOUND AND CEREAL_FOUND)
-  ifem_add_restart_test(CanTS2D-p2-restart.reg LinEl 15)
+  if(HDF5_FOUND AND CEREAL_FOUND)
+    ifem_add_restart_test(CanTS2D-p2-restart.reg LinEl 15)
+  endif()
 endif()
 
 list(APPEND TEST_APPS LinEl)
