@@ -65,7 +65,7 @@
 
   <!-- General - point result output !-->
   <postprocessing>
-    <resultpoints>
+    <resultpoints printmapping="true">
       <point patch="1" u="1.0" v="1.0"/>
     </resultpoints>
   </postprocessing>
