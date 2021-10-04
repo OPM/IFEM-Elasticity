@@ -699,7 +699,7 @@ int main (int argc, char** argv)
         else if (model->haveAnaSol() && norm.size() >= 6)
           IFEM::cout <<"\nResidual error (r(u) + J(u))^0.5 : "<< norm(5)
                      <<"\n- relative error (% of |u|) : "<< norm(5)*Rel;
-        size_t i = model->haveAnaSol() ? 2 : 1;
+        i = model->haveAnaSol() ? 2 : 1;
         while ((iSec = model->getVCPindex(++i)) && norm.size() >= iSec)
         {
           if (model->haveAnaSol() && i%2 == 0)
@@ -859,8 +859,8 @@ int main (int argc, char** argv)
 
     // Write load vector(s) to VTF-file
     const char* loadName[2] = { "Load vector", "Dual load vector" };
-    for (size_t i = 0; i < load.size() && i < 2; i++)
-      if (!model->writeGlvV(load[i],loadName[i],1,nBlock,2+i))
+    for (size_t j = 0; j < load.size() && j < 2; j++)
+      if (!model->writeGlvV(load[j],loadName[j],1,nBlock,2+j))
         return terminate(15);
 
     // Write solution fields to VTF-file
@@ -881,7 +881,7 @@ int main (int argc, char** argv)
     }
 
     // Write projected solution fields to VTF-file
-    size_t i = 0;
+    i = 0;
     int iBlk = 100;
     for (pit = pOpt.begin(); pit != pOpt.end(); ++pit, i++, iBlk += 10)
       if (!model->writeGlvP(projs[i],1,nBlock,iBlk,pit->second.c_str(),maxVals))
