@@ -68,7 +68,7 @@ TEST(TestSIMLinEl2D, StaticCondensation)
   // Solve the condensed system
   DenseMatrix Ksup(Kred);
   StdVector   Rsup(Rred);
-  ASSERT_TRUE(Ksup.solve(Rsup,1));
+  ASSERT_TRUE(Ksup.solve(Rsup));
   std::cout <<"Superelement Solution:"<< Rsup;
 
   // Find global DOF numbers of the "supernodes" 106 and 107

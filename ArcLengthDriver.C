@@ -196,10 +196,10 @@ double ArcLengthDriver::solveLinearizedSystem (double lambda, int iter)
   }
 
   double* rCondPtr = rCond < 0.0 ? nullptr : &rCond;
-  if (!model.solveSystem(linsol,msgLevel-1,rCondPtr,"residual disp"))
+  if (!model.solveSystem(linsol,msgLevel-1,rCondPtr,"residual disp",0))
     return -1.0;
 
-  if (!model.solveSystem(tansol,msgLevel-1,nullptr,"tangential disp",false,1))
+  if (!model.solveSystem(tansol,msgLevel-1,nullptr,"tangential disp",1))
     return -2.0;
 
   return fgNorm;
