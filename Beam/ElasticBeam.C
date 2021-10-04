@@ -697,7 +697,7 @@ bool ElasticBeamNorm::initElement (const std::vector<int>& MNPC,
 bool ElasticBeamNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
                                const Vec3& X) const
 {
-  ElasticBeam& problem = static_cast<ElasticBeam&>(myProblem);
+  const ElasticBeam& problem = static_cast<const ElasticBeam&>(myProblem);
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
 
   // Evaluate the FE displacements

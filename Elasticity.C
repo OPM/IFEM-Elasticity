@@ -1126,7 +1126,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 bool ElasticityNorm::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
 			      const Vec3& X, const Vec3& normal) const
 {
-  Elasticity& problem = static_cast<Elasticity&>(myProblem);
+  const Elasticity& problem = static_cast<const Elasticity&>(myProblem);
   if (!problem.haveLoads()) return true;
 
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
@@ -1259,7 +1259,7 @@ LocalIntegral* ElasticityForce::getLocalIntegral (size_t nen, size_t iEl,
 bool ElasticityForce::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
 			       const Vec3& X, const Vec3& normal) const
 {
-  Elasticity& problem = static_cast<Elasticity&>(myProblem);
+  const Elasticity& problem = static_cast<const Elasticity&>(myProblem);
   size_t nsd = fe.dNdX.cols();
 
   // Numerical approximation of stress

@@ -480,7 +480,7 @@ bool KirchhoffLoveShellNorm::evalBou (LocalIntegral& elmInt,
                                       const FiniteElement& fe,
                                       const Vec3& X, const Vec3& normal) const
 {
-  KirchhoffLoveShell& problem = static_cast<KirchhoffLoveShell&>(myProblem);
+  const KirchhoffLoveShell& problem = static_cast<const KirchhoffLoveShell&>(myProblem);
   if (!problem.haveLoads('B')) return true;
 
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
