@@ -361,7 +361,7 @@ public:
   //! \param[in] p The linear elasticity problem to evaluate norms for
   //! \param[in] a The analytical stress field (optional)
   //! \param[in] fld which field set to consider (2=all, 3=stress comps. only)
-  ElasticityNorm(Elasticity& p, STensorFunc* a = nullptr, int fld = 2);
+  explicit ElasticityNorm(Elasticity& p, STensorFunc* a = nullptr, int fld = 2);
   //! \brief Empty destructor.
   virtual ~ElasticityNorm() {}
 

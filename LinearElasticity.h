@@ -35,8 +35,8 @@ public:
   //! \param[in] axSym If \e true, an axisymmetric 3D formulation is assumed
   //! \param[in] GPout If \e true, write Gauss point coordinates to VTF
   //! \param[in] modal If \e true, a modal dynamics simulation is performed
-  LinearElasticity(unsigned short int n, bool axSym = false,
-                   bool GPout = false, bool modal = false);
+  explicit LinearElasticity(unsigned short int n, bool axSym = false,
+                            bool GPout = false, bool modal = false);
   //! \brief Empty destructor.
   virtual ~LinearElasticity() {}
 

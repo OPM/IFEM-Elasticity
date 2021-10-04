@@ -38,8 +38,8 @@ public:
   //! \param[in] densty Mass density
   //! \param[in] ps If \e true, assume plane stress in 2D
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
-  LinIsotropic(double E, double v = 0.0, double densty = 0.0,
-               bool ps = false, bool ax = false)
+  explicit LinIsotropic(double E, double v = 0.0, double densty = 0.0,
+                        bool ps = false, bool ax = false)
     : Efunc(nullptr), Efield(nullptr), Emod(E), nuFunc(nullptr), nu(v),
       rhoFunc(nullptr), rho(densty),
       Cpfunc(nullptr), heatcapacity(0.0), Afunc(nullptr), alpha(0.0),
@@ -50,16 +50,16 @@ public:
   //! \param[in] density Mass density
   //! \param[in] ps If \e true, assume plane stress in 2D
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
-  LinIsotropic(RealFunc* E, double v = 0.0, double density = 0.0,
-               bool ps = false, bool ax = false);
+  explicit LinIsotropic(RealFunc* E, double v = 0.0, double density = 0.0,
+                        bool ps = false, bool ax = false);
   //! \brief Constructor initializing the material parameters.
   //! \param[in] E Young's modulus (spatial field)
   //! \param[in] v Poisson's ratio
   //! \param[in] density Mass density
   //! \param[in] ps If \e true, assume plane stress in 2D
   //! \param[in] ax If \e true, assume 3D axi-symmetric material
-  LinIsotropic(Field* E, double v = 0.0, double density = 0.0,
-               bool ps = false, bool ax = false);
+  explicit LinIsotropic(Field* E, double v = 0.0, double density = 0.0,
+                        bool ps = false, bool ax = false);
   //! \brief The destructor deletes the stiffness function, if defined.
   virtual ~LinIsotropic();
 

@@ -102,7 +102,7 @@ class CanTM : public STensorFunc
 {
 public:
   //! \brief Constructor with some default parameters.
-  CanTM(double h, double m = 1.0, bool use3D = false)
+  explicit CanTM(double h, double m = 1.0, bool use3D = false)
     : STensorFunc(use3D ? 3 : 2), H(h), M0(m), is3D(use3D) {}
   //! \brief Empty destructor.
   virtual ~CanTM() {}

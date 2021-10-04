@@ -27,7 +27,7 @@ class SIMmcStatic : public SIMmultiCpl
 {
 public:
   //! \brief The constructor forwards to the parent class constructor.
-  SIMmcStatic(const std::vector<SIMoutput*>& sims) : SIMmultiCpl(sims)
+  explicit SIMmcStatic(const std::vector<SIMoutput*>& sims) : SIMmultiCpl(sims)
   {
     myHeading = "Coupled linear static solver";
   }
