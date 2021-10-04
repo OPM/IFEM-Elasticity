@@ -31,7 +31,7 @@ public:
   //! \brief The constructor forwards to the parent class constructors.
   //! \param[in] modes Array of eigenmodes for the elasticity problem
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
-  SIMLinElModal(std::vector<Mode>& modes, bool checkRHS = false)
+  explicit SIMLinElModal(std::vector<Mode>& modes, bool checkRHS = false)
     : SIMLinEl<Dim>(nullptr,checkRHS,false), SIMmodal(modes)
   {
     parsed = false;

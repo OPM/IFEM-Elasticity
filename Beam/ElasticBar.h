@@ -42,7 +42,8 @@ public:
   //! \param[in] strm Strain meassure option ('E', 'G' or 'L')
   //! \param[in] nd Number of primary unknowns per node
   //! \param[in] ns Number of solution vectors in core
-  ElasticBar(char strm, unsigned short int nd = 2, unsigned short int ns = 1);
+  explicit ElasticBar(char strm, unsigned short int nd = 2,
+                      unsigned short int ns = 1);
   //! \brief Empty destructor.
   virtual ~ElasticBar() {}
 

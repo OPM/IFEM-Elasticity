@@ -148,7 +148,7 @@ public:
   //! \brief The constructor initializes its data members.
   //! \param[in] p The thin plate problem to evaluate norms for
   //! \param[in] a The analytical stress resultant field (optional)
-  KirchhoffLovePlateNorm(KirchhoffLovePlate& p, STensorFunc* a = nullptr);
+  explicit KirchhoffLovePlateNorm(KirchhoffLovePlate& p, STensorFunc* a = nullptr);
   //! \brief This constructor also initializes its data members.
   //! \param[in] p The thin plate problem to evaluate norms for
   //! \param[in] a The analytical 2nd derivatives of the displacement field
