@@ -97,6 +97,12 @@ public:
   void setStopTime(double t) { params.stopTime = t; }
 
 private:
+  //! \brief Mark as non-copyable.
+  NonlinearDriver(const NonlinearDriver&) = delete;
+
+  //! \brief Mark not comparable.
+  bool operator==(const NonlinearDriver&) = delete;
+
   TimeStep params; //!< Time stepping parameters
   Vectors  proSol; //!< Projected secondary solution
   Matrix   eNorm;  //!< Element norms
