@@ -325,7 +325,7 @@ protected:
     std::sort(myRetainNodes.begin(),myRetainNodes.end());
     IFEM::cout <<"\nRetained nodes in static condensation:";
     for (size_t i = 0; i < myRetainNodes.size(); i++)
-      IFEM::cout << (i%10 ? " " : "\n") << myRetainNodes[i];
+      IFEM::cout << ((i%10) ? " " : "\n") << myRetainNodes[i];
     IFEM::cout <<"\n"<< std::endl;
     return true;
   }
