@@ -35,6 +35,8 @@ NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
     adap = new AdaptiveSetup(static_cast<SIMoutput&>(sim));
     calcEn = false;
   }
+
+  aStep = 0;
 }
 
 
