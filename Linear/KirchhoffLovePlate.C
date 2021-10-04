@@ -647,7 +647,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
                                       const FiniteElement& fe,
                                       const Vec3& X, const Vec3&) const
 {
-  KirchhoffLovePlate& problem = static_cast<KirchhoffLovePlate&>(myProblem);
+  const KirchhoffLovePlate& problem = static_cast<const KirchhoffLovePlate&>(myProblem);
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
 
   if (problem.haveLoads('I'))
@@ -673,7 +673,7 @@ bool KirchhoffLovePlateNorm::evalBou (LocalIntegral& elmInt,
 {
   if (nrcmp <= 1) return true; // Nothing for 1D problems (beams)
 
-  KirchhoffLovePlate& problem = static_cast<KirchhoffLovePlate&>(myProblem);
+  const KirchhoffLovePlate& problem = static_cast<const KirchhoffLovePlate&>(myProblem);
   ElmNorm& pnorm = static_cast<ElmNorm&>(elmInt);
   int version = problem.getVersion();
 
