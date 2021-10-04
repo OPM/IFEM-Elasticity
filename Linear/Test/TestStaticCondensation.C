@@ -110,6 +110,6 @@ TEST(TestSIMLinEl2D, StaticCondensation)
   ASSERT_TRUE(scModel.recoverInternals(Rsup,displ.back()));
   std::cout <<"Recovered Solution:"<< displ.back();
   ASSERT_EQ(displ.front().size(),displ.back().size());
-  for (size_t i = 0; i < displ.front().size(); i++)
-    EXPECT_NEAR(displ.front()[i], displ.back()[i], 1.0e-8);
+  for (size_t j = 0; j < displ.front().size(); j++)
+    EXPECT_NEAR(displ.front()[j], displ.back()[j], 1.0e-8);
 }
