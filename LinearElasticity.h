@@ -23,8 +23,8 @@ class RealFunc;
 /*!
   \brief Class representing the integrand of the linear elasticity problem.
   \details Most methods of this class are inherited form the base class.
-  Only the \a evalInt method, which is specific for linear elasticity problems
-  (and not used in nonlinear problems) is implemented here.
+  Only the evalInt() method, which is specific for linear elasticity problems
+  (and not used in nonlinear problems) is reimplemented here.
 */
 
 class LinearElasticity : public Elasticity
@@ -47,6 +47,13 @@ public:
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
 
+  //! \brief Initializes and toggles the use of left-hand-side matrix buffers.
+  //! \param[in] nEl Number of elements in the model/toggle.
+  //! If larger than 1, element matrix buffers are allocated to given size.
+  //! If equal to 1, element matrices are recomputed.
+  //! If equal to 0, reuse buffered element matrices.
+  virtual void initLHSbuffers(size_t nEl);
+
   using Elasticity::initIntegration;
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
@@ -56,10 +63,12 @@ public:
   using Elasticity::initElement;
   //! \brief Initializes current element for numerical integration.
   //! \param[in] MNPC Matrix of nodal point correspondance for current element
+  //! \param[in] fe Nodal and integration point data for current element
   //! \param[in] X0 Cartesian coordinates of the element center
   //! \param elmInt Local integral for element
-  virtual bool initElement(const std::vector<int>& MNPC, const FiniteElement&,
-                           const Vec3& X0, size_t, LocalIntegral& elmInt);
+  virtual bool initElement(const std::vector<int>& MNPC,
+                           const FiniteElement& fe, const Vec3& X0, size_t,
+                           LocalIntegral& elmInt);
 
   //! \brief Defines the global integral for calculating reaction forces only.
   void setReactionIntegral(GlobalIntegral* q) { delete myReacIt; myReacIt = q; }
@@ -90,6 +99,14 @@ public:
   //! \param[in] normal Interface normal vector at current integration point
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X, const Vec3& normal) const;
+
+  //! \brief Finalizes the element quantities after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Nodal and integration point data for current element
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //! \param[in] iGP Global integration point counter of first point in element
+  virtual bool finalizeElement(LocalIntegral& elmInt, const FiniteElement& fe,
+                               const TimeDomain& time, size_t iGP);
 
   //! \brief Returns which integrand to be used.
   virtual int getIntegrandType() const;
@@ -122,6 +139,9 @@ protected:
 private:
   GlobalIntegral*  myReacIt; //!< Reaction-forces-only integral
   mutable Vec3Vec* myItgPts; //!< Global Gauss point coordinates
+
+  Matrices myKmats; //!< Element stiffness matrix buffer
+  Matrices myMmats; //!< Element mass matrix buffer
 
   bool isModal; //!< Flag for modal dynamics simulation
 };

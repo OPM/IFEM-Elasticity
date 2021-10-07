@@ -80,6 +80,22 @@ void LinearElasticity::setMode (SIM::SolutionMode mode)
 }
 
 
+void LinearElasticity::initLHSbuffers (size_t nEl)
+{
+  if (nEl > 1)
+  {
+    myKmats.resize(nEl);
+    myMmats.resize(nEl);
+  }
+  else if (nEl == 0 && !myKmats.empty())
+  {
+    if (eKm > 0) eKm = -eKm;
+    if (eKg > 0) eKg = -eKg;
+    if (eM  > 0) eM  = -eM;
+  }
+}
+
+
 void LinearElasticity::initIntegration (size_t nGp, size_t nBp)
 {
   this->Elasticity::initIntegration(nGp,nBp);
@@ -88,9 +104,18 @@ void LinearElasticity::initIntegration (size_t nGp, size_t nBp)
 
 
 bool LinearElasticity::initElement (const std::vector<int>& MNPC,
-                                    const FiniteElement&, const Vec3& XC,
+                                    const FiniteElement& fe, const Vec3& XC,
                                     size_t, LocalIntegral& elmInt)
 {
+  if (fe.iel > 0)
+  {
+    size_t iel = fe.iel - 1;
+    if (iel < myKmats.size() && eKm < 0)
+      static_cast<ElmMats&>(elmInt).A[-eKm-1] = myKmats[iel];
+    if (iel < myMmats.size() && eKm < 0)
+      static_cast<ElmMats&>(elmInt).A[-eM-1]  = myMmats[iel];
+  }
+
   size_t nsol = primsol.size();
   while (nsol > 1 && primsol[nsol-1].empty()) nsol--;
   if (nsol <= 1)
@@ -154,17 +179,18 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
                                 const Vec3& X) const
 {
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
+  const Vector& eV = elMat.vec.front();
 
   bool lHaveStrains = false;
   SymmTensor eps(nsd,axiSymmetry), sigma(nsd,axiSymmetry);
 
   double U = 0.0;
   Matrix Bmat, Cmat;
-  if (eKm || eKg || iS || (eS && myTemp))
+  if (eKm > 0 || eKg > 0 || (iS > 0 && !eV.empty()) || (eS > 0 && myTemp))
   {
     // Compute the strain-displacement matrix B from N, dNdX and r = X.x,
     // and evaluate the symmetric strain tensor if displacements are available
-    if (!this->kinematics(elMat.vec.front(),fe.N,fe.dNdX,X.x,Bmat,eps,eps))
+    if (!this->kinematics(eV,fe.N,fe.dNdX,X.x,Bmat,eps,eps))
       return false;
     else if (!eps.isZero(1.0e-16))
       lHaveStrains = true;
@@ -186,7 +212,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   // Axi-symmetric integration point volume; 2*pi*r*|J|*w
   const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
 
-  if (eKm)
+  if (eKm > 0)
   {
     // Integrate the material stiffness matrix
     Matrix CB;
@@ -194,18 +220,18 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     elMat.A[eKm-1].multiply(Bmat,CB,true,false,true); // EK += B^T * CB
   }
 
-  if (eKg && lHaveStrains)
+  if (eKg > 0 && lHaveStrains)
   {
     // Integrate the geometric stiffness matrix
-    double r = axiSymmetry ? X.x + elMat.vec.front().dot(fe.N,0,nsd) : 0.0;
+    double r = axiSymmetry ? X.x + eV.dot(fe.N,0,nsd) : 0.0;
     this->formKG(elMat.A[eKg-1],fe.N,fe.dNdX,r,sigma,detJW);
   }
 
-  if (eM)
+  if (eM > 0)
     // Integrate the mass matrix
     this->formMassMatrix(elMat.A[eM-1],fe.N,X,detJW);
 
-  if (iS && lHaveStrains)
+  if (iS > 0 && lHaveStrains)
   {
     // Integrate the internal forces
     sigma *= -detJW;
@@ -213,7 +239,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
       return false;
   }
 
-  if (eS)
+  if (eS > 0)
   {
     // Integrate the load vector due to gravitation and other body forces
     this->formBodyForce(elMat.b[eS-1],fe.N,X,detJW);
@@ -255,7 +281,9 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
                                 const Vec3& X, const Vec3&) const
 {
-  if (!eKm)
+  if (eKm < 0)
+    return true;
+  else if (eKm == 0)
   {
     std::cerr <<" *** LinearElasticity::evalInt: No material stiffness matrix."
               << std::endl;
@@ -329,7 +357,7 @@ int LinearElasticity::getIntegrandType () const
 double LinearElasticity::getThermalStrain (const Vector&, const Vector&,
                                            const Vec3& X) const
 {
-  if (!myTemp) return 0.0;
+  if (!myTemp) return 0.0; // No temperature field
 
   double T0 = myTemp0 ? (*myTemp0)(X) : 0.0;
   double T = (*myTemp)(X);
@@ -341,7 +369,7 @@ bool LinearElasticity::formInitStrainForces (ElmMats& elMat, const Vector& N,
                                              const Matrix& B, const Matrix& C,
                                              const Vec3& X, double detJW) const
 {
-  if (!eS || !myTemp)
+  if (eS <= 0 || !myTemp)
     return true; // No temperature field
 
   // Strains due to thermal expansion
@@ -356,4 +384,21 @@ bool LinearElasticity::formInitStrainForces (ElmMats& elMat, const Vector& N,
   // Integrate external forces due to thermal expansion
   SymmTensor sigma(nsd,axiSymmetry); sigma = sigma0;
   return B.multiply(sigma,elMat.b[eS-1],true,true); // ES += B^T*sigma0
+}
+
+
+bool LinearElasticity::finalizeElement (LocalIntegral& elmInt,
+                                        const FiniteElement& fe,
+                                        const TimeDomain& time, size_t iGP)
+{
+  if (fe.iel > 0)
+  {
+    size_t iel = fe.iel - 1;
+    if (iel < myKmats.size() && eKm > 0)
+      myKmats[iel] = static_cast<ElmMats&>(elmInt).A[eKm-1];
+    if (iel < myMmats.size() && eM > 0)
+      myMmats[iel] = static_cast<ElmMats&>(elmInt).A[eM-1];
+  }
+
+  return this->Elasticity::finalizeElement(elmInt,fe,time,iGP);
 }
