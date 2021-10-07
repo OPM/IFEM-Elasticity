@@ -98,30 +98,30 @@ protected:
   // These indices will be identical for all elements in a model and can thus
   // be stored here, even when doing multi-threading. Note that the indices are
   // 1-based, since the value zero is used to signal non-existing matrix/vector.
-  unsigned short int eKm; //!< Index to element material stiffness matrix
-  unsigned short int eKg; //!< Index to element geometric stiffness matrix
-  unsigned short int eM;  //!< Index to element mass matrix
-  unsigned short int eS;  //!< Index to element load vector
-  unsigned short int iS;  //!< Index to element internal force vector
-  unsigned short int dS;  //!< Index to element dual force vector
-  unsigned short int nSV; //!< Number of consequtive solution vectors in core
+  short int eKm; //!< Index to element material stiffness matrix
+  short int eKg; //!< Index to element geometric stiffness matrix
+  short int eM;  //!< Index to element mass matrix
+  short int eS;  //!< Index to element load vector
+  short int iS;  //!< Index to element internal force vector
+  short int dS;  //!< Index to element dual force vector
+  short int nSV; //!< Number of consequtive solution vectors in core
 
   //! \brief Newmark time integration parameters.
   //! \details The interpretation of each parameter
   //! depends on the actual simulator drivers, as follows: <UL>
-  //! <LI> 0: Mass-proportional damping coefficient (Rayleigh damping).
-  //! <LI> 1: Stiffness-proportional damping coefficient (Rayleigh damping).
-  //! <LI> 2: \f$\alpha_H\f$ for nonlinear Newmark drivers.
-  //! \f$\beta\f$ or \f$\alpha_m\f$ for linear Newmark drivers. For linear
-  //! drivers, a negative value signals that displacement increments
+  //! <LI>[0]: Mass-proportional damping coefficient (Rayleigh damping).
+  //! <LI>[1]: Stiffness-proportional damping coefficient (Rayleigh damping).
+  //! <LI>[2]: &alpha;<SUB>H</SUB> for nonlinear Newmark drivers.
+  //! &beta; or &alpha;<SUB>m</SUB> for linear Newmark drivers.
+  //! For linear drivers, a negative value signals that displacement increments
   //! are used as primary unknowns, otherwise accelerations are used.
-  //! <LI> 3: A positive value indicates that the solution driver is linear,
-  //! and the actual value is then the \f$\gamma\f$ or \f$\alpha_f\f$ parameter.
+  //! <LI>[3]: A positive value indicates that the solution driver is linear,
+  //! and the actual value is then the &gamma; or &alpha;<SUB>f</SUB> parameter.
   //! A zero value indicates a nonlinear driver, with stiffness-proportional
   //! damping (if any) depending on both material and geometric stiffness.
   //! A negative value means a nonlinear driver, with stiffness-proportional
   //! damping (if any), depending on material stiffness only.
-  //! <LI> 4: 1.0 if HHTSIM is used, 2.0 if GenAlphaSIM is used, otherwise 0.0.
+  //! <LI>[4]: 1.0 if HHTSIM is used, 2.0 if GenAlphaSIM is used, otherwise 0.0.
   double intPrm[5]; //!< </UL>
 
   TimeIntegration::BDFD2* bdf; //!< BDF time discretization parameters

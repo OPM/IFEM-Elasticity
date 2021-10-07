@@ -13,7 +13,7 @@
 
 #include "ElasticBase.h"
 #include "FiniteElement.h"
-#include "NewmarkMats.h"
+#include "ElmMats.h"
 #include "TimeDomain.h"
 #include "BDF.h"
 
@@ -177,8 +177,7 @@ bool ElasticBase::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
 bool ElasticBase::finalizeElement (LocalIntegral& elmInt,
                                    const TimeDomain& time, size_t)
 {
-  if (m_mode == SIM::DYNAMIC)
-    static_cast<NewmarkMats&>(elmInt).setStepSize(time.dt,time.it);
+  static_cast<ElmMats&>(elmInt).setStepSize(time.dt,time.it);
 
   return true;
 }
