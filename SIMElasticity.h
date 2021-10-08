@@ -601,7 +601,7 @@ protected:
     if (patch == 0 && ldim == 0)
     {
       typename Dim::IdxVec3* masterPt = this->getDiscretePoint(lndx);
-      if (masterPt)
+      if (masterPt) {
         for (ASMbase* pch : Dim::myModel)
         {
           // Check if this patch has master points that should be constrained.
@@ -614,10 +614,11 @@ protected:
           if (found) return true;
         }
 
-      std::cerr <<" *** SIMElasticity::addConstraint: Master point "
-                << masterPt->first <<" ("<< masterPt->second
-                <<") is not present in any patch.\n";
-      return false;
+        std::cerr <<" *** SIMElasticity::addConstraint: Master point "
+                  << masterPt->first <<" ("<< masterPt->second
+                  <<") is not present in any patch.\n";
+        return false;
+      }
     }
 
     return this->Dim::addConstraint(patch,lndx,ldim,dirs,code,ngnod,basis);
