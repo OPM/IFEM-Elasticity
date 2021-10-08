@@ -704,8 +704,7 @@ bool ElasticBeamNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   Vec3 Uh = problem.displacement(fe,elmInt.vec.front());
 
   // L2-norm of FE displacements
-  size_t ip = 0;
-  pnorm[ip++] = Uh*Uh*fe.detJxW;
+  pnorm[0] += Uh*Uh*fe.detJxW;
 
   if (anasol)
   {
@@ -713,11 +712,11 @@ bool ElasticBeamNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     Vec3 U = (*anasol)(X);
 
     // L2-norm of exact solution
-    pnorm[ip++] += U*U*fe.detJxW;
+    pnorm[1] += U*U*fe.detJxW;
 
     // L2-norm of displacement error
     U -= Uh;
-    pnorm[ip++] += U*U*fe.detJxW;
+    pnorm[2] += U*U*fe.detJxW;
   }
 
   return true;
