@@ -908,11 +908,7 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
     name += varName;
   }
   else if ((i -= material->getNoIntVariables()) <= nsd)
-  {
-    char pName[8] = "P0";
-    pName[1] += i;
-    name += pName;
-  }
+    name += "P" + std::to_string(i);
 
   return name;
 }
