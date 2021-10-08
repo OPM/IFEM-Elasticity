@@ -600,7 +600,6 @@ protected:
   {
     if (patch == 0 && ldim == 0)
     {
-      bool found = false;
       typename Dim::IdxVec3* masterPt = this->getDiscretePoint(lndx);
       if (masterPt)
         for (ASMbase* pch : Dim::myModel)
@@ -610,7 +609,7 @@ protected:
           // for the rotational degrees of freedom
           unsigned char oldnf = pch->getNoFields();
           pch->setNoFields(pch->getNoSpaceDim()*(pch->getNoSpaceDim()+1)/2);
-          found = pch->constrainXnode(masterPt->first,dirs,code);
+          bool found = pch->constrainXnode(masterPt->first,dirs,code);
           pch->setNoFields(oldnf);
           if (found) return true;
         }
