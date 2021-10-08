@@ -1292,7 +1292,7 @@ bool ElasticityForce::evalForce (ElmNorm& pnorm, const Vec3& th,
     // Numerical torque term
     Vec3 T(X-(*X0),th);
     if (nsd == 2)
-      pnorm[ip++] += T[2]*detJW;
+      pnorm[ip] += T[2]*detJW;
     else for (i = 0; i < nsd; i++)
       pnorm[ip++] += T[i]*detJW;
   }
