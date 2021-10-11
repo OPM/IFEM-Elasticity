@@ -54,6 +54,8 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   dualRHS = nullptr;
 
   gamma = 1.0;
+
+  calcMaxVal = true;
 }
 
 
@@ -678,6 +680,9 @@ bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
   for (int i = 1; i <= material->getNoIntVariables(); i++)
     s.push_back(material->getInternalVariable(i,nullptr,fe.iGP));
 
+  if (!calcMaxVal || maxVal.empty())
+    return true; // Avoid thread sync if no max value calculation
+
   // Find the maximum values for each quantity. This block must be performed
   // serially on multi-threaded runs too, due to the update of the maxVal array
   // which is a member of the Elasticity class. Therefore the critical pragma.
@@ -854,7 +859,7 @@ size_t Elasticity::getNoFields (int fld) const
       nf += nsd; // Include principal stress components
   }
 
-#ifdef INT_DEBUG
+#if INT_DEBUG > 1
   std::cout <<"Elasticity::getNoFields: "<< nf << std::endl;
 #endif
   return nf;
@@ -916,6 +921,10 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
 
 void Elasticity::initMaxVals (size_t nP)
 {
+#ifdef INT_DEBUG
+  std::cout <<"Elasticity::initMaxVals: "<< maxVal.size()
+            <<" --> "<< nP << std::endl;
+#endif
   if (maxVal.empty() && nP > 0)
     maxVal.resize(this->getNoFields(2),PointValues(nP,PointValue(Vec3(),0.0)));
   else for (PointValues& pval : maxVal)

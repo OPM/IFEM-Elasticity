@@ -23,9 +23,10 @@
 
 
 NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
-  : NonLinSIM(sim), proSol(1), adap(nullptr)
+  : NonLinSIM(sim), proSol(1)
 {
-  calcEn = save0 = opt.pSolOnly = true;
+  aStep = 0;
+  save0 = opt.pSolOnly = true;
 
   if (linear)
     iteNorm = NONE;
@@ -33,10 +34,13 @@ NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
   if (adaptive)
   {
     adap = new AdaptiveSetup(static_cast<SIMoutput&>(sim));
-    calcEn = false;
+    calcEn = 0;
   }
-
-  aStep = 0;
+  else
+  {
+    adap = nullptr;
+    calcEn = 1;
+  }
 }
 
 
@@ -58,7 +62,7 @@ bool NonlinearDriver::parse (char* keyWord, std::istream& is)
   if (!strncasecmp(keyWord,"TIME_STEPPING",13))
     return params.parse(keyWord,is);
   else if (!strncasecmp(keyWord,"NO_ENERGY",9))
-    calcEn = false; // switch off energy norm calculation
+    calcEn = 0; // switch off energy norm calculation
   else if (!strncasecmp(keyWord,"ENERGY2",7))
     calcEn = 2; // also print the square of the global norm values
   else if (!strncasecmp(keyWord,"ADAPTIVE",8) && adap)
@@ -80,7 +84,7 @@ bool NonlinearDriver::parse (const TiXmlElement* elem)
   {
     for (; child; child = child->NextSiblingElement())
       if (!strncasecmp(child->Value(),"noEnergy",8))
-        calcEn = false; // switch off energy norm calculation
+        calcEn = 0; // switch off energy norm calculation
       else if (!strncasecmp(child->Value(),"energy2",7))
         calcEn = 2; // also print the square of the global norm values
       else
@@ -319,6 +323,8 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
         }
       }
 
+      if (elp) elp->enableMaxValCalc(false);
+
       // Save solution variables to HDF5 file
       if (writer && !writer->dumpTimeLevel(&params))
         return 11;
@@ -331,6 +337,8 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
           return 11;
       }
 
+      if (elp) elp->enableMaxValCalc(true);
+
       nextSave = params.time.t + opt.dtSave;
       if (nextSave > params.stopTime)
         nextSave = params.stopTime; // Always save the final step
@@ -340,7 +348,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       if (!model.eval2ndSolution(solution.front(),params.time.t))
         return 12;
 
-      if (!model.evalProjSolution(proSol.front(),*elp->getMaxVals()))
+      if (!model.writeGlvP(proSol.front(),0,nBlock,0,nullptr,elp->getMaxVals()))
         return 13;
     }
 

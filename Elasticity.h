@@ -324,6 +324,9 @@ public:
   //! \brief Returns the tensile energy array (interface for fracture problems).
   virtual const RealArray* getTensileEnergy() const { return nullptr; }
 
+  //! \brief Enable or disable max value calculation.
+  void enableMaxValCalc(bool onOrOff) const { calcMaxVal = onOrOff; }
+
 protected:
   // Physical properties
   Material*     material; //!< Material data and constitutive relation
@@ -340,8 +343,11 @@ protected:
   mutable std::vector<Vec3Pair>    tracVal; //!< Traction field point values
 
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
-  bool       axiSymmetry; //!< \e true if the problem is axi-symmetric
+  bool       axiSymmetry; //!< If \e true, the problem is axi-symmetric
   double           gamma; //!< Numeric stabilization parameter
+
+private:
+  mutable bool calcMaxVal; //!< If \e true, max result values are calculated
 
 public:
   static bool wantStrain;          //!< Option for output of strain, not stress
