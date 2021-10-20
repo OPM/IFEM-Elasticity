@@ -479,7 +479,7 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
 }
 
 
-bool SIMElasticBar::updateRotations (const Vector& incSol, double alpha)
+bool SIMElasticBar::updateRotations (const RealArray& incSol, double alpha)
 {
   if (nf != 6) return true;
 

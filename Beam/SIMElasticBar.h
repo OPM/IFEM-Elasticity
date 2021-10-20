@@ -47,7 +47,7 @@ public:
   //! \param[in] incSol Incremental solution to update the rotations with
   //! \param[in] alpha Scaling factor for the incremental solution.
   //! If 0.0, reinitialize the rotations from unity
-  virtual bool updateRotations(const Vector& incSol, double alpha);
+  virtual bool updateRotations(const RealArray& incSol, double alpha);
 
   //! \brief Returns the current rotation tensor for the specified global node.
   Tensor getNodeRotation(int inod) const;
