@@ -1,9 +1,10 @@
-CanTS2D-p1-VCPs.xinp -dualadap
+CanTS2D-p1-VCPs.xinp -dualadap -outPrec 5
 
 Input file: CanTS2D-p1-VCPs.xinp
 Equation solver: 2
 Number of Gauss points: 4
 LR-spline basis functions are used
+Norm- and component output precision: 5
 Solution component output zero tolerance: 1e-06
 Parsing input file CanTS2D-p1-VCPs.xinp
 Parsing <geometry>
@@ -34,6 +35,7 @@ Parsing <boundaryconditions>
 Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
+  Parsing <anasol>
 	Analytical solution: Expression
 	Variables=F0=1000000; L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5;
 	Stress=F0\*(L\*H/I)\*(x/L-1)\*Y | 0 | F0\*(H\*H/I)\*0.5\*(0.25-Y\*Y)
@@ -80,6 +82,7 @@ Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 2 on P1
+Done.
 Solving the equation system ...
 	Condition number: 135067
  >>> Solution summary <<<
@@ -97,35 +100,35 @@ Projecting secondary solution ...
 Projecting secondary solution ...
 	Continuous global L2-projection
 Boundary tractions at section 1: 0 -3.70168e+06 -1.90388e+06
-Energy norm           a(u^h,u^h)^0.5 : 49.1731
-External energy((f,u^h)+(t,u^h))^0.5 : 49.1731
+Energy norm           a(u^h,u^h)^0.5 : 49.173
+External energy((f,u^h)+(t,u^h))^0.5 : 49.173
 Exact norm                a(u,u)^0.5 : 49.926
-Exact error      a(e,e)^0.5, e=u-u^h : 8.63734
-Exact relative error (%) : 17.3003
-VCP quantity               a(u^h,w1) : 4.23255e+07
-VCP quantity                 a(u,w1) : 4.35938e+07
-VCP quantity               a(u^h,w2) : 1.59016e+06
+Exact error      a(e,e)^0.5, e=u-u^h : 8.6373
+Exact relative error (%) : 17.3
+VCP quantity               a(u^h,w1) : 4.2326e+07
+VCP quantity                 a(u,w1) : 4.3594e+07
+VCP quantity               a(u^h,w2) : 1.5902e+06
 VCP quantity                 a(u,w2) : 1.5625e+06
 Vol(D1) : 0.01
 Vol(D2) : 0.01
 >>> Error estimates based on Continuous global L2-projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.486
-Error norm a(e,e)^0.5, e=u^r-u^h     : 8.19187
+Error norm a(e,e)^0.5, e=u^r-u^h     : 8.1919
  relative error (% of |u|)   : 16.408
-Exact error a(e,e)^0.5, e=u-u^r      : 2.73803
- relative error (% of |u|)   : 5.48419
-Effectivity index             : 0.948426
-Error estimate a(e,e)^0.5, e=u^r-u^h : 8.19187
-Relative error (%) : 16.4328
-Effectivity index  : 0.948426
-Error estimate, dual solution    (z) : 26125.5
-Relative error (%) : 52.5458
-Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 97186.4
-Root mean square (RMS) of error      : 0.505958
-Min element error                    : 0.163159
+Exact error a(e,e)^0.5, e=u-u^r      : 2.738
+ relative error (% of |u|)   : 5.4842
+Effectivity index             : 0.94843
+Error estimate a(e,e)^0.5, e=u^r-u^h : 8.1919
+Relative error (%) : 16.433
+Effectivity index  : 0.94843
+Error estimate, dual solution    (z) : 26125
+Relative error (%) : 52.546
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 97186
+Root mean square (RMS) of error      : 0.50596
+Min element error                    : 0.16316
 Max element error                    : 1.6604
 Average element error                : 0.81723
-Refining 3 basis functions with errors in range \[35112.3,47234.8]
+Refining 3 basis functions with errors in range \[35112.3,47234.8] 2.85714% of all basis functions
 Refined mesh: 98 elements 121 nodes.
 Adaptive step 2
 Parsing input file CanTS2D-p1-VCPs.xinp
@@ -154,6 +157,7 @@ Parsing <boundaryconditions>
 Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
+  Parsing <anasol>
 	Analytical solution: Expression
   Parsing <dualfield>
 	patch  = 1
@@ -188,6 +192,7 @@ Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 2 on P1
+Done.
 Solving the equation system ...
 	Condition number: 196007
  >>> Solution summary <<<
@@ -205,35 +210,35 @@ Projecting secondary solution ...
 Projecting secondary solution ...
 	Continuous global L2-projection
 Boundary tractions at section 1: -1568.89 -3.70174e+06 -1.90355e+06
-Energy norm           a(u^h,u^h)^0.5 : 49.2377
-External energy((f,u^h)+(t,u^h))^0.5 : 49.2377
+Energy norm           a(u^h,u^h)^0.5 : 49.238
+External energy((f,u^h)+(t,u^h))^0.5 : 49.238
 Exact norm                a(u,u)^0.5 : 49.926
-Exact error      a(e,e)^0.5, e=u-u^h : 8.26165
-Exact relative error (%) : 16.5478
-VCP quantity               a(u^h,w1) : 4.28208e+07
-VCP quantity                 a(u,w1) : 4.35938e+07
-VCP quantity               a(u^h,w2) : 1.55854e+06
+Exact error      a(e,e)^0.5, e=u-u^h : 8.2616
+Exact relative error (%) : 16.548
+VCP quantity               a(u^h,w1) : 4.2821e+07
+VCP quantity                 a(u,w1) : 4.3594e+07
+VCP quantity               a(u^h,w2) : 1.5585e+06
 VCP quantity                 a(u,w2) : 1.5625e+06
 Vol(D1) : 0.01
 Vol(D2) : 0.01
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.6173
-Error norm a(e,e)^0.5, e=u^r-u^h     : 7.79137
- relative error (% of |u|)   : 15.6058
-Exact error a(e,e)^0.5, e=u-u^r      : 2.74777
- relative error (% of |u|)   : 5.50369
-Effectivity index             : 0.943078
-Error estimate a(e,e)^0.5, e=u^r-u^h : 7.79137
-Relative error (%) : 15.6295
-Effectivity index  : 0.943078
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.617
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.7914
+ relative error (% of |u|)   : 15.606
+Exact error a(e,e)^0.5, e=u-u^r      : 2.7478
+ relative error (% of |u|)   : 5.5037
+Effectivity index             : 0.94308
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.7914
+Relative error (%) : 15.63
+Effectivity index  : 0.94308
 Error estimate, dual solution    (z) : 17081
-Relative error (%) : 36.6837
-Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 36811.9
-Root mean square (RMS) of error      : 0.576257
-Min element error                    : 0.163159
-Max element error                    : 1.68193
-Average element error                : 0.681926
-Refining 3 basis functions with errors in range \[6691.23,7616.77]
+Relative error (%) : 36.684
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 36812
+Root mean square (RMS) of error      : 0.57626
+Min element error                    : 0.16316
+Max element error                    : 1.6819
+Average element error                : 0.68193
+Refining 3 basis functions with errors in range \[6691.23,7616.77] 2.47934% of all basis functions
 Refined mesh: 122 elements 143 nodes.
 Adaptive step 3
 Parsing input file CanTS2D-p1-VCPs.xinp
@@ -262,6 +267,7 @@ Parsing <boundaryconditions>
 Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
+  Parsing <anasol>
 	Analytical solution: Expression
   Parsing <dualfield>
 	patch  = 1
@@ -296,6 +302,7 @@ Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 2 on P1
+Done.
 Solving the equation system ...
 	Condition number: 220125
  >>> Solution summary <<<
@@ -313,35 +320,35 @@ Projecting secondary solution ...
 Projecting secondary solution ...
 	Continuous global L2-projection
 Boundary tractions at section 1: -1749.59 -3.70175e+06 -1.90352e+06
-Energy norm           a(u^h,u^h)^0.5 : 49.2433
-External energy((f,u^h)+(t,u^h))^0.5 : 49.2433
+Energy norm           a(u^h,u^h)^0.5 : 49.243
+External energy((f,u^h)+(t,u^h))^0.5 : 49.243
 Exact norm                a(u,u)^0.5 : 49.926
-Exact error      a(e,e)^0.5, e=u-u^h : 8.22796
-Exact relative error (%) : 16.4803
-VCP quantity               a(u^h,w1) : 3.90028e+07
-VCP quantity                 a(u,w1) : 3.96387e+07
-VCP quantity               a(u^h,w2) : 1.94655e+06
-VCP quantity                 a(u,w2) : 1.97266e+06
+Exact error      a(e,e)^0.5, e=u-u^h : 8.228
+Exact relative error (%) : 16.48
+VCP quantity               a(u^h,w1) : 3.9003e+07
+VCP quantity                 a(u,w1) : 3.9639e+07
+VCP quantity               a(u^h,w2) : 1.9465e+06
+VCP quantity                 a(u,w2) : 1.9727e+06
 Vol(D1) : 0.000625
 Vol(D2) : 0.000625
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.6285
-Error norm a(e,e)^0.5, e=u^r-u^h     : 7.75716
- relative error (% of |u|)   : 15.5373
-Exact error a(e,e)^0.5, e=u-u^r      : 2.74355
- relative error (% of |u|)   : 5.49524
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.629
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.7572
+ relative error (% of |u|)   : 15.537
+Exact error a(e,e)^0.5, e=u-u^r      : 2.7436
+ relative error (% of |u|)   : 5.4952
 Effectivity index             : 0.94278
-Error estimate a(e,e)^0.5, e=u^r-u^h : 7.75716
-Relative error (%) : 15.5608
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.7572
+Relative error (%) : 15.561
 Effectivity index  : 0.94278
-Error estimate, dual solution    (z) : 5618.51
-Relative error (%) : 56.0378
-Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 3426.11
-Root mean square (RMS) of error      : 0.789106
-Min element error                    : 0.0715201
-Max element error                    : 1.68129
-Average element error                : 0.551322
-Refining 3 basis functions with errors in range \[718.669,815.554]
+Error estimate, dual solution    (z) : 5618.5
+Relative error (%) : 56.038
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 3426.1
+Root mean square (RMS) of error      : 0.78911
+Min element error                    : 0.07152
+Max element error                    : 1.6813
+Average element error                : 0.55132
+Refining 3 basis functions with errors in range \[718.669,815.554] 2.0979% of all basis functions
 Refined mesh: 146 elements 161 nodes.
 Adaptive step 4
 Parsing input file CanTS2D-p1-VCPs.xinp
@@ -370,6 +377,7 @@ Parsing <boundaryconditions>
 Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
+  Parsing <anasol>
 	Analytical solution: Expression
   Parsing <dualfield>
 	patch  = 1
@@ -404,6 +412,7 @@ Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 2 on P1
+Done.
 Solving the equation system ...
 	Condition number: 217635
  >>> Solution summary <<<
@@ -425,31 +434,31 @@ Energy norm           a(u^h,u^h)^0.5 : 49.245
 External energy((f,u^h)+(t,u^h))^0.5 : 49.245
 Exact norm                a(u,u)^0.5 : 49.926
 Exact error      a(e,e)^0.5, e=u-u^h : 8.2179
-Exact relative error (%) : 16.4602
-VCP quantity               a(u^h,w1) : 4.11767e+07
-VCP quantity                 a(u,w1) : 4.17773e+07
-VCP quantity               a(u^h,w2) : 1.83239e+06
-VCP quantity                 a(u,w2) : 1.81152e+06
+Exact relative error (%) : 16.46
+VCP quantity               a(u^h,w1) : 4.1177e+07
+VCP quantity                 a(u,w1) : 4.1777e+07
+VCP quantity               a(u^h,w2) : 1.8324e+06
+VCP quantity                 a(u,w2) : 1.8115e+06
 Vol(D1) : 0.0003125
 Vol(D2) : 0.0003125
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.6322
-Error norm a(e,e)^0.5, e=u^r-u^h     : 7.74454
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.632
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.7445
  relative error (% of |u|)   : 15.512
-Exact error a(e,e)^0.5, e=u-u^r      : 2.74908
- relative error (% of |u|)   : 5.50631
-Effectivity index             : 0.942398
-Error estimate a(e,e)^0.5, e=u^r-u^h : 7.74454
-Relative error (%) : 15.5356
-Effectivity index  : 0.942398
-Error estimate, dual solution    (z) : 2653.32
-Relative error (%) : 50.4349
-Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 1182.01
-Root mean square (RMS) of error      : 0.961148
-Min element error                    : 0.0152681
-Max element error                    : 1.68169
-Average element error                : 0.462102
-Refining 4 basis functions with errors in range \[134.798,196.533]
+Exact error a(e,e)^0.5, e=u-u^r      : 2.7491
+ relative error (% of |u|)   : 5.5063
+Effectivity index             : 0.9424
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.7445
+Relative error (%) : 15.536
+Effectivity index  : 0.9424
+Error estimate, dual solution    (z) : 2653.3
+Relative error (%) : 50.435
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 1182
+Root mean square (RMS) of error      : 0.96115
+Min element error                    : 0.015268
+Max element error                    : 1.6817
+Average element error                : 0.4621
+Refining 4 basis functions with errors in range \[134.798,196.533] 2.48447% of all basis functions
 Refined mesh: 173 elements 186 nodes.
 Adaptive step 5
 Parsing input file CanTS2D-p1-VCPs.xinp
@@ -478,6 +487,7 @@ Parsing <boundaryconditions>
 Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
+  Parsing <anasol>
 	Analytical solution: Expression
   Parsing <dualfield>
 	patch  = 1
@@ -512,6 +522,7 @@ Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 1 on P1
 Assembling Neumann matrix terms for boundary 2 on P1
+Done.
 Solving the equation system ...
 	Condition number: 243047
  >>> Solution summary <<<
@@ -529,31 +540,32 @@ Projecting secondary solution ...
 Projecting secondary solution ...
 	Continuous global L2-projection
 Boundary tractions at section 1: -350.969 -3.70167e+06 -1.90389e+06
-Energy norm           a(u^h,u^h)^0.5 : 49.3024
-External energy((f,u^h)+(t,u^h))^0.5 : 49.3024
+Energy norm           a(u^h,u^h)^0.5 : 49.302
+External energy((f,u^h)+(t,u^h))^0.5 : 49.302
 Exact norm                a(u,u)^0.5 : 49.926
-Exact error      a(e,e)^0.5, e=u-u^h : 7.86609
-Exact relative error (%) : 15.7555
-VCP quantity               a(u^h,w1) : 4.13158e+07
-VCP quantity                 a(u,w1) : 4.16089e+07
-VCP quantity               a(u^h,w2) : 1.89923e+06
-VCP quantity                 a(u,w2) : 1.81152e+06
+Exact error      a(e,e)^0.5, e=u-u^h : 7.8661
+Exact relative error (%) : 15.755
+VCP quantity               a(u^h,w1) : 4.1316e+07
+VCP quantity                 a(u,w1) : 4.1609e+07
+VCP quantity               a(u^h,w2) : 1.8992e+06
+VCP quantity                 a(u,w2) : 1.8115e+06
 Vol(D1) : 0.00015625
 Vol(D2) : 0.00015625
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.7513
-Error norm a(e,e)^0.5, e=u^r-u^h     : 7.35125
- relative error (% of |u|)   : 14.7243
-Exact error a(e,e)^0.5, e=u-u^r      : 2.79949
- relative error (% of |u|)   : 5.60727
-Effectivity index             : 0.934549
-Error estimate a(e,e)^0.5, e=u^r-u^h : 7.35125
-Relative error (%) : 14.7475
-Effectivity index  : 0.934549
-Error estimate, dual solution    (z) : 2823.59
-Relative error (%) : 56.2949
-Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 550.415
-Root mean square (RMS) of error      : 1.02686
-Min element error                    : 0.0155591
-Max element error                    : 1.70624
-Average element error                : 0.389934
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 48.751
+Error norm a(e,e)^0.5, e=u^r-u^h     : 7.3512
+ relative error (% of |u|)   : 14.724
+Exact error a(e,e)^0.5, e=u-u^r      : 2.7995
+ relative error (% of |u|)   : 5.6073
+Effectivity index             : 0.93455
+Error estimate a(e,e)^0.5, e=u^r-u^h : 7.3512
+Relative error (%) : 14.747
+Effectivity index  : 0.93455
+Error estimate, dual solution    (z) : 2823.6
+Relative error (%) : 56.295
+Error estimate E(u)\*E(z), E(v)=a(v^r-v^h,v^r-v^h) : 550.41
+Root mean square (RMS) of error      : 1.0269
+Min element error                    : 0.015559
+Max element error                    : 1.7062
+Average element error                : 0.38993
+   \* Stopping the adaptive cycles as max steps 5 was reached.
