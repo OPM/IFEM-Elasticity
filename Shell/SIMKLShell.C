@@ -482,7 +482,7 @@ bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase* itg,
       std::streamsize oldPrec = IFEM::cout.precision(15);
       IFEM::cout <<"   * Sum external load:";
       for (unsigned char d = 0; d < nf[0]; d++)
-        IFEM::cout <<" "<< extLoad.sum(d,nf[0]);
+        IFEM::cout <<" "<< utl::trunc(extLoad.sum(d,nf[0]));
       IFEM::cout << std::endl;
       IFEM::cout.precision(oldPrec);
     }

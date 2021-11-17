@@ -79,7 +79,8 @@ Number of unknowns    216
 Number of quadrature points 1024
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 2566960.75328991 2566960.75328991 -528489.78414452
+   \* Sum external load: 2566960.7532899.* 2566960.7532899.* -528489.7841445.*
+Done.
 Solving the equation system ...
 	Condition number: 974.2
  >>> Solution summary <<<

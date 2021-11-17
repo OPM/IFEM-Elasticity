@@ -113,7 +113,7 @@ Number of unknowns    128
 Number of quadrature points 240
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: -5.56649470899952e-13 57083.3342469833 -6.65068000671454e-12
+   \* Sum external load: 0 57083.3342469833 0
 22. Linear Elastic Beam solver
 Number of quadrature points 8
 Processing integrand associated with code 0
