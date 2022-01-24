@@ -108,9 +108,9 @@ public:
   //! \param[out] f Calculated traction resultants
   //! \param[in] sol Primary solution vectors
   //!
-  //! \details The boundaries for which the traction is calculated are
-  //! identified by the property set codes in \a bCode, which are
-  //! assigned values by parsing `<boundaryforce>` tags in the input file.
+  //! \details The boundaries for which the traction is calculated
+  //! are identified by the property set codes in \ref bCode, which are
+  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
   virtual bool calcBouForces(Vectors& f, const Vectors& sol)
   {
     f.clear();
@@ -131,8 +131,8 @@ public:
   //! \param[in] tp Time stepping parameters
   //!
   //! \details The boundary for which the traction is calculated is identified
-  //! by the property set code \a bCode which is assigned value by parsing
-  //! the first `<boundaryforce>` tag in the input file.
+  //! by the first property set code in \ref bCode which is assigned value
+  //! by parsing the first `<boundaryforce>` tag in the input file.
   bool getBoundaryForce(Vector& f, const Vectors& sol, const TimeStep& tp)
   {
     if (bCode.empty())
@@ -143,26 +143,57 @@ public:
     return true;
   }
 
-  //! \brief Extracts the reaction forces associated with a given boundary.
-  //! \param[out] rf Reaction force resultant for specified boundary
+  //! \brief Extracts reaction forces associated with given boundaries.
+  //! \param[out] rf Reaction force resultant for specified boundaries
   //!
-  //! \details The boundary for which the reaction force is returned
-  //! is identified by the property set code \a bCode which is assigned value
-  //! by parsing the first `<boundaryforce>` tag in the input file.
-  bool getBoundaryReactions(Vector& rf)
+  //! \details The boundaries for which the reaction force is returned
+  //! are identified by the property set codes in \ref bCode, which are
+  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
+  bool getBoundaryReactions(Vectors& rf)
   {
+    rf.resize(bCode.size());
     if (bCode.empty())
       return false;
 
-    bool ok = this->getCurrentReactions(rf,bCode.begin()->first);
-    Dim::adm.allReduceAsSum(rf);
+    size_t i = 0;
+    bool ok = true;
+    for (const std::pair<const int,Vec3>& c : bCode)
+    {
+      ok &= this->getCurrentReactions(rf[i],c.first);
+      Dim::adm.allReduceAsSum(rf[i++]);
+    }
+
     return ok;
+  }
+
+  //! \brief Extracts reaction forces associated with given boundary.
+  //! \param[out] rf Reaction force resultant for the specified boundary
+  //! \param[in] bindex One-based boundary code index, zero for the sum
+  bool getBoundaryReactions(Vector& rf, size_t bindex = 0)
+  {
+    Vectors rtmp;
+    if (!this->getBoundaryReactions(rtmp) || bindex > rtmp.size())
+      return false;
+    else if (bindex > 0)
+      rf = rtmp[bindex];
+    else
+    {
+      rf = rtmp.front();
+      for (size_t i = 1; i < rtmp.size(); i++)
+        rf.add(rtmp[i]);
+    }
+
+    return true;
   }
 
   //! \brief Returns whether reaction forces are to be computed or not.
   bool haveBoundaryReactions() const
   {
-    return bCode.empty() ? false : this->haveReactions(bCode.begin()->first);
+    for (const std::pair<const int,Vec3>& c : bCode)
+      if (this->haveReactions(c.first))
+        return true;
+
+    return false;
   }
 
   //! \brief Returns whether an analytical solution is available or not.

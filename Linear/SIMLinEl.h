@@ -82,11 +82,26 @@ public:
     bool ok = this->setMode(SIM::RHS_ONLY) && this->assembleSystem({solution});
 
     // Print out the reaction forces
-    Vector Rforce;
+    Vectors Rforce;
     if (ok && this->getBoundaryReactions(Rforce))
     {
-      IFEM::cout <<"Reaction force     :";
-      for (double f : Rforce) IFEM::cout <<" "<< utl::trunc(f);
+      if (Rforce.size() == 1)
+      {
+        IFEM::cout <<"Reaction force     :";
+        for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
+      }
+      else for (size_t i = 0; i < Rforce.size(); i++)
+      {
+        IFEM::cout <<"\nReaction force at section "<< i+1 <<" :";
+        for (double f : Rforce[i]) IFEM::cout <<" "<< utl::trunc(f);
+      }
+      if (Rforce.size() > 1)
+      {
+        for (size_t i = 1; i < Rforce.size(); i++)
+          Rforce.front().add(Rforce[i]);
+        IFEM::cout <<"\nTotal reaction force        :";
+        for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
+      }
       IFEM::cout << std::endl;
     }
 
