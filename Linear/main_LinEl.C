@@ -122,7 +122,7 @@ int main (int argc, char** argv)
   int  outPrec = 6;
   double zero_tol = -1.0;
   bool checkRHS = false;
-  bool vizRHS = false;
+  size_t vizRHS = 0;
   bool fixDup = false;
   char printMax = false;
   bool dumpASCII = false;
@@ -195,7 +195,7 @@ int main (int argc, char** argv)
     else if (!strcmp(argv[i],"-checkRHS"))
       checkRHS = true;
     else if (!strcmp(argv[i],"-vizRHS"))
-      vizRHS = true;
+      vizRHS = 2;
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
     else if (!strcmp(argv[i],"-1DC1"))
@@ -505,7 +505,7 @@ int main (int argc, char** argv)
   Matrix  Kred, eNorm, fNorm;
   Vector  Rred;
   Vectors displ(model->getNoRHS());
-  Vectors load(vizRHS && statSol ? displ.size() : 0);
+  Vectors load(statSol ? (vizRHS ? displ.size() : 1): 0);
   Vectors projs(pOpt.size()), gNorm;
   Vectors projx(pOpt.size()), xNorm;
   Vectors projd(model->haveDualSol() ? pOpt.size() : 0), dNorm;
@@ -589,7 +589,8 @@ int main (int argc, char** argv)
       return terminate(4);
 
     // Extract the right-hand-size vector (R) for visualization
-    for (size_t j = 0; j < load.size(); j++)
+    model->extractLoadVec(load.front(),0,"external load");
+    for (size_t j = 1; j < load.size(); j++)
       model->extractLoadVec(load[j],j);
 
     // Solve the linear system of equations
@@ -859,7 +860,7 @@ int main (int argc, char** argv)
 
     // Write load vector(s) to VTF-file
     const char* loadName[2] = { "Load vector", "Dual load vector" };
-    for (size_t j = 0; j < load.size() && j < 2; j++)
+    for (size_t j = 0; j < load.size() && j < vizRHS; j++)
       if (!model->writeGlvV(load[j],loadName[j],1,nBlock,2+j))
         return terminate(15);
 
