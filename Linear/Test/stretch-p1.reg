@@ -10,7 +10,6 @@ Parsing <geometry>
   Generating linear geometry on unit parameter domain \[0,1]^2
 	Length in X = 2
 	Length in Y = 0.4
-  Parsing <refine>
   Parsing <topologysets>
 	Topology sets: fixed (1,1,1D)
 	               loaded (1,2,1D)
@@ -48,14 +47,16 @@ Number of quadrature points 32 4
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 2 on P1
+Done.
+Sum external load : 4e+07 0 0
 Solving the equation system ...
 	Condition number: 26010.2
  >>> Solution summary <<<
 L2-norm            : 0.000433878
 Max X-displacement : 0.001
 Max Y-displacement : 6e-05
-Reaction force     : -4e+07
+Reaction force     : -4e+07 0
 Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 200
 External energy ((f,u^h)+(t,u^h)^0.5 : 200
-Boundary tractions at section 1: -4e+07 .* 8e+06
+Boundary tractions at section 1: -4e+07 0 0

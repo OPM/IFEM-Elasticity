@@ -270,7 +270,7 @@ protected:
   virtual bool preprocessB()
   {
     size_t iSec = 0;
-    for (std::pair<int,Vec3>&& code : bCode)
+    for (std::pair<const int,Vec3>& code : bCode)
     {
       Vec3Vec Xnodes;
       for (const Property& p : Dim::myProps)

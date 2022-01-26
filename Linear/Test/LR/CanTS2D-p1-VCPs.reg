@@ -45,17 +45,12 @@ Parsing <elasticity>
 	X1     = 0.4 0 0
 	X2     = 0.5 0.1 0
 	comp   = 1
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4 0 0
-	X2     = 0.5 0.1 0
 	comp   = 6
   Parsing <boundaryforce>
 	Boundary force "fixed" code 3000000
 Parsing <discretization>
 Parsing <adaptive>
-	Refinement percentage: 2 type=6
+	Refinement percentage: 2 type=6 (eps = 1e-06)
 	Refinement scheme: 2
 Parsing <postprocessing>
   Parsing <projection>
@@ -165,11 +160,6 @@ Parsing <elasticity>
 	X1     = 0.4 0 0
 	X2     = 0.5 0.1 0
 	comp   = 1
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4 0 0
-	X2     = 0.5 0.1 0
 	comp   = 6
   Parsing <boundaryforce>
 	Boundary force "fixed" code 3000000
@@ -209,7 +199,7 @@ Projecting secondary solution ...
 	Continuous global L2-projection
 Projecting secondary solution ...
 	Continuous global L2-projection
-Boundary tractions at section 1: -1568.89 -3.70174e+06 -1.90355e+06
+Boundary tractions at section 1: -1568.89 -3.70174e+06 -1.90387e+06
 Energy norm           a(u^h,u^h)^0.5 : 49.238
 External energy((f,u^h)+(t,u^h))^0.5 : 49.238
 Exact norm                a(u,u)^0.5 : 49.926
@@ -275,11 +265,6 @@ Parsing <elasticity>
 	X1     = 0.4375 0.0375 0
 	X2     = 0.4625 0.0625 0
 	comp   = 1
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4375 0.0375 0
-	X2     = 0.4625 0.0625 0
 	comp   = 6
   Parsing <boundaryforce>
 	Boundary force "fixed" code 3000000
@@ -319,7 +304,7 @@ Projecting secondary solution ...
 	Continuous global L2-projection
 Projecting secondary solution ...
 	Continuous global L2-projection
-Boundary tractions at section 1: -1749.59 -3.70175e+06 -1.90352e+06
+Boundary tractions at section 1: -1749.59 -3.70175e+06 -1.90387e+06
 Energy norm           a(u^h,u^h)^0.5 : 49.243
 External energy((f,u^h)+(t,u^h))^0.5 : 49.243
 Exact norm                a(u,u)^0.5 : 49.926
@@ -385,11 +370,6 @@ Parsing <elasticity>
 	X1     = 0.4375 0.0375 0
 	X2     = 0.4625 0.0625 0
 	comp   = 1
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4375 0.0375 0
-	X2     = 0.4625 0.0625 0
 	comp   = 6
   Parsing <boundaryforce>
 	Boundary force "fixed" code 3000000
@@ -429,7 +409,7 @@ Projecting secondary solution ...
 	Continuous global L2-projection
 Projecting secondary solution ...
 	Continuous global L2-projection
-Boundary tractions at section 1: -1775.13 -3.70175e+06 -1.90351e+06
+Boundary tractions at section 1: -1775.13 -3.70175e+06 -1.90387e+06
 Energy norm           a(u^h,u^h)^0.5 : 49.245
 External energy((f,u^h)+(t,u^h))^0.5 : 49.245
 Exact norm                a(u,u)^0.5 : 49.926
@@ -495,11 +475,6 @@ Parsing <elasticity>
 	X1     = 0.44375 0.04375 0
 	X2     = 0.45625 0.05625 0
 	comp   = 1
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.44375 0.04375 0
-	X2     = 0.45625 0.05625 0
 	comp   = 6
   Parsing <boundaryforce>
 	Boundary force "fixed" code 3000000
@@ -539,7 +514,7 @@ Projecting secondary solution ...
 	Continuous global L2-projection
 Projecting secondary solution ...
 	Continuous global L2-projection
-Boundary tractions at section 1: -350.969 -3.70167e+06 -1.90389e+06
+Boundary tractions at section 1: -350.969 -3.70167e+06 -1.90396e+06
 Energy norm           a(u^h,u^h)^0.5 : 49.302
 External energy((f,u^h)+(t,u^h))^0.5 : 49.302
 Exact norm                a(u,u)^0.5 : 49.926
