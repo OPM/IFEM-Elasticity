@@ -254,19 +254,22 @@ GlobalIntegral& Elasticity::getGlobalInt (GlobalIntegral* gq) const
 }
 
 
-Vec3 Elasticity::getTraction (const Vec3& X, const Vec3& n) const
+Vec3 Elasticity::getTraction (const Vec3& X, const Vec3& n, bool grd) const
 {
   if (fluxFld)
-    return (*fluxFld)(X);
+    return grd ? fluxFld->deriv(X,4) : (*fluxFld)(X);
   else if (tracFld)
-    return (*tracFld)(X,n);
+    return grd ? tracFld->deriv(X,n) : (*tracFld)(X,n);
   else
     return Vec3();
 }
 
 
-Vec3 Elasticity::getBodyforce (const Vec3& X) const
+Vec3 Elasticity::getBodyforce (const Vec3& X, bool grd) const
 {
+  if (grd)
+    return bodyFld ? bodyFld->deriv(X,4) : Vec3();
+
   Vec3 f(gravity);
   f *= material->getMassDensity(X);
 
@@ -603,9 +606,9 @@ void Elasticity::formMassMatrix (Matrix& EM, const Vector& N,
 
 
 void Elasticity::formBodyForce (Vector& ES, const Vector& N,
-				const Vec3& X, double detJW) const
+                                const Vec3& X, double detJW, bool grd) const
 {
-  Vec3 f = this->getBodyforce(X);
+  Vec3 f = this->getBodyforce(X,grd);
   if (f.isZero()) return;
 
   f *= detJW;
@@ -651,6 +654,22 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= nsd; i++)
       ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+
+  if (gS)
+  {
+    // Evaluate the surface traction gradient
+    T = this->getTraction(X,normal,true);
+
+    // Pull-back traction to reference configuration
+    if (!this->pullBackTraction(T))
+      return false;
+
+    // Integrate the force gradient vector
+    Vector& GS = static_cast<ElmMats&>(elmInt).b[gS-1];
+    for (size_t a = 1; a <= fe.N.size(); a++)
+      for (unsigned short int i = 1; i <= nsd; i++)
+        GS(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+  }
 
   return true;
 }

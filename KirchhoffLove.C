@@ -37,7 +37,7 @@ KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
   locSys = nullptr;
 
   eK = eM = 0;
-  eS = iS = 0;
+  eS = gS = iS = 0;
 
   includeShear = true;
 }
@@ -66,7 +66,7 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
 {
   m_mode = mode;
   eM = eK = 0;
-  eS = iS = 0;
+  eS = gS = iS = 0;
 
   if (mode >= SIM::RECOVERY)
     primsol.resize(1);
@@ -75,8 +75,9 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
 
   switch (mode)
     {
-    case SIM::STATIC:
     case SIM::ARCLEN:
+      gS = 2;
+    case SIM::STATIC:
       eK = 1;
       eS = 1;
       break;
@@ -174,42 +175,41 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
 }
 
 
-Vec3 KirchhoffLove::getTraction (const Vec3& X, const Vec3& n) const
+Vec3 KirchhoffLove::getTraction (const Vec3& X, const Vec3& n, bool grd) const
 {
   if (fluxFld)
-    return (*fluxFld)(X);
+    return grd ? fluxFld->deriv(X,4) : (*fluxFld)(X);
   else if (tracFld)
-    return (*tracFld)(X,n);
+    return grd ? tracFld->deriv(X,n) : (*tracFld)(X,n);
   else
     return Vec3();
 }
 
 
-Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n) const
+Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n, bool grd) const
 {
   Vec3 p;
-  p.z = material->getMassDensity(X)*gravity*thickness;
+  if (!grd)
+    p.z = material->getMassDensity(X)*gravity*thickness;
 
   for (RealFunc* pf : presFld)
-  {
-    if (n.isZero())
-      p.z += (*pf)(X); // Assume pressure acts in global Z-direction
+    if (n.isZero()) // Assume pressure acts in global Z-direction
+      p.z += grd ? pf->deriv(X,4) : (*pf)(X);
     else
-      p += (*pf)(X)*n;
-  }
+      p += (grd ? pf->deriv(X,4) : (*pf)(X))*n;
 
   return p;
 }
 
 
-Vec3 KirchhoffLove::getLineLoad (const Vec3& X, const Vec3& n) const
+Vec3 KirchhoffLove::getLineLoad (const Vec3& X, const Vec3& n, bool grd) const
 {
   if (!linLoad)
     return Vec3();
   else if (n.isZero()) // Assume load acts in global Z-direction
-    return Vec3(0.0,0.0,(*linLoad)(X));
+    return Vec3(0.0, 0.0, grd ? linLoad->deriv(X,4) : (*linLoad)(X));
   else
-    return (*linLoad)(X)*n;
+    return (grd ? linLoad->deriv(X,4) : (*linLoad)(X))*n;
 }
 
 
@@ -235,16 +235,18 @@ bool KirchhoffLove::haveLoads (char type) const
 
 void KirchhoffLove::formBodyForce (Vector& ES, const Vector& N, size_t iP,
                                    const Vec3& X, const Vec3& n,
-                                   double detJW) const
+                                   double detJW, bool grd) const
 {
-  Vec3 p = this->getPressure(X,n);
+  Vec3 p = this->getPressure(X,n,grd);
   if (p.isZero()) return;
 
   if (npv == 1)
     ES.add(N,p.z*detJW);
   else for (size_t a = 1; a <= N.size(); a++)
-    for (unsigned short int i = 1; i <= npv && i <= 3; i++)
+    for (unsigned short int i = 1; i <= npv; i++)
       ES(npv*(a-1)+i) += N(a)*p(i)*detJW;
+
+  if (grd) return;
 
   // Store pressure value for visualization
   if (iP < presVal.size())

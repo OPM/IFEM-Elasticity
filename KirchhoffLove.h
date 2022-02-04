@@ -91,11 +91,22 @@ public:
   virtual int derivativeOrder() const { return 2; }
 
   //! \brief Evaluates the boundary traction field (if any) at specified point.
-  Vec3 getTraction(const Vec3& X, const Vec3& n) const;
+  //! \param[in] X Cartesian coordinates of evaluation point
+  //! \param[in] n Boundary normal vector at evaluation point
+  //! \param[in] grd If \e true, evaluate the time-derivative of the traction
+  Vec3 getTraction(const Vec3& X, const Vec3& n, bool grd = false) const;
   //! \brief Evaluates the pressure field (if any) at specified point.
-  Vec3 getPressure(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0)) const;
+  //! \param[in] X Cartesian coordinates of evaluation point
+  //! \param[in] n Surface normal vector at evaluation point
+  //! \param[in] grd If \e true, evaluate the time-derivative of the pressure
+  Vec3 getPressure(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0),
+                   bool grd = false) const;
   //! \brief Evaluates the line load field (if any) at specified point.
-  Vec3 getLineLoad(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0)) const;
+  //! \param[in] X Cartesian coordinates of evaluation point
+  //! \param[in] grd If \e true, evaluate the time-derivative of the load
+  //! \param[in] n Surface normal vector at evaluation point
+  Vec3 getLineLoad(const Vec3& X, const Vec3& n = Vec3(0.0,0.0,1.0),
+                   bool grd = false) const;
   //! \brief Returns whether external loads are defined.
   bool haveLoads(char type = 'A') const;
 
@@ -141,9 +152,10 @@ protected:
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] n Plate/shell normal vector of current point
   //! \param[in] detJW Jacobian determinant times integration point weight
-  virtual void formBodyForce(Vector& ES, const Vector& N, size_t iP,
-                             const Vec3& X, const Vec3& n,
-                             double detJW) const;
+  //! \param[in] grd If \e true, the gradient (time-derivative) is computed
+  void formBodyForce(Vector& ES, const Vector& N, size_t iP,
+                     const Vec3& X, const Vec3& n,
+                     double detJW, bool grd = false) const;
 
 public:
   //! \brief Returns whether there are any load values to write to VTF.
@@ -163,6 +175,7 @@ protected:
   unsigned short int eK; //!< Index to element stiffness matrix
   unsigned short int eM; //!< Index to element mass matrix
   unsigned short int eS; //!< Index to external load vector
+  unsigned short int gS; //!< Index to element load gradient vector
   unsigned short int iS; //!< Index to internal force vector
 
   // Physical properties

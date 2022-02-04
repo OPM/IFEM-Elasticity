@@ -23,7 +23,7 @@ ElasticBase::ElasticBase () : IntegrandBase(0)
   nSV = 1; // Default number of solution vectors in core
 
   eM = eKm = eKg = 0;
-  eS = iS  = dS  = 0;
+  eS = gS  = iS  = dS = 0;
 
   memset(intPrm,0,sizeof(intPrm));
 
@@ -41,12 +41,13 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 {
   m_mode = mode;
   eM = eKm = eKg = 0;
-  eS = iS = 0;
+  eS = gS  = iS  = 0;
 
   switch (mode)
     {
-    case SIM::STATIC:
     case SIM::ARCLEN:
+      gS  = 2;
+    case SIM::STATIC:
       eKm = eKg = 1;
       eS  = iS  = 1;
       if (intPrm[3] > 0.0)

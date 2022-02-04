@@ -51,6 +51,10 @@ bool KirchhoffLoveShell::evalInt (LocalIntegral& elmInt,
     this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,
                         this->getShellNormal(fe.G),fe.detJxW);
 
+  if (gS && !presFld.empty()) // Integrate the pressure load vector gradient
+    this->formBodyForce(elMat.b[gS-1],fe.N,fe.iGP,X,
+                        this->getShellNormal(fe.G),fe.detJxW,true);
+
   return true;
 }
 
@@ -220,6 +224,15 @@ bool KirchhoffLoveShell::evalBou (LocalIntegral& elmInt,
   {
     tracVal[fe.iGP].first = X;
     tracVal[fe.iGP].second += T;
+  }
+
+  if (gS)
+  {
+    T = this->getTraction(X,normal,true);
+    Vector& GS = static_cast<ElmMats&>(elmInt).b[gS-1];
+    for (size_t a = 1; a <= fe.N.size(); a++)
+      for (int i = 1; i <= 3; i++)
+        GS(3*(a-1)+i) += T[i-1]*fe.N(a)*fe.detJxW;
   }
 
   return true;

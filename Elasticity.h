@@ -163,9 +163,14 @@ public:
   virtual bool getPrincipalDir(Matrix& pdir, size_t nPt, size_t idx) const;
 
   //! \brief Evaluates the boundary traction field (if any) at specified point.
-  Vec3 getTraction(const Vec3& X, const Vec3& n) const;
+  //! \param[in] X Cartesian coordinates of evaluation point
+  //! \param[in] n Boundary normal vector at evaluation point
+  //! \param[in] grd If \e true, evaluate the time-derivative of the traction
+  Vec3 getTraction(const Vec3& X, const Vec3& n, bool grd = false) const;
   //! \brief Evaluates the body force field (if any) at specified point.
-  virtual Vec3 getBodyforce(const Vec3& X) const;
+  //! \param[in] X Cartesian coordinates of evaluation point
+  //! \param[in] grd If \e true, evaluate the time-derivative of the body force
+  Vec3 getBodyforce(const Vec3& X, bool grd = false) const;
   //! \brief Returns whether an external load is defined.
   virtual bool haveLoads() const;
 
@@ -272,8 +277,9 @@ protected:
   //! \param[in] N Basis function values at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] detJW Jacobian determinant times integration point weight
+  //! \param[in] grd If \e true, the gradient (time-derivative) is computed
   void formBodyForce(Vector& ES, const Vector& N,
-		     const Vec3& X, double detJW) const;
+                     const Vec3& X, double detJW, bool grd = false) const;
 
   //! \brief Calculates the strain-displacement matrix.
   //! \param[in] Bmat The strain-displacement matrix

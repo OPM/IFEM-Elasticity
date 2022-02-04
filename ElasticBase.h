@@ -102,6 +102,7 @@ protected:
   short int eKg; //!< Index to element geometric stiffness matrix
   short int eM;  //!< Index to element mass matrix
   short int eS;  //!< Index to element load vector
+  short int gS;  //!< Index to element load gradient vector
   short int iS;  //!< Index to element internal force vector
   short int dS;  //!< Index to element dual force vector
   short int nSV; //!< Number of consequtive solution vectors in core
