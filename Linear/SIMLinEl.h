@@ -74,7 +74,8 @@ public:
 
     // Assemble the reaction forces. Strictly, we only need to assemble those
     // elements that have nodes on the Dirichlet boundaries, but...
-    prob->setReactionIntegral(new ReactionsOnly(myReact,Dim::mySam,Dim::adm));
+    prob->setReactionIntegral(new ReactionsOnly(myReact,Dim::mySam,Dim::adm,
+                                                &myForces));
     AlgEqSystem* tmpEqSys = Dim::myEqSys;
     Dim::myEqSys = nullptr;
     int oldlevel = Dim::msgLevel;
@@ -91,10 +92,11 @@ public:
         for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
       }
       else for (size_t i = 0; i < Rforce.size(); i++)
-      {
-        IFEM::cout <<"\nReaction force at section "<< i+1 <<" :";
-        for (double f : Rforce[i]) IFEM::cout <<" "<< utl::trunc(f);
-      }
+        if (Rforce[i].normInf() > utl::zero_print_tol)
+        {
+          IFEM::cout <<"\nReaction force at section "<< i+1 <<" :";
+          for (double f : Rforce[i]) IFEM::cout <<" "<< utl::trunc(f);
+        }
       if (Rforce.size() > 1)
       {
         for (size_t i = 1; i < Rforce.size(); i++)
@@ -102,6 +104,15 @@ public:
         IFEM::cout <<"\nTotal reaction force        :";
         for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
       }
+
+      if (this->getBoundaryForces(Rforce,myForces))
+        for (size_t i = 0; i < Rforce.size(); i++)
+          if (Rforce[i].normInf() > utl::zero_print_tol)
+          {
+            IFEM::cout <<"\nInterface force at section "<< i+1 <<":";
+            for (double f : Rforce[i]) IFEM::cout <<" "<< utl::trunc(f);
+          }
+
       IFEM::cout << std::endl;
     }
 
@@ -353,6 +364,7 @@ private:
   bool dualS; //!< If \e true, also solve the dual problem
 
   Vector myReact; //!< Nodal reaction forces
+  Vector myForces; //!< Internal forces in boundary nodes
 
   TopEntity myRetainSet;   //!< Topology set for the retained DOFs
   IntVec    myRetainNodes; //!< List of retained nodes in static condensation

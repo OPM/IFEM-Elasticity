@@ -143,6 +143,23 @@ public:
     return true;
   }
 
+  //! \brief Extracts interface forces associated with given boundaries.
+  //! \param[out] f Calculated interface force resultants
+  //! \param[in] sf Internal nodal forces
+  //!
+  //! \details The boundaries for which the interface forces are extracted
+  //! are identified by the property set codes in \ref bCode, which are
+  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
+  bool getBoundaryForces(Vectors& f, const Vector& sf)
+  {
+    f.clear();
+    f.reserve(bCode.size());
+    for (const std::pair<const int,Vec3>& c : bCode)
+      f.push_back(this->getInterfaceForces(sf,c.first));
+
+    return !f.empty();
+  }
+
   //! \brief Extracts reaction forces associated with given boundaries.
   //! \param[out] rf Reaction force resultant for specified boundaries
   //!
