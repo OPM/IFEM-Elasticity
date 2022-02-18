@@ -152,10 +152,23 @@ public:
   //! assigned values by parsing the `<boundaryforce>` tags in the input file.
   bool getBoundaryForces(Vectors& f, const Vector& sf)
   {
+    RealArray weights;
+    if (bCode.size() > 1)
+    {
+      IntVec glbNodes;
+      weights.resize(this->getNoNodes());
+      for (const std::pair<const int,Vec3>& c : bCode)
+      {
+        this->getBoundaryNodes(c.first,glbNodes);
+        for (int inod : glbNodes) ++weights[inod-1];
+      }
+      for (double& w : weights)
+        if (w > 1.0) w = 1.0/w;
+    }
     f.clear();
     f.reserve(bCode.size());
     for (const std::pair<const int,Vec3>& c : bCode)
-      f.push_back(this->getInterfaceForces(sf,c.first));
+      f.push_back(this->getInterfaceForces(sf,weights,c.first));
 
     return !f.empty();
   }
@@ -289,23 +302,14 @@ protected:
     size_t iSec = 0;
     for (std::pair<const int,Vec3>& code : bCode)
     {
-      Vec3Vec Xnodes;
       for (const Property& p : Dim::myProps)
-        if (code.first == p.pindx)
-        {
+        if (p.pindx == code.first)
           this->generateThreadGroups(p,Dim::msgLevel < 2);
-          ASMbase* pch = this->getPatch(p.patch);
-          if (pch)
-          {
-            // Get coordinates of all nodal points on this patch boundary
-            IntVec nodes;
-            pch->getBoundaryNodes(p.lindx,nodes,1,1,0,true);
-            for (int n : nodes)
-              Xnodes.push_back(pch->getCoord(n));
-          }
-        }
 
-      if (Xnodes.empty()) continue;
+      IntVec nodes;
+      Vec3Vec Xnodes;
+      this->getBoundaryNodes(code.first,nodes,&Xnodes);
+      if (nodes.empty()) continue;
 
       // Find the centre of all boundary control/nodal points
       Vec3& X0 = code.second;
