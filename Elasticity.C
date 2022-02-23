@@ -228,6 +228,14 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
 }
 
 
+bool Elasticity::hasBoundaryTerms () const
+{
+  return (m_mode >= SIM::STATIC && m_mode <= SIM::DYNAMIC) ||
+    (m_mode >= SIM::RHS_ONLY && m_mode <= SIM::INT_FORCES) ||
+    m_mode == SIM::NORMS;
+}
+
+
 Vec3 Elasticity::getTraction (const Vec3& X, const Vec3& n) const
 {
   if (fluxFld)

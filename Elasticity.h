@@ -24,7 +24,6 @@ class Tensor;
 class SymmTensor;
 class TractionFunc;
 class FunctionBase;
-class TiXmlElement;
 
 
 /*!
@@ -109,7 +108,7 @@ public:
                                           bool neumann) const;
 
   //! \brief Returns whether this norm has explicit boundary contributions.
-  virtual bool hasBoundaryTerms() const { return true; }
+  virtual bool hasBoundaryTerms() const;
 
   using ElasticBase::evalBou;
   //! \brief Evaluates the integrand at a boundary point.

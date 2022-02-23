@@ -51,7 +51,7 @@ Number of elements    32
 Number of nodes       70
 Number of dofs        140
 Number of unknowns    136
-Number of quadrature points 360 30
+Number of quadrature points 360
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Solving the eigenvalue problem ...

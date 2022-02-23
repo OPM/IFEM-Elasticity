@@ -50,7 +50,7 @@ Number of elements    12
 Number of nodes       166
 Number of dofs        498
 Number of unknowns    498
-Number of quadrature points 896 64
+Number of quadrature points 896
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
