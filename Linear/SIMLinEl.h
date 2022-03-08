@@ -81,6 +81,9 @@ public:
     int oldlevel = Dim::msgLevel;
     Dim::msgLevel = 1;
     bool ok = this->setMode(SIM::RHS_ONLY) && this->assembleSystem({solution});
+    Dim::msgLevel = oldlevel;
+    Dim::myEqSys = tmpEqSys;
+    prob->setReactionIntegral(nullptr);
 
     // Print out the reaction forces
     Vectors Rforce;
@@ -105,20 +108,9 @@ public:
         for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
       }
 
-      if (this->getBoundaryForces(Rforce,myForces))
-        for (size_t i = 0; i < Rforce.size(); i++)
-          if (Rforce[i].normInf() > utl::zero_print_tol)
-          {
-            IFEM::cout <<"\nInterface force at section "<< i+1 <<":";
-            for (double f : Rforce[i]) IFEM::cout <<" "<< utl::trunc(f);
-          }
-
-      IFEM::cout << std::endl;
+      RealArray weights;
+      this->printIFforces(myForces,weights);
     }
-
-    Dim::msgLevel = oldlevel;
-    Dim::myEqSys = tmpEqSys;
-    prob->setReactionIntegral(nullptr);
 
     return ok;
   }

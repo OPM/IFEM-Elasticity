@@ -12,7 +12,7 @@
 //==============================================================================
 
 #include "ElasticityUtils.h"
-#include "SIMbase.h"
+#include "SIMgeneric.h"
 #include "IFEM.h"
 
 
@@ -57,4 +57,39 @@ void Elastic::printNorms (const Vector& gNorm, const Vector& rNorm,
                  <<"\nEffectivity index, theta^RES         : "
                  << (gNorm(2)+gNorm(5))/rNorm(4);
   }
+}
+
+
+void Elastic::printBoundaryForces (const Vector& sf, RealArray& weights,
+                                   const std::map<int,Vec3>& bCode,
+                                   const SIMgeneric* model,
+                                   bool indented)
+{
+  if (bCode.size() > 1 && weights.empty())
+  {
+    std::vector<int> glbNodes;
+    weights.resize(model->getNoNodes());
+    for (const std::pair<const int,Vec3>& c : bCode)
+    {
+      model->getBoundaryNodes(c.first,glbNodes);
+      for (int inod : glbNodes) ++weights[inod-1];
+    }
+    for (double& w : weights)
+      if (w > 1.0) w = 1.0/w;
+  }
+
+  int isec = 0;
+  for (const std::pair<const int,Vec3>& c : bCode)
+  {
+    ++isec;
+    Vector force = model->getInterfaceForces(sf,weights,c.first);
+    if (force.normInf() > utl::zero_print_tol)
+    {
+      IFEM::cout << (indented ? "\n  " : "\n")
+                 <<"Interface force at section "<< isec <<":";
+      for (double f : force) IFEM::cout <<" "<< utl::trunc(f);
+    }
+  }
+
+  IFEM::cout << std::endl;
 }

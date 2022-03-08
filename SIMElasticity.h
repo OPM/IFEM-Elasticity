@@ -143,36 +143,6 @@ public:
     return true;
   }
 
-  //! \brief Extracts interface forces associated with given boundaries.
-  //! \param[out] f Calculated interface force resultants
-  //! \param[in] sf Internal nodal forces
-  //!
-  //! \details The boundaries for which the interface forces are extracted
-  //! are identified by the property set codes in \ref bCode, which are
-  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
-  bool getBoundaryForces(Vectors& f, const Vector& sf)
-  {
-    RealArray weights;
-    if (bCode.size() > 1)
-    {
-      IntVec glbNodes;
-      weights.resize(this->getNoNodes());
-      for (const std::pair<const int,Vec3>& c : bCode)
-      {
-        this->getBoundaryNodes(c.first,glbNodes);
-        for (int inod : glbNodes) ++weights[inod-1];
-      }
-      for (double& w : weights)
-        if (w > 1.0) w = 1.0/w;
-    }
-    f.clear();
-    f.reserve(bCode.size());
-    for (const std::pair<const int,Vec3>& c : bCode)
-      f.push_back(this->getInterfaceForces(sf,weights,c.first));
-
-    return !f.empty();
-  }
-
   //! \brief Extracts reaction forces associated with given boundaries.
   //! \param[out] rf Reaction force resultant for specified boundaries
   //!
@@ -217,10 +187,10 @@ public:
   }
 
   //! \brief Returns whether reaction forces are to be computed or not.
-  bool haveBoundaryReactions() const
+  virtual bool haveBoundaryReactions(bool reactionsOnly = false) const
   {
     for (const std::pair<const int,Vec3>& c : bCode)
-      if (this->haveReactions(c.first))
+      if (!reactionsOnly || this->haveReactions(c.first))
         return true;
 
     return false;
@@ -744,12 +714,24 @@ public:
     Elastic::printNorms(gNorm,rNorm,prjName,this);
   }
 
+  //! \brief Prints interface force resultants associated with given boundaries.
+  //! \param[in] sf Internal nodal forces
+  //! \param weights Nodal weights (in case some nodes are present in more sets)
+  //!
+  //! \details The boundaries for which the interface forces are extracted
+  //! are identified by the property set codes in \ref bCode, which are
+  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
+  virtual void printIFforces(const Vector& sf, RealArray& weights)
+  {
+    Elastic::printBoundaryForces(sf,weights,bCode,this);
+  }
+
   //! \brief Writes current model geometry to the VTF-file.
   //! \param nBlock Running result block counter
   //! \param[in] inpFile File name used to construct the VTF-file name from
   //! \param[in] doClear If \e true, clear geometry block if \a inpFile is null
   //!
-  //! \details This method is overrriden to also account for rigid couplings.
+  //! \details This method is overridden to also account for rigid couplings.
   virtual bool writeGlvG(int& nBlock, const char* inpFile, bool doClear = true)
   {
     if (!this->Dim::writeGlvG(nBlock,inpFile,doClear))
@@ -766,11 +748,11 @@ public:
 protected:
   MaterialVec mVec;      //!< Material data
   std::string myContext; //!< XML-tag to search for problem inputs within
+  std::map<int,Vec3> bCode; //!< Property codes for boundary traction resultants
 
 private:
   bool plotRgd; //!< If \e true, output rigid couplings as VTF geometry
   int  aCode;   //!< Analytical BC code (used by destructor)
-  std::map<int,Vec3> bCode; //!< Property codes for boundary traction resultants
 };
 
 #endif
