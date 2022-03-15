@@ -16,7 +16,6 @@
 
 #include "SIMElasticity.h"
 #include "LinearElasticity.h"
-#include "ReactionsOnly.h"
 #include "AlgEqSystem.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
@@ -69,21 +68,12 @@ public:
     else if (idxRHS > 0 || !this->haveBoundaryReactions())
       return true;
 
-    LinearElasticity* prob = dynamic_cast<LinearElasticity*>(Dim::myProblem);
-    if (!prob) return true;
-
     // Assemble the reaction forces. Strictly, we only need to assemble those
     // elements that have nodes on the Dirichlet boundaries, but...
-    prob->setReactionIntegral(new ReactionsOnly(myReact,Dim::mySam,Dim::adm,
-                                                &myForces));
-    AlgEqSystem* tmpEqSys = Dim::myEqSys;
-    Dim::myEqSys = nullptr;
     int oldlevel = Dim::msgLevel;
     Dim::msgLevel = 1;
-    bool ok = this->setMode(SIM::RHS_ONLY) && this->assembleSystem({solution});
+    bool ok = this->assembleForces({solution},0.0,&myReact,&myForces);
     Dim::msgLevel = oldlevel;
-    Dim::myEqSys = tmpEqSys;
-    prob->setReactionIntegral(nullptr);
 
     // Print out the reaction forces
     Vectors Rforce;
