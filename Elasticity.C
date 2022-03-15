@@ -12,6 +12,7 @@
 //==============================================================================
 
 #include "Elasticity.h"
+#include "GlobalIntegral.h"
 #include "IsotropicTextureMat.h"
 #include "FiniteElement.h"
 #include "HHTMats.h"
@@ -52,6 +53,7 @@ Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
   bodyFld = nullptr;
   pDirBuf = nullptr;
   dualRHS = nullptr;
+  myReacI = nullptr;
 
   gamma = 1.0;
 
@@ -233,6 +235,22 @@ bool Elasticity::hasBoundaryTerms () const
   return (m_mode >= SIM::STATIC && m_mode <= SIM::DYNAMIC) ||
     (m_mode >= SIM::RHS_ONLY && m_mode <= SIM::INT_FORCES) ||
     m_mode == SIM::NORMS;
+}
+
+
+void Elasticity::setSecondaryInt (GlobalIntegral* gq)
+{
+  delete myReacI;
+  myReacI = gq;
+}
+
+
+GlobalIntegral& Elasticity::getGlobalInt (GlobalIntegral* gq) const
+{
+  if (m_mode == SIM::RHS_ONLY && myReacI)
+    return *myReacI;
+
+  return this->ElasticBase::getGlobalInt(gq);
 }
 
 

@@ -29,7 +29,6 @@ LinearElasticity::LinearElasticity (unsigned short int n, bool axSym,
   : Elasticity(n,axSym)
 {
   myTemp0  = myTemp = nullptr;
-  myReacIt = nullptr;
   myItgPts = n == 2 && GPout ? new Vec3Vec() : nullptr;
   isModal  = modal;
 }
@@ -143,15 +142,6 @@ bool LinearElasticity::initElement (const std::vector<int>& MNPC,
   std::cerr <<" *** LinearElasticity::initElement: Detected "
             << ierr <<" node numbers out of range."<< std::endl;
   return false;
-}
-
-
-GlobalIntegral& LinearElasticity::getGlobalInt (GlobalIntegral* gq) const
-{
-  if (m_mode == SIM::RHS_ONLY && myReacIt)
-    return *myReacIt;
-
-  return this->Elasticity::getGlobalInt(gq);
 }
 
 

@@ -107,6 +107,11 @@ public:
   virtual LocalIntegral* getLocalIntegral(size_t nen, size_t iEl,
                                           bool neumann) const;
 
+  //! \brief Defines the global integral for calculating reaction forces only.
+  virtual void setSecondaryInt(GlobalIntegral* gq);
+  //! \brief Returns the system quantity to be integrated by \a *this.
+  virtual GlobalIntegral& getGlobalInt(GlobalIntegral* gq) const;
+
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const;
 
@@ -347,6 +352,7 @@ protected:
 
 private:
   mutable bool calcMaxVal; //!< If \e true, max result values are calculated
+  GlobalIntegral* myReacI; //!< Reaction-forces-only integral
 
 public:
   static bool wantStrain;          //!< Option for output of strain, not stress
