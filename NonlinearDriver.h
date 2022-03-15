@@ -67,6 +67,9 @@ protected:
   //! \brief Adapts the mesh and restarts solution on new mesh.
   bool adaptMesh(int& aStep);
 
+  //! \brief Calculates and prints out interface force resultants.
+  bool calcInterfaceForces(double t);
+
 public:
   //! \brief Reads model data from the specified input file \a *fileName.
   virtual bool read(const char* fileName);
@@ -113,6 +116,10 @@ private:
   char     calcEn; //!< Flag for calculation of solution energy norm
   int      aStep;  //!< Adaptive mesh refinement step
   bool     save0;  //!< If \e true, also save initial configuration
+
+  Vector    myForces;  //!< Interface nodal forces
+  Vector    myReacts;  //!< Reaction force container
+  RealArray myWeights; //!< Nodal weights for iterface forces
 
   AdaptiveSetup* adap; //!< Data and methods for adaptive simulation
   std::string inpfile; //!< Model input file, used when adapting mesh

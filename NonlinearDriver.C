@@ -201,6 +201,18 @@ void NonlinearDriver::printNorms (const Vector& norm, utl::LogStream& os) const
 }
 
 
+bool NonlinearDriver::calcInterfaceForces (double t)
+{
+  bool ok = model.assembleForces(solution.front(),t,&myReacts,&myForces);
+  if (ok)
+    model.printIFforces(myForces,myWeights);
+  else
+    std::cerr <<" *** Interface force calculation failes."<< std::endl;
+
+  return ok;
+}
+
+
 /*!
   This method controls the load incrementation loop of the nonlinear simulation.
   It uses the automatic increment size adjustment of the TimeStep class
@@ -264,6 +276,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
     if (stat != SIM::CONVERGED)
       return 7;
+
+    if (model.haveBoundaryReactions())
+      if (!this->calcInterfaceForces(params.time.t))
+        return 9;
 
     if (pit != opt.project.end())
     {
