@@ -1,4 +1,4 @@
-CanTS2D-p1-VCPs.xinp -dualadap -outPrec 5
+CanTS2D-p1-VCPs.xinp -dualadap -tracRes -outPrec 5
 
 Input file: CanTS2D-p1-VCPs.xinp
 Equation solver: 2

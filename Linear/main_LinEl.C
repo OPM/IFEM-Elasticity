@@ -71,6 +71,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   \arg -nv \a nv : Number of visualization points per knot-span in v-direction
   \arg -nw \a nw : Number of visualization points per knot-span in w-direction
   \arg -hdf5 : Write primary and projected secondary solution to HDF5 file
+  \arg -tracRes : Calculate and print boundary traction resultants
   \arg -printMax : Print out maximum point-wise stresses
   \arg -printMaxPatch : Print out patch-wise maximum point-wise stresses
   \arg -dumpASC : Dump model and solution to ASCII files for external processing
@@ -86,6 +87,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   \arg -free : Ignore all boundary conditions (use in free vibration analysis)
   \arg -dynamic : Solve the linear dynamics problem using modal transformation
   \arg -qstatic : Solve the linear dynamics problem as quasi-static
+  \arg -time : Time for evaluation of possible time-dependent functions
   \arg -dumpModes : Dump projected eigenmode solution
   \arg -strain : Output strains instead of stresses to VTF and result points
   \arg -check : Data check only, read model and output to VTF (no solution)
@@ -136,6 +138,7 @@ int main (int argc, char** argv)
   char dynSol = false;
   bool dumpModes = false;
   bool dumpNodeMap = false;
+  bool tracRes = false;
   char* infile = nullptr;
   char* supid = nullptr;
   Elasticity::wantStrain = false;
@@ -163,10 +166,14 @@ int main (int argc, char** argv)
     }
     else if (!strncmp(argv[i],"-dumpNod",8))
       dumpNodeMap = true;
+    else if (!strncmp(argv[i],"-tracRes",8))
+      tracRes = true;
     else if (!strcmp(argv[i],"-outPrec") && i < argc-1)
       outPrec = atoi(argv[++i]);
     else if (!strcmp(argv[i],"-ztol") && i < argc-1)
       zero_tol = atof(argv[++i]);
+    else if (!strcmp(argv[i],"-time") && i < argc-1)
+      Elastic::time = atof(argv[++i]);
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
         utl::parseIntegers(ignoredPatches,argv[++i]);
@@ -289,8 +296,8 @@ int main (int argc, char** argv)
 
     showUsage({"<inputfile>","[-dense|-spr|-superlu[<nt>]|-samg|-petsc]",
                "[-lag|-spec|-LR]","[-1D[C1|KL]|-2D[pstrain|axisymm|KL[shel]]]",
-               "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]",
-               "[-hdf5 [<filename>] [-dumpNodeMap]]",
+               "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]","[-time <t>]",
+               "[-tracRes]","[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
                "[-adap[<i>]|-dualadap]","[-staticCond [<supid>]]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
@@ -585,7 +592,7 @@ int main (int argc, char** argv)
     model->setMode(iop == 210 ? SIM::RHS_ONLY : SIM::STATIC);
     model->setQuadratureRule(model->opt.nGauss[0],true,true);
     model->initSystem(model->opt.solver,1,displ.size());
-    if (!model->assembleSystem())
+    if (!model->assembleSystem(Elastic::time))
       return terminate(4);
 
     // Extract the right-hand-size vector (R) for visualization
@@ -718,7 +725,7 @@ int main (int argc, char** argv)
                      << dNorm.front()(1);
       }
 
-      if (iop < 200)
+      if (iop < 200 && tracRes)
         printBoundaryForces(displ.front());
 
       size_t j = 1;
@@ -775,7 +782,7 @@ int main (int argc, char** argv)
     // Linearized buckling: Assemble [Km] and [Kg]
     model->setMode(SIM::BUCKLING);
     model->initSystem(model->opt.solver,2,0);
-    if (!model->assembleSystem(displ))
+    if (!model->assembleSystem(Elastic::time,displ))
       return terminate(8);
 
     // Solve the generalized eigenvalue problem
@@ -808,7 +815,8 @@ int main (int argc, char** argv)
     {
       if (!aSim->solveStep(infile,iStep,true,outPrec))
         return terminate(10);
-      printBoundaryForces(aSim->getSolution());
+      if (tracRes)
+        printBoundaryForces(aSim->getSolution());
       if (!aSim->writeGlv(infile,iStep))
         return terminate(11);
       if (exporter)

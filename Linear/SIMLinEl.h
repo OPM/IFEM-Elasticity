@@ -72,7 +72,7 @@ public:
     // elements that have nodes on the Dirichlet boundaries, but...
     int oldlevel = Dim::msgLevel;
     Dim::msgLevel = 1;
-    bool ok = this->assembleForces({solution},0.0,&myReact,&myForces);
+    bool ok = this->assembleForces({solution},Elastic::time,&myReact,&myForces);
     Dim::msgLevel = oldlevel;
 
     // Print out the reaction forces

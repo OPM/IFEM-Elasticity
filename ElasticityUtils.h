@@ -46,6 +46,7 @@ namespace Elastic //! Dimension-independent utilities for Elasticity
   extern bool planeStrain; //!< Plane strain/stress option - 2D only
   extern bool axiSymmetry; //!< Axisymmtry option - 2D only
   extern bool GIpointsVTF; //!< Option for Gauss point output to VTF
+  extern double time;      //!< Time for function evaluation (linear problems)
 }
 
 #endif

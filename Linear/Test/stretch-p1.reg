@@ -1,4 +1,4 @@
-stretch-p1.xinp -noProj
+stretch-p1.xinp -noProj -tracRes
 
 Input file: stretch-p1.xinp
 Equation solver: 2

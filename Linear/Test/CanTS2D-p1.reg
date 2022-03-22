@@ -1,4 +1,4 @@
-CanTS2D-p1.xinp -noProj
+CanTS2D-p1.xinp -noProj -tracRes
 
 Input file: CanTS2D-p1.xinp
 Equation solver: 2

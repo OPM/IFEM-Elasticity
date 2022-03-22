@@ -20,8 +20,10 @@
 bool Elastic::planeStrain = false;
 //! Axisymmtry option for 2D problems.
 bool Elastic::axiSymmetry = false;
-//! Option for Gauss point output to VTF
+//! Option for Gauss point output to VTF.
 bool Elastic::GIpointsVTF = false;
+//! Time for function evaluation in linear problems.
+double Elastic::time = 1.0;
 
 
 void Elastic::printNorms (const Vector& gNorm, const Vector& rNorm,
