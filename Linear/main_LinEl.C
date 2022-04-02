@@ -316,6 +316,7 @@ int main (int argc, char** argv)
 
   IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
+  IFEM::cout <<"\nEvaluation time for property functions: "<< Elastic::time;
   if (SIMbase::ignoreDirichlet)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
   if (fixDup)
@@ -871,6 +872,10 @@ int main (int argc, char** argv)
     for (size_t j = 0; j < load.size() && j < vizRHS; j++)
       if (!model->writeGlvV(load[j],loadName[j],1,nBlock,2+j))
         return terminate(15);
+
+    // Write internal force vector to VTF-file
+    if (!model->writeGlvA(nBlock,1,2+vizRHS))
+      return terminate(15);
 
     // Write solution fields to VTF-file
     model->setMode(SIM::RECOVERY);

@@ -15,6 +15,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 2
@@ -31,6 +32,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 3
@@ -47,6 +49,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 4
@@ -65,6 +68,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 5
@@ -81,6 +85,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 6
@@ -97,6 +102,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 7
@@ -113,6 +119,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 8
@@ -129,6 +136,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 9
@@ -145,6 +153,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 10
@@ -163,6 +172,7 @@ Step 1
     Scalar: 'P2'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Vector: 'Internal forces'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 11

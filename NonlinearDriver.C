@@ -325,6 +325,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
         if (!this->saveStep(++iStep,params.time.t))
           return 10;
 
+        if (!myForces.empty())
+          if (!model.writeGlvV(myForces,"Internal forces",iStep,nBlock,2))
+            return 10;
+
         if (pit != opt.project.end())
         {
           // Write projected solution fields to VTF-file

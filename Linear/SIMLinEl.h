@@ -150,6 +150,17 @@ public:
       os << static_cast<Vec3>(this->getNodeCoord(node)) << std::endl;
   }
 
+  //! \brief Writes the vector of internal forces to the VTF-file.
+  //! \param nBlock Running result block counter
+  //! \param[in] iStep Load/time step identifier
+  //! \param[in] idBlock Result block ID number
+  virtual bool writeGlvA(int& nBlock, int iStep, int idBlock) const
+  {
+    if (myForces.empty()) return true;
+
+    return this->writeGlvV(myForces,"Internal forces",iStep,nBlock,idBlock);
+  }
+
 protected:
   //! \brief Returns the actual integrand.
   virtual Elasticity* getIntegrand()
