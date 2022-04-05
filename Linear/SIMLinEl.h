@@ -74,6 +74,7 @@ public:
     Dim::msgLevel = 1;
     bool ok = this->assembleForces({solution},Elastic::time,&myReact,&myForces);
     Dim::msgLevel = oldlevel;
+    RealArray reactionForces(myReact);
 
     // Print out the reaction forces
     Vectors Rforce;
@@ -101,6 +102,7 @@ public:
       RealArray weights;
       this->printIFforces(myForces,weights);
     }
+    myReact.swap(reactionForces);
 
     return ok;
   }
