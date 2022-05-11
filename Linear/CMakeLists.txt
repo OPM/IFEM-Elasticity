@@ -99,12 +99,12 @@ list(APPEND TEST_APPS LinEl)
 add_library(LinearElasticity STATIC ${PROJECT_SOURCE_DIR}/SIMLinEl2D.C ${PROJECT_SOURCE_DIR}/AnalyticSolutions.C)
 IFEM_add_test_app(${PROJECT_SOURCE_DIR}/Test/*.C
                   ${PROJECT_SOURCE_DIR}/Test
-                  LinEl
+                  LinEl 0
                   LinearElasticity Elasticity ${IFEM_LIBRARIES})
+list(APPEND TEST_APPS LinEl-test)
 
 if(IFEM_COMMON_APP_BUILD)
   set(TEST_APPS ${TEST_APPS} PARENT_SCOPE)
-  set(UNIT_TEST_NUMBER ${UNIT_TEST_NUMBER} PARENT_SCOPE)
 else()
   add_check_target()
 endif()
