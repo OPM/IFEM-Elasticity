@@ -347,14 +347,6 @@ bool SIMLinElBeamC1::assembleDiscreteTerms (const IntegrandBase*,
     else if (load.inod < 0) // This is an element point load
       ok &= this->assemblePoint(load.patch,load.xi,load.pload);
 
-  Vector extLoad;
-  if (ok && mySam->expandSolution(*b,extLoad,0.0))
-  {
-    std::streamsize oldPrec = IFEM::cout.precision(15);
-    IFEM::cout <<"   * Sum external load: "<< extLoad.sum() << std::endl;
-    IFEM::cout.precision(oldPrec);
-  }
-
   return ok;
 }
 

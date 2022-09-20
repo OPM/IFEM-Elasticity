@@ -274,11 +274,12 @@ protected:
 
   //! \brief Calculates integration point body force vector contributions.
   //! \param ES Element vector to receive the body force contributions
+  //! \param sumLoad Total external load in each spatial direction
   //! \param[in] N Basis function values at current point
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] detJW Jacobian determinant times integration point weight
   //! \param[in] grd If \e true, the gradient (time-derivative) is computed
-  void formBodyForce(Vector& ES, const Vector& N,
+  void formBodyForce(Vector& ES, RealArray& sumLoad, const Vector& N,
                      const Vec3& X, double detJW, bool grd = false) const;
 
   //! \brief Calculates the strain-displacement matrix.

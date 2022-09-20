@@ -124,7 +124,7 @@ bool KirchhoffLovePlate::evalInt (LocalIntegral& elmInt,
     this->formMassMatrix(elMat.A[eM-1],fe.N,X,fe.detJxW);
 
   if (eS) // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,Vec3(),fe.detJxW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,fe.iGP,X,Vec3(),fe.detJxW);
 
   if (!eK)
     return true;
@@ -206,6 +206,8 @@ bool KirchhoffLovePlate::evalInt (LocalIntegral& elmInt,
 
   Vec3 p = this->getLineLoad(X);
   static_cast<ElmMats&>(elmInt).b[eS-1].add(fe.N,0.5*p.z*fe.detJxW);
+  RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
+  if (!sumLoad.empty()) sumLoad.front() += 0.5*p.z*fe.detJxW;
 
 #if INT_DEBUG > 3
   std::cout <<"KirchhoffLovePlate::evalInt("<< fe.iel <<", "<< X
@@ -233,6 +235,8 @@ bool KirchhoffLovePlate::evalBou (LocalIntegral& elmInt,
 
   Vec3 T = this->getTraction(X,normal);
   static_cast<ElmMats&>(elmInt).b[eS-1].add(fe.N,T.z*fe.detJxW);
+  RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
+  if (!sumLoad.empty()) sumLoad.front() += T.z*fe.detJxW;
 
   // Store traction value for visualization
   if (fe.iGP < tracVal.size() && !T.isZero())

@@ -69,9 +69,9 @@ bool NLKirchhoffLoveShell::evalInt (LocalIntegral& elmInt,
     Vec3 n;
     if (!presFld.empty())
       n = this->getShellNormal(Gd.empty() ? fe.G : Gd);
-    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,n,fe.detJxW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,fe.iGP,X,n,fe.detJxW);
     if (gS && !presFld.empty())
-      this->formBodyForce(elMat.b[gS-1],fe.N,fe.iGP,X,n,fe.detJxW,true);
+      this->formBodyForce(elMat.b[gS-1],elMat.c,fe.N,fe.iGP,X,n,fe.detJxW,true);
   }
 
   return true;

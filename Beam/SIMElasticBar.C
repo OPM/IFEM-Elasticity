@@ -448,12 +448,18 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
   {
     // Assemble external nodal point loads at current time step
     for (const PointLoad& load : myLoads)
-      if (load.ldof > 0)
-        ok &= mySam->assembleSystem(*R,(*load.p)(time.t)*scl,
-                                    std::make_pair(load.inod,load.ldof));
+    {
+      double P = (*load.p)(time.t);
+      int ldof = load.ldof;
+      if (ldof > 0)
+      {
+        // This load is directly in a nodal point
+        myEqSys->addScalar(P,ldof-1);
+        ok &= mySam->assembleSystem(*R,P*scl,std::make_pair(load.inod,ldof));
+      }
       else // This is an element point load
-        ok &= this->assemblePoint(load.inod,load.xi,(*load.p)(time.t),
-                                  -load.ldof);
+        ok &= this->assemblePoint(load.inod,load.xi,P,-ldof);
+    }
   }
 
   if (mode == SIM::ARCLEN)
@@ -467,12 +473,14 @@ bool SIMElasticBar::assembleDiscreteTerms (const IntegrandBase* itg,
     this->setMode(mode);
     static_cast<ElasticBase*>(myProblem)->setLoadGradientMode();
     for (const PointLoad& load : myLoads)
-      if (load.ldof > 0)
-        ok &= mySam->assembleSystem(*R,load.p->deriv(time.t),
-                                    std::make_pair(load.inod,load.ldof));
+    {
+      double P = load.p->deriv(time.t);
+      int ldof = load.ldof;
+      if (ldof > 0) // This load is directly in a nodal point
+        ok &= mySam->assembleSystem(*R,P,std::make_pair(load.inod,ldof));
       else // This is an element point load
-        ok &= this->assemblePoint(load.inod,load.xi,load.p->deriv(time.t),
-                                  -load.ldof);
+        ok &= this->assemblePoint(load.inod,load.xi,P,-ldof);
+    }
   }
 
   return ok;
@@ -510,20 +518,6 @@ Tensor SIMElasticBar::getNodeRotation (int inod) const
   }
 
   return Tensor(nsd,true);
-}
-
-
-bool SIMElasticBar::getExtLoad (RealArray& extloa, const TimeDomain& time) const
-{
-  extloa.resize(nf,0.0);
-  for (size_t i = 0; i < nf; i++)
-    extloa[i] = this->extractScalar(i);
-
-  for (const PointLoad& load : myLoads)
-    if (load.ldof > 0 && load.ldof <= nf)
-      extloa[load.ldof-1] += (*load.p)(time.t);
-
-  return true;
 }
 
 

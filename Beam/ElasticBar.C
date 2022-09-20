@@ -65,7 +65,7 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t iEl,
     case SIM::MASS_ONLY:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, 1);
+      result->resize(neumann ? 0 : 1, 1, npv);
       break;
 
     case SIM::ARCLEN:
@@ -76,7 +76,7 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t iEl,
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
       result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
-                     intPrm[3] > 0.0 ? 1 : (intPrm[4] == 1.0 ? 3 : 2));
+                     intPrm[3] > 0.0 ? 1 : (intPrm[4] == 1.0 ? 3 : 2), npv);
       break;
 
     case SIM::VIBRATION:

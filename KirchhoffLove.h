@@ -147,13 +147,15 @@ protected:
 
   //! \brief Calculates integration point body force vector contributions.
   //! \param ES Element vector to receive the body force contributions
+  //! \param sumLoad Total external load in each spatial direction
   //! \param[in] N Basis function values at current point
   //! \param[in] iP Global integration point counter
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] n Plate/shell normal vector of current point
   //! \param[in] detJW Jacobian determinant times integration point weight
   //! \param[in] grd If \e true, the gradient (time-derivative) is computed
-  void formBodyForce(Vector& ES, const Vector& N, size_t iP,
+  void formBodyForce(Vector& ES, RealArray& sumLoad,
+                     const Vector& N, size_t iP,
                      const Vec3& X, const Vec3& n,
                      double detJW, bool grd = false) const;
 

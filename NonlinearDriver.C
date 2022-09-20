@@ -141,7 +141,7 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
       IFEM::cout <<"\n                            Max "<< char('X'+d)
                  <<"-displacement : "<< dMax[d] <<" node "<< iMax[d];
 
-  if (model.getExtLoad(Fext,time) && !Fext.empty())
+  if (model.extractScalars(Fext))
   {
     IFEM::cout <<"\n  Total external load: Sum(Fex) =";
     for (double f : Fext) IFEM::cout <<" "<< utl::trunc(f);

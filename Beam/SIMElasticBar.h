@@ -52,11 +52,6 @@ public:
   //! \brief Returns the current rotation tensor for the specified global node.
   Tensor getNodeRotation(int inod) const;
 
-  //! \brief Computes the total external load of current load/time step.
-  //! \param[out] extloa Sum external load in each direction
-  //! \param[in] time Parameters for nonlinear simulations
-  virtual bool getExtLoad(RealArray& extloa, const TimeDomain& time) const;
-
 protected:
   //! \brief Returns the actual beam problem integrand.
   virtual ElasticBar* getBarIntegrand(const std::string&);

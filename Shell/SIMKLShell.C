@@ -457,56 +457,46 @@ bool SIMKLShell::preprocessB ()
 bool SIMKLShell::assembleDiscreteTerms (const IntegrandBase* itg,
                                         const TimeDomain& time)
 {
-  if (!myEqSys) return true; // silently ignore if no equation system defined
+  if (!myEqSys || itg != myProblem || myLoads.empty())
+    return true; // Silently ignore if no equation system or no point loads
 
+  // Get external (or residual) load vector
   SystemVector* b = myEqSys->getVector();
   if (!b) return false;
 
-  bool ok = true;
-  if (itg != myProblem)
-    return ok;
-
   SIM::SolutionMode mode = itg->getMode();
-  if (!myLoads.empty())
-    this->setMode(SIM::RHS_ONLY);
+  bool ok = this->setMode(SIM::RHS_ONLY);
 
   for (const PointLoad& load : myLoads)
-    if (load.ldof.second > 0)
-      ok &= mySam->assembleSystem(*b,(*load.p)(time.t),load.ldof);
-    else // This is an element point load
-      ok &= this->assemblePoint(load.patch,load.xi,(*load.p)(time.t),
-                                -load.ldof.second);
-
-  if (ok && time.first && time.it == 0 && mode != SIM::ARCLEN)
   {
-    Vector extLoad;
-    if (mySam->expandSolution(*b,extLoad,0.0))
+    double P = (*load.p)(time.t);
+    int ldof = load.ldof.second;
+    if (ldof > 0)
     {
-      std::streamsize oldPrec = IFEM::cout.precision(15);
-      IFEM::cout <<"   * Sum external load:";
-      for (unsigned char d = 0; d < nf[0]; d++)
-        IFEM::cout <<" "<< utl::trunc(extLoad.sum(d,nf[0]));
-      IFEM::cout << std::endl;
-      IFEM::cout.precision(oldPrec);
+      // This load is directly in a nodal point
+      myEqSys->addScalar(P,ldof-1);
+      ok &= mySam->assembleSystem(*b,P,load.ldof);
     }
+    else // This is an element point load
+      ok &= this->assemblePoint(load.patch,load.xi,P,-ldof);
   }
 
-  if (!myLoads.empty() && mode == SIM::ARCLEN)
-    b = myEqSys->getVector(1); // External load gradient for arc-length driver
-  else
-    b = nullptr;
-
+  // Get external load gradient for the arc-length driver
+  b = mode == SIM::ARCLEN ? myEqSys->getVector(1) : nullptr;
   if (b)
   {
     // Assemble external nodal point load gradient at current time step
     this->setMode(mode);
     static_cast<KirchhoffLove*>(myProblem)->setLoadGradientMode();
     for (const PointLoad& load : myLoads)
-      if (load.ldof.second > 0)
-        ok &= mySam->assembleSystem(*b,load.p->deriv(time.t),load.ldof);
+    {
+      double P = load.p->deriv(time.t);
+      int ldof = load.ldof.second;
+      if (ldof > 0) // This load is directly in a nodal point
+        ok &= mySam->assembleSystem(*b,P,load.ldof);
       else // This is an element point load
-        ok &= this->assemblePoint(load.patch,load.xi,load.p->deriv(time.t),
-                                  -load.ldof.second);
+        ok &= this->assemblePoint(load.patch,load.xi,P,-ldof);
+    }
   }
 
   return ok;
@@ -555,26 +545,12 @@ bool SIMKLShell::assemblePoint (int patch, const double* u, double f, int ldof)
 }
 
 
-bool SIMKLShell::getExtLoad (RealArray& extloa, const TimeDomain& time) const
-{
-  extloa.resize(nf[0]);
-  for (size_t i = 0; i < nf[0]; i++)
-    extloa[i] = this->extractScalar(i);
-
-  for (const PointLoad& load : myLoads)
-    if (load.ldof.second > 0 && load.ldof.second < nf[0])
-      extloa[load.ldof.second-1] += (*load.p)(time.t);
-
-  return true;
-}
-
-
 void SIMKLShell::printStep (int istep, const TimeDomain& time) const
 {
   adm.cout <<"\n  step="<< istep <<"  time="<< time.t;
 
   RealArray extLo;
-  if (myProblem->getMode() == SIM::ARCLEN && this->getExtLoad(extLo,time))
+  if (myProblem->getMode() == SIM::ARCLEN && this->extractScalars(extLo))
   {
     adm.cout <<"  Sum(Fex) =";
     for (size_t d = 0; d < extLo.size(); d++)

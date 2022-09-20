@@ -232,7 +232,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (eS > 0)
   {
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],fe.N,X,detJW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,X,detJW);
     // Integrate the load vector due to initial or temperature strains
     if (!this->formInitStrainForces(elMat,fe.N,Bmat,Cmat,X,detJW))
       return false;

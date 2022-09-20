@@ -187,20 +187,20 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
     case SIM::MASS_ONLY:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, neumann || dS == 0 ? 1 : dS);
+      result->resize(neumann ? 0 : 1, neumann || dS == 0 ? 1 : dS, nsd);
       break;
 
     case SIM::ARCLEN:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, 2);
+      result->resize(neumann ? 0 : 1, 2, nsd);
       break;
 
     case SIM::DYNAMIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
       result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
-                     intPrm[4] == 1.0 ? 3 : (neumann || intPrm[3] > 0.0 ? 1:2));
+                     intPrm[4] == 1.0 ? 3 : (neumann || intPrm[3] > 0.0 ? 1:2), nsd);
       break;
 
     case SIM::VIBRATION:
@@ -214,7 +214,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
 
     case SIM::RHS_ONLY:
     case SIM::INT_FORCES:
-      result->resize(neumann ? 0 : 1, 1);
+      result->resize(neumann ? 0 : 1, 1, nsd);
 
     case SIM::RECOVERY:
       result->rhsOnly = true;
@@ -605,7 +605,7 @@ void Elasticity::formMassMatrix (Matrix& EM, const Vector& N,
 }
 
 
-void Elasticity::formBodyForce (Vector& ES, const Vector& N,
+void Elasticity::formBodyForce (Vector& ES, RealArray& sumLoad, const Vector& N,
                                 const Vec3& X, double detJW, bool grd) const
 {
   Vec3 f = this->getBodyforce(X,grd);
@@ -615,6 +615,12 @@ void Elasticity::formBodyForce (Vector& ES, const Vector& N,
   for (size_t a = 1; a <= N.size(); a++)
     for (unsigned short int i = 1; i <= nsd; i++)
       ES(nsd*(a-1)+i) += f[i-1]*N(a);
+
+  if (grd) return;
+
+  // Integrate total external load
+  for (unsigned short int i = 0; i < nsd && i < sumLoad.size(); i++)
+    sumLoad[i] += f[i];
 }
 
 
@@ -654,6 +660,11 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= nsd; i++)
       ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+
+  // Integrate total external load
+  RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
+  for (unsigned short int i = 0; i < nsd && i < sumLoad.size(); i++)
+    sumLoad[i] += T[i]*fe.detJxW;
 
   if (gS)
   {

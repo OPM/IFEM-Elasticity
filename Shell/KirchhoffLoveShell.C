@@ -48,11 +48,11 @@ bool KirchhoffLoveShell::evalInt (LocalIntegral& elmInt,
     this->evalK(elMat.A[eK-1],fe,X);
 
   if (eS) // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],fe.N,fe.iGP,X,
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,fe.iGP,X,
                         this->getShellNormal(fe.G),fe.detJxW);
 
   if (gS && !presFld.empty()) // Integrate the pressure load vector gradient
-    this->formBodyForce(elMat.b[gS-1],fe.N,fe.iGP,X,
+    this->formBodyForce(elMat.b[gS-1],elMat.c,fe.N,fe.iGP,X,
                         this->getShellNormal(fe.G),fe.detJxW,true);
 
   return true;
@@ -225,6 +225,11 @@ bool KirchhoffLoveShell::evalBou (LocalIntegral& elmInt,
     tracVal[fe.iGP].first = X;
     tracVal[fe.iGP].second += T;
   }
+
+  // Integrate total external load
+  RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
+  for (size_t i = 0; i < 3 && i < sumLoad.size(); i++)
+    sumLoad[i] += T[i]*fe.detJxW;
 
   if (gS)
   {

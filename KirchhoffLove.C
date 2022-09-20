@@ -233,7 +233,8 @@ bool KirchhoffLove::haveLoads (char type) const
 }
 
 
-void KirchhoffLove::formBodyForce (Vector& ES, const Vector& N, size_t iP,
+void KirchhoffLove::formBodyForce (Vector& ES, RealArray& sumLoad,
+                                   const Vector& N, size_t iP,
                                    const Vec3& X, const Vec3& n,
                                    double detJW, bool grd) const
 {
@@ -247,6 +248,12 @@ void KirchhoffLove::formBodyForce (Vector& ES, const Vector& N, size_t iP,
       ES(npv*(a-1)+i) += N(a)*p(i)*detJW;
 
   if (grd) return;
+
+  // Integrate total external load
+  if (npv == 1 && !sumLoad.empty())
+    sumLoad.front() += p.z*detJW;
+  else for (unsigned short int i = 0; i < npv && i < sumLoad.size(); i++)
+    sumLoad[i] += p[i]*detJW;
 
   // Store pressure value for visualization
   if (iP < presVal.size())
@@ -326,14 +333,18 @@ bool KirchhoffLove::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
   }
 
   Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
-  for (size_t a = 1; a <= fe.N.size(); a++)
+  if (npv == 1)
+    ES.add(fe.N,pval.x*fe.detJxW);
+  else for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= npv; i++)
       ES(npv*(a-1)+i) += pval(i)*fe.N(a)*fe.detJxW;
 
   if (eS == 1)
   {
     RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
-    for (size_t i = 0; i < sumLoad.size() && i < 3; i++)
+    if (npv == 1 && !sumLoad.empty())
+      sumLoad.front() += pval.x*fe.detJxW;
+    else for (unsigned short int i = 0; i < npv && i < sumLoad.size(); i++)
       sumLoad[i] += pval[i]*fe.detJxW;
   }
 
