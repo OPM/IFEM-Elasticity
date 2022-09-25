@@ -1,0 +1,263 @@
+HingedShallowArch-press.xinp -arclen
+
+Input file: HingedShallowArch-press.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Using arc-length simulation driver.
+Parsing input file HingedShallowArch-press.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file shallow_arch.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: arch (1,0,2D)
+	               corner (1,1,0D)
+	               hinged (1,1,1D) (1,2,1D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 0 1
+  Parsing <refine>
+	Refining P1 3 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 3: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 3102.75 0.3 1 6.35
+	Pressure code 1 (linear): -0.1\*t
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLoveShell: thickness = 6.35, gravity = 0
+LinIsotropic: plane stress, E = 3102.75, nu = 0.3, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 3
+	Constraining P1 E1 in direction(s) 12
+	Constraining P1 E2 in direction(s) 12
+Result point #1: patch #1 (u,v)=(0.1,0.5), X = 0 12.6894 254
+ >>> SAM model summary <<<
+Number of elements    16
+Number of nodes       36
+Number of dofs        108
+Number of unknowns    83
+  step=1  time=0.0539281  Sum(Fex) = 0 -1390.2 0
+  Primary solution summary: L2-norm            : 0.962712
+                            Max X-displacement : 0.0604564
+                            Max Y-displacement : 2.82732
+                            Max Z-displacement : 0.0893779
+  Total external load: Sum(Fex) = 0 -1004.67 0
+  Total reaction forces: Sum(R) = 0 -1004.67 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 43.3504
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 40.9712
+  Point #1:	sol1 =  0.000e+00 -2.590e+00  4.431e-02
+		sol2 = -1.371e+01 -6.227e-01  0.000e+00 -7.021e+00 -1.896e+00  0.000e+00
+		sol3 = -3.203e+00 -3.802e-01  0.000e+00 -3.802e-01 -3.203e+00  3.031e+00
+		sol4 = -1.114e+00  1.840e-01  0.000e+00  1.840e-01 -1.114e+00  1.217e+00
+  step=2  time=0.064012  Sum(Fex) = 0 -1650.88 0
+  Primary solution summary: L2-norm            : 1.92428
+                            Max X-displacement : 0.0990884
+                            Max Y-displacement : 5.8812
+                            Max Z-displacement : 0.155364
+  Total external load: Sum(Fex) = 0 -1350.08 0
+  Total reaction forces: Sum(R) = 0 -1350.08 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 76.1222
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 66.4443
+  Point #1:	sol1 =  0.000e+00 -5.114e+00  7.640e-02
+		sol2 = -2.393e+01 -1.238e+00  0.000e+00 -1.483e+01 -3.356e+00  0.000e+00
+		sol3 = -5.976e+00 -6.942e-01  0.000e+00 -6.942e-01 -5.976e+00  5.660e+00
+		sol4 = -1.561e+00  3.044e-01  0.000e+00  3.044e-01 -1.561e+00  1.733e+00
+  step=3  time=0.0552506  Sum(Fex) = 0 -1425.29 0
+  Primary solution summary: L2-norm            : 2.87643
+                            Max X-displacement : 0.127357
+                            Max Y-displacement : 9.27251
+                            Max Z-displacement : 0.19934
+  Total external load: Sum(Fex) = 0 -1233 0
+  Total reaction forces: Sum(R) = 0 -1233 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 98.1402
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 76.2925
+  Point #1:	sol1 =  0.000e+00 -7.341e+00  9.585e-02
+		sol2 = -3.013e+01 -1.976e+00  0.000e+00 -2.263e+01 -3.230e+00  0.000e+00
+		sol3 = -8.112e+00 -7.918e-01  0.000e+00 -7.918e-01 -8.112e+00  7.746e+00
+		sol4 = -1.377e+00  1.694e-01  0.000e+00  1.694e-01 -1.377e+00  1.469e+00
+  step=4  time=0.0374785  Sum(Fex) = 0 -966.869 0
+  Primary solution summary: L2-norm            : 3.82381
+                            Max X-displacement : 0.166568
+                            Max Y-displacement : 12.8721
+                            Max Z-displacement : 0.231452
+  Total external load: Sum(Fex) = 0 -886.722 0
+  Total reaction forces: Sum(R) = 0 -886.722 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 111.874
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 73.3391
+  Point #1:	sol1 =  0.000e+00 -9.177e+00  1.076e-01
+		sol2 = -3.320e+01 -2.960e+00  0.000e+00 -2.893e+01 -1.026e+00  0.000e+00
+		sol3 = -9.533e+00 -6.189e-01  0.000e+00 -6.189e-01 -9.533e+00  9.239e+00
+		sol4 = -9.247e-01 -3.135e-01  0.000e+00 -3.135e-01 -9.247e-01  8.145e-01
+  step=5  time=0.0186039  Sum(Fex) = 0 -479.909 0
+  Primary solution summary: L2-norm            : 4.78941
+                            Max X-displacement : 0.209631
+                            Max Y-displacement : 16.1471
+                            Max Z-displacement : 0.254693
+  Total external load: Sum(Fex) = 0 -425.088 0
+  Total reaction forces: Sum(R) = 0 -425.088 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 120.375
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 56.7201
+  Point #1:	sol1 =  0.000e+00 -1.145e+01  1.164e-01
+		sol2 = -3.478e+01 -4.115e+00  0.000e+00 -3.665e+01 -1.108e+00  0.000e+00
+		sol3 = -1.093e+01 -8.129e-01  0.000e+00 -8.129e-01 -1.093e+01  1.055e+01
+		sol4 = -2.342e-02 -4.833e-01  0.000e+00 -2.342e-02 -4.833e-01  4.720e-01
+  step=6  time=-0.00320603  Sum(Fex) = 0 82.7008 0
+  Primary solution summary: L2-norm            : 5.72659
+                            Max X-displacement : 0.238465
+                            Max Y-displacement : 18.5017
+                            Max Z-displacement : 0.25107
+  Total external load: Sum(Fex) = 0 90.8497 0
+  Total reaction forces: Sum(R) = 0 90.8497 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 122.698
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -29.101
+  Point #1:	sol1 =  0.000e+00 -1.470e+01  1.159e-01
+		sol2 = -3.270e+01 -4.295e+00  0.000e+00 -4.783e+01 -7.197e+00  0.000e+00
+		sol3 = -1.227e+01 -1.747e+00  0.000e+00 -1.747e+00 -1.227e+01  1.149e+01
+		sol4 =  1.968e+00  3.945e-01  0.000e+00  1.968e+00  3.945e-01  1.803e+00
+  step=7  time=-0.0221365  Sum(Fex) = 0 570.964 0
+  Primary solution summary: L2-norm            : 6.64965
+                            Max X-displacement : 0.253172
+                            Max Y-displacement : 20.6407
+                            Max Z-displacement : 0.222758
+  Total external load: Sum(Fex) = 0 488.988 0
+  Total reaction forces: Sum(R) = 0 488.988 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 118.107
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -73.7484
+  Point #1:	sol1 =  0.000e+00 -1.782e+01  1.049e-01
+		sol2 = -2.664e+01 -3.087e+00  0.000e+00 -5.652e+01 -1.268e+01  0.000e+00
+		sol3 = -1.260e+01 -2.373e+00  0.000e+00 -2.373e+00 -1.260e+01  1.160e+01
+		sol4 =  4.215e+00  1.401e+00  0.000e+00  4.215e+00  1.401e+00  3.718e+00
+  step=8  time=-0.0303587  Sum(Fex) = 0 782.865 0
+  Primary solution summary: L2-norm            : 7.56075
+                            Max X-displacement : 0.248727
+                            Max Y-displacement : 22.7423
+                            Max Z-displacement : 0.178483
+  Total external load: Sum(Fex) = 0 645.75 0
+  Total reaction forces: Sum(R) = 0 645.75 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 108.725
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -91.3119
+  Point #1:	sol1 =  0.000e+00 -2.054e+01  8.632e-02
+		sol2 = -1.882e+01 -1.605e+00  0.000e+00 -6.155e+01 -1.599e+01  0.000e+00
+		sol3 = -1.212e+01 -2.632e+00  0.000e+00 -2.632e+00 -1.212e+01  1.104e+01
+		sol4 =  6.194e+00  2.127e+00  0.000e+00  6.194e+00  2.127e+00  5.451e+00
+  step=9  time=-0.0249596  Sum(Fex) = 0 643.423 0
+  Primary solution summary: L2-norm            : 8.45897
+                            Max X-displacement : 0.214205
+                            Max Y-displacement : 24.763
+                            Max Z-displacement : 0.116835
+  Total external load: Sum(Fex) = 0 427.26 0
+  Total reaction forces: Sum(R) = 0 427.26 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 98.8452
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -79.1879
+  Point #1:	sol1 =  0.000e+00 -2.299e+01  5.842e-02
+		sol2 = -9.649e+00 -3.983e-01  0.000e+00 -6.417e+01 -1.801e+01  0.000e+00
+		sol3 = -1.107e+01 -2.742e+00  0.000e+00 -2.742e+00 -1.107e+01  9.984e+00
+		sol4 =  8.030e+00  2.617e+00  0.000e+00  8.030e+00  2.617e+00  7.093e+00
+  step=10  time=0.00177569  Sum(Fex) = 0 -45.7521 0
+  Primary solution summary: L2-norm            : 9.37403
+                            Max X-displacement : 0.144921
+                            Max Y-displacement : 26.8572
+                            Max Z-displacement : 0.0358283
+  Total external load: Sum(Fex) = 0 -384.749 0
+  Total reaction forces: Sum(R) = 0 -384.749 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 97.2435
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 79.5302
+  Point #1:	sol1 =  0.000e+00 -2.540e+01  1.791e-02
+		sol2 =  2.217e+00  4.134e-01  0.000e+00 -6.662e+01 -1.966e+01  0.000e+00
+		sol3 = -9.564e+00 -2.860e+00  0.000e+00 -2.860e+00 -9.564e+00  8.503e+00
+		sol4 =  1.026e+01  2.990e+00  0.000e+00  1.026e+01  2.990e+00  9.141e+00
+  step=11  time=0.0610651  Sum(Fex) = 0 -1572.31 0
+  Primary solution summary: L2-norm            : 10.3131
+                            Max X-displacement : 0.0941181
+                            Max Y-displacement : 29.1136
+                            Max Z-displacement : 0.0942054
+  Total external load: Sum(Fex) = 0 -2015.52 0
+  Total reaction forces: Sum(R) = 0 -2015.52 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 115.656
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 191.559
+  Point #1:	sol1 =  0.000e+00 -2.788e+01 -3.552e-02
+		sol2 =  1.770e+01  1.047e+00  0.000e+00 -7.011e+01 -2.138e+01  0.000e+00
+		sol3 = -7.645e+00 -3.017e+00  0.000e+00 -3.017e+00 -7.645e+00  6.669e+00
+		sol4 =  1.322e+01  3.347e+00  0.000e+00  1.322e+01  3.347e+00  1.190e+01
+  step=12  time=0.159804  Sum(Fex) = 0 -4111.16 0
+  Primary solution summary: L2-norm            : 11.2639
+                            Max X-displacement : 0.15442
+                            Max Y-displacement : 31.4865
+                            Max Z-displacement : 0.222237
+  Total external load: Sum(Fex) = 0 -4635.3 0
+  Total reaction forces: Sum(R) = 0 -4635.3 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 157.1
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 304.245
+  Point #1:	sol1 =  0.000e+00 -3.041e+01 -1.007e-01
+		sol2 =  3.672e+01  1.696e+00  0.000e+00 -7.448e+01 -2.319e+01  0.000e+00
+		sol3 = -5.299e+00 -3.184e+00  0.000e+00 -3.184e+00 -5.299e+00  4.620e+00
+		sol4 =  1.687e+01  3.718e+00  0.000e+00  1.687e+01  3.718e+00  1.535e+01
+  step=13  time=0.303353  Sum(Fex) = 0 -7796.45 0
+  Primary solution summary: L2-norm            : 12.2194
+                            Max X-displacement : 0.254402
+                            Max Y-displacement : 33.9265
+                            Max Z-displacement : 0.3732
+  Total external load: Sum(Fex) = 0 -8400.48 0
+  Total reaction forces: Sum(R) = 0 -8400.48 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 216.89
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 427.253
+  Point #1:	sol1 =  0.000e+00 -3.297e+01 -1.768e-01
+		sol2 =  5.909e+01  2.437e+00  0.000e+00 -7.938e+01 -2.503e+01  0.000e+00
+		sol3 = -2.506e+00 -3.341e+00  0.000e+00 -2.506e+00 -3.341e+00  3.012e+00
+		sol4 =  2.112e+01  4.108e+00  0.000e+00  2.112e+01  4.108e+00  1.939e+01
+  step=14  time=0.497929  Sum(Fex) = 0 -12782.8 0
+  Primary solution summary: L2-norm            : 13.1767
+                            Max X-displacement : 0.399123
+                            Max Y-displacement : 36.4048
+                            Max Z-displacement : 0.546124
+  Total external load: Sum(Fex) = 0 -13469 0
+  Total reaction forces: Sum(R) = 0 -13469 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 290.987
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 562.484
+  Point #1:	sol1 =  0.000e+00 -3.553e+01 -2.638e-01
+		sol2 =  8.467e+01  3.292e+00  0.000e+00 -8.458e+01 -2.687e+01  0.000e+00
+		sol3 =  7.487e-01 -3.479e+00  0.000e+00  7.487e-01 -3.479e+00  3.908e+00
+		sol4 =  2.592e+01  4.516e+00  0.000e+00  2.592e+01  4.516e+00  2.398e+01
+  step=15  time=0.750003  Sum(Fex) = 0 -19229.8 0
+  Primary solution summary: L2-norm            : 14.1346
+                            Max X-displacement : 0.558134
+                            Max Y-displacement : 38.9055
+                            Max Z-displacement : 0.74058
+  Total external load: Sum(Fex) = 0 -19999.6 0
+  Total reaction forces: Sum(R) = 0 -19999.6 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 377.289
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 710.644
+  Point #1:	sol1 =  0.000e+00 -3.809e+01 -3.614e-01
+		sol2 =  1.134e+02  4.270e+00  0.000e+00 -8.997e+01 -2.868e+01  0.000e+00
+		sol3 =  4.473e+00 -3.596e+00  0.000e+00  4.473e+00 -3.596e+00  7.002e+00
+		sol4 =  3.125e+01  4.941e+00  0.000e+00  3.125e+01  4.941e+00  2.909e+01
+  step=16  time=1.06609  Sum(Fex) = 0 -27296.2 0
+  Primary solution summary: L2-norm            : 15.0925
+                            Max X-displacement : 0.731584
+                            Max Y-displacement : 41.4194
+                            Max Z-displacement : 0.956353
+  Total external load: Sum(Fex) = 0 -28150.7 0
+  Total reaction forces: Sum(R) = 0 -28150.7 0
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 474.749
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 872.06
+  Point #1:	sol1 =  0.000e+00 -4.066e+01 -4.696e-01
+		sol2 =  1.453e+02  5.373e+00  0.000e+00 -9.548e+01 -3.048e+01  0.000e+00
+		sol3 =  8.671e+00 -3.690e+00  0.000e+00  8.671e+00 -3.690e+00  1.099e+01
+		sol4 =  3.709e+01  5.382e+00  0.000e+00  3.709e+01  5.382e+00  3.471e+01
+  Path integration completed.

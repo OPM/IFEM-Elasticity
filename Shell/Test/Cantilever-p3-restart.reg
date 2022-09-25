@@ -4,6 +4,7 @@ Input file: Cantilever-p3-10x1.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Using fixed load step simulation driver.
 Parsing input file Cantilever-p3-10x1.xinp
 Parsing <discretization>
 Parsing <geometry>
@@ -48,9 +49,11 @@ Number of dofs        78
 Number of unknowns    70
 Load point #1: patch #1 (u,v)=(1,0), node #13, X = 10 0 0, direction = 3
 Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
+  step=6  time=0.6
   Primary solution summary: L2-norm            : 2.69995
                             Max X-displacement : 4.23115
                             Max Z-displacement : 7.36619
+  Total external load: Sum(Fex) = 0 0 -6
   Total reaction forces: Sum(R) = 0 0 -6
   Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.09037
   External energy: ((f,u^h)+(t,u^h))^0.5 : 6.64809
@@ -66,6 +69,7 @@ Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
   Primary solution summary: L2-norm            : 2.83388
                             Max X-displacement : 4.61551
                             Max Z-displacement : 7.59858
+  Total external load: Sum(Fex) = 0 0 -7
   Total reaction forces: Sum(R) = 0 0 -7
   Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.37792
   External energy: ((f,u^h)+(t,u^h))^0.5 : 7.29315
@@ -81,6 +85,7 @@ Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
   Primary solution summary: L2-norm            : 2.94385
                             Max X-displacement : 4.93561
                             Max Z-displacement : 7.77742
+  Total external load: Sum(Fex) = 0 0 -8
   Total reaction forces: Sum(R) = 0 0 -8
   Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.62115
   External energy: ((f,u^h)+(t,u^h))^0.5 : 7.88792
@@ -96,6 +101,7 @@ Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
   Primary solution summary: L2-norm            : 3.03625
                             Max X-displacement : 5.20649
                             Max Z-displacement : 7.91963
+  Total external load: Sum(Fex) = 0 0 -9
   Total reaction forces: Sum(R) = 0 0 -9
   Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.8318
   External energy: ((f,u^h)+(t,u^h))^0.5 : 8.44255
@@ -111,6 +117,7 @@ Load point #2: patch #1 (u,v)=(1,1), node #26, X = 10 1 0, direction = 3
   Primary solution summary: L2-norm            : 3.11535
                             Max X-displacement : 5.43896
                             Max Z-displacement : 8.03576
+  Total external load: Sum(Fex) = 0 0 -10
   Total reaction forces: Sum(R) = 0 0 -10
   Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.0177
   External energy: ((f,u^h)+(t,u^h))^0.5 : 8.96424

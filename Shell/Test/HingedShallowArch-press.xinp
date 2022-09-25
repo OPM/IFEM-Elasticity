@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Hinged shallow cylindrical shell subjected to uniform pressure load.
+     Quadratic order NURBS Kirchhoff-Love thin shell elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry>
+    <patchfile>shallow_arch.g2</patchfile>
+    <raiseorder patch="1" u="0" v="1"/>
+    <refine patch="1" u="3" v="3"/>
+    <topologysets>
+      <set name="hinged" type="edge">
+        <item patch="1">1 2</item>
+      </set>
+      <set name="corner" type="vertex">
+        <item patch="1">1</item>
+      </set>
+      <set name="arch" type="surface">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss default="0"/>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="hinged" comp="12"/>
+    <dirichlet set="corner" comp="3"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="3102.75" nu="0.3" thickness="6.35"/>
+    <pressure set="arch" type="linear">-0.1</pressure>
+  </KirchhoffLove>
+
+  <!-- General - nonlinear solver setup !-->
+  <nonlinearsolver>
+    <arclen>10.0</arclen>
+    <rtol>1.0e-12</rtol>
+    <timestepping>
+      <step start="0.0" end="1.0">1</step>
+    </timestepping>
+  </nonlinearsolver>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <resultpoints printmapping="true">
+      <point patch="1" u="0.5" v="0.5"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

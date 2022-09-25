@@ -74,7 +74,6 @@ Number of dofs        165
 Number of constraints 55
 Number of unknowns    84
   step=1  time=0.1
-   \* Sum external load: 4878158.45213981 4878158.45213981 -1488145.03222315
   Primary solution summary: L2-norm            : 0.0208224
                             Max X-displacement : 0.00682988
                             Max Y-displacement : 0.00682988

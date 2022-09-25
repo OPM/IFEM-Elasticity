@@ -4,6 +4,7 @@ Input file: Cantilever-p2-1x1.xinp
 Equation solver: 0
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Using fixed load step simulation driver.
 Parsing input file Cantilever-p2-1x1.xinp
 Parsing <discretization>
 Parsing <geometry>
@@ -47,6 +48,7 @@ Load point #2: patch #1 (u,v)=(1,1), node #6, X = 2 1 0, direction = 3
   Primary solution summary: L2-norm            : 0.10187
                             Max X-displacement : 0.0312119
                             Max Z-displacement : 0.303913
+  Total external load: Sum(Fex) = 0 0 -100
   Total reaction forces: Sum(R) = 2\..*e-06 0 -100
   Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.1598
   External energy: ((f,u^h)+(t,u^h))^0.5 : 5.51283

@@ -5,6 +5,7 @@ Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Simulation stop time: 0.2
+Using fixed load step simulation driver.
 Parsing input file PinchedHemisphere-p4.xinp
 Parsing <discretization>
 Parsing <geometry>
@@ -38,6 +39,7 @@ Parsing <KirchhoffLove>
 	Point: P1 xi = 0 1 direction = 2 Load: -200\*t
 Parsing <nonlinearsolver>
 Parsing <postprocessing>
+  Parsing <direct2nd>
   Parsing <resultpoints>
 	Point 1: P1 xi = 0 0
 	Point 2: P1 xi = 0 1
@@ -69,6 +71,7 @@ Load point #2: patch #1 (u,v)=(0,1), node #31, X = 0 10 0, direction = 2
                             Max X-displacement : 0.767318
                             Max Y-displacement : 0.904911
                             Max Z-displacement : 0.423375
+  Total external load: Sum(Fex) = 20 -20 0
   Total reaction forces: Sum(R) = 605.699 -885.22 566.389
   Node #1:	sol1 =  7.673e-01  0.000e+00  4.153e-01
 		sol2 =  2.237e+01 -7.062e+02  0.000e+00  1.055e+00 -1.329e+01  0.000e+00
@@ -85,6 +88,7 @@ Load point #2: patch #1 (u,v)=(0,1), node #31, X = 0 10 0, direction = 2
                             Max X-displacement : 1.20587
                             Max Y-displacement : 1.57264
                             Max Z-displacement : 0.699076
+  Total external load: Sum(Fex) = 40 -40 0
   Total reaction forces: Sum(R) = 782.555 -1580.01 1597.26
   Node #1:	sol1 =  1.206e+00  0.000e+00  6.991e-01
 		sol2 =  4.391e+02  1.643e+02  0.000e+00  1.862e-01 -2.322e+01  0.000e+00
