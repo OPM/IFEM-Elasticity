@@ -4,6 +4,7 @@ Input file: SquarePoint_p3.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file SquarePoint_p3.xinp
 Parsing <geometry>
@@ -59,7 +60,8 @@ Load point #1: patch #1 (u,v)=(0.5,0.5) on element #11, X = 5 5 0
 Number of quadrature points 256
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 10000
+Done.
+Sum external load : 10000 0 0
 Solving the equation system ...
 	Condition number: 61.8686
  >>> Solution summary <<<

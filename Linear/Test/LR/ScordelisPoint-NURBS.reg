@@ -4,6 +4,7 @@ Input file: ScordelisPoint-NURBS.xinp
 Equation solver: 2
 Number of Gauss points: 4
 LR-NURBS basis functions are used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file ScordelisPoint-NURBS.xinp
 Parsing <geometry>
@@ -61,7 +62,7 @@ Load point #1: patch #1 (u,v)=(0.5,0.698132) on element #22, X = 0 5.84889 25, d
 Adaptive step 1
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 0 0 -1000000
+Done.
 Solving the equation system ...
 	Condition number: 373171
  >>> Solution summary <<<
@@ -139,7 +140,7 @@ Number of unknowns    388
 Load point #1: patch #1 (u,v)=(0.5,0.698132) on element #22, X = 0 5.84889 25, direction = 3
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 0 0 -1000000
+Done.
 Solving the equation system ...
 	Condition number: 434366
  >>> Solution summary <<<
@@ -217,7 +218,7 @@ Number of unknowns    514
 Load point #1: patch #1 (u,v)=(0.5,0.698132) on element #22, X = 0 5.84889 25, direction = 3
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 0 0 -1000000
+Done.
 Solving the equation system ...
 	Condition number: 448825
  >>> Solution summary <<<
@@ -249,3 +250,4 @@ Root mean square (RMS) of error      : 0.977725
 Min element error                    : 0.927043
 Max element error                    : 37.3813
 Average element error                : 6.17976
+   \* Stopping the adaptive cycles as max steps 3 was reached.

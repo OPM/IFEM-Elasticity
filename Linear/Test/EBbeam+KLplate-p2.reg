@@ -4,6 +4,7 @@ Input file: EBbeam+KLplate-p2.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 1. Coupled linear static solver
 Parsing input file EBbeam+KLplate-p2.xinp
@@ -117,13 +118,13 @@ Number of unknowns    20
 Number of quadrature points 48
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: -108934.940625
+Done.
 22. Euler-Bernoulli beam solver
 Number of quadrature points 16
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
-   \* Sum external load: -287378.07421875
+Done.
 23. Coupled linear static solver
 Solving the equation system ...
 	Condition number: 65308

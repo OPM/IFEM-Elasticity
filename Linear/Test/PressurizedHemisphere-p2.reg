@@ -4,6 +4,7 @@ Input file: PressurizedHemisphere-p2.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file PressurizedHemisphere-p2.xinp
 Parsing <discretization>
@@ -71,7 +72,8 @@ Number of unknowns    2881
 Number of quadrature points 9216
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 363.568127865678 363.568127865678 -64.2783105582161
+Done.
+Sum external load : 363.568 363.568 -64.2783
 Solving the equation system ...
 	Condition number: 92407.7
  >>> Solution summary <<<

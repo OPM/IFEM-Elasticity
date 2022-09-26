@@ -4,6 +4,7 @@ Input file: PolePinchedSphere-p3.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file PolePinchedSphere-p3.xinp
 Parsing <discretization>
@@ -79,8 +80,8 @@ Number of unknowns    216
 Number of quadrature points 1024
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 2566960.7532899.* 2566960.7532899.* -528489.7841445.*
 Done.
+Sum external load : 2.56696e+06 2.56696e+06 -528490
 Solving the equation system ...
 	Condition number: 974.2
  >>> Solution summary <<<

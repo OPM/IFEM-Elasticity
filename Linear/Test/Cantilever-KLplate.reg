@@ -4,6 +4,7 @@ Input file: Cantilever-KLplate.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file Cantilever-KLplate.xinp
 Parsing <discretization>
@@ -52,7 +53,8 @@ Number of quadrature points 30 2
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 2 on P1
-  \* Sum external load: -1
+Done.
+Sum external load : -1 0 0
 Solving the equation system ...
 	Condition number: 85635
  >>> Solution summary <<<

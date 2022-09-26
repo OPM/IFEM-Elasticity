@@ -4,6 +4,7 @@ Input file: SSbeamPointLoad-graded.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file SSbeamPointLoad-graded.xinp
 Parsing <discretization>
@@ -57,7 +58,8 @@ Load point #1: patch #1 u=0.5 on element #7 (u=0.5), X = 1 0 0
 Number of quadrature points 36
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 1.18333333333333
+Done.
+Sum external load : 1.18333 0 0
 Solving the equation system ...
 	Condition number: 120227
  >>> Solution summary <<<
@@ -72,11 +74,11 @@ Exact relative error (%) : 11.0658
 Residual error (r(u) + J(u))^0.5 : 0
  relative error (% of |u|) : 0
   Point #1:	sol1 =  5.555931e+00
-		sol2 =  5.343099e-01
+		sol2 =  5.343099e-01  0.000000e+00
 		exact2  5.500000e-01
   Point #2:	sol1 =  3.173984e+00
-		sol2 =  2.177083e-01
+		sol2 =  2.177083e-01  0.000000e+00
 		exact2  2.320000e-01
   Point #3:	sol1 =  3.173984e+00
-		sol2 =  2.177083e-01
+		sol2 =  2.177083e-01  0.000000e+00
 		exact2  2.320000e-01

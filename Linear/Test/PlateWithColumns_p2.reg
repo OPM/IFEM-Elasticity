@@ -4,6 +4,7 @@ Input file: PlateWithColumns_p2.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file PlateWithColumns_p2.xinp
 Parsing <discretization>
@@ -58,7 +59,8 @@ Number of unknowns    80
 Number of quadrature points 5120
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-  \* Sum external load: -131770
+Done.
+Sum external load : -131770 0 0
 Solving the equation system ...
 	Condition number: 628.857
  >>> Solution summary <<<
@@ -68,6 +70,6 @@ Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 4847.38
 External energy ((f,u^h)+(t,u^h)^0.5 : 4847.38
   Point #1:	sol1 = -1.918849e-01
-		sol2 = -1.178689e+07 -1.161591e+07  6.719230e+05
+		sol2 = -1.178689e+07 -1.161591e+07  6.719230e+05  7.465968e+05  1.191962e+05
   Point #2:	sol1 =  1.914356e-01
-		sol2 =  1.178112e+07  1.160933e+07 -6.666702e+05
+		sol2 =  1.178112e+07  1.160933e+07 -6.666702e+05  7.416761e+05  1.157686e+05

@@ -4,6 +4,7 @@ Input file: PointLoadedPlate-adap.xinp
 Equation solver: 2
 Number of Gauss points: 4
 LR-spline basis functions are used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file PointLoadedPlate-adap.xinp
 Parsing <geometry>
@@ -61,7 +62,7 @@ Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Adaptive step 1
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 1
+Done.
 Solving the equation system ...
 	Condition number: 640.297
  >>> Solution summary <<<
@@ -138,7 +139,7 @@ Number of unknowns    141
 Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 1
+Done.
 Solving the equation system ...
 	Condition number: 2803.9
  >>> Solution summary <<<
@@ -215,7 +216,7 @@ Number of unknowns    201
 Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 1
+Done.
 Solving the equation system ...
 	Condition number: 23041.6
  >>> Solution summary <<<
@@ -245,3 +246,4 @@ Root mean square (RMS) of error      : 1.28125
 Min element error                    : 2.90319e-05
 Max element error                    : 0.00150866
 Average element error                : 0.000163163
+   \* Stopping the adaptive cycles as max steps 3 was reached.

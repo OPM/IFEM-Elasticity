@@ -5,6 +5,7 @@ Equation solver: 2
 Number of Gauss points: 4
 LR-spline basis functions are used
 Enabled projection(s): Continuous global L2-projection
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file Cantilever-KLshell.xinp
 Parsing <geometry>
@@ -59,7 +60,7 @@ Adaptive step 1
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 2 on P1
-   \* Sum external load: 0 0 -1
+Done.
 Solving the equation system ...
 	Condition number: 95976.7
  >>> Solution summary <<<
@@ -132,7 +133,7 @@ Number of unknowns    154
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 2 on P1
-   \* Sum external load: 0 0 -1
+Done.
 Solving the equation system ...
 	Condition number: 827145
  >>> Solution summary <<<
@@ -205,7 +206,7 @@ Number of unknowns    510
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 2 on P1
-   \* Sum external load: 0 0 -1
+Done.
 Solving the equation system ...
 	Condition number: 1.10747e+07
  >>> Solution summary <<<
@@ -236,3 +237,4 @@ Root mean square (RMS) of error      : 0.466514
 Min element error                    : 0.00184644
 Max element error                    : 0.00789725
 Average element error                : 0.00225892
+   \* Stopping the adaptive cycles as max steps 3 was reached.

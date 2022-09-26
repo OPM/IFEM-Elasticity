@@ -5,6 +5,7 @@ Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Enabled projection(s): Continuous global L2-projection
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file SSbeamPointLoad-p3-file.xinp
 Parsing <discretization>
@@ -59,7 +60,8 @@ Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 1 0 0
 Number of quadrature points 16
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 0.375
+Done.
+Sum external load : 0.375 0 0
 Solving the equation system ...
 	Condition number: 146.444
  >>> Solution summary <<<
@@ -92,11 +94,11 @@ L2-norm |s^r| = (s^r,s^r)^0.5        : 0.132903
 L2-error (e,e)^0.5, e=s^r-s^h        : 0.00127578
  relative error (% of |s^r|) : 0.959928
   Node #4:	sol1 =  1.625000e+00
-		sol2 =  1.520833e-01
+		sol2 =  1.520833e-01 -1.250000e-01
 		exact2  1.500000e-01
   Point #2:	sol1 =  9.390000e-01
-		sol2 =  7.208333e-02
+		sol2 =  7.208333e-02  1.750000e-01
 		exact2  7.200000e-02
   Point #3:	sol1 =  9.390000e-01
-		sol2 =  7.208333e-02
+		sol2 =  7.208333e-02 -1.750000e-01
 		exact2  7.200000e-02

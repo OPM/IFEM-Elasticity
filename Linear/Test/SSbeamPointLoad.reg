@@ -4,6 +4,7 @@ Input file: SSbeamPointLoad.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file SSbeamPointLoad.xinp
 Parsing <discretization>
@@ -49,7 +50,8 @@ Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 1 0 0
 Number of quadrature points 8
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 1
+Done.
+Sum external load : 1 0 0
 Solving the equation system ...
 	Condition number: 146.444
  >>> Solution summary <<<

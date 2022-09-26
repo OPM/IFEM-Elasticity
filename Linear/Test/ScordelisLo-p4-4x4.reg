@@ -5,6 +5,7 @@ Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Enabled projection(s): Continuous global L2-projection
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file ScordelisLo-p4-4x4.xinp
 Parsing <discretization>
@@ -57,7 +58,8 @@ Number of unknowns    159
 Number of quadrature points 400
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 0 0 -141371.71445495
+Done.
+Sum external load : 0 0 -141372
 Solving the equation system ...
 	Condition number: 399579
  >>> Solution summary <<<

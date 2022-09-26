@@ -4,6 +4,7 @@ Input file: Beam+KLcyl-p3.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 1. Coupled linear static solver
 Parsing input file Beam+KLcyl-p3.xinp
@@ -113,12 +114,13 @@ Number of unknowns    128
 Number of quadrature points 240
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 0 57083.3342469833 0
+Done.
 22. Linear Elastic Beam solver
 Number of quadrature points 8
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
+Done.
 23. Coupled linear static solver
 Solving the equation system ...
 	Condition number: 3.69439e+07

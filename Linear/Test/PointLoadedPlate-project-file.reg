@@ -4,6 +4,7 @@ Input file: PointLoadedPlate-project-file.xinp
 Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file PointLoadedPlate-project-file.xinp
 Parsing <geometry>
@@ -60,7 +61,8 @@ Load point #1: patch #1 (u,v)=(0.5,0.5) on element #37, X = 0.5 0.5 0
 Number of quadrature points 1024
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
-   \* Sum external load: 1
+Done.
+Sum external load : 1 0 0
 Solving the equation system ...
 	Condition number: 640.297
  >>> Solution summary <<<
