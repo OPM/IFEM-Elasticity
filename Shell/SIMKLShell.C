@@ -545,22 +545,6 @@ bool SIMKLShell::assemblePoint (int patch, const double* u, double f, int ldof)
 }
 
 
-void SIMKLShell::printStep (int istep, const TimeDomain& time) const
-{
-  adm.cout <<"\n  step="<< istep <<"  time="<< time.t;
-
-  RealArray extLo;
-  if (myProblem->getMode() == SIM::ARCLEN && this->extractScalars(extLo))
-  {
-    adm.cout <<"  Sum(Fex) =";
-    for (size_t d = 0; d < extLo.size(); d++)
-      adm.cout <<" "<< utl::trunc(extLo[d]);
-  }
-
-  adm.cout << std::endl;
-}
-
-
 void SIMKLShell::printNormGroup (const Vector& norm, const Vector& rNorm,
                                  const std::string& prjName) const
 

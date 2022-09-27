@@ -15,14 +15,13 @@
 #define _SIM_ELASTICITY_H
 
 #include "SIMRigid.h"
-
 #include "MatVec.h"
 #include "Vec3.h"
-
 
 class Elasticity;
 class Material;
 class TimeStep;
+class TimeDomain;
 
 typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
 
@@ -53,61 +52,40 @@ public:
   //! \brief Initializes the property containers of the model.
   virtual void clearProperties();
 
+  //! \brief Prints out load step identification.
+  //! \param[in] istep Load step counter
+  //! \param[in] time Parameters for nonlinear simulations
+  virtual void printStep(int istep, const TimeDomain& time) const;
+
   //! \brief Calculates surface traction resultants.
   //! \param[out] f Calculated traction resultants
   //! \param[in] sol Primary solution vectors
-  //!
-  //! \details The boundaries for which the traction is calculated
-  //! are identified by the property set codes in \ref bCode, which are
-  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
   virtual bool calcBouForces(Vectors& f, const Vectors& sol);
 
   //! \brief Calculates the traction resultant associated with a given boundary.
   //! \param[out] f Calculated traction resultant
   //! \param[in] sol Primary solution vectors
   //! \param[in] tp Time stepping parameters
-  //!
-  //! \details The boundary for which the traction is calculated is identified
-  //! by the first property set code in \ref bCode which is assigned value
-  //! by parsing the first `<boundaryforce>` tag in the input file.
   bool getBoundaryForce(Vector& f, const Vectors& sol, const TimeStep& tp);
-
   //! \brief Extracts reaction forces associated with given boundaries.
   //! \param[out] rf Reaction force resultant for specified boundaries
-  //!
-  //! \details The boundaries for which the reaction force is returned
-  //! are identified by the property set codes in \ref bCode, which are
-  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
   bool getBoundaryReactions(Vectors& rf);
-
   //! \brief Extracts reaction forces associated with given boundary.
   //! \param[out] rf Reaction force resultant for the specified boundary
   //! \param[in] bindex One-based boundary code index, zero for the sum
   bool getBoundaryReactions(Vector& rf, size_t bindex = 0);
+
   //! \brief Returns whether reaction forces are to be computed or not.
   virtual bool haveBoundaryReactions(bool reactionsOnly = false) const;
-
   //! \brief Returns whether an analytical solution is available or not.
   virtual bool haveAnaSol() const;
 
 protected:
-  //! \brief Performs some pre-processing tasks on the FE model.
-  //! \details This method is reimplemented inserting a call to getIntegrand().
-  //! This makes sure the integrand has been allocated in case of minimum input.
-  //! It also resolves inhomogeneous boundary condition fields in case they are
-  //! derived from the analytical solution.
+  //! \brief Performs some preprocessing tasks before the FEM model generation.
   virtual void preprocessA();
-
   //! \brief Specialized preprocessing performed before assembly initialization.
-  //! \details This method creates the multi-point constraint equations
-  //! representing the rigid couplings in the model.
   virtual bool preprocessBeforeAsmInit(int& ngnod);
-
-  //! \brief Performs some pre-processing tasks on the FE model.
-  //! \details This method is reimplemented to ensure that threading groups are
-  //! established for the patch faces subjected to boundary force integration.
-  //! In addition, the reference point for moment calculation \b X0 of each
-  //! boundary is calculated based on the control/nodal point coordinates.
+  //! \brief Preprocessing performed after the system assembly initialization.
   virtual bool preprocessB();
 
   //! \brief Returns the actual integrand.
@@ -115,7 +93,6 @@ protected:
 
   //! \brief Parses the analytical solution from an input stream.
   virtual bool parseAnaSol(char*, std::istream&);
-
   //! \brief Parses the analytical solution from an XML element.
   virtual bool parseAnaSol(const TiXmlElement*);
 
@@ -123,7 +100,6 @@ protected:
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from
   virtual bool parse(char* keyWord, std::istream& is);
-
   //! \brief Parses a data section from an XML element
   //! \param[in] elem The XML element to parse
   virtual bool parse(const TiXmlElement* elem);
@@ -136,10 +112,6 @@ protected:
   //! \param[in] code In-homegeneous Dirichlet condition property code
   //! \param ngnod Total number of global nodes in the model (might be updated)
   //! \param[in] basis Which basis to apply the constraint to (mixed methods)
-  //!
-  //! \details This method is overridden to handle dirichlet conditions on
-  //! the explicit master nodes of rigid couplings which not are regular nodes
-  //! in a patch. These nodes may also have rotational degrees of freedom.
   virtual bool addConstraint(int patch, int lndx, int ldim,
                              int dirs, int code, int& ngnod, char basis);
 
@@ -166,24 +138,18 @@ public:
   //! \param[in] gNorm The norm values to print
   //! \param[in] rNorm Reference norms for the first norm group
   //! \param[in] prjName Projection name associated with this norm group
-  virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
-                               const std::string& prjName) const;
+  virtual void printNormGroup(const Vector& gNorm, const Vector& rNorm,
+                              const std::string& prjName) const;
 
   //! \brief Prints interface force resultants associated with given boundaries.
   //! \param[in] sf Internal nodal forces
   //! \param weights Nodal weights (in case some nodes are present in more sets)
-  //!
-  //! \details The boundaries for which the interface forces are extracted
-  //! are identified by the property set codes in \ref bCode, which are
-  //! assigned values by parsing the `<boundaryforce>` tags in the input file.
   virtual void printIFforces(const Vector& sf, RealArray& weights);
 
   //! \brief Writes current model geometry to the VTF-file.
   //! \param nBlock Running result block counter
   //! \param[in] inpFile File name used to construct the VTF-file name from
   //! \param[in] doClear If \e true, clear geometry block if \a inpFile is null
-  //!
-  //! \details This method is overridden to also account for rigid couplings.
   virtual bool writeGlvG(int& nBlock, const char* inpFile, bool doClear = true);
 
 protected:

@@ -116,8 +116,7 @@ void Elastic::printBoundaryForces (const Vector& sf, RealArray& weights,
 
 
 template<class Dim>
-SIMElasticity<Dim>::SIMElasticity (bool checkRHS) :
-  Dim(Dim::dimension,checkRHS)
+SIMElasticity<Dim>::SIMElasticity (bool checkRHS) : Dim(Dim::dimension,checkRHS)
 {
   myContext = "elasticity";
   aCode = 0;
@@ -134,6 +133,30 @@ SIMElasticity<Dim>::~SIMElasticity ()
 
   for (Material* mat : mVec)
     delete mat;
+}
+
+
+/*!
+  This method is reimplemented to print out the external load in the beginning
+  of the load step in case of arc-length solution driver.
+*/
+
+template<class Dim>
+void SIMElasticity<Dim>::printStep (int istep, const TimeDomain& time) const
+{
+  Dim::adm.cout <<"\n  step="<< istep <<"  time="<< time.t;
+
+  if (Dim::myProblem->getMode() == SIM::ARCLEN)
+  {
+    RealArray extLo;
+    if (this->extractScalars(extLo))
+    {
+      Dim::adm.cout <<"  Sum(Fex) =";
+      for (double f : extLo) Dim::adm.cout <<" "<< utl::trunc(f);
+    }
+  }
+
+  Dim::adm.cout << std::endl;
 }
 
 
@@ -176,6 +199,12 @@ void SIMElasticity<Dim>::clearProperties ()
 }
 
 
+/*!
+  The boundaries for which the surface traction resultants are calculated
+  are identified by the property set codes in \ref bCode, which are assigned
+  values by parsing the `<boundaryforce>` tags in the input file.
+*/
+
 template<class Dim>
 bool SIMElasticity<Dim>::calcBouForces (Vectors& f, const Vectors& sol)
 {
@@ -192,6 +221,12 @@ bool SIMElasticity<Dim>::calcBouForces (Vectors& f, const Vectors& sol)
 }
 
 
+/*!
+  The boundary for which the surface traction resultant is calculated
+  is identified by the first property set code in \ref bCode, which is assigned
+  value by parsing the first `<boundaryforce>` tag in the input file.
+*/
+
 template<class Dim>
 bool SIMElasticity<Dim>::getBoundaryForce (Vector& f,
                                            const Vectors& sol,
@@ -205,6 +240,12 @@ bool SIMElasticity<Dim>::getBoundaryForce (Vector& f,
   return true;
 }
 
+
+/*!
+  The boundaries for which the reaction forces are returned
+  are identified by the property set codes in \ref bCode, which are assigned
+  values by parsing the `<boundaryforce>` tags in the input file.
+*/
 
 template<class Dim>
 bool SIMElasticity<Dim>::getBoundaryReactions (Vectors& rf)
@@ -226,7 +267,7 @@ bool SIMElasticity<Dim>::getBoundaryReactions (Vectors& rf)
 
 
 template<class Dim>
-bool SIMElasticity<Dim>::getBoundaryReactions(Vector& rf, size_t bindex)
+bool SIMElasticity<Dim>::getBoundaryReactions (Vector& rf, size_t bindex)
 {
   Vectors rtmp;
   if (!this->getBoundaryReactions(rtmp) || bindex > rtmp.size())
@@ -261,6 +302,13 @@ bool SIMElasticity<Dim>::haveAnaSol () const
   return (Dim::mySol && Dim::mySol->getStressSol());
 }
 
+
+/*!
+  This method is reimplemented inserting a call to the method getIntegrand().
+  This makes sure the integrand has been allocated in case of minimum input.
+  It also resolves inhomogeneous boundary condition fields in case they are
+  derived from the analytical solution.
+*/
 
 template<class Dim>
 void SIMElasticity<Dim>::preprocessA ()
@@ -310,12 +358,24 @@ void SIMElasticity<Dim>::preprocessA ()
 }
 
 
+/*!
+  This method creates the multi-point constraint equations representing the
+  rigid couplings in the model, if any.
+*/
+
 template<class Dim>
 bool SIMElasticity<Dim>::preprocessBeforeAsmInit (int& ngnod)
 {
   return this->addRigidMPCs(this,ngnod);
 }
 
+
+/*!
+  This method is reimplemented to ensure that threading groups are established
+  for the patch faces subjected to boundary force integration.
+  In addition, the reference point for moment calculation \b X0 of each boundary
+  is calculated based on the control/nodal point coordinates.
+*/
 
 template<class Dim>
 bool SIMElasticity<Dim>::preprocessB ()
@@ -371,7 +431,7 @@ template<class Dim>
 bool SIMElasticity<Dim>::parseAnaSol (char*, std::istream&)
 {
   std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
-              << std::endl;
+            << std::endl;
   return false;
 }
 
@@ -380,7 +440,7 @@ template<class Dim>
 bool SIMElasticity<Dim>::parseAnaSol (const TiXmlElement*)
 {
   std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
-              << std::endl;
+            << std::endl;
   return false;
 }
 
@@ -415,7 +475,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
     double gx = atof(strtok(keyWord+7," "));
     double gy = atof(strtok(nullptr," "));
     double gz = Dim::dimension == 3 ? atof(strtok(nullptr," ")) : 0.0;
-    IFEM::cout <<"\nGravitation vector: " << gx <<" "<< gy;
+    IFEM::cout <<"\nGravitation vector: "<< gx <<" "<< gy;
     if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
     IFEM::cout << std::endl;
     this->getIntegrand()->setGravity(gx,gy,gz);
@@ -452,15 +512,15 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
       if (press.lindx < 1 || press.lindx > 2*Dim::dimension)
       {
         std::cerr <<" *** SIMElasticity::parse: Invalid face index "
-                    << (int)press.lindx << std::endl;
+                  << (int)press.lindx << std::endl;
         return false;
       }
 
       if (Dim::mySol && Dim::mySol->getStressSol())
       {
         IFEM::cout <<"\tTraction on P"<< press.patch
-                  << (Dim::dimension==3?" F":" E")
-                  << (int)press.lindx << std::endl;
+                   << (Dim::dimension==3?" F":" E")
+                   << (int)press.lindx << std::endl;
         Dim::myTracs[1+i] = new TractionField(*Dim::mySol->getStressSol());
       }
       else
@@ -468,8 +528,8 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
         int pdir = atoi(strtok(nullptr," "));
         double p = atof(strtok(nullptr," "));
         IFEM::cout <<"\tPressure on P"<< press.patch
-                  << (Dim::dimension==3?" F":" E")
-                  << (int)press.lindx <<" direction "<< pdir <<": ";
+                   << (Dim::dimension==3?" F":" E")
+                   << (int)press.lindx <<" direction "<< pdir <<": ";
         if ((cline = strtok(nullptr," ")))
         {
           const RealFunc* pf = utl::parseRealFunc(cline,p);
@@ -539,7 +599,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
       int pdir = atoi(strtok(nullptr," "));
       double p = atof(strtok(nullptr," "));
       IFEM::cout <<"\tPressure code "<< code <<" direction "<< pdir
-                <<": "<< p << std::endl;
+                 <<": "<< p << std::endl;
 
       this->setPropertyType(code,Property::NEUMANN);
 
@@ -589,9 +649,9 @@ bool SIMElasticity<Dim>::parse (const TiXmlElement* elem)
               if (domain[d].front() != 0.0 || domain[d].back() != 1.0)
               {
                 std::cerr <<" *** Texture material requires unit parametric"
-                            <<" domain, "<< char('u'+d) <<"0 = "
-                            << domain[d].front() <<", "<< char('u'+d) <<"1 = "
-                            << domain[d].back() << std::endl;
+                          <<" domain, "<< char('u'+d) <<"0 = "
+                          << domain[d].front() <<", "<< char('u'+d) <<"1 = "
+                          << domain[d].back() << std::endl;
                 return false;
               }
       }
@@ -654,6 +714,12 @@ bool SIMElasticity<Dim>::parse (const TiXmlElement* elem)
   return result;
 }
 
+
+/*!
+  This method is reimplemented to handle dirichlet conditions on the explicit
+  master nodes of rigid couplings which not are regular nodes in a patch.
+  These nodes may also have rotational degrees of freedom.
+*/
 
 template<class Dim>
 bool SIMElasticity<Dim>::addConstraint (int patch, int lndx, int ldim,
@@ -755,6 +821,10 @@ void SIMElasticity<Dim>::printNormGroup (const Vector& gNorm,
 }
 
 
+/*!
+  This method is reimplemented to account for potential rigid couplings.
+*/
+
 template<class Dim>
 bool SIMElasticity<Dim>::writeGlvG (int& nBlock,
                                     const char* inpFile, bool doClear)
@@ -765,14 +835,18 @@ bool SIMElasticity<Dim>::writeGlvG (int& nBlock,
     return true;
 
   ElementBlock* rgd = this->rigidGeometry(this);
-  if (!rgd) return true;
-
-  return this->getVTF()->writeGrid(rgd,"Rigid couplings",++nBlock);
+  return rgd ? this->getVTF()->writeGrid(rgd,"Rigid couplings",++nBlock) : true;
 }
 
 
+/*!
+  The boundaries for which the interface forces are extracted and printed
+  are identified by the property set codes in \ref bCode, which are assigned
+  assigned values by parsing the `<boundaryforce>` tags in the input file.
+*/
+
 template<class Dim>
-void SIMElasticity<Dim>::printIFforces(const Vector& sf, RealArray& weights)
+void SIMElasticity<Dim>::printIFforces (const Vector& sf, RealArray& weights)
 {
   Elastic::printBoundaryForces(sf,weights,bCode,this);
 }

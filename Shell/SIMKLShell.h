@@ -72,11 +72,6 @@ public:
   //! \brief Initializes the property containers of the model.
   virtual void clearProperties();
 
-  //! \brief Prints out load step identification.
-  //! \param[in] istep Load step counter
-  //! \param[in] time Parameters for nonlinear simulations
-  virtual void printStep(int istep, const TimeDomain& time) const;
-
   //! \brief Prints a norm group to the log stream.
   //! \param[in] norm The norm values to print
   //! \param[in] rNorm Reference norms for the first norm group
