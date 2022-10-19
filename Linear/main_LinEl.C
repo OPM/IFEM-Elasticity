@@ -23,6 +23,7 @@
 #include "AdaptiveSIM.h"
 #include "HDF5Writer.h"
 #include "Utilities.h"
+#include "ElementBlock.h"
 #include "VTF.h"
 #include "Profiler.h"
 #include <fstream>
@@ -70,6 +71,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   \arg -nu \a nu : Number of visualization points per knot-span in u-direction
   \arg -nv \a nv : Number of visualization points per knot-span in v-direction
   \arg -nw \a nw : Number of visualization points per knot-span in w-direction
+  \ard -shrink \a eps Element shrinkage factor for VTF output (LR-meshes only)
   \arg -hdf5 : Write primary and projected secondary solution to HDF5 file
   \arg -tracRes : Calculate and print boundary traction resultants
   \arg -printMax : Print out maximum point-wise stresses
@@ -183,6 +185,8 @@ int main (int argc, char** argv)
       if (d >= 0 && d < 3)
         VTF::vecOffset[d] = atof(argv[++i]);
     }
+    else if (!strncmp(argv[i],"-shrink",7) && i < argc-1)
+      ElementBlock::eps = atof(argv[++i]);
     else if (!strcmp(argv[i],"-plotSC"))
       Elastic::GIpointsVTF = Immersed::plotCells = true;
     else if (!strcmp(argv[i],"-free"))
@@ -299,7 +303,7 @@ int main (int argc, char** argv)
                "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]","[-time <t>]",
                "[-tracRes]","[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
-               "[-adap[<i>]|-dualadap]","[-staticCond [<supid>]]",
+               "[-shrink <eps>]","[-adap[<i>]|-dualadap]","[-staticCond [<sid>]]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
                "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
                "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
