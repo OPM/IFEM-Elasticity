@@ -71,7 +71,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   \arg -nu \a nu : Number of visualization points per knot-span in u-direction
   \arg -nv \a nv : Number of visualization points per knot-span in v-direction
   \arg -nw \a nw : Number of visualization points per knot-span in w-direction
-  \ard -shrink \a eps Element shrinkage factor for VTF output (LR-meshes only)
+  \arg -shrink \a eps Element shrinkage factor for VTF output (LR-meshes only)
   \arg -hdf5 : Write primary and projected secondary solution to HDF5 file
   \arg -tracRes : Calculate and print boundary traction resultants
   \arg -printMax : Print out maximum point-wise stresses
