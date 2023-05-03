@@ -107,6 +107,9 @@ protected:
   short int dS;  //!< Index to element dual force vector
   short int nSV; //!< Number of consequtive solution vectors in core
 
+  std::vector<const char*> matNames; //!< Element matrix names (for debug print)
+  std::vector<const char*> vecNames; //!< Element vector names (for debug print)
+
   //! \brief Newmark time integration parameters.
   //! \details The interpretation of each parameter
   //! depends on the actual simulator drivers, as follows: <UL>

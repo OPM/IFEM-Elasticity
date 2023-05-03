@@ -100,6 +100,8 @@ LocalIntegral* ElasticBar::getLocalIntegral (size_t nen, size_t iEl,
   }
 
   result->redim((neumann ? npv : 3)*nen);
+  result->Aname = matNames;
+  result->Bname = vecNames;
   return result;
 }
 

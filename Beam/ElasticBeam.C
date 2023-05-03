@@ -202,6 +202,8 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
   }
 
   result->redim(12);
+  result->Aname = matNames;
+  result->Bname = vecNames;
   return result;
 }
 

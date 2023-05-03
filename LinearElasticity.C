@@ -71,7 +71,13 @@ void LinearElasticity::setMode (SIM::SolutionMode mode)
 
   this->ElasticBase::setMode(mode);
 
-  if (dS > 0) dS = mode == SIM::STATIC || mode == SIM::NORMS ? 2 : 1;
+  if (dS > 0)
+  {
+    dS = mode == SIM::STATIC || mode == SIM::NORMS ? 2 : 1;
+    if (vecNames.size() < (size_t)dS) vecNames.resize(dS,nullptr);
+    const char* dName = "dual loads";
+    vecNames[dS] = dName;
+  }
 
   // These quantities are not needed in linear problems
   if (mode != SIM::BUCKLING) eKg = 0;

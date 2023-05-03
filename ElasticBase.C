@@ -43,6 +43,20 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
   eM = eKm = eKg = 0;
   eS = gS  = iS  = 0;
 
+  // Define element matrix/vector names, for more readable debug print.
+  // Define as static, such that they don't go out of scope when exiting.
+
+  static const char* mNames[4] = {
+    "Newton", "stiffness", "mass", "geometric stiffness"
+  };
+  static const char* vNames[5] = {
+    "external forces", "residual forces", "load gradient",
+    "internal forces", "actual inertia forces"
+  };
+
+  matNames.clear();
+  vecNames.clear();
+
   switch (mode)
     {
     case SIM::ARCLEN:
@@ -52,6 +66,8 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       eS  = iS  = 1;
       if (intPrm[3] > 0.0)
         eKg = 0; // Linear analysis, no geometric stiffness
+      matNames = { mNames[0] };
+      vecNames = { vNames[1], vNames[2] };
       break;
 
     case SIM::DYNAMIC:
@@ -64,28 +80,35 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       eS = iS = 1;
       if (intPrm[4] == 1.0)
         eS = 3; // Store external and internal forces separately when using HHT
+      matNames = { mNames[0], mNames[2], mNames[1], mNames[3] };
+      vecNames = { vNames[1], vNames[4], vNames[0] };
       break;
 
     case SIM::BUCKLING:
       eKm = 1;
       eKg = 2;
+      matNames = { mNames[1], mNames[3] };
       break;
 
     case SIM::VIBRATION:
       eM = 2;
     case SIM::STIFF_ONLY:
       eKm = 1;
+      matNames = { mNames[1], mNames[2] };
       break;
 
     case SIM::MASS_ONLY:
       eM = 1;
       eS = 1;
+      matNames = { mNames[2] };
+      vecNames = { vNames[0] };
       break;
 
     case SIM::RHS_ONLY:
       eS = 1;
     case SIM::INT_FORCES:
       iS = 1;
+      vecNames = { vNames[mode == SIM::RHS_ONLY ? 1 : 3] };
       break;
 
     default:
