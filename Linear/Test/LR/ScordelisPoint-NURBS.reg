@@ -1,9 +1,9 @@
-ScordelisPoint-NURBS.xinp -2DKLshell -adap -LRn
+ScordelisPoint-NURBS.xinp -2DKLshell -adap
 
 Input file: ScordelisPoint-NURBS.xinp
 Equation solver: 2
 Number of Gauss points: 4
-LR-NURBS basis functions are used
+LR-spline basis functions are used
 Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file ScordelisPoint-NURBS.xinp
@@ -41,7 +41,7 @@ Parsing <adaptive>
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 4 6
-LR-NURBS basis functions are used
+LR-spline basis functions are used
 Enabled projection(s): Continuous global L2-projection
 Problem definition:
 KirchhoffLoveShell: thickness = 0.25, gravity = 0

@@ -5,7 +5,7 @@
 
 <simulation>
 
-  <geometry>
+  <geometry rational="true">
     <raiseorder patch="1" u="2" v="2"/>
     <refine patch="1" u="7" v="7"/>
     <topologysets>
