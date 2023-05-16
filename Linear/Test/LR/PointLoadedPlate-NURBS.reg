@@ -1,9 +1,9 @@
-PointLoadedPlate-adap.xinp -2DKL -adap -LRn
+PointLoadedPlate-adap.xinp -2DKL -adap
 
 Input file: PointLoadedPlate-adap.xinp
 Equation solver: 2
 Number of Gauss points: 4
-LR-NURBS basis functions are used
+LR-spline basis functions are used
 Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file PointLoadedPlate-adap.xinp
@@ -38,7 +38,7 @@ Parsing <adaptive>
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 4
-LR-NURBS basis functions are used
+LR-spline basis functions are used
 Enabled projection(s): Continuous global L2-projection
 Problem definition:
 KirchhoffLovePlate: thickness = 1, gravity = 0
