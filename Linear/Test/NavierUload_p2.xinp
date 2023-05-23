@@ -32,12 +32,19 @@
             E="2.1E11" nu="0.3" pz="1.0e3"/>
   </KirchhoffLove>
 
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss>2</nGauss>
+  </discretization>
+
   <!-- General - result output !-->
   <postprocessing>
-    <vtfformat>BINARY</vtfformat>
     <projection>
-      <cgl2/>
+      <global/>
     </projection>
+    <resultpoints>
+      <point patch="1" u="0.5" v="0.5"/>
+    </resultpoints>
   </postprocessing>
 
 </simulation>
