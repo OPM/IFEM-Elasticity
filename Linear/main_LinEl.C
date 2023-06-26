@@ -601,7 +601,8 @@ int main (int argc, char** argv)
       return terminate(4);
 
     // Extract the right-hand-size vector (R) for visualization
-    model->extractLoadVec(load.front(),0,"external load");
+    if (!load.empty())
+      model->extractLoadVec(load.front(),0,"external load");
     for (size_t j = 1; j < load.size(); j++)
       model->extractLoadVec(load[j],j);
 
