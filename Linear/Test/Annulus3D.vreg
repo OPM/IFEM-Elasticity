@@ -1,4 +1,4 @@
-Annulus3D.xinp -noProj
+Annulus3D.xinp
 
 Step 1
   Element block 1
@@ -21,8 +21,32 @@ Step 1
     Scalar: 'P1'
     Scalar: 'P2'
     Scalar: 'P3'
+    Scalar: 'Projected s_xx'
+    Scalar: 'Projected s_yy'
+    Scalar: 'Projected s_zz'
+    Scalar: 'Projected s_xy'
+    Scalar: 'Projected s_yz'
+    Scalar: 'Projected s_xz'
+    Scalar: 'Projected von Mises stress'
+    Scalar: 'Projected P1'
+    Scalar: 'Projected P2'
+    Scalar: 'Projected P3'
+    Scalar: 'Greville point projection s_xx'
+    Scalar: 'Greville point projection s_yy'
+    Scalar: 'Greville point projection s_zz'
+    Scalar: 'Greville point projection s_xy'
+    Scalar: 'Greville point projection s_yz'
+    Scalar: 'Greville point projection s_xz'
+    Scalar: 'Greville point projection von Mises stress'
+    Scalar: 'Greville point projection P1'
+    Scalar: 'Greville point projection P2'
+    Scalar: 'Greville point projection P3'
     Scalar: 'a(u^h,u^h)^0.5'
     Scalar: 'volume'
+    Scalar: 'Greville point projection a(u^r,u^r)^0.5'
+    Scalar: 'Greville point projection a(e,e)^0.5, e=u^r-u^h'
+    Scalar: 'Greville point projection (u^r,u^r)^0.5'
+    Scalar: 'Greville point projection (e,e)^0.5, e=u^r-u^h'
     Vector: 'Principal direction P1'
     Vector: 'Principal direction P2'
   Element block 2
