@@ -21,7 +21,7 @@
 class Elasticity;
 class Material;
 class TimeStep;
-class TimeDomain;
+struct TimeDomain;
 
 typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
 
