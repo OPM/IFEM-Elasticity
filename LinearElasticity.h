@@ -94,6 +94,7 @@ public:
   virtual bool evalInt(LocalIntegral& elmInt, const FiniteElement& fe,
                        const Vec3& X, const Vec3& normal) const;
 
+  using Elasticity::finalizeElement;
   //! \brief Finalizes the element quantities after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Nodal and integration point data for current element
