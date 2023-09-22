@@ -259,9 +259,9 @@ GlobalIntegral& Elasticity::getGlobalInt (GlobalIntegral* gq) const
 Vec3 Elasticity::getTraction (const Vec3& X, const Vec3& n, bool grd) const
 {
   if (fluxFld)
-    return grd ? fluxFld->deriv(X,4) : (*fluxFld)(X);
+    return grd ? fluxFld->timeDerivative(X) : (*fluxFld)(X);
   else if (tracFld)
-    return grd ? tracFld->deriv(X,n) : (*tracFld)(X,n);
+    return grd ? tracFld->timeDerivative(X,n) : (*tracFld)(X,n);
   else
     return Vec3();
 }

@@ -178,9 +178,9 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
 Vec3 KirchhoffLove::getTraction (const Vec3& X, const Vec3& n, bool grd) const
 {
   if (fluxFld)
-    return grd ? fluxFld->deriv(X,4) : (*fluxFld)(X);
+    return grd ? fluxFld->timeDerivative(X) : (*fluxFld)(X);
   else if (tracFld)
-    return grd ? tracFld->deriv(X,n) : (*tracFld)(X,n);
+    return grd ? tracFld->timeDerivative(X,n) : (*tracFld)(X,n);
   else
     return Vec3();
 }
@@ -194,9 +194,9 @@ Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n, bool grd) const
 
   for (RealFunc* pf : presFld)
     if (n.isZero()) // Assume pressure acts in global Z-direction
-      p.z += grd ? pf->deriv(X,4) : (*pf)(X);
+      p.z += grd ? pf->timeDerivative(X) : (*pf)(X);
     else
-      p += (grd ? pf->deriv(X,4) : (*pf)(X))*n;
+      p += (grd ? pf->timeDerivative(X) : (*pf)(X))*n;
 
   return p;
 }
@@ -207,9 +207,9 @@ Vec3 KirchhoffLove::getLineLoad (const Vec3& X, const Vec3& n, bool grd) const
   if (!linLoad)
     return Vec3();
   else if (n.isZero()) // Assume load acts in global Z-direction
-    return Vec3(0.0, 0.0, grd ? linLoad->deriv(X,4) : (*linLoad)(X));
+    return Vec3(0.0, 0.0, grd ? linLoad->timeDerivative(X) : (*linLoad)(X));
   else
-    return (grd ? linLoad->deriv(X,4) : (*linLoad)(X))*n;
+    return (grd ? linLoad->timeDerivative(X) : (*linLoad)(X))*n;
 }
 
 
