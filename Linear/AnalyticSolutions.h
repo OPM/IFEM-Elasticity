@@ -251,7 +251,7 @@ public:
 
   //! \brief Evaluates a first derivative at the point \a X.
   virtual SymmTensor deriv(const Vec3& X, int dir) const;
-  //! \brief Evaluates a second derivative at the pointSymmTensor \a X.
+  //! \brief Evaluates a second derivative at the point \a X.
   virtual SymmTensor dderiv(const Vec3& X, int dir1, int dir2) const;
 
 protected:
