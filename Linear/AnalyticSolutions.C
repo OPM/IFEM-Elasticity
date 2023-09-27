@@ -260,6 +260,7 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 
   scalSol.push_back(new Displ(pz/D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc));
   stressSol = this;
+  symmetric = true;
 
   // Calculate and print the maximum displacement (at the centre x=a/2, y=b/2)
   std::streamsize oldPrec = std::cout.precision(10);
@@ -288,6 +289,7 @@ NavierPlate::NavierPlate (double a, double b, double t, double E, double Poiss,
 
   scalSol.push_back(new Displ(pz/D,alpha,beta,xi,eta,c2,d2,type,max_mn,inc));
   stressSol = this;
+  symmetric = true;
 
   // Calculate and print the displacement at the centre x=a/2, y=b/2
   std::streamsize oldPrec = std::cout.precision(10);
