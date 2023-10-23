@@ -221,9 +221,6 @@ public:
   //! \param[in] prefix Name prefix for all components
   virtual std::string getField2Name(size_t i, const char* prefix) const;
 
-  typedef std::pair<Vec3,double>  PointValue;  //!< Convenience type
-  typedef std::vector<PointValue> PointValues; //!< Convenience type
-
   //! \brief Initializes the maximum stress values buffer.
   //! \param[in] nP Number of patches in the model, or 1 if global maximum
   //!
