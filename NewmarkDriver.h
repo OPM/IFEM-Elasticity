@@ -55,7 +55,10 @@ protected:
     {
       const TiXmlElement* respts = elem->FirstChildElement("resultpoints");
       if (respts)
-        utl::getAttribute(respts,"file",pointfile);
+        // The point file is used only for point and line output (not for grid)
+        if (respts->FirstChildElement("point") ||
+            respts->FirstChildElement("line"))
+          utl::getAttribute(respts,"file",rptFile);
     }
 
     bool ok = this->Newmark::parse(elem);
@@ -97,10 +100,10 @@ public:
     bool doProject  = pi != Newmark::opt.project.end();
     double nextSave = params.time.t + Newmark::opt.dtSave;
 
-    std::streamsize ptPrec = outPrec > 0 ? outPrec : 3;
-    std::ostream* os = nullptr;
-    if (!pointfile.empty())
-      os = new std::ofstream(pointfile.c_str());
+    // Open output file for result point print, if requested
+    std::ostream* os = !rptFile.empty() ? new std::ofstream(rptFile) : nullptr;
+    utl::LogStream* log = os ? new utl::LogStream(*os) : &IFEM::cout;
+    std::streamsize rptPrec = outPrec > 0 ? outPrec : 3;
 
     // Invoke the time-step loop
     int status = 0;
@@ -123,23 +126,24 @@ public:
       }
 
       // Print solution components at the user-defined points
-      if (os)
-      {
-        utl::LogStream log(os);
-        this->dumpResults(params.time.t,log,ptPrec,false);
-      }
-      else
-        this->dumpResults(params.time.t,IFEM::cout,ptPrec,true);
+      this->dumpResults(params.time.t,*log,rptPrec,!os);
 
       if (params.hasReached(nextSave))
       {
+        ++iStep;
+
         // Save solution variables to VTF
         if (Newmark::opt.format >= 0)
-          status += this->saveStep(++iStep,pi->second);
+          status += this->saveStep(iStep,pi->second);
 
         // Save solution variables to HDF5
         if (writer && !writer->dumpTimeLevel(&params))
           status += 11;
+
+        // Save solution variables to grid files, if specified
+        if (!Newmark::model.saveResults(this->realSolution(),
+                                        params.time.t,iStep))
+          status += 12;
 
         nextSave = params.time.t + Newmark::opt.dtSave;
         if (nextSave > params.stopTime)
@@ -151,11 +155,15 @@ public:
       {
         HDF5Restart::SerializeData data;
         if (this->serialize(data) && !restart->writeData(data))
-          status += 12;
+          status += 13;
       }
     }
 
-    delete os;
+    if (os)
+    {
+      delete log;
+      delete os;
+    }
 
     return status;
   }
@@ -210,7 +218,7 @@ protected:
   }
 
 private:
-  std::string pointfile; //!< Name of output file for point results
+  std::string rptFile;   //!< Name of output file for point/line results
   bool        doInitAcc; //!< If \e true, calculate initial accelerations
 
   Matrix proSol; //!< Projected secondary solution

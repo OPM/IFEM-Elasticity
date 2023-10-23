@@ -98,6 +98,9 @@ bool NonlinearDriver::parse (const TiXmlElement* elem)
         opt.pSolOnly = false;
       else if (!strcasecmp(child->Value(),"skipInit"))
         save0 = false;
+      else if (!strcasecmp(child->Value(),"resultpoints") &&
+               child->FirstChildElement("grid"))
+        save0 = false; // Deactivate initial configuration dump if grid output
   }
 
   return this->NonLinSIM::parse(elem);
@@ -319,10 +322,12 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
     if (opt.dtSave <= 0.0 || params.hasReached(nextSave))
     {
+      ++iStep;
+
       // Save solution variables to VTF for visualization
       if (opt.format >= 0)
       {
-        if (!this->saveStep(++iStep,params.time.t))
+        if (!this->saveStep(iStep,params.time.t))
           return 10;
 
         if (!myForces.empty())
@@ -357,6 +362,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
           return 11;
       }
 
+      // Save solution variables to grid files, if specified
+      if (!model.saveResults(solution.front(),params.time.t,iStep))
+        return 12;
+
       if (elp) elp->enableMaxValCalc(true);
 
       nextSave = params.time.t + opt.dtSave;
@@ -366,10 +375,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
     else if (getMaxVals)
     {
       if (!model.eval2ndSolution(solution.front(),params.time.t))
-        return 12;
+        return 13;
 
       if (!model.writeGlvP(proSol.front(),0,nBlock,0,nullptr,elp->getMaxVals()))
-        return 13;
+        return 14;
     }
 
     // Print out the maximum von Mises stress, etc., if present
@@ -419,12 +428,13 @@ bool NonlinearDriver::adaptMesh (int& aStep)
   size_t nsv1 = solution.empty() ? 0 : solution.front().size();
 
   // Do the mesh refinement
-  if (!(model.refine(prm,solution) & adap->writeMesh(++aStep)))
-    return false;
+  bool ok = model.refine(prm,solution);
+  // Write mesh files for inspection, if requested
+  adap->writeMesh(++aStep);
 
   // Read the input file again to set up the refined model
   model.clearProperties();
-  if (!model.readModel(inpfile.c_str()))
+  if (!ok || !model.readModel(inpfile.c_str()))
     return false;
 
   if (!model.preprocess())
