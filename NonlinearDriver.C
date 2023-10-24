@@ -419,7 +419,7 @@ bool NonlinearDriver::adaptMesh (int& aStep)
   size_t nsv1 = solution.empty() ? 0 : solution.front().size();
 
   // Do the mesh refinement
-  if (!(model.refine(prm,solution) & adap->writeMesh(++aStep)))
+  if (!(static_cast<int>(model.refine(prm,solution)) & adap->writeMesh(++aStep)))
     return false;
 
   // Read the input file again to set up the refined model
