@@ -1,0 +1,98 @@
+NavierUload_p3.xinp -2DKL
+
+Input file: NavierUload_p3.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Basis function values are precalculated but not cached
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file NavierUload_p3.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+	Length in Y = 8
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+	               plate (1,0,2D)
+  Parsing <raiseorder>
+	Raising order of P1 2 2
+  Parsing <refine>
+	Refining P1 3 2
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <KirchhoffLove>
+	Material code 0: 2.1e+11 0.3 1000 0.1
+	Pressure code 1000001: 1000
+	Analytic solution: NavierPlate a=10 b=8 t=0.1 E=2.1e+11 nu=0.3 pz=1000
+NavierPlate: w_max = 0.001283712087
+             Max. number of terms in Fourier series = 100
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3
+Spline basis with C1-continuous patch interfaces is used
+Basis function values are precalculated but not cached
+Enabled projection(s): Greville point projection
+Problem definition:
+KirchhoffLovePlate: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1000, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+Result point #1: patch #1 (u,v)=(0.5,0.5), X = 5 4 0
+ >>> SAM model summary <<<
+Number of elements    12
+Number of nodes       42
+Number of dofs        42
+Number of unknowns    20
+Number of quadrature points 108
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : 58333.3 0 0
+Solving the equation system ...
+	Condition number: 32.7444
+ >>> Solution summary <<<
+L2-norm            : 0.000508856
+Max displacement   : 0.0014589
+Projecting secondary solution ...
+	Greville point projection
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 6.56416
+External energy ((f,u^h)+(t,u^h)^0.5 : 6.56416
+Exact norm  |u|   = a(u,u)^0.5       : 6.57123
+Exact error a(e,e)^0.5, e=u-u^h      : 0.30438
+Exact relative error (%) : 4.63201
+Residual error (r(u) + J(u))^0.5 : 3023.38
+ relative error (% of |u|) : 46009.4
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 6.81129
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.37524
+ relative error (% of |u|)   : 5.71034
+Residual error (r(u^r) + J(u^r))^0.5 : 82643.4
+ relative error (% of |u|)   : 1.25765e+06
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 0.472383
+ relative error (% of |u|)   : 7.18866
+Effectivity index             : 1.2328
+Effectivity index, theta^EX          : 2.78475
+Effectivity index, theta^RES         : 271515
+L2-norm |s^r| = (s^r,s^r)^0.5        : 29802.8
+L2-error (e,e)^0.5, e=s^r-s^h        : 1783.66
+ relative error (% of |s^r|) : 5.98489
+  Point #1:	sol1 =  1.284960e-03
+		exact1  1.283712e-03
+		sol2 =  3.174105e+03  4.176018e+03  0.000000e+00  6.623777e+00  0.000000e+00
+		exact2  3.216852e+03  4.230342e+03  0.000000e+00
