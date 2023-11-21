@@ -45,8 +45,8 @@ public:
   virtual bool deSerialize(const HDF5Restart::SerializeData& data);
 
   //! \brief Dumps solution variables at user-defined points.
-  virtual void dumpResults (double time, utl::LogStream& os,
-                            std::streamsize precision, bool formatted) const;
+  virtual void dumpResults(double time, utl::LogStream& os,
+                           std::streamsize precision, bool formatted) const;
 
   //! \brief Dumps the projected secondary solution for the eigenmodes.
   void dumpModes(utl::LogStream& os, std::streamsize precision) const;

@@ -23,8 +23,8 @@
 #include "IFEM.h"
 
 
-KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n, short int v)
-  : KirchhoffLove(n)
+KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n, short int v,
+                                        bool m) : KirchhoffLove(n,m)
 {
   version = v;
   nOrder = 0;

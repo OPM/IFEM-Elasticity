@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Simply supported rectangular plate with periodic pressure load.
+     Cubic spline Kirchhoff-Love thin plate elements. -->
+
+<simulation>
+
+  <geometry dim="2" Lx="10.0" Ly="8.0">
+    <raiseorder patch="1" u="2" v="2"/>
+    <refine patch="1" u="3" v="2"/>
+    <topologysets>
+      <set name="boundary" type="edge">
+        <item patch="1">1 2 3 4</item>
+      </set>
+      <set name="plate" type="face">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="boundary" comp="1"/>
+  </boundaryconditions>
+
+  <KirchhoffLove>
+    <isotropic E="2.1e11" nu="0.3" rho="1.0e3" thickness="0.1"/>
+    <pressure set="plate" type="expression">
+      P0=1000.0; pi=3.141593;
+      P0*(sin(pi*(t-0.2*x))+0.5*sin(pi*(1.5*t-0.25*y)))
+    </pressure>
+  </KirchhoffLove>
+
+  <discretization>
+    <nGauss>3</nGauss>
+  </discretization>
+
+  <newmarksolver alpha2="0.001">
+    <timestepping>
+      <step start="0.0" end="5.0">0.05</step>
+    </timestepping>
+  </newmarksolver>
+
+  <eigensolver mode="4"/>
+
+</simulation>

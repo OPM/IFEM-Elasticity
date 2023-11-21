@@ -50,7 +50,7 @@ void SIMLinElBeamC1::clearProperties ()
 bool SIMLinElBeamC1::parse (char* keyWord, std::istream& is)
 {
   if (!myProblem)
-    myProblem = new KirchhoffLovePlate(1);
+    myProblem = new KirchhoffLovePlate(1,1);
 
   char* cline;
   KirchhoffLovePlate* klp = dynamic_cast<KirchhoffLovePlate*>(myProblem);

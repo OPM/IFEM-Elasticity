@@ -37,7 +37,8 @@ public:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions (1=beam, 2=plate)
   //! \param[in] v Integrand version (1: B-matrix, 2: Tensor form)
-  explicit KirchhoffLovePlate(unsigned short int n = 2, short int v = 1);
+  //! \param[in] m If \e true, a modal linear dynamics simulation is performed
+  KirchhoffLovePlate(unsigned short int n, short int v, bool m = false);
   //! \brief Empty destructor,
   virtual ~KirchhoffLovePlate() {}
 

@@ -28,7 +28,7 @@ class KirchhoffLoveShell : public KirchhoffLove
 {
 public:
   //! \brief Default constructor.
-  KirchhoffLoveShell() : KirchhoffLove(3) {}
+  explicit KirchhoffLoveShell(bool modal = false) : KirchhoffLove(3,modal) {}
   //! \brief Empty destructor,
   virtual ~KirchhoffLoveShell() {}
 

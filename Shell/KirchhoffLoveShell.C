@@ -442,7 +442,7 @@ bool KirchhoffLoveShellNorm::evalInt (LocalIntegral& elmInt,
     return true; // no projection in this run
 
 #if INT_DEBUG > 3
-  std::cout <<"KirchhoffLovePlateNorm::evalInt("<< fe.iel <<", "<< X;
+  std::cout <<"KirchhoffLoveShellNorm::evalInt("<< fe.iel <<", "<< X;
   std::cout <<"):\n\ts^h =";
   for (double v : nh) std::cout <<" "<< v;
   for (double v : mh) std::cout <<" "<< v;

@@ -23,7 +23,7 @@
 #include "tinyxml.h"
 
 
-KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
+KirchhoffLove::KirchhoffLove (unsigned short int n, bool m) : IntegrandBase(n)
 {
   npv = nsd < 3 ? 1 : 3; // Number of primary unknowns per node
 
@@ -40,6 +40,7 @@ KirchhoffLove::KirchhoffLove (unsigned short int n) : IntegrandBase(n)
   eS = gS = iS = 0;
 
   includeShear = true;
+  isModal = m;
 }
 
 
@@ -64,16 +65,17 @@ bool KirchhoffLove::parse (const TiXmlElement* elem)
 
 void KirchhoffLove::setMode (SIM::SolutionMode mode)
 {
-  m_mode = mode;
+  m_mode = isModal && mode == SIM::DYNAMIC ? SIM::RHS_ONLY : mode;
+
   eM = eK = 0;
   eS = gS = iS = 0;
 
-  if (mode >= SIM::RECOVERY)
+  if (m_mode >= SIM::RHS_ONLY)
     primsol.resize(1);
   else
     primsol.clear();
 
-  switch (mode)
+  switch (m_mode)
     {
     case SIM::ARCLEN:
       gS = 2;
@@ -98,6 +100,18 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
     default:
       ;
     }
+}
+
+
+void KirchhoffLove::setIntegrationPrm (unsigned short int i, double prm)
+{
+  if (i < sizeof(intPrm)/sizeof(double)) intPrm[i] = prm;
+}
+
+
+double KirchhoffLove::getIntegrationPrm (unsigned short int i) const
+{
+  return i < sizeof(intPrm)/sizeof(double) ? intPrm[i] : 0.0;
 }
 
 

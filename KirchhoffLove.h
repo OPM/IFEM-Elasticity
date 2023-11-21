@@ -37,7 +37,8 @@ class KirchhoffLove : public IntegrandBase
 protected:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions (1=beam, 2=plate, 3=shell)
-  explicit KirchhoffLove(unsigned short int n = 2);
+  //! \param[in] m If \e true, a modal linear dynamics simulation is performed
+  explicit KirchhoffLove(unsigned short int n = 2, bool m = false);
 
 public:
   //! \brief The destructor frees the dynamically allocated data objects.
@@ -51,6 +52,14 @@ public:
   virtual void setMode(SIM::SolutionMode mode);
   //! \brief Updates the external load vector index for gradient calculation.
   void setLoadGradientMode() { eS = 2; }
+
+  //! \brief Initializes an integration parameter for the integrand.
+  //! \param[in] i Index of the integration parameter to define
+  //! \param[in] prm The parameter value to assign
+  virtual void setIntegrationPrm(unsigned short int i, double prm);
+  //! \brief Returns an integration parameter for the integrand.
+  //! \param[in] i Index of the integration parameter to return
+  virtual double getIntegrationPrm(unsigned short int i) const;
 
   //! \brief Defines the gravitation constant.
   void setGravity(double g) { gravity = g; }
@@ -196,6 +205,12 @@ protected:
   mutable std::vector<Vec3Pair> presVal; //!< Pressure field point values
 
   bool includeShear; //!< If \e true, calculate shear forces during recovery
+  bool isModal;      //!< Flag for modal linear dynamics simulation
+
+  //! \brief Newmark time integration parameters.
+  //! \details The interpretation of each parameter is the same as in the class
+  //! ElasticBase. See ElasticBase::intPrm.
+  double intPrm[4];
 };
 
 #endif

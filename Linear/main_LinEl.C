@@ -15,6 +15,7 @@
 #include "SIMLinElKL.h"
 #include "SIMLinElBeamC1.h"
 #include "SIMLinElModal.h"
+#include "SIMLinKLModal.h"
 #include "SIMElasticBar.h"
 #include "SIMLinElSup.h"
 #include "SIMmcStatic.h"
@@ -380,15 +381,17 @@ int main (int argc, char** argv)
     model  = new SIMLinElSup("3D superelement solver",fixDup);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
-  else if (KLp)
-    model = new SIMLinElKL(nullptr,shell);
   else if (dynSol)
   {
-    if (args.dim == 2)
+    if (KLp)
+      model = new SIMLinKLModal(modes,shell);
+    else if (args.dim == 2)
       model = new SIMLinElModal<SIM2D>(modes,checkRHS);
     else
       model = new SIMLinElModal<SIM3D>(modes,checkRHS);
   }
+  else if (KLp)
+    model = new SIMLinElKL(nullptr,shell);
   else if (args.dim == 2)
     model = new SIMLinEl2D(supid, checkRHS, dualSol || args.adap < 0);
   else
@@ -426,8 +429,8 @@ int main (int argc, char** argv)
   if (model->opt.eig != 3 && model->opt.eig != 4 && model->opt.eig != 6)
     // Dynamic solution requires solving the generalized eigenvalue problem
     SIMbase::ignoreDirichlet = dynSol = false;
-  else if (args.adap || KLp || args.dim < 2)
-    dynSol = false; // not for adaptive grids, Kirchhoff-Love or 1D problems
+  else if (args.adap || args.dim < 2)
+    dynSol = false; // not for adaptive grids and 1D problems
 
   // Load vector visualization is not available when using additional viz-points
   for (i = 0; i < 3; i++)
