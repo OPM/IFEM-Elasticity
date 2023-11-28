@@ -63,10 +63,10 @@ protected:
 
   using SIM1D::parse;
   //! \brief Parses a data section from an XML element.
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Parses the twist angle description along the curve.
-  bool parseTwist(const TiXmlElement* elem);
+  bool parseTwist(const tinyxml2::XMLElement* elem);
 
   //! \brief Preprocessing performed before the FEM model generation.
   virtual void preprocessA();

@@ -27,7 +27,7 @@
 #include "Utilities.h"
 #include "Vec3Oper.h"
 
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 /*!
@@ -219,7 +219,7 @@ protected:
   }
 
   //! \brief Parses the analytical solution from an XML element.
-  virtual bool parseAnaSol(const TiXmlElement* elem)
+  virtual bool parseAnaSol(const tinyxml2::XMLElement* elem)
   {
     IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
 
@@ -256,10 +256,10 @@ protected:
   using SIMElasticity<Dim>::parse;
   //! \brief Parses a data section from an XML element
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem)
+  virtual bool parse(const tinyxml2::XMLElement* elem)
   {
     // Lambda function for parsing the static condensation tag.
-    auto&& parseSC = [this](const TiXmlElement* elem)
+    auto&& parseSC = [this](const tinyxml2::XMLElement* elem)
     {
       IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
       if (utl::getAttribute(elem,"supelName",supelName))
@@ -273,7 +273,7 @@ protected:
       }
 
       std::string rset;
-      const TiXmlElement* child = elem->FirstChildElement();
+      const tinyxml2::XMLElement* child = elem->FirstChildElement();
       for (; child; child = child->NextSiblingElement())
         if (!strcasecmp(child->Value(),"retained"))
           if (utl::getAttribute(child,"set",rset))
@@ -291,8 +291,8 @@ protected:
     };
 
     // Check for static condensation
-    const TiXmlElement* sctag = nullptr;
-    const TiXmlElement* child = elem->FirstChildElement();
+    const tinyxml2::XMLElement* sctag = nullptr;
+    const tinyxml2::XMLElement* child = elem->FirstChildElement();
     if (!strcasecmp(elem->Value(),SIMElasticity<Dim>::myContext.c_str()))
       for (; child; child = child->NextSiblingElement())
       {
@@ -331,7 +331,7 @@ protected:
   //! \details This function allows for specialization of the template
   //! while still reusing as much code as possible.
   //! Only put dimension-specific code in here.
-  bool parseDimSpecific(const TiXmlElement* elem, const std::string& type);
+  bool parseDimSpecific(const tinyxml2::XMLElement* elem, const std::string& type);
 
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented to resolve the topology sets
@@ -386,13 +386,13 @@ typedef SIMLinEl<SIM3D> SIMLinEl3D; //!< 3D specific driver
 //! \brief Template specialization - 2D specific input parsing.
 template<> bool SIMLinEl2D::parseDimSpecific(char* cline);
 //! \brief Template specialization - 2D specific input parsing.
-template<> bool SIMLinEl2D::parseDimSpecific(const TiXmlElement* elem,
+template<> bool SIMLinEl2D::parseDimSpecific(const tinyxml2::XMLElement* elem,
                                              const std::string& type);
 
 //! \brief Template specialization - 3D specific input parsing.
 template<> bool SIMLinEl3D::parseDimSpecific(char* cline);
 //! \brief Template specialization - 3D specific input parsing.
-template<> bool SIMLinEl3D::parseDimSpecific(const TiXmlElement* elem,
+template<> bool SIMLinEl3D::parseDimSpecific(const tinyxml2::XMLElement* elem,
                                              const std::string& type);
 
 #endif

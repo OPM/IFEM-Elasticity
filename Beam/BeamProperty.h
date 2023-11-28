@@ -16,7 +16,7 @@
 
 class Vec3;
 class RealFunc;
-class TiXmlElement;
+namespace tinyxml2 { class XMLElement; }
 
 
 /*!
@@ -27,16 +27,16 @@ class BeamProperty
 {
 public:
   //! \brief Constructor initializing properties from an XML-element.
-  explicit BeamProperty(const TiXmlElement* prop = nullptr);
+  explicit BeamProperty(const tinyxml2::XMLElement* prop = nullptr);
   //! \brief The destructor deallocates the property functions.
   ~BeamProperty();
 
   //! \brief Parses beam cross section properties from an XML-element.
-  void parse(const TiXmlElement* prop);
+  void parse(const tinyxml2::XMLElement* prop);
   //! \brief Parses circular cross section properties from an XML-element.
-  static bool parsePipe(const TiXmlElement* prop, double& A, double& I);
+  static bool parsePipe(const tinyxml2::XMLElement* prop, double& A, double& I);
   //! \brief Parses massive box cross section properties from an XML-element.
-  static bool parseBox(const TiXmlElement* prop, double& A,
+  static bool parseBox(const tinyxml2::XMLElement* prop, double& A,
                        double& Iy, double& Iz);
 
   //! \brief Evaluates the beam properties at the specified point \a X.

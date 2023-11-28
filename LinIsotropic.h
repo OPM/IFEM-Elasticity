@@ -64,7 +64,7 @@ public:
   virtual ~LinIsotropic();
 
   //! \brief Parses material parementers from an XML element.
-  virtual void parse(const TiXmlElement* elem);
+  virtual void parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Prints out material parameters to the log stream.
   virtual void printLog() const;

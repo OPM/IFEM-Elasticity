@@ -50,16 +50,16 @@ public:
   //! \brief Parses material properties from a character string.
   virtual Material* parseMatProp(char* cline, bool planeStrain = true);
   //! \brief Parses material properties from an XML-element.
-  virtual Material* parseMatProp(const TiXmlElement* elem,
+  virtual Material* parseMatProp(const tinyxml2::XMLElement* elem,
                                  bool planeStrain = true);
 
   //! \brief Parses local coordinate system definition from a character string.
   bool parseLocalSystem(const char* cline);
   //! \brief Parses local coordinate system definition from an XML-element.
-  bool parseLocalSystem(const TiXmlElement* elem);
+  bool parseLocalSystem(const tinyxml2::XMLElement* elem);
 
   //! \brief Parses a data section from an XML-element.
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Prints out the problem definition to the log stream.
   virtual void printLog() const;

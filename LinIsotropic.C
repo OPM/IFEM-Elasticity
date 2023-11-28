@@ -19,7 +19,7 @@
 #include "Tensor.h"
 #include "Vec3.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
@@ -73,7 +73,7 @@ LinIsotropic::~LinIsotropic ()
 }
 
 
-void LinIsotropic::parse (const TiXmlElement* elem)
+void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
 {
   if (Emod >= 0.0 && utl::getAttribute(elem,"E",Emod))
     IFEM::cout <<" "<< Emod;
@@ -89,26 +89,26 @@ void LinIsotropic::parse (const TiXmlElement* elem)
     IFEM::cout <<" "<< conductivity;
 
   // Lambda function for parsing a spatial property function.
-  auto&& parseSpatialFunc = [](const TiXmlElement* child, const char* name)
+  auto&& parseSpatialFunc = [](const tinyxml2::XMLElement* child, const char* name)
   {
     std::string type;
     utl::getAttribute(child,"type",type,true);
     IFEM::cout <<"\n\t  "<< name <<" function ("<< type <<") ";
-    const TiXmlNode* aval = child->FirstChild();
+    const tinyxml2::XMLNode* aval = child->FirstChild();
     return aval ? utl::parseRealFunc(aval->Value(),type) : nullptr;
   };
 
   // Lambda function for parsing a scalar property function.
-  auto&& parseScalarFunc = [](const TiXmlElement* child)
+  auto&& parseScalarFunc = [](const tinyxml2::XMLElement* child)
   {
     std::string type;
     utl::getAttribute(child,"type",type,true);
     IFEM::cout <<" ";
-    const TiXmlNode* aval = child->FirstChild();
+    const tinyxml2::XMLNode* aval = child->FirstChild();
     return aval ? utl::parseTimeFunc(aval->Value(),type) : nullptr;
   };
 
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (Emod >= 0.0 && !Efunc && !strcasecmp(child->Value(),"stiffness"))
       Efunc = parseSpatialFunc(child,"Stiffness");

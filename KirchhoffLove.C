@@ -20,7 +20,7 @@
 #include "Vec3Oper.h"
 #include "Tensor.h"
 #include "VTF.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 KirchhoffLove::KirchhoffLove (unsigned short int n, bool m) : IntegrandBase(n)
@@ -50,7 +50,7 @@ KirchhoffLove::~KirchhoffLove ()
 }
 
 
-bool KirchhoffLove::parse (const TiXmlElement* elem)
+bool KirchhoffLove::parse (const tinyxml2::XMLElement* elem)
 {
   if (!strcasecmp(elem->Value(),"noshear"))
     includeShear = false;

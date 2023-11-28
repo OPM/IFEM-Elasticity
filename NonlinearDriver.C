@@ -19,7 +19,7 @@
 #include "DataExporter.h"
 #include "HDF5Restart.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
@@ -74,12 +74,12 @@ bool NonlinearDriver::parse (char* keyWord, std::istream& is)
 }
 
 
-bool NonlinearDriver::parse (const TiXmlElement* elem)
+bool NonlinearDriver::parse (const tinyxml2::XMLElement* elem)
 {
   if (adap && !strcasecmp(elem->Value(),"adaptive"))
     return adap->parse(elem);
 
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   if (!strcasecmp(elem->Value(),"nonlinearsolver"))
   {
     for (; child; child = child->NextSiblingElement())

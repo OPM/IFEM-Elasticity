@@ -50,7 +50,7 @@ protected:
   virtual bool parse(char* keyWord, std::istream& is);
   //! \brief Parses a data section from an XML document.
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Computes and prints some solution norm quantities.
   //! \param[in] time Parameters for nonlinear/time-dependent simulations

@@ -167,7 +167,7 @@ protected:
   //! \brief Parses a data section from an XML element.
   //! \details Overrides the parent class method to do nothing when invoked
   //! during the second time parsing for the time integration setup only.
-  virtual bool parse(const TiXmlElement* elem)
+  virtual bool parse(const tinyxml2::XMLElement* elem)
   {
     if (parsed)
       IFEM::cout <<"\t(skipped)"<< std::endl;

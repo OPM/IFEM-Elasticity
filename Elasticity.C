@@ -24,7 +24,7 @@
 #include "Utilities.h"
 #include "VTF.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 #include <iomanip>
 
 #ifndef epsR
@@ -68,7 +68,7 @@ Elasticity::~Elasticity ()
 }
 
 
-bool Elasticity::parse (const TiXmlElement* elem)
+bool Elasticity::parse (const tinyxml2::XMLElement* elem)
 {
   if (!strcasecmp(elem->Value(),"gravity"))
   {
@@ -107,7 +107,7 @@ Material* Elasticity::parseMatProp (char* cline, bool planeStrain)
 }
 
 
-Material* Elasticity::parseMatProp (const TiXmlElement* elem, bool planeStrain)
+Material* Elasticity::parseMatProp (const tinyxml2::XMLElement* elem, bool planeStrain)
 {
   if (!strcasecmp(elem->Value(),"texturematerial"))
     material = new IsotropicTextureMat(!planeStrain,axiSymmetry);

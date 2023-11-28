@@ -94,7 +94,7 @@ protected:
   //! \brief Parses the analytical solution from an input stream.
   virtual bool parseAnaSol(char*, std::istream&);
   //! \brief Parses the analytical solution from an XML element.
-  virtual bool parseAnaSol(const TiXmlElement*);
+  virtual bool parseAnaSol(const tinyxml2::XMLElement*);
 
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
@@ -102,7 +102,7 @@ protected:
   virtual bool parse(char* keyWord, std::istream& is);
   //! \brief Parses a data section from an XML element
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Preprocesses a user-defined Dirichlet boundary property.
   //! \param[in] patch 1-based index of the patch to receive the property

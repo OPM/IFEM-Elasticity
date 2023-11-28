@@ -21,7 +21,7 @@ class Tensor;
 class SymmTensor;
 class FiniteElement;
 class Field;
-class TiXmlElement;
+namespace tinyxml2 { class XMLElement; }
 struct TimeDomain;
 
 
@@ -40,7 +40,7 @@ public:
   virtual ~Material() {}
 
   //! \brief Parses material parementers from an XML element.
-  virtual void parse(const TiXmlElement*) {}
+  virtual void parse(const tinyxml2::XMLElement*) {}
 
   //! \brief Prints out material parameters to the log stream.
   virtual void printLog() const {}

@@ -14,14 +14,14 @@
 #include "SIMRigid.h"
 #include "SIMinput.h"
 #include "ASMbase.h"
-#include "Vec3Oper.h"
 #include "Utilities.h"
 #include "ElementBlock.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "Vec3Oper.h"
+#include "tinyxml2.h"
 
 
-bool SIMRigid::parseRigid (const TiXmlElement* elem, SIMinput* mySim)
+bool SIMRigid::parseRigid (const tinyxml2::XMLElement* elem, SIMinput* mySim)
 {
   IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
 

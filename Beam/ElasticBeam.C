@@ -20,7 +20,7 @@
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 /*!
@@ -132,7 +132,7 @@ void ElasticBeam::setBeamLoad (VecFunc* load, bool cpl)
 }
 
 
-void ElasticBeam::parseBeamLoad (const TiXmlElement* load)
+void ElasticBeam::parseBeamLoad (const tinyxml2::XMLElement* load)
 {
   std::string type;
   utl::getAttribute(load,"type",type,true);

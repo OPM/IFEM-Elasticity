@@ -18,7 +18,7 @@
 
 class SIMinput;
 class ElementBlock;
-class TiXmlElement;
+namespace tinyxml2  { class XMLElement;  }
 
 
 /*!
@@ -34,7 +34,7 @@ protected:
   virtual ~SIMRigid() {}
 
   //! \brief Parses a rigid coupling definition from an XML element.
-  bool parseRigid(const TiXmlElement* elem, SIMinput* mySim);
+  bool parseRigid(const tinyxml2::XMLElement* elem, SIMinput* mySim);
 
   //! \brief Creates multi-point constraint equations for the rigid couplings.
   bool addRigidMPCs(SIMinput* mySim, int& ngnod) const;

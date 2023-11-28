@@ -15,7 +15,7 @@
 #include "Elasticity.h"
 #include "Utilities.h"
 #include "Tensor.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 #ifdef PRINT_CS
 #include <fstream>
 #endif
@@ -164,7 +164,7 @@ bool Elasticity::parseLocalSystem (const char* cline)
 }
 
 
-bool Elasticity::parseLocalSystem (const TiXmlElement* elem)
+bool Elasticity::parseLocalSystem (const tinyxml2::XMLElement* elem)
 {
   if (elem->FirstChild() == nullptr) return false;
 

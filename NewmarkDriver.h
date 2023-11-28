@@ -21,7 +21,7 @@
 #include "HDF5Restart.h"
 #include "TimeStep.h"
 #include "Utilities.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 #include <fstream>
 
 
@@ -42,18 +42,18 @@ protected:
   using Newmark::parse;
   //! \brief Parses a data section from an XML document.
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem)
+  virtual bool parse(const tinyxml2::XMLElement* elem)
   {
     if (!strcasecmp(elem->Value(),"newmarksolver"))
     {
       utl::getAttribute(elem,"initacc",doInitAcc);
-      const TiXmlElement* child = elem->FirstChildElement();
+      const tinyxml2::XMLElement* child = elem->FirstChildElement();
       for (; child; child = child->NextSiblingElement())
         params.parse(child);
     }
     else if (!strcasecmp(elem->Value(),"postprocessing"))
     {
-      const TiXmlElement* respts = elem->FirstChildElement("resultpoints");
+      const tinyxml2::XMLElement* respts = elem->FirstChildElement("resultpoints");
       if (respts)
         // The point file is used only for point and line output (not for grid)
         if (respts->FirstChildElement("point") ||
