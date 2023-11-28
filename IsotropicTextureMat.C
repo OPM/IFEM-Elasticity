@@ -15,11 +15,11 @@
 #include "FiniteElement.h"
 #include "Utilities.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 #include "StbImage.h"
 
 
-void IsotropicTextureMat::parse (const TiXmlElement* elem)
+void IsotropicTextureMat::parse (const tinyxml2::XMLElement* elem)
 {
   std::string textureFile;
   utl::getAttribute(elem, "file", textureFile);
@@ -43,7 +43,7 @@ void IsotropicTextureMat::parse (const TiXmlElement* elem)
 
   Doubles     range;
   LinIsotropic mat(planeStress,axiSymmetry);
-  const TiXmlElement* child = elem->FirstChildElement("range");
+  const tinyxml2::XMLElement* child = elem->FirstChildElement("range");
   for (; child; child = child->NextSiblingElement("range"))
   {
     utl::getAttribute(child,"min",range.first);

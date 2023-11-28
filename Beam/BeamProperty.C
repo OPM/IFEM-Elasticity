@@ -16,10 +16,10 @@
 #include "Utilities.h"
 #include "Vec3.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
-BeamProperty::BeamProperty (const TiXmlElement* prop)
+BeamProperty::BeamProperty (const tinyxml2::XMLElement* prop)
 {
   // Default cross section parameters
   A  = 0.1;
@@ -52,7 +52,7 @@ BeamProperty::~BeamProperty ()
 }
 
 
-bool BeamProperty::parsePipe (const TiXmlElement* prop, double& A, double& I)
+bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop, double& A, double& I)
 {
   double D, R;
   if (!utl::getAttribute(prop,"R",R))
@@ -73,7 +73,7 @@ bool BeamProperty::parsePipe (const TiXmlElement* prop, double& A, double& I)
 }
 
 
-bool BeamProperty::parseBox (const TiXmlElement* prop,
+bool BeamProperty::parseBox (const tinyxml2::XMLElement* prop,
                              double& A, double& Iy, double& Iz)
 {
   double H = 0.0;
@@ -90,7 +90,7 @@ bool BeamProperty::parseBox (const TiXmlElement* prop,
 }
 
 
-void BeamProperty::parse (const TiXmlElement* prop)
+void BeamProperty::parse (const tinyxml2::XMLElement* prop)
 {
   if (parsePipe(prop,A,Iz))
   {
@@ -120,7 +120,7 @@ void BeamProperty::parse (const TiXmlElement* prop)
              << std::endl;
 
   RealFunc** pf = nullptr;
-  const TiXmlElement* child = prop->FirstChildElement();
+  const tinyxml2::XMLElement* child = prop->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (child->FirstChild())
     {

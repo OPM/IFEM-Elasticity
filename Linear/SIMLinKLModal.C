@@ -16,7 +16,7 @@
 #include "KirchhoffLoveShell.h"
 #include "Utilities.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 SIMLinKLModal::SIMLinKLModal (std::vector<Mode>& modes, bool shell)
@@ -132,7 +132,7 @@ KirchhoffLove* SIMLinKLModal::getProblem (int version)
 }
 
 
-bool SIMLinKLModal::parse (const TiXmlElement* elem)
+bool SIMLinKLModal::parse (const tinyxml2::XMLElement* elem)
 {
   if (parsed)
     IFEM::cout <<"\t(skipped)"<< std::endl;

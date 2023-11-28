@@ -31,7 +31,7 @@
 #include "Vec3Oper.h"
 #include "VTF.h"
 
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 //! Plane strain/stress option for 2D problems.
@@ -437,7 +437,7 @@ bool SIMElasticity<Dim>::parseAnaSol (char*, std::istream&)
 
 
 template<class Dim>
-bool SIMElasticity<Dim>::parseAnaSol (const TiXmlElement*)
+bool SIMElasticity<Dim>::parseAnaSol (const tinyxml2::XMLElement*)
 {
   std::cerr <<" *** SIMElasticity::parse: No analytical solution available."
             << std::endl;
@@ -618,11 +618,11 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
 
 
 template<class Dim>
-bool SIMElasticity<Dim>::parse (const TiXmlElement* elem)
+bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
 {
   if (!strcasecmp(elem->Value(),"postprocessing"))
   {
-    const TiXmlElement* child = elem->FirstChildElement();
+    const tinyxml2::XMLElement* child = elem->FirstChildElement();
     for (; child && !plotRgd; child = child->NextSiblingElement())
       if (!strcasecmp(child->Value(),"plot_rigid"))
         plotRgd = true;
@@ -634,7 +634,7 @@ bool SIMElasticity<Dim>::parse (const TiXmlElement* elem)
     return this->Dim::parse(elem);
 
   bool result = true;
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
 
     if (!strcasecmp(child->Value(),"isotropic") ||

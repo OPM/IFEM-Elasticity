@@ -17,8 +17,7 @@
 #include "IntegrandBase.h"
 #include "Profiler.h"
 #include "Utilities.h"
-#include "tinyxml.h"
-#include <iomanip>
+#include "tinyxml2.h"
 
 
 ArcLengthDriver::ArcLengthDriver (SIMbase& sim, bool, bool adaptive)
@@ -32,12 +31,12 @@ ArcLengthDriver::ArcLengthDriver (SIMbase& sim, bool, bool adaptive)
 }
 
 
-bool ArcLengthDriver::parse (const TiXmlElement* elem)
+bool ArcLengthDriver::parse (const tinyxml2::XMLElement* elem)
 {
   if (!strcasecmp(elem->Value(),"nonlinearsolver"))
   {
     const char* value;
-    const TiXmlElement* child = elem->FirstChildElement();
+    const tinyxml2::XMLElement* child = elem->FirstChildElement();
     for (; child; child = child->NextSiblingElement())
       if ((value = utl::getValue(child,"beta")))
         beta = atof(value);

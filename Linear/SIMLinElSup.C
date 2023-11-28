@@ -30,12 +30,12 @@ SIMLinElSup::~SIMLinElSup()
 }
 
 
-bool SIMLinElSup::parse (const TiXmlElement* elem)
+bool SIMLinElSup::parse (const tinyxml2::XMLElement* elem)
 {
   if (strcasecmp(elem->Value(),"elasticity"))
     return this->SIMsupel::parse(elem);
 
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (!strcasecmp(child->Value(),"superelement"))
     {

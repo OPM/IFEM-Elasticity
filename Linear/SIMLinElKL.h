@@ -42,7 +42,7 @@ protected:
   virtual bool parseAnaSol(char* keyWord, std::istream& is);
   //! \brief Parses the analytical solution from an XML element.
   //! \param[in] elem The XML element to parse
-  virtual bool parseAnaSol(const TiXmlElement* elem);
+  virtual bool parseAnaSol(const tinyxml2::XMLElement* elem);
 
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual void preprocessA();

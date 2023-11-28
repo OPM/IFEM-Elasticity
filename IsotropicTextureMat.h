@@ -34,7 +34,7 @@ public:
   virtual ~IsotropicTextureMat() = default;
 
   //! \brief Parses material parameters from an XML element.
-  void parse(const TiXmlElement* elem) override;
+  void parse(const tinyxml2::XMLElement* elem) override;
 
   //! \brief Prints out material parameters to the log stream.
   void printLog() const override;

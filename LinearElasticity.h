@@ -40,7 +40,7 @@ public:
   virtual ~LinearElasticity() {}
 
   //! \brief Parses a data section from an XML element.
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use

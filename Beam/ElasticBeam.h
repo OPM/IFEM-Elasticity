@@ -18,7 +18,7 @@
 #include "BeamProperty.h"
 
 class VecFunc;
-class TiXmlElement;
+namespace tinyxml2 { class XMLElement; }
 
 
 /*!
@@ -45,9 +45,9 @@ public:
   //! \brief Assigns a load load function the the beam.
   void setBeamLoad(VecFunc* load, bool cpl = false);
   //! \brief Parses line load defintion from an XML-element.
-  void parseBeamLoad(const TiXmlElement* prop);
+  void parseBeamLoad(const tinyxml2::XMLElement* prop);
   //! \brief Parses beam cross section properties from an XML-element.
-  BeamProperty* parseProp(const TiXmlElement* p) { return new BeamProperty(p); }
+  BeamProperty* parseProp(const tinyxml2::XMLElement* p) { return new BeamProperty(p); }
   //! \brief Defines the actual beam cross section properties to use.
   void setProperty(BeamProperty* prop) { myProp = prop; }
 

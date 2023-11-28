@@ -24,7 +24,7 @@
 #include "AnaSol.h"
 #include "Vec3Oper.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 void SIMLinElBeamC1::clearProperties ()
@@ -148,7 +148,7 @@ bool SIMLinElBeamC1::parse (char* keyWord, std::istream& is)
 }
 
 
-bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
+bool SIMLinElBeamC1::parse (const tinyxml2::XMLElement* elem)
 {
   if (strcasecmp(elem->Value(),"eulerbernoulli"))
     return this->SIM1D::parse(elem);
@@ -162,7 +162,7 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
   }
 
   bool ok = true;
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child && ok; child = child->NextSiblingElement())
 
     if (!strcasecmp(child->Value(),"gravity"))
@@ -249,7 +249,7 @@ bool SIMLinElBeamC1::parse (const TiXmlElement* elem)
 }
 
 
-bool SIMLinElBeamC1::parseXi (const TiXmlElement* elem, RealArray& xi) const
+bool SIMLinElBeamC1::parseXi (const tinyxml2::XMLElement* elem, RealArray& xi) const
 {
   std::string type;
   utl::getAttribute(elem,"type",type,true);

@@ -54,7 +54,7 @@ template<> bool SIMLinEl3D::parseDimSpecific (char* cline)
 }
 
 
-template<> bool SIMLinEl3D::parseDimSpecific (const TiXmlElement* child,
+template<> bool SIMLinEl3D::parseDimSpecific (const tinyxml2::XMLElement* child,
                                               const std::string& type)
 {
   if (type == "hole")

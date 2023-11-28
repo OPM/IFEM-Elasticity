@@ -90,7 +90,7 @@ protected:
   virtual bool parse(char* keyWord, std::istream& is);
   //! \brief Parses a data section from an XML element.
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual void preprocessA();

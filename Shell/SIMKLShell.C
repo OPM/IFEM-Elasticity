@@ -27,7 +27,7 @@
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "Property.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 SIMKLShell::SIMKLShell (const char* heading, bool isShell)
@@ -194,7 +194,7 @@ bool SIMKLShell::parse (char* keyWord, std::istream& is)
 }
 
 
-bool SIMKLShell::parse (const TiXmlElement* elem)
+bool SIMKLShell::parse (const tinyxml2::XMLElement* elem)
 {
   if (strcasecmp(elem->Value(),myContext.c_str()))
     return this->SIMElasticity<SIM2D>::parse(elem);
@@ -204,7 +204,7 @@ bool SIMKLShell::parse (const TiXmlElement* elem)
   KirchhoffLove* klp = this->getProblem(version);
 
   bool ok = true;
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child && ok; child = child->NextSiblingElement())
 
     if (!strcasecmp(child->Value(),"gravity"))

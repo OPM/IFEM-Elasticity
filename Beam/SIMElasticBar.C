@@ -22,7 +22,7 @@
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 #include <cstring>
 
 
@@ -102,7 +102,7 @@ const char** SIMElasticBar::getPrioritizedTags () const
 }
 
 
-bool SIMElasticBar::parse (const TiXmlElement* elem)
+bool SIMElasticBar::parse (const tinyxml2::XMLElement* elem)
 {
   bool isCable = !strcasecmp(elem->Value(),"cable");
   if (isCable || !strcasecmp(elem->Value(),"bar"))
@@ -158,7 +158,7 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
     return false;
 
   bool ok = true;
-  const TiXmlElement* child = elem->FirstChildElement();
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child && ok; child = child->NextSiblingElement())
   {
     IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
@@ -308,7 +308,7 @@ bool SIMElasticBar::parse (const TiXmlElement* elem)
   Y-axis, relative to the globalized Y-axis of the beam.
 */
 
-bool SIMElasticBar::parseTwist (const TiXmlElement* elem)
+bool SIMElasticBar::parseTwist (const tinyxml2::XMLElement* elem)
 {
   if (!strcasecmp(elem->Value(),"Zdirection"))
   {

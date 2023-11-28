@@ -60,7 +60,7 @@ protected:
 
   using NonlinearDriver::parse;
   //! \brief Parses a data section from an XML document.
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Solves the linearized system of current iteration.
   //! \param[in] lambda Current load proportionality factor

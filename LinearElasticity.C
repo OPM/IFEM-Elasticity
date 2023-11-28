@@ -21,7 +21,7 @@
 #include "Utilities.h"
 #include "VTF.h"
 #include "IFEM.h"
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 LinearElasticity::LinearElasticity (unsigned short int n, bool axSym,
@@ -34,7 +34,7 @@ LinearElasticity::LinearElasticity (unsigned short int n, bool axSym,
 }
 
 
-bool LinearElasticity::parse (const TiXmlElement* elem)
+bool LinearElasticity::parse (const tinyxml2::XMLElement* elem)
 {
   bool initT = !strcasecmp(elem->Value(),"initialtemperature");
   if (!initT && strcasecmp(elem->Value(),"temperature"))
@@ -42,7 +42,7 @@ bool LinearElasticity::parse (const TiXmlElement* elem)
 
   std::string type;
   utl::getAttribute(elem,"type",type,true);
-  const TiXmlNode* tval = elem->FirstChild();
+  const tinyxml2::XMLNode* tval = elem->FirstChild();
   if (!tval) return true;
 
   if (initT)

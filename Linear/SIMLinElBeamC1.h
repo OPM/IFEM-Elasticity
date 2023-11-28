@@ -41,12 +41,12 @@ protected:
   virtual bool parse(char* keyWord, std::istream& is);
   //! \brief Parses a data section from an XML element.
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const TiXmlElement* elem);
+  virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Parses or generates app-specific explicit knots for refinement.
   //! \param[in] elem The XML element to parse
   //! \param[out] xi Explicit knots in range [0,1]
-  virtual bool parseXi(const TiXmlElement* elem, RealArray& xi) const;
+  virtual bool parseXi(const tinyxml2::XMLElement* elem, RealArray& xi) const;
 
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual bool preprocessB();

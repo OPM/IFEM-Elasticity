@@ -19,7 +19,7 @@
 #include "IFEM.h"
 #include "Utilities.h"
 
-#include "tinyxml.h"
+#include "tinyxml2.h"
 
 
 KirchhoffLove* SIMLinElKL::getProblem (int version)
@@ -84,7 +84,7 @@ bool SIMLinElKL::parseAnaSol (char* keyWord, std::istream& is)
 }
 
 
-bool SIMLinElKL::parseAnaSol (const TiXmlElement* elem)
+bool SIMLinElKL::parseAnaSol (const tinyxml2::XMLElement* elem)
 {
   std::string type;
   utl::getAttribute(elem,"type",type,true);
