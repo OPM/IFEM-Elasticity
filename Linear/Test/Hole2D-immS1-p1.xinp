@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<--! Infinite membrane with a circular hole.
+<!-- Infinite membrane with a circular hole.
      Solved on a square domain with immersed boundary representation.
      Neumann boundary conditions from analytical solution.
      Static linear-elastic analysis, linear spline elements. !-->

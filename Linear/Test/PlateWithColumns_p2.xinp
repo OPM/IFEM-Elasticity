@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<--! Simply supported rectangular plate with two columns loads near the corners.
+<!-- Simply supported rectangular plate with two columns loads near the corners.
      Quadratic spline Kirchhoff-Love thin plate elements. -->
 
 <simulation>

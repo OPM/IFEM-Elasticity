@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<--! Simply supported square plate with central point load.
+<!-- Simply supported square plate with central point load.
      Cubic spline Kirchhoff-Love thin plate elements. -->
 
 <simulation>
