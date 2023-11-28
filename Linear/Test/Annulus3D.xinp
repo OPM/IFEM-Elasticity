@@ -38,7 +38,7 @@
     <dirichlet set="back surface"  comp="3"/>
     <dirichlet set="fixed edge"    comp="123"/>
     <dirichlet set="fixed end"     comp="2"/>
-    <--! Note: Component 1 for the inner edge will be global Z due to t1="Z"
+    <!-- Note: Component 1 for the inner edge will be global Z due to t1="Z"
                on the inner surface (otherwise it would be global X) !-->
     <dirichlet set="inner edge"    comp="1"/>
     <dirichlet set="inner surface" comp="3" axes="local projected" t1="Z"/>

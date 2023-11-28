@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<--! Simply supported square plate with a line load in the middle.
+<!-- Simply supported square plate with a line load in the middle.
      Quadratic spline Kirchhoff-Love thin plate elements. -->
 
 <simulation>

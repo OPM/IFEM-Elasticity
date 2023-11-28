@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<--! Made-up exact polynomial solution (p=2)
+<!-- Made-up exact polynomial solution (p=2)
      with non-homogenuous Dirichlet boundary conditions !-->
 
 <simulation>
