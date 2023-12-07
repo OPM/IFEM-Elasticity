@@ -33,8 +33,8 @@ Parsing <EulerBernoulli>
 	Gravitation constant: 10
 	Point: xi = 0.5 load = 0.2
 	Analytical solution: Expression
-	Stress=L=2.0; q=0.1; P=0.2; (q\*x\*(L-x) + P\*if(below(x,L/2.0),x,L-x))/2.0
-	Derivative_11=q=0.1;-q
+	Stress: L=2.0; q=0.1; P=0.2; (q\*x\*(L-x) + P\*if(below(x,L/2.0),x,L-x))/2.0
+	Derivative_11: q=0.1;-q
 Parsing <postprocessing>
   Parsing <resultpoints>
 	Point 1: P1 xi = 0.5

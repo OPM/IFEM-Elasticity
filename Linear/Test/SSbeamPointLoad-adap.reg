@@ -27,7 +27,7 @@ Parsing <EulerBernoulli>
 	Material code 0: 1.2 1 0.01
 	Point: xi = 0.5 load = 1
 	Analytical solution: Expression
-	Stress=P=1.0; L=2.0; P\*if(below(x,L/2.0),x,L-x)/2.0
+	Stress: P=1.0; L=2.0; P\*if(below(x,L/2.0),x,L-x)/2.0
 Parsing <postprocessing>
   Parsing <projection>
   Parsing <resultpoints>

@@ -37,8 +37,8 @@ Parsing <elasticity>
 	Material code 0: 1000 0.3 0
 	Stabilization parameter 0.001
 	Analytical solution: Expression
-	Variables=nu=0.3;F0=10;a=1; R=sqrt(x\*x+y\*y); R2=if(above(R,a),a\*a/(R\*R),1); R4=if(above(R,a),R2\*R2,1); th=atan2(y,x); C2=cos(2\*th); C4=cos(4\*th); S2=sin(2\*th); S4=sin(4\*th);
-	Stress=F0\*(1-R2\*(1.5\*C2+C4)+1.5\*R4\*C4)| F0\*(-R2\*(0.5\*C2-C4)-1.5\*R4\*C4)| F0\*nu\*(1-2\*R2\*C2)| F0\*(-R2\*(0.5\*S2+S4)+1.5\*R4\*S4)
+	Variables: nu=0.3;F0=10;a=1; R=sqrt(x\*x+y\*y); R2=if(above(R,a),a\*a/(R\*R),1); R4=if(above(R,a),R2\*R2,1); th=atan2(y,x); C2=cos(2\*th); C4=cos(4\*th); S2=sin(2\*th); S4=sin(4\*th);
+	Stress: F0\*(1-R2\*(1.5\*C2+C4)+1.5\*R4\*C4)| F0\*(-R2\*(0.5\*C2-C4)-1.5\*R4\*C4)| F0\*nu\*(1-2\*R2\*C2)| F0\*(-R2\*(0.5\*S2+S4)+1.5\*R4\*S4)
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 2

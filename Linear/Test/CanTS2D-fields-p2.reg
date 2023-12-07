@@ -35,7 +35,7 @@ Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
 	Analytical solution: Fields
-	Stress=s_xx|s_yy|s_xy
+	Stress: s_xx|s_yy|s_xy
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 3 4
