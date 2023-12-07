@@ -28,9 +28,9 @@ Parsing <elasticity>
   Parsing <boundaryforce>
 	Boundary force "edges" code 1000000
 	Analytical solution: Expression
-	Variables=Emod=1000;v=0.3;
-	Primary=(1-x^2)\*(1-y^2)|(1-x^2)\*(1-y^2)
-	Stress=Emod/(1-v^2) \* 2\*( x\*(y^2-1) + v\*y\*(x^2-1)) | Emod/(1-v^2) \* 2\*(v\*x\*(y^2-1) + y\*(x^2-1)) | Emod/(1-v^2) \* (1-v)/2\*(2\*x\*(y^2-1) + 2\*y\*(x^2-1))
+	Variables: Emod=1000;v=0.3;
+	Primary: (1-x^2)\*(1-y^2)|(1-x^2)\*(1-y^2)
+	Stress: Emod/(1-v^2) \* 2\*( x\*(y^2-1) + v\*y\*(x^2-1)) | Emod/(1-v^2) \* 2\*(v\*x\*(y^2-1) + y\*(x^2-1)) | Emod/(1-v^2) \* (1-v)/2\*(2\*x\*(y^2-1) + 2\*y\*(x^2-1))
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 3 4

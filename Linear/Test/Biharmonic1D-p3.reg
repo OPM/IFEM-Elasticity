@@ -28,15 +28,15 @@ Parsing <KirchhoffLove>
 	Material code 0: 1.2e+07 0 1 0.01
 	Pressure code 1 (expression): (120\*x-24)\*(y^2-1)^2 + 32\*(x-1)\*(5\*x^2+2\*x-1)\*(3\*y^2-1) + (x-1)\*(x^2-1)^2\*24
 	Analytical solution: Expression
-	Variables=wx=(x-1)\*(x^2-1)^2; dwx=(x^2-1)\*(5\*x^2-4\*x-1); ddwx=(x-1)\*(20\*x^2+8\*x-4); dddwx=60\*x^2-24\*x-12; ddddwx=120\*x-24; wy=(y^2-1)^2; dwy=4\*y\*(y^2-1); ddwy=12\*y^2-4; dddwy=24\*y; ddddwy=24;
-	Primary=wx\*wy
-	Secondary=ddwx\*wy|wx\*ddwy|dwx\*dwy
-	Derivative_1=dddwx\*wy|dwx\*ddwy|ddwx\*dwy
-	Derivative_2=ddwx\*dwy|wx\*dddwy|dwx\*ddwy
-	Derivative_11=ddddwx\*wy|ddwx\*ddwy|dddwx\*dwy
-	Derivative_22=ddwx\*ddwy|wx\*ddddwy|dwx\*dddwy
-	Derivative_21=dddwx\*dwy|dwx\*dddwy|ddwx\*ddwy
-	Derivative_12=dddwx\*dwy|dwx\*dddwy|ddwx\*ddwy
+	Variables: wx=(x-1)\*(x^2-1)^2; dwx=(x^2-1)\*(5\*x^2-4\*x-1); ddwx=(x-1)\*(20\*x^2+8\*x-4); dddwx=60\*x^2-24\*x-12; ddddwx=120\*x-24; wy=(y^2-1)^2; dwy=4\*y\*(y^2-1); ddwy=12\*y^2-4; dddwy=24\*y; ddddwy=24;
+	Primary: wx\*wy
+	Secondary: ddwx\*wy|wx\*ddwy|dwx\*dwy
+	Derivative_1: dddwx\*wy|dwx\*ddwy|ddwx\*dwy
+	Derivative_2: ddwx\*dwy|wx\*dddwy|dwx\*ddwy
+	Derivative_11: ddddwx\*wy|ddwx\*ddwy|dddwx\*dwy
+	Derivative_22: ddwx\*ddwy|wx\*ddddwy|dwx\*dddwy
+	Derivative_21: dddwx\*dwy|dwx\*dddwy|ddwx\*ddwy
+	Derivative_12: dddwx\*dwy|dwx\*dddwy|ddwx\*ddwy
 Parsing <postprocessing>
   Parsing <projection>
   Parsing <resultpoints>
