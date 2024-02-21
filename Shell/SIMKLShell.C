@@ -69,9 +69,9 @@ KirchhoffLove* SIMKLShell::getProblem (int)
 }
 
 
-Elasticity* SIMKLShell::getIntegrand ()
+ElasticBase* SIMKLShell::getIntegrand ()
 {
-  return dynamic_cast<Elasticity*>(myProblem);
+  return dynamic_cast<ElasticBase*>(myProblem);
 }
 
 

@@ -313,7 +313,7 @@ bool SIMElasticity<Dim>::haveAnaSol () const
 template<class Dim>
 void SIMElasticity<Dim>::preprocessA ()
 {
-  Elasticity* elInt = this->getIntegrand();
+  ElasticBase* elInt = this->getIntegrand();
 
   this->printProblem();
 
@@ -322,7 +322,7 @@ void SIMElasticity<Dim>::preprocessA ()
     Elasticity::wantPrincipalStress = false;
 
   if (Dim::dualField)
-    elInt->setDualRHS(Dim::dualField);
+    static_cast<Elasticity*>(elInt)->setDualRHS(Dim::dualField);
 
   if (!Dim::mySol) return;
 
@@ -457,7 +457,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
   {
     nmat = atoi(keyWord+10);
     IFEM::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
-    Elasticity* elInt = this->getIntegrand();
+    ElasticBase* elInt = this->getIntegrand();
     for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
     {
       int code = atoi(strtok(cline," "));
@@ -552,7 +552,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
   {
     nmat = atoi(keyWord+8);
     IFEM::cout <<"\nNumber of materials: "<< nmat << std::endl;
-    Elasticity* elInt = this->getIntegrand();
+    ElasticBase* elInt = this->getIntegrand();
     for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
     {
       IFEM::cout <<"\tMaterial data: ";
@@ -580,7 +580,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
   {
     size_t i = 12;
     while (i < strlen(keyWord) && isspace(keyWord[i])) i++;
-    this->getIntegrand()->parseLocalSystem(keyWord+i);
+    static_cast<Elasticity*>(this->getIntegrand())->parseLocalSystem(keyWord+i);
   }
 
   else if (!strncasecmp(keyWord,"ANASOL",6))
@@ -706,8 +706,11 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
       result &= this->parseAnaSol(child);
 
     else if (!strcasecmp(child->Value(),"dualfield"))
-      this->getIntegrand()->addExtrFunction(this->parseDualTag(child,2));
-
+    {
+      FunctionBase* exf = this->parseDualTag(child,2);
+      if (exf)
+        static_cast<Elasticity*>(this->getIntegrand())->addExtrFunction(exf);
+    }
     else if (!this->getIntegrand()->parse(child))
       result &= this->Dim::parse(child);
 

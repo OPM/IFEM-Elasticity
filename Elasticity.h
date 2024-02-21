@@ -17,7 +17,6 @@
 #include "ElasticBase.h"
 
 class LocalSystem;
-class Material;
 class ElmNorm;
 class ElmMats;
 class Tensor;
@@ -80,10 +79,7 @@ public:
   //! \brief Defines the material properties.
   virtual void setMaterial(Material* mat);
   //! \brief Returns the current material object.
-  Material* getMaterial() const { return material; }
-
-  //! \brief Initializes time integration parameters.
-  virtual bool init(const TimeDomain&) { return true; }
+  virtual Material* getMaterial() const { return material; }
 
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }

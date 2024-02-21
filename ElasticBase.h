@@ -17,6 +17,7 @@
 #include "IntegrandBase.h"
 #include "Vec3.h"
 
+class Material;
 namespace TimeIntegration { class BDFD2; }
 
 
@@ -33,6 +34,20 @@ protected:
 public:
   //! \brief The destructor deletes the BDF object, if any.
   virtual ~ElasticBase();
+
+  //! \brief Parses material properties from a character string.
+  virtual Material* parseMatProp(char*, bool) { return nullptr; }
+  //! \brief Parses material properties from an XML-element.
+  virtual Material* parseMatProp(const tinyxml2::XMLElement*, bool)
+  { return nullptr; }
+
+  //! \brief Defines the material properties.
+  virtual void setMaterial(Material*) {}
+  //! \brief Returns the current material object.
+  virtual Material* getMaterial() const { return nullptr; }
+
+  //! \brief Initializes time integration parameters.
+  virtual bool init(const TimeDomain&) { return true; }
 
   //! \brief Defines the gravitation vector.
   void setGravity(const Vec3& g) { gravity = g; }
