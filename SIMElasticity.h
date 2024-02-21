@@ -18,7 +18,7 @@
 #include "MatVec.h"
 #include "Vec3.h"
 
-class Elasticity;
+class ElasticBase;
 class Material;
 class TimeStep;
 struct TimeDomain;
@@ -89,7 +89,7 @@ protected:
   virtual bool preprocessB();
 
   //! \brief Returns the actual integrand.
-  virtual Elasticity* getIntegrand() = 0;
+  virtual ElasticBase* getIntegrand() = 0;
 
   //! \brief Parses the analytical solution from an input stream.
   virtual bool parseAnaSol(char*, std::istream&);
