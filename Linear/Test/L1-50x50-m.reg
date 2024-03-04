@@ -1,0 +1,59 @@
+L1-50x50-m.xinp
+
+Input file: L1-50x50-m.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file L1-50x50-m.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file L1-50x50.m
+	Reading patch 1
+  Parsing <topologysets>
+	Topology sets: Fixed (1,1,4D)
+	               Force (1,2,4D)
+  Parsing <patchfile>
+  Parsing <topologysets>
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 25850 0.18
+  Parsing <dirichlet>
+	Dirichlet code -2: 1
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <boundaryforce>
+	Boundary force "Fixed" code 1000000
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 2
+Lagrangian basis functions are used
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 25850, nu = 0.18, rho = 7850, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+	Constraining P1 in direction(s) 2 code = 2
+	Constraining P1 in direction(s) 12
+ >>> SAM model summary <<<
+Number of elements    7500
+Number of nodes       7701
+Number of dofs        15402
+Number of constraints 3
+Number of unknowns    15297
+Boundary section 1: X0 = 125 0 0
+Number of quadrature points 30000
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : 0 78543.8 0
+Solving the equation system ...
+	Condition number: 333512
+ >>> Solution summary <<<
+L2-norm            : 0.414242
+Max X-displacement : 0.83308
+Max Y-displacement : 1.0617
+Reaction force     : 0 -619.672
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 24.8932
+External energy ((f,u^h)+(t,u^h)^0.5 : 24.8932
