@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <!-- L-shaped domain with Matlab mesh file -->
+
+  <geometry dim="2">
+    <patchfile type="matlab">L1-50x50.m</patchfile>
+    <topologysets>
+      <set name="Fixed" type="nodes">
+        <item patch="1"/>
+      </set>
+      <set name="Force" type="nodes">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <elasticity>
+    <isotropic E="25850.0" nu="0.18"/>
+    <boundaryconditions>
+      <dirichlet set="Force" comp="-2">1.0</dirichlet>
+      <dirichlet set="Fixed" comp="12"/>
+    </boundaryconditions>
+    <boundaryforce set="Fixed"/>
+  </elasticity>
+
+  <discretization type="Lagrange">
+    <nGauss>2</nGauss>
+  </discretization>
+
+</simulation>
