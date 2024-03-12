@@ -4,6 +4,7 @@ Input file: SS45-Cable4p.xinp
 Equation solver: 2
 Number of Gauss points: 5
 Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file SS45-Cable4p.xinp
 Parsing <geometry>
@@ -23,7 +24,7 @@ Parsing <boundaryconditions>
 	Dirichlet code 12: (fixed)
 Parsing <cable>
   Parsing <gravity>
-	Gravitation vector: 0 -9.81 0
+	Gravitation vector: 0 -9.81
   Parsing <material>
 	Axial stiffness = 7.85398e+08
 	Bending stiffness = 490873
@@ -53,6 +54,8 @@ Number of unknowns    24
 Number of quadrature points 50
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+Done.
+Sum external load : 0 -3138.09 0
 Solving the equation system ...
 	Condition number: 11313.2
  >>> Solution summary <<<

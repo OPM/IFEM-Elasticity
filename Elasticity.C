@@ -70,18 +70,8 @@ Elasticity::~Elasticity ()
 
 bool Elasticity::parse (const tinyxml2::XMLElement* elem)
 {
-  if (!strcasecmp(elem->Value(),"gravity"))
-  {
-    utl::getAttribute(elem,"x",gravity.x);
-    utl::getAttribute(elem,"y",gravity.y);
-    IFEM::cout <<"\tGravitation vector: "<< gravity.x <<" "<< gravity.y;
-    if (nsd == 3)
-    {
-      utl::getAttribute(elem,"z",gravity.z);
-      IFEM::cout <<" "<< gravity.z;
-    }
-    IFEM::cout << std::endl;
-  }
+  if (this->ElasticBase::parse(elem))
+    return true;
   else if (!strcasecmp(elem->Value(),"stabilization"))
   {
     utl::getAttribute(elem,"gamma",gamma);
