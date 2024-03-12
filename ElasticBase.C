@@ -15,7 +15,10 @@
 #include "FiniteElement.h"
 #include "ElmMats.h"
 #include "TimeDomain.h"
+#include "Utilities.h"
 #include "BDF.h"
+#include "IFEM.h"
+#include "tinyxml2.h"
 
 
 ElasticBase::ElasticBase () : IntegrandBase(0)
@@ -34,6 +37,31 @@ ElasticBase::ElasticBase () : IntegrandBase(0)
 ElasticBase::~ElasticBase ()
 {
   delete bdf;
+}
+
+
+bool ElasticBase::parse (const tinyxml2::XMLElement* elem)
+{
+  if (!strcasecmp(elem->Value(),"gravity") && nsd > 0)
+  {
+    utl::getAttribute(elem,"x",gravity.x);
+    IFEM::cout <<"\tGravitation vector: "<< gravity.x;
+    if (nsd >= 2)
+    {
+      utl::getAttribute(elem,"y",gravity.y);
+      IFEM::cout <<" "<< gravity.y;
+    }
+    if (nsd >= 3)
+    {
+      utl::getAttribute(elem,"z",gravity.z);
+      IFEM::cout <<" "<< gravity.z;
+    }
+    IFEM::cout << std::endl;
+  }
+  else
+    return false;
+
+  return true;
 }
 
 

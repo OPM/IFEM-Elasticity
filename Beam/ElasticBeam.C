@@ -77,6 +77,7 @@ template<> HHTBeamMats::BeamMats (double a1, double a2, double b, double)
 
 ElasticBeam::ElasticBeam (unsigned short int n) : inLocalAxes(true)
 {
+  nsd = 3; // Number of spatial dimenstions
   npv = 6; // Number of primary unknowns per node
   nSV = n; // Number of solution vectors in core
 

@@ -163,20 +163,7 @@ bool SIMElasticBar::parse (const tinyxml2::XMLElement* elem)
   for (; child && ok; child = child->NextSiblingElement())
   {
     IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
-    if (!strcasecmp(child->Value(),"gravity"))
-    {
-      Vec3 g;
-      utl::getAttribute(child,"x",g.x);
-      utl::getAttribute(child,"y",g.y);
-      utl::getAttribute(child,"z",g.z);
-      IFEM::cout <<"\tGravitation vector: "<< g << std::endl;
-      if (bar)
-        bar->setGravity(g);
-      else
-        beam->setGravity(g);
-    }
-
-    else if (!strcasecmp(child->Value(),"material"))
+    if (!strcasecmp(child->Value(),"material"))
     {
       double E = 2.1e11, rho = 7.85e3;
       utl::getAttribute(child,"E",E);

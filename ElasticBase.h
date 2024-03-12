@@ -41,6 +41,9 @@ public:
   virtual Material* parseMatProp(const tinyxml2::XMLElement*, bool)
   { return nullptr; }
 
+  //! \brief Parses a data section from an XML-element.
+  virtual bool parse(const tinyxml2::XMLElement* elem);
+
   //! \brief Defines the material properties.
   virtual void setMaterial(Material*) {}
   //! \brief Returns the current material object.
@@ -49,8 +52,6 @@ public:
   //! \brief Initializes time integration parameters.
   virtual bool init(const TimeDomain&) { return true; }
 
-  //! \brief Defines the gravitation vector.
-  void setGravity(const Vec3& g) { gravity = g; }
   //! \brief Defines the gravitation vector.
   void setGravity(double gx, double gy = 0.0, double gz = 0.0)
   { gravity.x = gx; gravity.y = gy; gravity.z = gz; }
