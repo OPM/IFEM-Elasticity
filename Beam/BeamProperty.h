@@ -14,6 +14,8 @@
 #ifndef _BEAM_PROPERTY_H
 #define _BEAM_PROPERTY_H
 
+#include <iostream>
+
 class Vec3;
 class RealFunc;
 namespace tinyxml2 { class XMLElement; }
@@ -45,7 +47,8 @@ public:
             double& EA,   double& EI_y, double& EI_z,
             double& GI_t, double& Al_y, double& Al_z,
             double& rhoA, double& CG_y, double& CG_z,
-            double& I_xx, double& I_yy, double& I_zz) const;
+            double& I_xx, double& I_yy, double& I_zz,
+            double& ItoA, double& S_y,  double& S_z) const;
   //! \brief Evaluates the beam properties at the specified point \a X.
   void eval(const Vec3& X, double E, double G, double rho,
             double& EA, double& EI_y, double& EI_z, double& GI_t,
@@ -80,10 +83,22 @@ public:
   double Iz; //!< Second area moment around local Z-axis
   double It; //!< Torsional constant
 
-  double Sy; //!< Shear centre offset in local Y-direction
-  double Sz; //!< Shear centre offset in local Z-direction
   double Ky; //!< Shear reduction factor in local Y-direction
   double Kz; //!< Shear reduction factor in local Z-direction
+
+private:
+  double Sy; //!< Shear centre offset in local Y-direction
+  double Sz; //!< Shear centre offset in local Z-direction
+
+  //! \brief Output stream operator.
+  friend std::ostream& operator<<(std::ostream& os, const BeamProperty& prop)
+  {
+    return os <<"\n             A = "<< prop.A
+              <<", Ix = "<< prop.Ix <<", Iy = "<< prop.Iy
+              <<", Iz = "<< prop.Iz <<", It = "<< prop.It
+              <<"\n             Ky = "<< prop.Ky <<", Kz = "<< prop.Kz
+              <<", Sy = "<< prop.Sy <<", Sz = "<< prop.Sz;
+  }
 };
 
 #endif

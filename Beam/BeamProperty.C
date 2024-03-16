@@ -168,7 +168,8 @@ void BeamProperty::eval (const Vec3& X, double L,
                          double& EA,   double& EI_y, double& EI_z,
                          double& GI_t, double& Al_y, double& Al_z,
                          double& rhoA, double& CG_y, double& CG_z,
-                         double& I_xx, double& I_yy, double& I_zz) const
+                         double& I_xx, double& I_yy, double& I_zz,
+                         double& ItoA, double& S_y,  double& S_z) const
 {
   // Evaluate beam stiffness properties at this point
   EA   = EAfunc  ? (*EAfunc)(X)  : E*A;
@@ -177,6 +178,11 @@ void BeamProperty::eval (const Vec3& X, double L,
   GI_t = GItfunc ? (*GItfunc)(X) : G*It;
   Al_y = 12.0*EI_y*Ky/(G*A*L*L);
   Al_z = 12.0*EI_z*Kz/(G*A*L*L);
+
+  S_y = Sy;
+  S_z = Sz;
+  if (S_y*S_y + S_z*S_z < 1.0e-8*A)
+    S_y = S_z = 0.0;
 
   // Evaluate the beam mass properties (if needed) at this point
   rhoA = rhofunc && (hasMass || hasGrav) ? (*rhofunc)(X) : rho*A;

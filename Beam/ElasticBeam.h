@@ -15,8 +15,8 @@
 #define _ELASTIC_BEAM_H
 
 #include "ElasticBase.h"
-#include "BeamProperty.h"
 
+class BeamProperty;
 class VecFunc;
 namespace tinyxml2 { class XMLElement; }
 
@@ -47,7 +47,7 @@ public:
   //! \brief Parses line load defintion from an XML-element.
   void parseBeamLoad(const tinyxml2::XMLElement* prop);
   //! \brief Parses beam cross section properties from an XML-element.
-  BeamProperty* parseProp(const tinyxml2::XMLElement* p) { return new BeamProperty(p); }
+  static BeamProperty* parseProp(const tinyxml2::XMLElement* prop);
   //! \brief Defines the actual beam cross section properties to use.
   void setProperty(BeamProperty* prop) { myProp = prop; }
 
@@ -107,11 +107,13 @@ protected:
   void getMaterialStiffness(Matrix& EK, double L,
                             double EA,  double GIt,
                             double EIy, double EIz,
-                            double ALy, double ALz) const;
+                            double ALy, double ALz,
+                            double Sy,  double Sz) const;
   //! \brief Calculates the geometric stiffness matrix of the beam element.
   void getGeometricStiffness(Matrix& EK, double N, double L,
                              double EIy, double EIz,
-                             double ALy, double ALz) const;
+                             double ALy, double ALz, double ItoA,
+                             double Sy,  double Sz) const;
   //! \brief Calculates the mass matrix of the beam element.
   void getMassMatrix(Matrix& EM, double rhoA, double Ixx,
                      double Iyy, double Izz, double L) const;

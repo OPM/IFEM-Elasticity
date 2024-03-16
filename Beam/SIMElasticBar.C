@@ -14,6 +14,7 @@
 #include "SIMElasticBar.h"
 #include "ElasticCable.h"
 #include "ElasticBeam.h"
+#include "BeamProperty.h"
 #include "AlgEqSystem.h"
 #include "ASMs1D.h"
 #include "SAM.h"
@@ -225,7 +226,7 @@ bool SIMElasticBar::parse (const tinyxml2::XMLElement* elem)
     else if (beam && !strcasecmp(child->Value(),"properties"))
     {
       this->parseMaterialSet(child,myBCSec.size());
-      myBCSec.push_back(beam->parseProp(child));
+      myBCSec.push_back(ElasticBeam::parseProp(child));
       beam->setProperty(myBCSec.back());
     }
 
