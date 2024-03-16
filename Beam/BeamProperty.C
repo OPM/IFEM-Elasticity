@@ -17,6 +17,8 @@
 #include "Vec3.h"
 #include "IFEM.h"
 #include "tinyxml2.h"
+#include <fstream>
+#include <cstring>
 
 
 BeamProperty::BeamProperty (const tinyxml2::XMLElement* prop)
@@ -30,7 +32,9 @@ BeamProperty::BeamProperty (const tinyxml2::XMLElement* prop)
 
   EAfunc = EIyfunc = EIzfunc = GItfunc = nullptr;
   rhofunc = Ixfunc = Iyfunc = Izfunc = nullptr;
+  Axfunc = Ayfunc = Azfunc = nullptr;
   CGyfunc = CGzfunc = nullptr;
+  Syfunc = Szfunc = nullptr;
 
   if (prop)
     this->parse(prop);
@@ -44,15 +48,21 @@ BeamProperty::~BeamProperty ()
   delete EIzfunc;
   delete GItfunc;
   delete rhofunc;
+  delete Axfunc;
+  delete Ayfunc;
+  delete Azfunc;
   delete Ixfunc;
   delete Iyfunc;
   delete Izfunc;
   delete CGyfunc;
   delete CGzfunc;
+  delete Syfunc;
+  delete Szfunc;
 }
 
 
-bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop, double& A, double& I)
+bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop,
+                              double& A, double& I)
 {
   double D, R;
   if (!utl::getAttribute(prop,"R",R))
@@ -119,6 +129,9 @@ void BeamProperty::parse (const tinyxml2::XMLElement* prop)
              <<"\n\tShear parameters = "<< Sy <<" "<< Sz <<" "<< Ky <<" "<< Kz
              << std::endl;
 
+  if (prop->FirstChild() && this->readCSV(prop->FirstChild()->Value()))
+    return; // Property functions are defined from a csv data file
+
   RealFunc** pf = nullptr;
   const tinyxml2::XMLElement* child = prop->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
@@ -162,6 +175,108 @@ void BeamProperty::parse (const tinyxml2::XMLElement* prop)
 }
 
 
+bool BeamProperty::readCSV (const char* fileName)
+{
+  struct DataLine
+  {
+    std::string descr;
+    std::string label;
+    std::string unit;
+    std::vector<double> values;
+  } dline;
+
+  std::ifstream fs(fileName);
+  if (!fs) return false;
+
+  std::map<std::string,DataLine> crossSections;
+  char currentLine[BUFSIZ]; currentLine[0] = '#';
+  while (fs.getline(currentLine+1,BUFSIZ-1))
+  {
+    dline.values.clear();
+    char* val   = strtok(currentLine,",");
+    dline.descr =  val ? val+1 : "";
+    dline.label = (val = strtok(NULL,",")) ? val : "";
+    dline.unit  = (val = strtok(NULL,",")) ? val : "";
+    while ((val = strtok(NULL,",")))
+    {
+      dline.values.push_back(atof(val));
+      // Scale to SI units [m]
+      if (dline.unit == "[cm]")
+        dline.values.back() *= 1.0e-2;
+      else if (dline.unit == "[mm]")
+        dline.values.back() *= 1.0e-3;
+      else if (dline.unit == "[cm2]")
+        dline.values.back() *= 1.0e-4;
+      else if (dline.unit == "[mm2]")
+        dline.values.back() *= 1.0e-6;
+      else if (dline.unit == "[cm3]")
+        dline.values.back() *= 1.0e-6;
+      else if (dline.unit == "[mm3]")
+        dline.values.back() *= 1.0e-9;
+      else if (dline.unit == "[cm4]")
+        dline.values.back() *= 1.0e-8;
+      else if (dline.unit == "[mm4]")
+        dline.values.back() *= 1.0e-12;
+    }
+    if (dline.unit.substr(1,2) == "cm" || dline.unit.substr(1,2) == "mm")
+      dline.unit.erase(1,1);
+#ifdef INT_DEBUG
+    if (crossSections.empty())
+      std::cout <<"Data from CSV-file "<< fileName <<":"<< std::endl;
+    std::cout << dline.descr <<"\t"<< dline.label <<"\t"<< dline.unit;
+    for (double dv : dline.values) std::cout <<" "<< dv;
+    std::cout << std::endl;
+#endif
+    if (crossSections.find(dline.label) == crossSections.end())
+      crossSections[dline.label] = dline;
+  }
+
+  if (crossSections.empty()) return false;
+
+  // Lambda function to get data values for the given key
+  auto&& getValues = [&crossSections,fileName](const std::string& key)
+  {
+    std::map<std::string,DataLine>::const_iterator it = crossSections.find(key);
+    if (it != crossSections.end()) return it->second.values;
+
+    std::cerr <<"  ** BeamProperty::readCSV: Property \""<< key
+              <<"\" not found in "<< fileName << std::endl;
+    return std::vector<double>();
+  };
+
+  const std::vector<double>& xVal = getValues("x");
+  if (xVal.empty()) return false; // Probably an invalid CSV file
+
+#ifndef INT_DEBUG
+  IFEM::cout <<"    Beam properties from CSV file "<< fileName <<":";
+  for (const std::pair<const std::string,DataLine>& cs : crossSections)
+    IFEM::cout <<"\n\t"<< cs.second.label <<" "<< cs.second.unit
+               <<" "<< cs.second.descr;
+  IFEM::cout << std::endl;
+#endif
+
+  // Lambda function for defining a piece-wise linear property
+  auto&& propertyFunc = [&xVal,getValues](const std::string& key)
+  {
+    const std::vector<double>& fVals = getValues(key);
+    return fVals.empty() ? nullptr : new Interpolate1D(xVal,fVals);
+  };
+
+  Axfunc = propertyFunc("Ax");
+  Ayfunc = propertyFunc("Ay");
+  Azfunc = propertyFunc("Az");
+
+  Ixfunc = propertyFunc("Ix");
+  Iyfunc = propertyFunc("Iy");
+  Izfunc = propertyFunc("Iz");
+
+  Syfunc = propertyFunc("ey");
+  Szfunc = propertyFunc("ez");
+
+  return true;
+}
+
+
 void BeamProperty::eval (const Vec3& X, double L,
                          double E, double G, double rho,
                          bool hasGrav, bool hasMass,
@@ -172,20 +287,22 @@ void BeamProperty::eval (const Vec3& X, double L,
                          double& ItoA, double& S_y,  double& S_z) const
 {
   // Evaluate beam stiffness properties at this point
-  EA   = EAfunc  ? (*EAfunc)(X)  : E*A;
-  EI_y = EIyfunc ? (*EIyfunc)(X) : E*Iy;
-  EI_z = EIzfunc ? (*EIzfunc)(X) : E*Iz;
-  GI_t = GItfunc ? (*GItfunc)(X) : G*It;
-  Al_y = 12.0*EI_y*Ky/(G*A*L*L);
-  Al_z = 12.0*EI_z*Kz/(G*A*L*L);
+  double Area = Axfunc ? (*Axfunc)(X) : A;
+  EA   = EAfunc  ? (*EAfunc)(X)  : E*Area;
+  EI_y = EIyfunc ? (*EIyfunc)(X) : E*(Iyfunc ? (*Iyfunc)(X) : Iy);
+  EI_z = EIzfunc ? (*EIzfunc)(X) : E*(Izfunc ? (*Izfunc)(X) : Iz);
+  GI_t = GItfunc ? (*GItfunc)(X) : G*(Ixfunc ? (*Ixfunc)(X) : It);
+  Al_y = 12.0*(EI_y/(G*L*L)) * (Ayfunc ? (*Ayfunc)(X) : Ky/Area);
+  Al_z = 12.0*(EI_z/(G*L*L)) * (Azfunc ? (*Azfunc)(X) : Kz/Area);
+  ItoA = (Ixfunc ? (*Ixfunc)(X) : It) / Area;
 
-  S_y = Sy;
-  S_z = Sz;
-  if (S_y*S_y + S_z*S_z < 1.0e-8*A)
+  S_y = Syfunc ? (*Syfunc)(X) : Sy;
+  S_z = Szfunc ? (*Szfunc)(X) : Sz;
+  if (S_y*S_y + S_z*S_z < 1.0e-8*Area)
     S_y = S_z = 0.0;
 
   // Evaluate the beam mass properties (if needed) at this point
-  rhoA = rhofunc && (hasMass || hasGrav) ? (*rhofunc)(X) : rho*A;
+  rhoA = rhofunc && (hasMass || hasGrav) ? (*rhofunc)(X) : rho*Area;
   CG_y = CGyfunc && (hasMass || hasGrav) ? (*CGyfunc)(X) : 0.0;
   CG_z = CGzfunc && (hasMass || hasGrav) ? (*CGzfunc)(X) : 0.0;
   I_xx = Ixfunc  &&  hasMass             ? (*Ixfunc)(X)  : rho*Ix;
@@ -201,19 +318,19 @@ void BeamProperty::eval (const Vec3& X,
                          double& rhoA, double& I_yy, double& I_zz) const
 {
   // Evaluate beam stiffness properties at this point
-  EA   = EAfunc  ? (*EAfunc)(X)  : E*A;
-  EI_y = EIyfunc ? (*EIyfunc)(X) : E*Iy;
-  EI_z = EIzfunc ? (*EIzfunc)(X) : E*Iz;
-  GI_t = GItfunc ? (*GItfunc)(X) : G*It;
+  EA   = EAfunc  ? (*EAfunc)(X)  : E*(Axfunc ? (*Axfunc)(X) : A);
+  EI_y = EIyfunc ? (*EIyfunc)(X) : E*(Iyfunc ? (*Iyfunc)(X) : Iy);
+  EI_z = EIzfunc ? (*EIzfunc)(X) : E*(Izfunc ? (*Izfunc)(X) : Iz);
+  GI_t = GItfunc ? (*GItfunc)(X) : G*(Ixfunc ? (*Ixfunc)(X) : It);
 
   // Evaluate the beam mass properties at this point
-  rhoA = rhofunc ? (*rhofunc)(X) : rho*A;
-  I_yy = Iyfunc  ? (*Iyfunc)(X)  : rho*Iy;
-  I_zz = Izfunc  ? (*Izfunc)(X)  : rho*Iz;
+  rhoA = rhofunc ? (*rhofunc)(X) : rho*(Axfunc ? (*Axfunc)(X) : A);
+  I_yy = Iyfunc  ? (*Iyfunc)(X)  : rho*(Iyfunc ? (*Iyfunc)(X) : Iy);
+  I_zz = Izfunc  ? (*Izfunc)(X)  : rho*(Izfunc ? (*Izfunc)(X) : Iz);
 }
 
 
 double BeamProperty::evalRho (const Vec3& X, double rho) const
 {
-  return rhofunc ? (*rhofunc)(X) : rho*A;
+  return rhofunc ? (*rhofunc)(X) : rho*(Axfunc ? (*Axfunc)(X) : A);
 }
