@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test with property data from a CSV file. !-->
+
+<simulation>
+
+  <geometry dim="3" L="86.4">
+    <refine patch="1" u="99"/>
+    <topologysets>
+      <set name="ends" type="vertex">
+        <item patch="1">1 2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="ends" comp="1234"/>
+  </boundaryconditions>
+
+  <beam>
+    <properties>0445-properties.csv</properties>
+    <gravity z="-9.81"/>
+  </beam>
+
+</simulation>

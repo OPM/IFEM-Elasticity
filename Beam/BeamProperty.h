@@ -61,8 +61,13 @@ public:
   {
     return (EAfunc || EIyfunc || EIzfunc || GItfunc ||
             rhofunc || Ixfunc || Iyfunc || Izfunc ||
-            CGyfunc || CGzfunc);
+            Axfunc || Ayfunc || Azfunc ||
+            CGyfunc || CGzfunc || Syfunc || Szfunc);
   }
+
+protected:
+  //! \brief Reads beam cross section properties from a CSV-file.
+  bool readCSV(const char* fileName);
 
 private:
   RealFunc* EAfunc;  //!< Axial stiffness
@@ -70,6 +75,11 @@ private:
   RealFunc* EIzfunc; //!< Bending stiffness about local Z-axis
   RealFunc* GItfunc; //!< Torsional stiffness
   RealFunc* rhofunc; //!< Mass density (line mass)
+  RealFunc* Axfunc;  //!< Cross section area
+  RealFunc* Ayfunc;  //!< Shear area in local Y-direction
+  RealFunc* Azfunc;  //!< Shear area in local Z-direction
+  RealFunc* Syfunc;  //!< Shear centre offset in local Y-direction
+  RealFunc* Szfunc;  //!< Shear centre offset in local Z-direction
   RealFunc* Ixfunc;  //!< Polar inertia
   RealFunc* Iyfunc;  //!< Inertia about local Y-axis
   RealFunc* Izfunc;  //!< Inertia about local Z-axis

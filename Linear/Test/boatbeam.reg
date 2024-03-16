@@ -1,0 +1,77 @@
+boatbeam.xinp -1D
+
+Input file: boatbeam.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+1. Linear Elastic Beam solver
+Parsing input file boatbeam.xinp
+Parsing <beam>
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.1, moments of inertia = 0.002 0.001 0.001 0.002
+	Shear parameters = 0 0 0 0
+    Beam properties from CSV file 0445-properties.csv:
+	Ax \[m2] Cross  section area
+	Ay \[m2] Shear Area in Y-Direction
+	Az \[m2] Shear Area in Z-Direction
+	Ix \[m4] Moment of inertia about X-axis
+	Iy \[m4] Moment of inertia about Y-axis
+	Iz \[m4] Moment of inertia about Z-axis
+	WxAvarage \[m3] 
+	Wxbottom \[m3] 
+	Wxbox \[m3] 
+	Wxdeck \[m3] Torsional modulus
+	Wxside \[m3] 
+	Wyb \[m3] Section modulus about Y-axis bottom
+	Wyt \[m3] Section modulus about Y-axis top
+	Wzl \[m3] Section modulus about Z-axis left
+	Wzr \[m3] Section modulus about Z-axis right
+	ey \[m] Shear Centre offset
+	ez \[m] Shear Centre offset
+	id \[#] Frame
+	x \[m] Frame center
+  Parsing <gravity>
+	Gravitation vector: 0 0 -9.81
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+	Length = 86.4
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <refine>
+	Refining P1 99
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1234: (fixed)
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 1
+11. Linear Elastic Beam solver
+Problem definition:
+ElasticBeam: E = 2.05e+11, G = 7.94e+10, rho = 7850
+             A = 0.1, Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002
+             Ky = 0, Kz = 0, Sy = 0, Sz = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1234
+	Constraining P1 V2 in direction(s) 1234
+ >>> SAM model summary <<<
+Number of elements    100
+Number of nodes       101
+Number of dofs        606
+Number of unknowns    598
+Number of quadrature points 100
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : 0 0 -4.10172e+06
+Solving the equation system ...
+	Condition number: 5.05508e+06
+ >>> Solution summary <<<
+L2-norm            : 0.00329178
+Max Z-displacement : 0.0114064
+Max y-displacement : 0.000420108
+Integrating solution norms (FE solution) ...
+L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.08097
