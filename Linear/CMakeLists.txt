@@ -1,17 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(LinEl)
+message(STATUS "Configuring project ${PROJECT_NAME}")
 
-# Add local modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-                      ${PROJECT_SOURCE_DIR}/../../../cmake/Modules)
-
-# Required packages
 if(NOT IFEM_CONFIGURED)
+  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake/Modules)
   find_package(IFEM REQUIRED)
   include_directories(${IFEM_INCLUDE_DIRS})
   add_definitions(${IFEM_DEFINITIONS})
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${IFEM_CXX_FLAGS}")
+  string(APPEND CMAKE_CXX_FLAGS " ${IFEM_CXX_FLAGS}")
 endif()
 
 include_directories(${IFEM_INCLUDES} ${PROJECT_SOURCE_DIR}
@@ -27,12 +24,26 @@ endif()
 if(NOT TARGET Beam)
   add_subdirectory(../Beam Beam)
 endif()
+if(EXISTS ${PROJECT_SOURCE_DIR}/../IFEM-BeamGeometry)
+  set(BEAMGEO_SRC ../IFEM-BeamGeometry)
+else()
+  set(BEAMGEO_SRC ../BeamGeometry)
+endif()
+if(NOT TARGET BeamGeometry AND EXISTS ${PROJECT_SOURCE_DIR}/${BEAMGEO_SRC})
+  message(STATUS "Including ${PROJECT_SOURCE_DIR}/${BEAMGEO_SRC} for project ${CMAKE_PROJECT_NAME}")
+  add_subdirectory(${BEAMGEO_SRC} BeamGeometry)
+  include_directories(${PROJECT_SOURCE_DIR}/${BEAMGEO_SRC})
+  string(APPEND CMAKE_CXX_FLAGS " -DHAS_GEOMETRY")
+endif()
 
 file(GLOB LinEl_SRCS *.C)
 list(APPEND LinEl_SRCS ../Shell/SIMKLShell.C ../Shell/KirchhoffLoveShell.C)
 
 add_executable(LinEl ${LinEl_SRCS})
 target_link_libraries(LinEl Beam Elasticity ${IFEM_LIBRARIES})
+if(TARGET BeamGeometry)
+  target_link_libraries(LinEl BeamGeometry)
+endif()
 
 list(APPEND CHECK_SOURCES ${LinEl_SRCS})
 
@@ -44,6 +55,9 @@ set(EXTRA_DOXY_PATHS "${PROJECT_SOURCE_DIR} \\
                       ${PROJECT_BINARY_DIR} \\
                       ${PROJECT_SOURCE_DIR}/.. \\
                       ${PROJECT_SOURCE_DIR}/../Beam")
+if(EXISTS ${PROJECT_SOURCE_DIR}/${BEAMGEO_SRC})
+  string(APPEND EXTRA_DOXY_PATHS " ${PROJECT_SOURCE_DIR}/${BEAMGEO_SRC}")
+endif()
 add_doc_target(LinEl LinEl)
 
 if(IFEM_INSTALL_DOXY)

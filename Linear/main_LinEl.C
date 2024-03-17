@@ -13,10 +13,10 @@
 
 #include "IFEM.h"
 #include "SIMLinElKL.h"
+#include "SIMLinElBeam.h"
 #include "SIMLinElBeamC1.h"
 #include "SIMLinElModal.h"
 #include "SIMLinKLModal.h"
-#include "SIMElasticBar.h"
 #include "SIMLinElSup.h"
 #include "SIMmcStatic.h"
 #include "SIMargsBase.h"
@@ -352,16 +352,16 @@ int main (int argc, char** argv)
   if (args.dim == 1)
   {
     if (KLp)
-      model = new SIMLinElBeamC1();
+      model = new SIMLinElBeamC1("Euler-Bernoulli beam solver");
     else
-      model = new SIMElasticBar();
+      model = new SIMLinElBeam("Linear Elastic Beam solver");
   }
   else if (args.dim == 12 && KLp)
   {
     SIMoutput* model1D = nullptr;
     if (shell)
     {
-      model1D = new SIMElasticBar("Linear Elastic Beam solver");
+      model1D = new SIMLinElBeam("Linear Elastic Beam solver");
       model1D->opt.discretization = ASM::Lagrange;
     }
     else
@@ -371,13 +371,13 @@ int main (int argc, char** argv)
   }
   else if (args.dim == 13)
   {
-    SIMoutput* model1D = new SIMElasticBar("Linear Elastic Beam solver");
+    SIMoutput* model1D = new SIMLinElBeam("Linear Elastic Beam solver");
     model  = new SIMLinEl3D("3D continuum solver",checkRHS);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
   else if (args.dim == 14)
   {
-    SIMoutput* model1D = new SIMElasticBar("Linear Elastic Beam solver");
+    SIMoutput* model1D = new SIMLinElBeam("Linear Elastic Beam solver");
     model  = new SIMLinElSup("3D superelement solver",fixDup);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
