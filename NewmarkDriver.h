@@ -199,14 +199,15 @@ protected:
     int ip = this->numSolution() - 2;
     if (ip > 0)
     {
+      int nf = Newmark::model.getNoFields();
       if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
                                      Newmark::nBlock,params.time.t,
-                                     "velocity",20))
+                                     "velocity",20,nf))
         return 8;
 
       if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
                                      Newmark::nBlock,params.time.t,
-                                     "acceleration",30))
+                                     "acceleration",30,nf))
         return 9;
     }
 
