@@ -1,0 +1,17 @@
+Utkrager.xinp -1D
+
+Step 1
+  Element block 1
+    6 nodes
+    5 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'fix_Z'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+    Scalar: 'r_x'
+    Scalar: 'r_y'
+    Scalar: 'r_z'
+    Scalar: '||u^h||_L2'
