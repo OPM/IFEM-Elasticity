@@ -12,6 +12,7 @@
 //==============================================================================
 
 #include "ElasticBeam.h"
+#include "BeamProperty.h"
 #include "FiniteElement.h"
 #include "HHTMats.h"
 #include "ElmNorm.h"
@@ -112,14 +113,7 @@ void ElasticBeam::printLog () const
     const_cast<ElasticBeam*>(this)->myProp = &defProp;
   }
 
-  IFEM::cout <<"\n             A = "<< myProp->A
-             <<", Ix = "<< myProp->Ix
-             <<", Iy = "<< myProp->Iy
-             <<", Iz = "<< myProp->Iz <<", It = "<< myProp->It
-             <<"\n             Ky = "<< myProp->Ky
-             <<", Kz = "<< myProp->Kz
-             <<", Sy = "<< myProp->Sy <<", Sz = "<< myProp->Sz
-             << std::endl;
+  IFEM::cout << *myProp << std::endl;
 }
 
 
@@ -150,6 +144,12 @@ void ElasticBeam::parseBeamLoad (const tinyxml2::XMLElement* load)
     return;
 
   IFEM::cout << std::endl;
+}
+
+
+BeamProperty* ElasticBeam::parseProp (const tinyxml2::XMLElement* prop)
+{
+  return new BeamProperty(prop);
 }
 
 
@@ -296,7 +296,8 @@ Matrix& ElasticBeam::getLocalAxes (LocalIntegral& elmInt) const
 void ElasticBeam::getMaterialStiffness (Matrix& EK, double L,
                                         double EA,  double GIt,
                                         double EIy, double EIz,
-                                        double Aly, double Alz) const
+                                        double Aly, double Alz,
+                                        double Sy,  double Sz) const
 {
   double L3 = L*L*L;
 
@@ -327,16 +328,16 @@ void ElasticBeam::getMaterialStiffness (Matrix& EK, double L,
     for (j = 1; j < i; j++)
       EK(i,j) = EK(j,i);
 
-  if (fabs(myProp->Sy) + fabs(myProp->Sz) > 0.00001*sqrt(myProp->A))
+  if (fabs(Sy) + fabs(Sz) > 1.0e-12)
   {
     // Adjustment due to non-symmetric cross section
     for (j = 1; j <= 12; j++)
       for (i = 0; i <= 6; i += 6)
-        EK(i+4,j) -= myProp->Sz*EK(i+2,j) + myProp->Sy*EK(i+3,j);
+        EK(i+4,j) -= Sz*EK(i+2,j) + Sy*EK(i+3,j);
 
     for (i = 1; i <= 12; i++)
       for (j = 0; j <= 6; j += 6)
-        EK(i,j+4) -= EK(i,j+2)*myProp->Sz + EK(i,j+3)*myProp->Sy;
+        EK(i,j+4) -= EK(i,j+2)*Sz + EK(i,j+3)*Sy;
   }
 
 #if INT_DEBUG > 1
@@ -352,7 +353,8 @@ void ElasticBeam::getMaterialStiffness (Matrix& EK, double L,
 
 void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
                                          double EIy, double EIz,
-                                         double Aly, double Alz) const
+                                         double Aly, double Alz, double ItoA,
+                                         double Sy,  double Sz) const
 {
   double L2 = L*L;
   double Cy = N/(L*(1.0+Aly)*(1.0+Aly));
@@ -361,7 +363,7 @@ void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
   EK.resize(12,12,true);
   EK( 2, 2) =  EK( 8, 8) =  Cy*(1.2+Aly*(2.0+Aly));
   EK( 3, 3) =  EK( 9, 9) =  Cz*(1.2+Alz*(2.0+Alz));
-  EK( 4, 4) =  EK(10,10) =  N*myProp->It/(myProp->A*L);
+  EK( 4, 4) =  EK(10,10) =  N*ItoA/L;
   EK( 5, 5) =  EK(11,11) =  Cz*L2*(0.4+Alz*(0.5+0.25*Alz))/3.0;
   EK( 6, 6) =  EK(12,12) =  Cy*L2*(0.4+Aly*(0.5+0.25*Aly))/3.0;
 
@@ -383,16 +385,16 @@ void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
     for (j = 1; j < i; j++)
       EK(i,j) = EK(j,i);
 
-  if (fabs(myProp->Sy) + fabs(myProp->Sz) > 0.00001*sqrt(myProp->A))
+  if (fabs(Sy) + fabs(Sz) > 1.0e-12)
   {
     // Adjustment due to non-symmetric cross section
     for (j = 1; j <= 12; j++)
       for (i = 0; i <= 6; i += 6)
-        EK(i+4,j) -= myProp->Sz*EK(i+2,j) + myProp->Sy*EK(i+3,j);
+        EK(i+4,j) -= Sz*EK(i+2,j) + Sy*EK(i+3,j);
 
     for (i = 1; i <= 12; i++)
       for (j = 0; j <= 6; j += 6)
-        EK(i,j+4) -= EK(i,j+2)*myProp->Sz + EK(i,j+3)*myProp->Sy;
+        EK(i,j+4) -= EK(i,j+2)*Sz + EK(i,j+3)*Sy;
   }
 
 #if INT_DEBUG > 1
@@ -519,18 +521,19 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   }
 
   // Evaluate beam stiffness and mass properties at this point
-  double EA, EIy, EIz, GIt, Aly, Alz;
-  double rhoA, I_xx, I_yy, I_zz, CG_y, CG_z;
+  double EA, EIy, EIz, GIt, Aly, Alz, ItoA;
+  double rhoA, I_xx, I_yy, I_zz, CG_y, CG_z, Sy, Sz;
   bool hasGrF = gravity.isZero() ? false : eS > 0;
   myProp->eval(X, L0, E, G, rho, hasGrF, eM > 0,
                EA, EIy, EIz, GIt, Aly, Alz,
-               rhoA, CG_y, CG_z, I_xx, I_yy, I_zz);
+               rhoA, CG_y, CG_z, I_xx, I_yy, I_zz, ItoA, Sy, Sz);
 #if INT_DEBUG > 1
   std::cout <<"\n             EA = "<< EA
             <<" EI = "<< EIy <<" "<< EIz <<" GIt = "<< GIt
             <<", Alpha_y = "<< Aly <<" Alpha_z = "<< Alz;
   std::cout <<", rho*A = "<< rhoA <<" rho*I = "<< I_xx <<" "<< I_yy <<" "<< I_zz
-            <<", CoG = "<< CG_y <<" "<< CG_z << std::endl;
+            <<", CoG = "<< CG_y <<" "<< CG_z
+            <<", Sy = "<< Sy <<" Sz = "<< Sz << std::endl;
 #endif
 
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
@@ -553,7 +556,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   }
 
   if (eKm) // Evaluate the material stiffness matrix
-    this->getMaterialStiffness(elMat.A[eKm-1],L0,EA,GIt,EIy,EIz,Aly,Alz);
+    this->getMaterialStiffness(elMat.A[eKm-1],L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
 
   Vector v;
   double N = 0.0;
@@ -578,7 +581,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 
     // Internal forces, S_int = Km*v
     Matrix tmpKm;
-    if (!eKm) this->getMaterialStiffness(tmpKm,L0,EA,GIt,EIy,EIz,Aly,Alz);
+    if (!eKm) this->getMaterialStiffness(tmpKm,L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
     Matrix& Km = eKm ? elMat.A[eKm-1] : tmpKm;
     if (!Km.multiply(v,elMat.b[iS-1],false,iS == eS))
       return false;
@@ -601,11 +604,12 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
     if (eKg == eKm)
     {
       Matrix Kg(12,12);
-      this->getGeometricStiffness(Kg,N,L0,EIy,EIz,Aly,Alz);
+      this->getGeometricStiffness(Kg,N,L0,EIy,EIz,Aly,Alz,ItoA,Sy,Sz);
       elMat.A[eKm-1].add(Kg);
     }
     else
-      this->getGeometricStiffness(elMat.A[eKg-1],N,L0,EIy,EIz,Aly,Alz);
+      this->getGeometricStiffness(elMat.A[eKg-1],
+                                  N,L0,EIy,EIz,Aly,Alz,ItoA,Sy,Sz);
   }
 
   if (eM)
