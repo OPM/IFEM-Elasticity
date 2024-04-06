@@ -27,6 +27,7 @@ sidestreamRev[IFEM-NavierStokes]=master
 # Downstreams and revisions
 declare -a downstreams
 downstreams=(IFEM-BeamEx
+             IFEM-ShellEx
              IFEM-FiniteDeformation
              IFEM-ThermoElasticity
              IFEM-PoroElasticity
@@ -36,6 +37,7 @@ downstreams=(IFEM-BeamEx
 
 declare -A downstreamRev
 downstreamRev[IFEM-BeamEx]=master
+downstreamRev[IFEM-ShellEx]=master
 downstreamRev[IFEM-FiniteDeformation]=master
 downstreamRev[IFEM-ThermoElasticity]=master
 downstreamRev[IFEM-PoroElasticity]=master
