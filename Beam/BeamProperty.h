@@ -14,6 +14,7 @@
 #ifndef _BEAM_PROPERTY_H
 #define _BEAM_PROPERTY_H
 
+#include <vector>
 #include <iostream>
 
 class Vec3;
@@ -32,6 +33,9 @@ public:
   explicit BeamProperty(const tinyxml2::XMLElement* prop = nullptr);
   //! \brief The destructor deallocates the property functions.
   ~BeamProperty();
+
+  //! \brief Initializes the constant property parameters.
+  void setConstant(const std::vector<double>& values);
 
   //! \brief Parses beam cross section properties from an XML-element.
   void parse(const tinyxml2::XMLElement* prop);
@@ -92,6 +96,8 @@ public:
   double Iy; //!< Second area moment around local Y-axis
   double Iz; //!< Second area moment around local Z-axis
   double It; //!< Torsional constant
+
+  double phi; //!< Angle between local element axes and principal axes
 
   double Ky; //!< Shear reduction factor in local Y-direction
   double Kz; //!< Shear reduction factor in local Z-direction

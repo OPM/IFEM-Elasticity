@@ -29,6 +29,7 @@ BeamProperty::BeamProperty (const tinyxml2::XMLElement* prop)
   Iy = Iz = 0.001;
   Ky = Kz = 0.0;
   Sy = Sz = 0.0;
+  phi = 0.0;
 
   EAfunc = EIyfunc = EIzfunc = GItfunc = nullptr;
   rhofunc = Ixfunc = Iyfunc = Izfunc = nullptr;
@@ -58,6 +59,21 @@ BeamProperty::~BeamProperty ()
   delete CGzfunc;
   delete Syfunc;
   delete Szfunc;
+}
+
+
+void BeamProperty::setConstant (const std::vector<double>& values)
+{
+  if (values.size() > 0) A   = values[0];
+  if (values.size() > 2) Ix  = values[1] + values[2];
+  if (values.size() > 1) Iy  = values[1];
+  if (values.size() > 2) Iz  = values[2];
+  if (values.size() > 3) It  = values[3];
+  if (values.size() > 4) Ky  = values[4];
+  if (values.size() > 5) Kz  = values[5];
+  if (values.size() > 6) Sy  = values[6];
+  if (values.size() > 7) Sz  = values[7];
+  if (values.size() > 8) phi = values[8];
 }
 
 

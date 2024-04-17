@@ -262,7 +262,17 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
   Tlg.fillColumn(1,e1.ptr());
   Tlg.fillColumn(2,e2.ptr());
   Tlg.fillColumn(3,e3.ptr());
-
+  if (fabs(myProp->phi) > 1.0e-6)
+  {
+    // Rotate from principal axes to local element axes
+    double phi = myProp->phi*M_PI/180.0;
+    Matrix Tpl(3,3);
+    Tpl(1,1) = 1.0;
+    Tpl(2,2) = Tpl(3,3) = cos(phi);
+    Tpl(2,3) = sin(phi);
+    Tpl(3,2) = -Tpl(2,3);
+    Tlg = Tpl*Tlg;
+  }
 #if INT_DEBUG > 1
   std::cout <<"ElasticBeam: local-to-global transformation matrix:"<< Tlg
             <<"ElasticBeam: T1n\n"<< fe.Tn[0] <<"ElasticBeam: T2n\n"<< fe.Tn[1];
