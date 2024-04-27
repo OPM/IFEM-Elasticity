@@ -628,23 +628,53 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
                                    const TimeDomain& time, size_t)
 {
+  Vec3 ecc1 = myProp->ecc1;
+  Vec3 ecc2 = myProp->ecc2;
+
+  ElmMats& elMat = static_cast<ElmMats&>(elmInt);
+
   if (inLocalAxes)
   {
-    size_t i, k;
-    ElmMats& elMat = static_cast<ElmMats&>(elmInt);
     const Matrix& Tlg = this->getLocalAxes(elmInt);
 
     // Transform the element matrices to global coordinates
-    for (i = 0; i < elMat.A.size(); i++)
-      for (k = 1; k < elMat.A[i].cols(); k += 3)
-        if (!utl::transform(elMat.A[i],Tlg,k))
+    for (Matrix& A : elMat.A)
+      for (size_t k = 1; k < A.cols(); k += 3)
+        if (!utl::transform(A,Tlg,k))
           return false;
 
     // Transform the element force vectors to global coordinates
-    for (i = 0; i < elMat.b.size(); i++)
-      for (k = 1; k < elMat.b[i].size(); k += 3)
-        if (!utl::transform(elMat.b[i],Tlg,k))
+    for (Vector& b : elMat.b)
+      for (size_t k = 1; k < b.size(); k += 3)
+        if (!utl::transform(b,Tlg,k))
           return false;
+
+    if (fabs(myProp->Sy) + fabs(myProp->Sz) > 1.0e-6)
+      for (int i = 1; i <= 3; i++)
+      {
+        ecc1(i) -= Tlg(i,2)*myProp->Sy + Tlg(i,3)*myProp->Sz;
+        ecc2(i) -= Tlg(i,2)*myProp->Sy + Tlg(i,3)*myProp->Sz;
+      }
+  }
+
+  // Lambda function for eccentricity transformation of a beam element vector
+  auto&& veccTransform = [](Vector& b, const Vec3& e1, const Vec3& e2)
+  {
+    b( 4) +=  e1.z*b(2) - e1.y*b(3);
+    b( 5) += -e1.z*b(1) + e1.x*b(3);
+    b( 6) +=  e1.y*b(1) - e1.x*b(2);
+    b(10) +=  e2.z*b(8) - e2.y*b(9);
+    b(11) += -e2.z*b(7) + e2.x*b(9);
+    b(12) +=  e2.y*b(7) - e2.x*b(8);
+  };
+
+  if (!ecc1.isZero() || !ecc2.isZero())
+  {
+    // Transform all element matrices from eccentric end points to grid points
+    for (Matrix& A : elMat.A)
+      eccTransform(A,ecc1,ecc2);
+    for (Vector& b : elMat.b)
+      veccTransform(b,ecc1,ecc2);
   }
 
   return this->ElasticBase::finalizeElement(elmInt,time);
