@@ -12,19 +12,7 @@
 //==============================================================================
 
 #include "SIMLinKLModal.h"
-#include "KirchhoffLovePlate.h"
-#include "KirchhoffLoveShell.h"
-#include "Utilities.h"
-#include "IFEM.h"
-#include "tinyxml2.h"
-
-
-SIMLinKLModal::SIMLinKLModal (std::vector<Mode>& modes, bool shell)
-  : SIMLinElKL(nullptr,shell,true), SIMmodal(modes)
-{
-  parsed = false;
-  alpha1 = alpha2 = 0.0;
-}
+#include "IntegrandBase.h"
 
 
 bool SIMLinKLModal::assembleSystem (const TimeDomain& time,
@@ -52,10 +40,9 @@ bool SIMLinKLModal::assembleSystem (const TimeDomain& time,
   }
 
   // Assemble the modal equation system
-  if (!this->assembleModalSystem(time,mSol,Rhs,
+  if (!this->assembleModalSystem(time,mSol,
                                  myProblem->getIntegrationPrm(2),
-                                 myProblem->getIntegrationPrm(3),
-                                 alpha1,alpha2))
+                                 myProblem->getIntegrationPrm(3)))
     return false;
 
   // Swap the equation systems such that the dynamic simulation driver
@@ -66,25 +53,12 @@ bool SIMLinKLModal::assembleSystem (const TimeDomain& time,
 
 const Vectors& SIMLinKLModal::expandSolution (const Vectors& mSol, bool swapBck)
 {
-  if (!this->expandSolution(mSol,sol))
-    sol.clear();
-
   // Swap back to the full equation system data for postprocessing
   // and assembly of load vector for the next time step
   if (swapBck)
     this->swapSystem(myEqSys,mySam);
 
-  return sol;
-}
-
-
-const Vector& SIMLinKLModal::expandedSolution (int idx) const
-{
-  if (idx >= 0 && idx < (int)sol.size())
-    return sol[idx];
-
-  static Vector empty;
-  return empty;
+  return this->expandSolution(mSol);
 }
 
 
@@ -119,17 +93,7 @@ bool SIMLinKLModal::projectModes (Matrices& sesol,
 
 bool SIMLinKLModal::parse (const tinyxml2::XMLElement* elem)
 {
-  if (parsed)
-    IFEM::cout <<"\t(skipped)"<< std::endl;
-  else if (!strcasecmp(elem->Value(),"newmarksolver"))
-  {
-    utl::getAttribute(elem,"alpha1",alpha1);
-    utl::getAttribute(elem,"alpha2",alpha2);
-  }
-  else
-    return this->SIMLinElKL::parse(elem);
-
-  return true;
+  return this->parseParams(elem) || this->SIMLinElKL::parse(elem);
 }
 
 

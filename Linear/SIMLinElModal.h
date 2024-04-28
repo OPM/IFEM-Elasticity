@@ -32,11 +32,7 @@ public:
   //! \param[in] modes Array of eigenmodes for the elasticity problem
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
   explicit SIMLinElModal(std::vector<Mode>& modes, bool checkRHS = false)
-    : SIMLinEl<Dim>(nullptr,checkRHS,'m'), SIMmodal(modes)
-  {
-    parsed = false;
-    alpha1 = alpha2 = 0.0;
-  }
+    : SIMLinEl<Dim>(nullptr,checkRHS,'m'), SIMmodal(modes) {}
   //! \brief Empty destructor.
   virtual ~SIMLinElModal() {}
 
@@ -68,18 +64,17 @@ public:
       // We need to do this in the first iteration only, as for linear systems
       // the load vector is not supposed to change during the iterations.
       if (!this->Dim::assembleSystem(time,sol,false))
-	return false;
+        return false;
 
       // Extract the load vector in DOF-order
       if (!this->Dim::extractLoadVec(Rhs))
-	return false;
+        return false;
     }
 
     // Assemble the modal equation system
-    if (!this->assembleModalSystem(time,mSol,Rhs,
+    if (!this->assembleModalSystem(time,mSol,
                                    Dim::myProblem->getIntegrationPrm(2),
-                                   Dim::myProblem->getIntegrationPrm(3),
-                                   alpha1,alpha2))
+                                   Dim::myProblem->getIntegrationPrm(3)))
       return false;
 
     // Swap the equation systems such that the dynamic simulation driver
@@ -93,30 +88,13 @@ public:
   //! \param[in] swapBack If \e true, the equation systems are swapped
   virtual const Vectors& expandSolution(const Vectors& mSol, bool swapBack)
   {
-    if (!this->expandSolution(mSol,sol))
-      sol.clear();
-
     // Swap back to the full equation system data for postprocessing
     // and assembly of load vector for the next time step
     if (swapBack)
       this->swapSystem(Dim::myEqSys,Dim::mySam);
 
-    return sol;
+    return this->expandSolution(mSol);
   }
-
-  //! \brief Returns the current expanded dynamic solution.
-  //! \param[in] idx Solution vector index
-  virtual const Vector& expandedSolution(int idx) const
-  {
-    if (idx >= 0 && idx < (int)sol.size())
-      return sol[idx];
-
-    static Vector empty;
-    return empty;
-  }
-
-  //! \brief Returns the number of expanded dynamic solution vectors.
-  virtual size_t numExpSolution() const { return sol.size(); }
 
   //! \brief Serialization support, for the eigenmodes.
   virtual bool serialize(std::map<std::string,std::string>& data) const
@@ -157,24 +135,14 @@ protected:
   //! during the second time parsing for the time integration setup only.
   virtual bool parse(const tinyxml2::XMLElement* elem)
   {
-    if (parsed)
-      IFEM::cout <<"\t(skipped)"<< std::endl;
-    else if (!strcasecmp(elem->Value(),"newmarksolver"))
-    {
-      utl::getAttribute(elem,"alpha1",alpha1);
-      utl::getAttribute(elem,"alpha2",alpha2);
-    }
-    else
-      return this->SIMLinEl<Dim>::parse(elem);
-
-    return true;
+    return this->parseParams(elem) || this->SIMLinEl<Dim>::parse(elem);
   }
 
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details In addition to invoking the inherited method,
-  //! this method sets the \a parsed flag, such that the model parsing
-  //! is skipped when the input file is parsed for the second time,
-  //! for the time integration setup.
+  //! this method sets the \a parsed flag of the parent class SIMmodal,
+  //! such that the model parsing is skipped when the input file is parsed
+  //! for the second time while doing the time integration setup.
   virtual bool preprocessB()
   {
     parsed = true;
@@ -182,14 +150,6 @@ protected:
     this->setIntegrationPrm(1,alpha2);
     return this->SIMLinEl<Dim>::preprocessB();
   }
-
-private:
-  bool   parsed; //!< Set to \e true after the model has been initialized
-  double alpha1; //!< Mass-proportional damping parameter
-  double alpha2; //!< Stiffness-proportional damping parameter
-
-  Vector  Rhs; //!< Current right-hand-side load vector of the dynamic system
-  Vectors sol; //!< Expanded solution vectors from the modal solution
 };
 
 #endif

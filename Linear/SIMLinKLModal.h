@@ -31,7 +31,8 @@ public:
   //! \brief The constructor forwards to the parent class constructors.
   //! \param[in] modes Array of eigenmodes for the elasticity problem
   //! \param[in] shell If \e true, 3 DOFs per node is assumed, otherwise 1
-  explicit SIMLinKLModal(std::vector<Mode>& modes, bool shell = false);
+  explicit SIMLinKLModal(std::vector<Mode>& modes, bool shell = false)
+    :  SIMLinElKL(nullptr,shell,true), SIMmodal(modes) {}
   //! \brief Empty destructor.
   virtual ~SIMLinKLModal() {}
 
@@ -55,13 +56,6 @@ public:
   //! \param[in] swapBck If \e true, the equation systems are swapped
   virtual const Vectors& expandSolution(const Vectors& mSol, bool swapBck);
 
-  //! \brief Returns the current expanded dynamic solution.
-  //! \param[in] idx Solution vector index
-  virtual const Vector& expandedSolution(int idx) const;
-
-  //! \brief Returns the number of expanded dynamic solution vectors.
-  virtual size_t numExpSolution() const { return sol.size(); }
-
   //! \brief Serialization support, for the eigenmodes.
   virtual bool serialize(std::map<std::string,std::string>& data) const;
   //! \brief Deserialization support (for simulation restart).
@@ -84,18 +78,10 @@ protected:
 
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details In addition to invoking the inherited method,
-  //! this method sets the \a parsed flag, such that the model parsing
-  //! is skipped when the input file is parsed for the second time,
-  //! for the time integration setup.
+  //! this method sets the \a parsed flag of the parent class SIMmodal,
+  //! such that the model parsing is skipped when the input file is parsed
+  //! for the second time while doing the time integration setup.
   virtual bool preprocessB();
-
-private:
-  bool   parsed; //!< Set to \e true after the model has been initialized
-  double alpha1; //!< Mass-proportional damping parameter
-  double alpha2; //!< Stiffness-proportional damping parameter
-
-  Vector  Rhs; //!< Current right-hand-side load vector of the dynamic system
-  Vectors sol; //!< Expanded solution vectors from the modal solution
 };
 
 #endif
