@@ -120,7 +120,7 @@ int main (int argc, char** argv)
   bool shell = false;
   bool noProj = false;
   bool noError = false;
-  bool dualSol = false;
+  char dualSol = false;
   char dynSol = false;
   bool dumpModes = false;
   bool dumpNodeMap = false;
@@ -232,9 +232,9 @@ int main (int argc, char** argv)
     else if (!strncmp(argv[i],"-noE",4))
       noError = true;
     else if (!strncmp(argv[i],"-dualadap",9))
-      args.adap = -2;
+      dualSol = 'd', args.adap = -2;
     else if (!strncmp(argv[i],"-dual",5))
-      dualSol = true;
+      dualSol = 'd';
     else if (!strncmp(argv[i],"-dyn",4))
       dynSol = 'd';
     else if (!strncmp(argv[i],"-qstat",6))
@@ -376,9 +376,9 @@ int main (int argc, char** argv)
   else if (KLp)
     model = new SIMLinElKL(nullptr,shell);
   else if (args.dim == 2)
-    model = new SIMLinEl2D(supid, checkRHS, dualSol || args.adap < 0);
+    model = new SIMLinEl2D(supid, checkRHS, dualSol);
   else
-    model = new SIMLinEl3D(supid, checkRHS, dualSol || args.adap < 0);
+    model = new SIMLinEl3D(supid, checkRHS, dualSol);
 
   AdaptiveSIM* aSim = nullptr;
   if (!theSim)

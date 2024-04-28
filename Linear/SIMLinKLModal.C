@@ -20,7 +20,7 @@
 
 
 SIMLinKLModal::SIMLinKLModal (std::vector<Mode>& modes, bool shell)
-  : SIMLinElKL(nullptr,shell), SIMmodal(modes)
+  : SIMLinElKL(nullptr,shell,true), SIMmodal(modes)
 {
   parsed = false;
   alpha1 = alpha2 = 0.0;
@@ -114,21 +114,6 @@ bool SIMLinKLModal::projectModes (Matrices& sesol,
     ok = this->project(sesol[i],myModes[i].eigVec,pMethod);
 
   return ok;
-}
-
-
-KirchhoffLove* SIMLinKLModal::getProblem (int version)
-{
-  KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
-  if (!myProblem)
-  {
-    if (nsd == 3)
-      myProblem = klp = new KirchhoffLoveShell(true);
-    else
-      myProblem = klp = new KirchhoffLovePlate(2,version,true);
-  }
-
-  return klp;
 }
 
 

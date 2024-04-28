@@ -18,7 +18,6 @@
 #include "AnaSol.h"
 #include "IFEM.h"
 #include "Utilities.h"
-
 #include "tinyxml2.h"
 
 
@@ -28,9 +27,9 @@ KirchhoffLove* SIMLinElKL::getProblem (int version)
   if (!myProblem)
   {
     if (nsd == 3)
-      myProblem = klp = new KirchhoffLoveShell();
+      myProblem = klp = new KirchhoffLoveShell(modal);
     else
-      myProblem = klp = new KirchhoffLovePlate(2,version);
+      myProblem = klp = new KirchhoffLovePlate(2,version,modal);
   }
 
   return klp;

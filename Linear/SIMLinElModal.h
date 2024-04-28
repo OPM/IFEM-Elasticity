@@ -32,7 +32,7 @@ public:
   //! \param[in] modes Array of eigenmodes for the elasticity problem
   //! \param[in] checkRHS If \e true, ensure the model is in a right-hand system
   explicit SIMLinElModal(std::vector<Mode>& modes, bool checkRHS = false)
-    : SIMLinEl<Dim>(nullptr,checkRHS,false), SIMmodal(modes)
+    : SIMLinEl<Dim>(nullptr,checkRHS,'m'), SIMmodal(modes)
   {
     parsed = false;
     alpha1 = alpha2 = 0.0;
@@ -151,18 +151,6 @@ public:
   }
 
 protected:
-  //! \brief Returns the actual integrand.
-  //! \details Same as the parent class method, but sets the \a isModal flag.
-  virtual Elasticity* getIntegrand()
-  {
-    if (!Dim::myProblem)
-      Dim::myProblem = new LinearElasticity(Dim::dimension,
-                                            Elastic::axiSymmetry,
-                                            Elastic::GIpointsVTF,true);
-
-    return dynamic_cast<Elasticity*>(Dim::myProblem);
-  }
-
   using SIMLinEl<Dim>::parse;
   //! \brief Parses a data section from an XML element.
   //! \details Overrides the parent class method to do nothing when invoked

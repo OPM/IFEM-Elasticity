@@ -26,7 +26,6 @@
 #include "TractionField.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
-
 #include "tinyxml2.h"
 
 
@@ -40,8 +39,8 @@ public:
   //! \brief The constructor forwards to the parent class constructor.
   //! \param[in] sid Id of superelement subjected to static condensation
   //! \param[in] chkRHS If \e true, ensure the model is in a right-hand system
-  //! \param[in] ds If \e true, also solve the dual problem
-  SIMLinEl(const char* sid, bool chkRHS, bool ds) : SIMElasticity<Dim>(chkRHS)
+  //! \param[in] ds Dual problem and/or dynamics simulation flag, see \ref dualS
+  SIMLinEl(const char* sid, bool chkRHS, char ds) : SIMElasticity<Dim>(chkRHS)
   {
     if (sid) supSC = sid;
     dualS = ds;
@@ -174,14 +173,14 @@ public:
 
 protected:
   //! \brief Returns the actual integrand.
-  virtual Elasticity* getIntegrand()
+  virtual ElasticBase* getIntegrand()
   {
     if (!Dim::myProblem)
       Dim::myProblem = new LinearElasticity(Dim::dimension,
                                             Elastic::axiSymmetry,
-                                            Elastic::GIpointsVTF);
+                                            Elastic::GIpointsVTF, dualS=='m');
 
-    return dynamic_cast<Elasticity*>(Dim::myProblem);
+    return dynamic_cast<ElasticBase*>(Dim::myProblem);
   }
 
   //! \brief Parses the analytical solution from an input stream.
@@ -254,8 +253,7 @@ protected:
   }
 
   using SIMElasticity<Dim>::parse;
-  //! \brief Parses a data section from an XML element
-  //! \param[in] elem The XML element to parse
+  //! \brief Parses a data section from an XML element.
   virtual bool parse(const tinyxml2::XMLElement* elem)
   {
     // Lambda function for parsing the static condensation tag.
@@ -331,7 +329,8 @@ protected:
   //! \details This function allows for specialization of the template
   //! while still reusing as much code as possible.
   //! Only put dimension-specific code in here.
-  bool parseDimSpecific(const tinyxml2::XMLElement* elem, const std::string& type);
+  bool parseDimSpecific(const tinyxml2::XMLElement* elem,
+                        const std::string& type);
 
   //! \brief Performs some pre-processing tasks on the FE model.
   //! \details This method is reimplemented to resolve the topology sets
@@ -362,10 +361,14 @@ protected:
 
 public:
   //! \brief Returns whether a dual solution is available or not.
-  virtual bool haveDualSol() const { return dualS && Dim::dualField; }
+  virtual bool haveDualSol() const { return dualS == 'd' && Dim::dualField; }
 
 private:
-  bool dualS; //!< If \e true, also solve the dual problem
+  //! \brief Flag for dual problem and modal dynamics simulation.
+  //! \details The value is interpreted as follows:
+  //! - = 'd' : Also solve the dual problem
+  //! - = 's' : Perform a modal dynamics simulation
+  char dualS;
 
   Vector myReact; //!< Nodal reaction forces
   Vector myForces; //!< Internal forces in boundary nodes

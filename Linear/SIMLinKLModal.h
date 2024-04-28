@@ -76,9 +76,6 @@ public:
                             SIMoptions::ProjectionMethod pMethod);
 
 protected:
-  //! \brief Returns the actual integrand.
-  virtual KirchhoffLove* getProblem(int version = 1);
-
   using SIMLinElKL::parse;
   //! \brief Parses a data section from an XML element.
   //! \details Overrides the parent class method to do nothing when invoked

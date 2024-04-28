@@ -25,7 +25,8 @@ class SIMLinElKL : public SIMKLShell
 {
 public:
   //! \brief The constructor forwards to the parent class constructor.
-  SIMLinElKL(const char* heading, bool shell) : SIMKLShell(heading,shell) {}
+  explicit SIMLinElKL(const char* heading, bool shell = false, bool m = false)
+    : SIMKLShell(heading,shell), modal(m) {}
   //! \brief Empty destructor.
   virtual ~SIMLinElKL() {}
 
@@ -49,6 +50,9 @@ protected:
 
   //! \brief Returns norm index of the integrated volume.
   virtual size_t getVolumeIndex() const;
+
+private:
+  bool modal; //!< Modal dynamics simulation flag
 };
 
 #endif

@@ -30,7 +30,7 @@ class FunctionBase;
   \details Implements common features for linear and nonlinear elasticity
   problems. This class is used for continuum problems only (2D and 3D domains
   with the same number of unknowns per node as the number of space dimensions.
-  Note that the \a evalInt method is not implemented by this class.
+  Note that the Integrand::evalInt() method is not implemented by this class.
   Thus, it is regarded as an abstract base class with a protected constructor.
 */
 
