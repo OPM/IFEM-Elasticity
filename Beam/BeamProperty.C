@@ -308,8 +308,8 @@ void BeamProperty::eval (const Vec3& X, double L,
   EI_y = EIyfunc ? (*EIyfunc)(X) : E*(Iyfunc ? (*Iyfunc)(X) : Iy);
   EI_z = EIzfunc ? (*EIzfunc)(X) : E*(Izfunc ? (*Izfunc)(X) : Iz);
   GI_t = GItfunc ? (*GItfunc)(X) : G*(Ixfunc ? (*Ixfunc)(X) : It);
-  Al_y = 12.0*(EI_y/(G*L*L)) * (Ayfunc ? (*Ayfunc)(X) : Ky/Area);
-  Al_z = 12.0*(EI_z/(G*L*L)) * (Azfunc ? (*Azfunc)(X) : Kz/Area);
+  Al_y = 12.0*(EI_y/(G*L*L)) * (Ayfunc ? 1.0 / (*Ayfunc)(X) : Ky / Area);
+  Al_z = 12.0*(EI_z/(G*L*L)) * (Azfunc ? 1.0 / (*Azfunc)(X) : Kz / Area);
   ItoA = (Ixfunc ? (*Ixfunc)(X) : It) / Area;
 
   S_y = Syfunc ? (*Syfunc)(X) : Sy;
