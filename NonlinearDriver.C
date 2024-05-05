@@ -103,7 +103,7 @@ bool NonlinearDriver::parse (const tinyxml2::XMLElement* elem)
         save0 = false; // Deactivate initial configuration dump if grid output
   }
 
-  return this->NonLinSIM::parse(elem);
+  return params.parse(elem) && this->NonLinSIM::parse(elem);
 }
 
 
