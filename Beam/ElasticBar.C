@@ -324,9 +324,9 @@ double ElasticBar::getStrain (double LoverL0) const
 
 bool ElasticBar::finalizeElement (LocalIntegral& elmInt,
                                   const FiniteElement& fe,
-                                  const TimeDomain& time, size_t iGP)
+                                  const TimeDomain& time, size_t)
 {
-  bool ok = this->ElasticBase::finalizeElement(elmInt,time,iGP);
+  bool ok = this->finalizeElement(elmInt,time);
   if (!ok || npv > 2)
     return ok;
 

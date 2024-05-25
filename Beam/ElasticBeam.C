@@ -626,7 +626,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 
 
 bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
-                                   const TimeDomain& time, size_t iGP)
+                                   const TimeDomain& time, size_t)
 {
   if (inLocalAxes)
   {
@@ -647,7 +647,7 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
           return false;
   }
 
-  return this->ElasticBase::finalizeElement(elmInt,time,iGP);
+  return this->ElasticBase::finalizeElement(elmInt,time);
 }
 
 

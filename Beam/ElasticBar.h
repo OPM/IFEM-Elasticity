@@ -79,12 +79,11 @@ public:
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Nodal and integration point data for current element
   //! \param[in] time Parameters for nonlinear and time-dependent simulations
-  //! \param[in] iGP Global integration point counter of first point in element
   //!
   //! \details This method is used to shrink the element matrices
   //! in the case of two-dimensional geometry with two DOFs per node.
   virtual bool finalizeElement(LocalIntegral& elmInt, const FiniteElement& fe,
-                               const TimeDomain& time, size_t iGP);
+                               const TimeDomain& time, size_t);
 
 private:
   //! \brief Evaluates the axial strain.

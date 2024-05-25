@@ -81,9 +81,12 @@ public:
   //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] time Parameters for nonlinear and time-dependent simulations
-  //! \param[in] iGP Global integration point counter of first point in element
+  //!
+  //! \details This method is used to transform the beam element matrices
+  //! from the local axes of the element to the global coordinate axes.
+  //! This also includes the effects of eccentric end points, if any.
   virtual bool finalizeElement(LocalIntegral& elmInt,
-                               const TimeDomain& time, size_t iGP);
+                               const TimeDomain& time, size_t);
 
   //! \brief Returns a pointer to an Integrand for solution norm evaluation.
   //! \note The Integrand object is allocated dynamically and has to be deleted

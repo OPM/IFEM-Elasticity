@@ -32,7 +32,7 @@ protected:
   ElasticBase();
 
 public:
-  //! \brief The destructor deletes the BDF object, if any.
+  //! \brief The destructor deletes the BDFD2 object, if any.
   virtual ~ElasticBase();
 
   //! \brief Parses material properties from a character string.
@@ -75,7 +75,7 @@ public:
   //! \param[in] i Index of the integration parameter to return
   virtual double getIntegrationPrm(unsigned short int i) const;
 
-  //! \brief Advances the BDF time step scheme one step forward.
+  //! \brief Advances the %BDF time step scheme one step forward.
   void advanceStep(double dt, double dtn);
 
   //! \brief Returns whether this integrand has explicit boundary contributions.
@@ -105,7 +105,7 @@ public:
   //! integrand in case of a dynamics simulation, where it is needed to compute
   //! the effective stiffness/mass matrix used in the Newton iterations.
   virtual bool finalizeElement(LocalIntegral& elmInt,
-                               const TimeDomain& time, size_t);
+                               const TimeDomain& time, size_t = 0);
 
 protected:
   Vec3 gravity; //!< Gravitation vector

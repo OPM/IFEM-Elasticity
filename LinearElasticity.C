@@ -385,7 +385,7 @@ bool LinearElasticity::formInitStrainForces (ElmMats& elMat, const Vector& N,
 
 bool LinearElasticity::finalizeElement (LocalIntegral& elmInt,
                                         const FiniteElement& fe,
-                                        const TimeDomain& time, size_t iGP)
+                                        const TimeDomain& time, size_t)
 {
   if (fe.iel > 0)
   {
@@ -396,5 +396,5 @@ bool LinearElasticity::finalizeElement (LocalIntegral& elmInt,
       myMmats[iel] = static_cast<ElmMats&>(elmInt).A[eM-1];
   }
 
-  return this->Elasticity::finalizeElement(elmInt,fe,time,iGP);
+  return this->finalizeElement(elmInt,time);
 }

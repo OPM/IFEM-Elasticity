@@ -95,13 +95,16 @@ public:
                        const Vec3& X, const Vec3& normal) const;
 
   using Elasticity::finalizeElement;
-  //! \brief Finalizes the element quantities after the numerical integration.
+  //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] fe Nodal and integration point data for current element
   //! \param[in] time Parameters for nonlinear and time-dependent simulations
-  //! \param[in] iGP Global integration point counter of first point in element
+  //!
+  //! \details This method is used to updates the element matrix buffers
+  //! \ref myKmats and \ref myMmats, in case initLHSbuffers() has been invoked
+  //! with \a nEl > 1 as argument.
   virtual bool finalizeElement(LocalIntegral& elmInt, const FiniteElement& fe,
-                               const TimeDomain& time, size_t iGP);
+                               const TimeDomain& time, size_t);
 
   //! \brief Returns which integrand to be used.
   virtual int getIntegrandType() const;
