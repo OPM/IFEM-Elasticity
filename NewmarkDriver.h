@@ -53,12 +53,11 @@ protected:
     }
     else if (!strcasecmp(elem->Value(),"postprocessing"))
     {
-      const tinyxml2::XMLElement* respts = elem->FirstChildElement("resultpoints");
-      if (respts)
+      const tinyxml2::XMLElement* res = elem->FirstChildElement("resultpoints");
+      if (res)
         // The point file is used only for point and line output (not for grid)
-        if (respts->FirstChildElement("point") ||
-            respts->FirstChildElement("line"))
-          utl::getAttribute(respts,"file",rptFile);
+        if (res->FirstChildElement("point") || res->FirstChildElement("line"))
+          utl::getAttribute(res,"file",rptFile);
     }
 
     bool ok = this->Newmark::parse(elem);
