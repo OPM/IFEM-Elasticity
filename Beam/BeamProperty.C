@@ -29,6 +29,7 @@ BeamProperty::BeamProperty (const tinyxml2::XMLElement* prop)
   Iy = Iz = 0.001;
   Ky = Kz = 0.0;
   Sy = Sz = 0.0;
+  phi = 0.0;
 
   EAfunc = EIyfunc = EIzfunc = GItfunc = nullptr;
   rhofunc = Ixfunc = Iyfunc = Izfunc = nullptr;
@@ -58,6 +59,21 @@ BeamProperty::~BeamProperty ()
   delete CGzfunc;
   delete Syfunc;
   delete Szfunc;
+}
+
+
+void BeamProperty::setConstant (const std::vector<double>& values)
+{
+  if (values.size() > 0) A   = values[0];
+  if (values.size() > 2) Ix  = values[1] + values[2];
+  if (values.size() > 1) Iy  = values[1];
+  if (values.size() > 2) Iz  = values[2];
+  if (values.size() > 3) It  = values[3];
+  if (values.size() > 4) Ky  = values[4];
+  if (values.size() > 5) Kz  = values[5];
+  if (values.size() > 6) Sy  = values[6];
+  if (values.size() > 7) Sz  = values[7];
+  if (values.size() > 8) phi = values[8];
 }
 
 
@@ -292,8 +308,8 @@ void BeamProperty::eval (const Vec3& X, double L,
   EI_y = EIyfunc ? (*EIyfunc)(X) : E*(Iyfunc ? (*Iyfunc)(X) : Iy);
   EI_z = EIzfunc ? (*EIzfunc)(X) : E*(Izfunc ? (*Izfunc)(X) : Iz);
   GI_t = GItfunc ? (*GItfunc)(X) : G*(Ixfunc ? (*Ixfunc)(X) : It);
-  Al_y = 12.0*(EI_y/(G*L*L)) * (Ayfunc ? (*Ayfunc)(X) : Ky/Area);
-  Al_z = 12.0*(EI_z/(G*L*L)) * (Azfunc ? (*Azfunc)(X) : Kz/Area);
+  Al_y = 12.0*EI_y / (G*(Ayfunc ? (*Ayfunc)(X) : Area*Ky) * L*L);
+  Al_z = 12.0*EI_z / (G*(Azfunc ? (*Azfunc)(X) : Area*Kz) * L*L);
   ItoA = (Ixfunc ? (*Ixfunc)(X) : It) / Area;
 
   S_y = Syfunc ? (*Syfunc)(X) : Sy;
