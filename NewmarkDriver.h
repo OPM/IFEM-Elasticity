@@ -21,6 +21,7 @@
 #include "HDF5Restart.h"
 #include "TimeStep.h"
 #include "Utilities.h"
+#include "Profiler.h"
 #include "tinyxml2.h"
 #include <fstream>
 
@@ -124,6 +125,8 @@ public:
           status += 6;
       }
 
+      utl::profiler->start("Postprocessing");
+
       // Print solution components at the user-defined points
       this->dumpResults(params.time.t,*log,rptPrec,!os);
 
@@ -137,12 +140,12 @@ public:
 
         // Save solution variables to HDF5
         if (writer && !writer->dumpTimeLevel(&params))
-          status += 11;
+          status += 15;
 
         // Save solution variables to grid files, if specified
         if (!Newmark::model.saveResults(this->realSolution(),
                                         params.time.t,iStep))
-          status += 12;
+          status += 16;
 
         nextSave = params.time.t + Newmark::opt.dtSave;
         if (nextSave > params.stopTime)
@@ -154,8 +157,10 @@ public:
       {
         HDF5Restart::SerializeData data;
         if (this->serialize(data) && !restart->writeData(data))
-          status += 13;
+          status += 17;
       }
+
+      utl::profiler->stop("Postprocessing");
     }
 
     if (os)
@@ -193,7 +198,7 @@ protected:
   int saveStep(int iStep, const std::string& prefix)
   {
     if (!this->saveStep(iStep,params.time.t))
-      return 7;
+      return 11;
 
     int ip = this->numSolution() - 2;
     if (ip > 0)
@@ -202,17 +207,17 @@ protected:
       if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
                                      Newmark::nBlock,params.time.t,
                                      "velocity",20,nf))
-        return 8;
+        return 12;
 
       if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
                                      Newmark::nBlock,params.time.t,
                                      "acceleration",30,nf))
-        return 9;
+        return 13;
     }
 
     if (!Newmark::model.writeGlvP(proSol,iStep,Newmark::nBlock,110,
                                   prefix.c_str()))
-      return 10;
+      return 14;
 
     return 0;
   }

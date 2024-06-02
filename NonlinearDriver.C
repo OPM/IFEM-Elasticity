@@ -18,18 +18,16 @@
 #include "Elasticity.h"
 #include "DataExporter.h"
 #include "HDF5Restart.h"
+#include "Profiler.h"
 #include "IFEM.h"
 #include "tinyxml2.h"
 
 
 NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
-  : NonLinSIM(sim), proSol(1)
+  : NonLinSIM(sim, linear ? NONE : ENERGY), proSol(1)
 {
   aStep = 0;
   save0 = opt.pSolOnly = true;
-
-  if (linear)
-    iteNorm = NONE;
 
   if (adaptive)
   {
@@ -305,6 +303,8 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       adap->printNorms(gNorm,Vectors(),eNorm);
     }
 
+    utl::profiler->start("Postprocessing");
+
     // Print solution components at the user-defined points
     model.setMode(SIM::RECOVERY);
     this->dumpResults(params.time.t,IFEM::cout,outPrec);
@@ -328,11 +328,11 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       if (opt.format >= 0)
       {
         if (!this->saveStep(iStep,params.time.t))
-          return 10;
+          return 11;
 
         if (!myForces.empty())
           if (!model.writeGlvV(myForces,"Internal forces",iStep,nBlock,2))
-            return 10;
+            return 11;
 
         if (pit != opt.project.end())
         {
@@ -340,11 +340,11 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
           if (!model.writeGlvP(proSol.front(),iStep,
                                nBlock,110,pit->second.c_str(),
                                elp ? elp->getMaxVals() : nullptr))
-            return 10;
+            return 11;
 
           // Write element norms
           if (!model.writeGlvN(eNorm,iStep,nBlock,{pit->second}))
-            return 10;
+            return 11;
         }
       }
 
@@ -352,19 +352,19 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
       // Save solution variables to HDF5 file
       if (writer && !writer->dumpTimeLevel(&params))
-        return 11;
+        return 12;
 
       // Save solution state to restart HDF5 file
       if (restart && restart->dumpStep(params))
       {
         SerializeMap data;
         if (this->serialize(data) && !restart->writeData(data))
-          return 11;
+          return 12;
       }
 
       // Save solution variables to grid files, if specified
       if (!model.saveResults(solution.front(),params.time.t,iStep))
-        return 12;
+        return 13;
 
       if (elp) elp->enableMaxValCalc(true);
 
@@ -375,10 +375,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
     else if (getMaxVals)
     {
       if (!model.eval2ndSolution(solution.front(),params.time.t))
-        return 13;
+        return 14;
 
       if (!model.writeGlvP(proSol.front(),0,nBlock,0,nullptr,elp->getMaxVals()))
-        return 14;
+        return 15;
     }
 
     // Print out the maximum von Mises stress, etc., if present
@@ -392,6 +392,8 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       elp->printMaxVals(outPrec,id+6); // stress triaxiality, T
       elp->printMaxVals(outPrec,id+7); // Lode parameter, L
     }
+
+    utl::profiler->stop("Postprocessing");
   }
 
   return 0;
