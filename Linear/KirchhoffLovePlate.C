@@ -331,6 +331,22 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vectors& eV,
 }
 
 
+bool KirchhoffLovePlate::finalizeElement (LocalIntegral& elmInt,
+                                          const TimeDomain& time, size_t)
+{
+  this->KirchhoffLove::finalizeElement(elmInt,time);
+
+  if (iS && eK && !elmInt.vec.empty())
+  {
+    Matrix& Kmat = static_cast<ElmMats&>(elmInt).A[eK-1];
+    Vector& Svec = static_cast<ElmMats&>(elmInt).b[iS-1];
+    return Kmat.multiply(elmInt.vec.front(),Svec,false,-1);
+  }
+
+  return true;
+}
+
+
 size_t KirchhoffLovePlate::getNoFields (int fld) const
 {
   if (fld < 2)

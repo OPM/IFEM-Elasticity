@@ -14,7 +14,8 @@
 #include "KirchhoffLove.h"
 #include "MaterialBase.h"
 #include "FiniteElement.h"
-#include "ElmMats.h"
+#include "NewmarkMats.h"
+#include "TimeDomain.h"
 #include "Function.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
@@ -41,6 +42,8 @@ KirchhoffLove::KirchhoffLove (unsigned short int n, bool m) : IntegrandBase(n)
 
   includeShear = true;
   isModal = m;
+
+  memset(intPrm,0,sizeof(intPrm));
 }
 
 
@@ -70,7 +73,9 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
   eM = eK = 0;
   eS = gS = iS = 0;
 
-  if (m_mode >= SIM::RHS_ONLY)
+  if (m_mode == SIM::DYNAMIC)
+    primsol.resize(3);
+  else if (m_mode >= SIM::RHS_ONLY)
     primsol.resize(1);
   else
     primsol.clear();
@@ -82,6 +87,12 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
     case SIM::STATIC:
       eK = 1;
       eS = 1;
+      break;
+
+    case SIM::DYNAMIC:
+      eK = 3;
+      eM = 2;
+      eS = iS = 1;
       break;
 
     case SIM::VIBRATION:
@@ -151,10 +162,15 @@ void KirchhoffLove::initIntegration (size_t nGp, size_t nBp)
 LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
                                                 bool neumann) const
 {
+  ElmMats* result = nullptr;
   if (this->inActive(iEl))
-    return nullptr; // element is not in current material group
+    return result; // element is not in current material group
 
-  ElmMats* result = new ElmMats();
+  if (m_mode == SIM::DYNAMIC && !isModal)
+    result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
+  else
+    result = new ElmMats();
+
   switch (m_mode)
     {
     case SIM::STATIC:
@@ -162,6 +178,13 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
       result->resize(neumann ? 0 : 1, m_mode, npv);
+      break;
+
+    case SIM::DYNAMIC:
+      result->rhsOnly = neumann;
+      result->withLHS = !neumann;
+      result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
+                     neumann || intPrm[3] > 0.0 ? 1 : 2, nsd);
       break;
 
     case SIM::VIBRATION:
@@ -361,6 +384,15 @@ bool KirchhoffLove::evalPoint (LocalIntegral& elmInt, const FiniteElement& fe,
     else for (unsigned short int i = 0; i < npv && i < sumLoad.size(); i++)
       sumLoad[i] += pval[i]*fe.detJxW;
   }
+
+  return true;
+}
+
+
+bool KirchhoffLove::finalizeElement (LocalIntegral& elmInt,
+                                     const TimeDomain& time, size_t)
+{
+  static_cast<ElmMats&>(elmInt).setStepSize(time.dt,time.it);
 
   return true;
 }

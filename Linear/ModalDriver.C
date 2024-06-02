@@ -135,9 +135,8 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   simulator.printProblem();
 
   // Save FE model to VTF file for visualization
-  if (model->opt.format >= 0)
-    if (!simulator.saveModel(infile))
-      return 2;
+  if (model->opt.format >= 0 && !simulator.saveModel(infile))
+    return 2;
 
   // Initialize the linear equation system.
   // Actually, we don't need any system matrices here
@@ -165,7 +164,6 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
 
   // Run the modal time integration
   int status = simulator.solveProblem(exporter,restart,zero_tol,outPrec);
-
   delete restart;
   return status;
 }

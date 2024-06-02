@@ -22,7 +22,7 @@
 #include "ElasticityArgs.h"
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
-#include "ModalSim.h"
+#include "DynamicSim.h"
 #include "HDF5Writer.h"
 #include "Utilities.h"
 #include "ElementBlock.h"
@@ -424,6 +424,9 @@ int main (int argc, char** argv)
     delete exporter;
     return status;
   };
+
+  if (dynSol && !modalS) // Invoke the linear Newmark time integration simulator
+    return terminate(dynamicSim(infile,model,fixDup,zero_tol,outPrec));
 
   // Read in model definitions
   if (!theSim->read(infile))

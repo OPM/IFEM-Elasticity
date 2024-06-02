@@ -86,6 +86,18 @@ public:
                        const FiniteElement& fe, const Vec3& X,
                        bool toLocal = false) const;
 
+  using IntegrandBase::finalizeElement;
+  //! \brief Finalizes the element matrices after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //!
+  //! \details This method is used to pass time step size parameters to the
+  //! integrand in case of a dynamics simulation, where it is needed to compute
+  //! the effective stiffness/mass matrix used in the Newton iterations,
+  //! and to calculate the internal forces from the current solution vector.
+  virtual bool finalizeElement(LocalIntegral& elmInt,
+                               const TimeDomain& time, size_t = 0);
+
   //! \brief Returns the plate stiffness parameter at the specified point \a X.
   double getStiffness(const Vec3& X) const;
 

@@ -145,6 +145,17 @@ public:
   virtual bool evalPoint(LocalIntegral& elmInt, const FiniteElement& fe,
                          const Vec3& pval);
 
+  using IntegrandBase::finalizeElement;
+  //! \brief Finalizes the element matrices after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //!
+  //! \details This method is used to pass time step size parameters to the
+  //! integrand in case of a dynamics simulation, where it is needed to compute
+  //! the effective stiffness/mass matrix used in the Newton iterations.
+  virtual bool finalizeElement(LocalIntegral& elmInt,
+                               const TimeDomain& time, size_t = 0);
+
 protected:
   //! \brief Calculates integration point mass matrix contributions.
   //! \param EM Element matrix to receive the mass contributions
