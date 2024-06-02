@@ -5,7 +5,6 @@ Equation solver: 2
 Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Basis function values are precalculated but not cached
-Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 Parsing input file RectPlate-modal.xinp
 Parsing <discretization>

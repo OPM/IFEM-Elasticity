@@ -19,7 +19,7 @@
 #include "SIMLinKLModal.h"
 #include "SIMLinElSup.h"
 #include "SIMmcStatic.h"
-#include "SIMargsBase.h"
+#include "ElasticityArgs.h"
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
 #include "ModalSim.h"
@@ -129,7 +129,7 @@ int main (int argc, char** argv)
   char* supid = nullptr;
   Elasticity::wantStrain = false;
   Elasticity::wantPrincipalStress = true;
-  SIMargsBase args("elasticity");
+  ElasticityArgs args;
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
 
@@ -287,7 +287,8 @@ int main (int argc, char** argv)
                "[-1D2DKL[shel]|-1D3D|-1Dsup]","[-nGauss <n>]","[-time <t>]",
                "[-tracRes]","[-hdf5 [<filename>] [-dumpNodeMap]]",
                "[-vtf <frmt> [-nviz <nviz>] [-nu <nu>] [-nv <nv>] [-nw <nw>]]",
-               "[-shrink <eps>]","[-adap[<i>]|-dualadap]","[-staticCond [<sid>]]",
+               "[-shrink <eps>]","[-adap[<i>]|-dualadap]",
+               "[-staticCond [<sid>]]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
                "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
                "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
@@ -297,14 +298,32 @@ int main (int argc, char** argv)
     return 0;
   }
 
-  if (args.adap && IFEM::getOptions().discretization < ASM::LRSpline)
-    IFEM::getOptions().discretization = ASM::LRSpline;
-  else if (isC1 && IFEM::getOptions().discretization < ASM::LRSpline)
-    IFEM::getOptions().discretization = ASM::SplineC1;
+  if (IFEM::getOptions().discretization < ASM::LRSpline)
+  {
+    if (args.adap)
+      IFEM::getOptions().discretization = ASM::LRSpline;
+    else if (isC1)
+      IFEM::getOptions().discretization = ASM::SplineC1;
+  }
+
+  if (IFEM::getOptions().eig < 0)
+    args.eig = 0;
+  else if (IFEM::getOptions().eig > 0)
+    args.eig = IFEM::getOptions().eig;
+
+  bool genEigVal = args.eig >= 3 && args.eig <= 6 && args.eig != 5;
+  // Boundary conditions can be ignored only in generalized eigenvalue analysis
+  if (!genEigVal) SIMbase::ignoreDirichlet = false;
+
+  if (args.adap) dynSol = false; // not for adaptive grids
+  bool modalS = dynSol && args.dim > 1 && genEigVal; // Modal dynamics solution
 
   IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
-  IFEM::cout <<"\nEvaluation time for property functions: "<< Elastic::time;
+  if (!dynSol)
+    IFEM::cout <<"\nEvaluation time for property functions: "<< Elastic::time;
+  else if (Elastic::time > 1.0)
+    IFEM::cout <<"\nSimulation stop time: "<< Elastic::time;
   if (SIMbase::ignoreDirichlet)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
   if (fixDup)
@@ -364,7 +383,7 @@ int main (int argc, char** argv)
     model  = new SIMLinElSup("3D superelement solver",fixDup);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
-  else if (dynSol)
+  else if (modalS)
   {
     if (KLp)
       model = new SIMLinKLModal(modes,shell);
@@ -393,8 +412,10 @@ int main (int argc, char** argv)
 
   // Lambda function for cleaning the heap-allocated objects on termination.
   // To ensure that their destructors are invoked also on simulation failure.
-  auto&& terminate = [aSim,mSim,model,exporter](int status)
+  auto&& terminate = [aSim,mSim,model,exporter,dynSol](int status)
   {
+    if (status > 10 && !dynSol)
+      utl::profiler->stop("Postprocessing");
     delete aSim;
     if (mSim)
       delete mSim;
@@ -407,13 +428,6 @@ int main (int argc, char** argv)
   // Read in model definitions
   if (!theSim->read(infile))
     return terminate(1);
-
-  // Boundary conditions can be ignored only in generalized eigenvalue analysis
-  if (model->opt.eig != 3 && model->opt.eig != 4 && model->opt.eig != 6)
-    // Dynamic solution requires solving the generalized eigenvalue problem
-    SIMbase::ignoreDirichlet = dynSol = false;
-  else if (args.adap || args.dim < 2)
-    dynSol = false; // not for adaptive grids and 1D problems
 
   // Load vector visualization is not available when using additional viz-points
   for (i = 0; i < 3; i++)
@@ -440,12 +454,12 @@ int main (int argc, char** argv)
 
   // Set default projection method (tensor splines only)
   bool statSol = iop + model->opt.eig%5 == 0 || args.adap;
-  if (model->opt.discretization < ASM::Spline || !(statSol || dynSol) || noProj)
-    pOpt.clear(); // No projection if Lagrange/Spectral or no static solution
+  if (model->opt.discretization < ASM::Spline || !(statSol || modalS) || noProj)
+    pOpt.clear(); // No projection if Lagrange/Spectral or modal solution
   else if (model->opt.discretization == ASM::Spline && pOpt.empty())
     if (args.dim > 1) pOpt[SIMoptions::GLOBAL] = "Greville point projection";
 
-  if (!model->opt.restartFile.empty() && dynSol)
+  if (!model->opt.restartFile.empty() && modalS)
     iop = 100-model->opt.eig; // Skip eigenvalue analysis in restart runs
 
   if (model->opt.discretization < ASM::Spline && !model->opt.hdf5.empty())
@@ -806,11 +820,11 @@ int main (int argc, char** argv)
     for (int iStep = 1; aSim && aSim->adaptMesh(iStep,outPrec); iStep++)
     {
       if (!aSim->solveStep(infile,iStep,true,outPrec))
-        return terminate(10);
+        return terminate(8);
       if (tracRes)
         printBoundaryForces(aSim->getSolution());
       if (!aSim->writeGlv(infile,iStep))
-        return terminate(11);
+        return terminate(9);
       if (exporter)
         exporter->dumpTimeLevel(nullptr,true);
     }
@@ -831,7 +845,7 @@ int main (int argc, char** argv)
       return terminate(9);
   }
 
-  if (dynSol) // Solve the dynamics problem using modal transformation
+  if (modalS) // Solve the dynamics problem using modal transformation
     return terminate(modalSim(infile,modes.size(),dumpModes,dynSol=='s',
                               model,exporter,zero_tol,outPrec));
 
