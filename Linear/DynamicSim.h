@@ -35,7 +35,7 @@ class DataExporter;
 
 int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
               SIMoutput* model, DataExporter* exporter = nullptr,
-              double zero_tol = -1.0, std::streamsize outPrec = 6);
+              double zero_tol = 1.0e-8, std::streamsize outPrec = 6);
 
 /*!
   \brief Driver for direct simulation of linear dynamics problems.
@@ -48,6 +48,6 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
 */
 
 int dynamicSim (char* infile, SIMoutput* model, bool fixDup = false,
-                double zero_tol = -1.0, std::streamsize outPrec = 6);
+                double zero_tol = 1.0e-8, std::streamsize outPrec = 6);
 
 #endif

@@ -77,6 +77,18 @@ public:
   //! \brief Invokes the main pseudo-time stepping simulation loop.
   //! \param writer HDF5 results exporter
   //! \param restart HDF5 restart handler
+  //! \param[in] zero_tol Truncate norm values smaller than this to zero
+  //! \param[in] outPrec Number of digits after the decimal point in norm print
+  int solveProblem(DataExporter* writer = nullptr,
+                   HDF5Restart* restart = nullptr,
+                   double zero_tol = 1.0e-8, std::streamsize outPrec = 0)
+  {
+    return this->solveProblem(writer,restart,nullptr,0,0.0,zero_tol,outPrec);
+  }
+
+  //! \brief Invokes the main pseudo-time stepping simulation loop.
+  //! \param writer HDF5 results exporter
+  //! \param restart HDF5 restart handler
   //! \param oss Output stream for additional ASCII result output
   //! \param[in] printMax Flag for output of maximal stress values
   //! \param[in] dtDump Time increment for dump of ASCII results
@@ -84,7 +96,7 @@ public:
   //! \param[in] outPrec Number of digits after the decimal point in norm print
   int solveProblem(DataExporter* writer, HDF5Restart* restart,
                    utl::LogStream* oss, bool printMax, double dtDump,
-                   double zero_tol, std::streamsize outPrec);
+                   double zero_tol = 1.0e-8, std::streamsize outPrec = 0);
 
   //! \brief Serialize solution state for restarting purposes.
   //! \param data Container for serialized data
