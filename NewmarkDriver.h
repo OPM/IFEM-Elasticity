@@ -206,12 +206,12 @@ protected:
       int nf = Newmark::model.getNoFields();
       if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
                                      Newmark::nBlock,params.time.t,
-                                     "velocity",20,nf))
+                                     "velocity",40,nf))
         return 12;
 
       if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
                                      Newmark::nBlock,params.time.t,
-                                     "acceleration",30,nf))
+                                     "acceleration",50,nf))
         return 13;
     }
 
