@@ -32,8 +32,8 @@ public:
   //! \brief Empty destructor.
   virtual ~ModalDriver() {}
 
-  //! \brief Calculates the current real solution vectors.
-  virtual const Vectors& realSolutions();
+  //! \brief Calculates/returns the current real solution vectors.
+  virtual const Vectors& realSolutions(bool returnCurrent);
   //! \brief Returns a const reference to the current real solution vector.
   virtual const Vector& realSolution(int i = 0) const;
   //! \brief Returns the number of solution vectors.

@@ -17,9 +17,12 @@
 using Parent = NewmarkDriver<NewmarkSIM>; //!< Convenience renaming
 
 
-const Vectors& ModalDriver::realSolutions ()
+const Vectors& ModalDriver::realSolutions (bool returnCurrent)
 {
-  return dynamic_cast<SIMmodal*>(&model)->expandSolution(solution,true);
+  if (returnCurrent)
+    return dynamic_cast<SIMmodal*>(&model)->expandedSolution();
+  else
+    return dynamic_cast<SIMmodal*>(&model)->expandSolution(solution,true);
 }
 
 
