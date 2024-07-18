@@ -128,6 +128,7 @@ public:
       utl::profiler->start("Postprocessing");
 
       // Print solution components at the user-defined points
+      Newmark::model.setMode(SIM::RECOVERY);
       this->dumpResults(params.time.t,*log,rptPrec,!os);
 
       if (params.hasReached(nextSave))
@@ -143,7 +144,7 @@ public:
           status += 15;
 
         // Save solution variables to grid files, if specified
-        if (!Newmark::model.saveResults(this->realSolution(),
+        if (!Newmark::model.saveResults(this->realSolutions(true),
                                         params.time.t,iStep))
           status += 16;
 
@@ -206,12 +207,12 @@ protected:
       int nf = Newmark::model.getNoFields();
       if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
                                      Newmark::nBlock,params.time.t,
-                                     "velocity",40,nf))
+                                     "velocity",40,10+nf))
         return 12;
 
       if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
                                      Newmark::nBlock,params.time.t,
-                                     "acceleration",50,nf))
+                                     "acceleration",50,10+nf))
         return 13;
     }
 

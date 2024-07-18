@@ -96,16 +96,20 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::VIBRATION:
-      eK = 1;
       eM = 2;
-      break;
-
     case SIM::STIFF_ONLY:
       eK = 1;
       break;
 
+    case SIM::MASS_ONLY:
+      eM = 1;
+      eS = 1;
+      break;
+
     case SIM::RHS_ONLY:
       eS = 1;
+    case SIM::INT_FORCES:
+      iS = 1;
       break;
 
     default:
@@ -175,9 +179,10 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
     {
     case SIM::STATIC:
     case SIM::ARCLEN:
+    case SIM::MASS_ONLY:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : 1, m_mode, npv);
+      result->resize(neumann ? 0 : 1, m_mode==SIM::MASS_ONLY ? 1 : m_mode, npv);
       break;
 
     case SIM::DYNAMIC:

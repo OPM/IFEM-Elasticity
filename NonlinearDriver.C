@@ -363,7 +363,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       }
 
       // Save solution variables to grid files, if specified
-      if (!model.saveResults(solution.front(),params.time.t,iStep))
+      if (!model.saveResults(solution,params.time.t,iStep))
         return 13;
 
       if (elp) elp->enableMaxValCalc(true);
