@@ -1,0 +1,90 @@
+../SquarePoint_p3.xinp -2DKL -spr
+
+Input file: SquarePoint_p3.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file SquarePoint_p3.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 10
+	Length in Y = 10
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+  Parsing <raiseorder>
+	Raising order of P1 2 2
+  Parsing <refine>
+	Refining P1 3 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 2.1e+11 0.3 1 0.1
+	Point: P1 xi = 0.5 0.5 load = 10000
+	Analytic solution: NavierPlate a=10 b=10 t=0.1 E=2.1e+11 nu=0.3 pz=10000 xi=0.5 eta=0.5
+NavierPlate: w_centre = 0.0006032093628
+             Max. number of terms in Fourier series = 100
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+	Point 2: P1 xi = 0.5 0.25
+	Point 3: P1 xi = 0.25 0.5
+	Point 4: P1 xi = 0.25 0.25
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLovePlate: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+Result point #1: patch #1 (u,v)=(0.5,0.5), node #25, X = 5 5 0
+Result point #2: patch #1 (u,v)=(0.5,0.25), node #18, X = 5 2.5 0
+Result point #3: patch #1 (u,v)=(0.25,0.5), node #24, X = 2.5 5 0
+Result point #4: patch #1 (u,v)=(0.25,0.25), node #17, X = 2.5 2.5 0
+ >>> SAM model summary <<<
+Number of elements    16
+Number of nodes       49
+Number of dofs        49
+Number of unknowns    25
+Load point #1: patch #1 (u,v)=(0.5,0.5) on element #11, X = 5 5 0
+Number of quadrature points 256
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : 10000 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.000198678
+Max displacement   : 0.000843116
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 2.43875
+External energy ((f,u^h)+(t,u^h)^0.5 : 2.43875
+Exact norm  |u|   = a(u,u)^0.5       : 2.45814
+Exact error a(e,e)^0.5, e=u-u^h      : 0.291469
+Exact relative error (%) : 11.8573
+  Node #25:	sol1 =  5.947510e-04
+		exact1  6.032094e-04
+		sol2 =  2.579846e+03  2.579846e+03  0.000000e+00 -7.279908e+02 -7.279908e+02
+		exact2  5.303541e+03  5.303541e+03  0.000000e+00
+  Node #18:	sol1 =  3.708524e-04
+		exact1  3.712398e-04
+		sol2 =  1.004542e+03  4.510754e+02  0.000000e+00 -2.399330e+02  1.223718e+03
+		exact2  9.868972e+02  5.946594e+02  0.000000e+00
+  Node #24:	sol1 =  3.708524e-04
+		exact1  3.712398e-04
+		sol2 =  4.510754e+02  1.004542e+03  0.000000e+00  1.223718e+03 -2.399330e+02
+		exact2  5.946594e+02  9.868972e+02  0.000000e+00
+  Node #17:	sol1 =  2.481256e-04
+		exact1  2.479190e-04
+		sol2 =  4.619597e+02  4.619597e+02 -4.466391e+02  2.546509e+02  2.546509e+02
+		exact2  4.558936e+02  4.558936e+02 -4.310359e+02

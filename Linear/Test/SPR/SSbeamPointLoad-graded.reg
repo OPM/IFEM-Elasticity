@@ -1,0 +1,83 @@
+../SSbeamPointLoad-graded.xinp -1DKL -spr
+
+Input file: SSbeamPointLoad-graded.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file SSbeamPointLoad-graded.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+	Length = 2
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+	Raising order of P1 1
+  Parsing <refine>
+	hmax = 0.125 (8)
+	hmin = 0.015625 (64)
+	Refining P1 with explicit knots:
+	0.125 0.25 0.375 0.4375 0.46875 0.5 0.53125 0.5625 0.625 0.75
+	0.875
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 400000 1 0.01
+	Gravitation constant: 10
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+	Stress: L=2.0; q=0.1; P=1.0; (q\*x\*(L-x) + P\*if(below(x,L/2.0),x,L-x))/2.0
+	Derivative_11: q=0.1; -q
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+	Point 2: P1 xi = 0.2
+	Point 3: P1 xi = 0.8
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 3 5
+Spline basis with C1-continuous patch interfaces is used
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+Result point #2: patch #1 u=0.2, X = 0.4 0 0
+Result point #3: patch #1 u=0.8, X = 1.6 0 0
+ >>> SAM model summary <<<
+Number of elements    12
+Number of nodes       14
+Number of dofs        14
+Number of unknowns    12
+Load point #1: patch #1 u=0.5 on element #7 (u=0.5), X = 1 0 0
+Number of quadrature points 36
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : 1.18333 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 4.15907
+Max displacement   : 5.55593
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 2.5005
+External energy ((f,u^h)+(t,u^h)^0.5 : 2.5005
+Exact norm  |u|   = a(u,u)^0.5       : 2.51595
+Exact error a(e,e)^0.5, e=u-u^h      : 0.278409
+Exact relative error (%) : 11.0658
+Residual error (r(u) + J(u))^0.5 : 0
+ relative error (% of |u|) : 0
+  Point #1:	sol1 =  5.555931e+00
+		sol2 =  5.343099e-01  0.000000e+00
+		exact2  5.500000e-01
+  Point #2:	sol1 =  3.173984e+00
+		sol2 =  2.177083e-01  0.000000e+00
+		exact2  2.320000e-01
+  Point #3:	sol1 =  3.173984e+00
+		sol2 =  2.177083e-01  0.000000e+00
+		exact2  2.320000e-01

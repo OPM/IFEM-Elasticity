@@ -1,0 +1,57 @@
+../SScablePointLoad.xinp -1DC1 -spr
+
+Input file: SScablePointLoad.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Solution component output zero tolerance: 1e-06
+Parsing input file SScablePointLoad.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+	Raising order of P1 2
+  Parsing <refine>
+	Refining P1 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+Parsing <cable>
+  Parsing <material>
+	Axial stiffness = 0.012
+	Bending stiffness = 1e-07
+	Mass density = 7850
+  Parsing <pointload>
+	Point: xi = 0.5 dof = -2 Load: 1
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+ElasticCable: Stiffness = 0.012 1e-07, Mass/length = 7850
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 12
+	Constraining P1 V2 in direction(s) 12
+Result point #1: patch #1 u=0.5, node #4, X = 0.5 0 0
+ >>> SAM model summary <<<
+Number of elements    4
+Number of nodes       7
+Number of dofs        14
+Number of unknowns    10
+Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 0.5 0 0
+Number of quadrature points 16
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 88311.6
+Max Y-displacement : 234375
+  Node #4:	sol1 =  0.000000e+00  2.083333e+05
+		sol2 =  0.000000e+00  2.500000e-01

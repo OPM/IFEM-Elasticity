@@ -1,0 +1,74 @@
+../PlateWithColumns_p2.xinp -2DKL -spr
+
+Input file: PlateWithColumns_p2.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file PlateWithColumns_p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 5
+	Length in Y = 4
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+	               plate (1,0,2D)
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 4 3
+  Parsing <refine>
+	Refining P1 1 1
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Gravitation constant: -9.81
+	Material code 0: 2.1e+11 0.3 7850 0.1
+	Pressure code 1000001 (stepxy): (-1e+09\*StepXY(\[4,4.25]x\[3,3.25]))
+	Pressure code 2000001 (stepxy): (1e+09\*StepXY(\[0.75,1]x\[0.75,1]))
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.825 0.775
+	Point 2: P1 xi = 0.175 0.225
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 8
+Spline basis with C1-continuous patch interfaces is used
+Problem definition:
+KirchhoffLovePlate: thickness = 0.1, gravity = -9.81
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850, alpha = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E3 in direction(s) 1
+	Constraining P1 E4 in direction(s) 1
+Result point #1: patch #1 (u,v)=(0.825,0.775), X = 4.125 3.1 0
+Result point #2: patch #1 (u,v)=(0.175,0.225), X = 0.875 0.9 0
+ >>> SAM model summary <<<
+Number of elements    80
+Number of nodes       120
+Number of dofs        120
+Number of unknowns    80
+Number of quadrature points 5120
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : -131770 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.0766514
+Max displacement   : 0.214068
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 4847.38
+External energy ((f,u^h)+(t,u^h)^0.5 : 4847.38
+  Point #1:	sol1 = -1.918849e-01
+		sol2 = -1.178689e+07 -1.161591e+07  6.719230e+05  7.465968e+05  1.191962e+05
+  Point #2:	sol1 =  1.914356e-01
+		sol2 =  1.178112e+07  1.160933e+07 -6.666702e+05  7.416761e+05  1.157686e+05

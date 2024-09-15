@@ -1,0 +1,82 @@
+../BeamFrame.xinp -1D -spr
+
+Input file: BeamFrame.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file BeamFrame.xinp
+Parsing <beam>
+  Parsing <geometry>
+  Parsing <patches>
+	Reading inlined patch geometry definition
+	Reading patch 1
+	Reading patch 2
+	Reading patch 3
+	Reading patch 4
+  Parsing <refine>
+  Parsing <topology>
+  Parsing <topologysets>
+	Topology sets: column (4,0,1D)
+	               support (1,1,0D) (2,1,0D) (3,1,0D)
+	               tripod (1,0,1D) (2,0,1D) (3,0,1D)
+  Parsing <patches>
+  Parsing <refine>
+	Refining P1 4
+	Refining P2 4
+	Refining P3 4
+	Refining P4 4
+  Parsing <topology>
+	Connecting P1 V2 to P4 V1
+	Connecting P2 V2 to P4 V1
+	Connecting P3 V2 to P4 V1
+  Parsing <topologysets>
+  Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123: (fixed)
+  Parsing <material>
+	Stiffness moduli = 2.1e+11 8.1e+10, mass density = 7850
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.000703717, moments of inertia = 5.54529e-07 2.77264e-07 2.77264e-07 5.54529e-07
+	Shear parameters = 0 0 2 2
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.00149226, moments of inertia = 3.37623e-06 1.68812e-06 1.68812e-06 3.37623e-06
+	Shear parameters = 0 0 2 2
+  Parsing <pointload>
+	Point: P4 xi = 1 dof = 1 Load: 1000
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 1
+Problem definition:
+ElasticBeam: E = 2.1e+11, G = 8.1e+10, rho = 7850
+             A = 0.00149226, Ix = 3.37623e-06, Iy = 1.68812e-06, Iz = 1.68812e-06, It = 3.37623e-06
+             Ky = 2, Kz = 2, Sy = 0, Sz = 0
+Renumbered 10 nodes.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 123
+	Constraining P2 V1 in direction(s) 123
+	Constraining P3 V1 in direction(s) 123
+ >>> SAM model summary <<<
+Number of elements    20
+Number of nodes       21
+Number of dofs        126
+Number of unknowns    117
+Load point #1: patch #4 u=1, node #21, X = 0 0 4
+Number of quadrature points 20
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Assembling interior matrix terms for P4
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.00495491
+Max X-displacement : 0.0269531
+Max Y-displacement : 0.000953047
+Max Z-displacement : 0.00183868
+Max x-displacement : 0.00110453
+Max y-displacement : 0.0152861
+Max z-displacement : 0.00711861
+Integrating solution norms (FE solution) ...
+L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.0345796

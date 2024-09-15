@@ -1,0 +1,130 @@
+../Beam+KLcyl-p3.xinp -1D2DKLshell -spr
+
+Input file: Beam+KLcyl-p3.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+1. Coupled linear static solver
+Parsing input file Beam+KLcyl-p3.xinp
+Parsing <KirchhoffLove>
+  Parsing <patchfile>
+	Reading data file halfcyl.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: P1 (0,0,0D) 3 0 0
+	               P2 (0,1,0D) 5 0 0
+	               left (1,3,1D)
+	               plate (1,0,2D)
+	               right (1,4,1D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 3 3
+  Parsing <topologysets>
+  Parsing <rigid>
+	Slave code 1000000 (P1): Master point index 0 (3 0 0)
+  Parsing <rigid>
+	Slave code 2000000 (P2): Master point index 1 (5 0 0)
+	Material code 0: 2.1e+11 0.3 7850 0.01
+	Pressure code 1: 10000
+Parsing <beam>
+  Parsing <geometry>
+  Parsing <patches>
+	Reading inlined patch geometry definition
+	Reading patch 1
+	Reading patch 2
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,2,0D)
+	               end2 (2,1,0D)
+	               support (1,1,0D) (2,2,0D)
+  Parsing <patches>
+  Parsing <refine>
+	Refining P1 3
+	Refining P2 3
+  Parsing <topologysets>
+  Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12345: (fixed)
+  Parsing <material>
+	Stiffness moduli = 2.1e+11 8.07692e+10, mass density = 7850
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.00596903, moments of inertia = 5.40197e-05 2.70098e-05 2.70098e-05 5.40197e-05
+	Shear parameters = 0 0 2 2
+Parsing <coupling>
+  Parsing <connection>
+	Master point: "P1" (0,0,0D)
+	Slave point:  "end1" (1,2,0D)
+  Parsing <connection>
+	Master point: "P2" (0,1,0D)
+	Slave point:  "end2" (2,1,0D)
+Parsing <postprocessing>
+  Parsing <resultpoints>
+  Parsing <plot_rigid>
+  Parsing <resultpoints>
+  Parsing <plot_rigid>
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: p (p = polynomial degree of basis)
+Spline basis with C1-continuous patch interfaces is used
+11. Kirchhoff-Love plate/shell solver
+Problem definition:
+KirchhoffLoveShell: thickness = 0.01, gravity = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850, alpha = 0
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    32
+Number of nodes       80
+Number of dofs        246
+Number of D-dofs      234
+Number of X-dofs      12
+Number of constraints 156
+Number of unknowns    90
+12. Linear Elastic Beam solver
+Problem definition:
+ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
+             A = 0.00596903, Ix = 5.40197e-05, Iy = 2.70098e-05, Iz = 2.70098e-05, It = 5.40197e-05
+             Ky = 2, Kz = 2, Sy = 0, Sz = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 12345
+	Constraining P2 V2 in direction(s) 12345
+ >>> SAM model summary <<<
+Number of elements    8
+Number of nodes       10
+Number of dofs        60
+Number of unknowns    50
+13. Coupled linear static solver
+Coupling node mapping:
+	85 -> 79
+	86 -> 80
+ >>> SAM model summary <<<
+Number of elements    40
+Number of nodes       90
+Number of dofs        294
+Number of D-dofs      294
+Number of constraints 156
+Number of unknowns    128
+21. Kirchhoff-Love plate/shell solver
+Number of quadrature points 240
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+22. Linear Elastic Beam solver
+Number of quadrature points 8
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Done.
+23. Coupled linear static solver
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.00780397
+Max X-displacement : 0.000204385
+Max Y-displacement : 0.0159828
+Max Z-displacement : 0.000220573

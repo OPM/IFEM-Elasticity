@@ -1,0 +1,770 @@
+../SSbeamPointLoad-adap.xinp -1DKL -adap1 -spr
+
+Input file: SSbeamPointLoad-adap.xinp
+Equation solver: 1
+Number of Gauss points: 4
+LR-spline basis functions are used
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+	Length = 2
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+	Raising order of P1 1
+  Parsing <refine>
+	Refining P1 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <discretization>
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+	Stress: P=1.0; L=2.0; P\*if(below(x,L/2.0),x,L-x)/2.0
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+	Refinement percentage: 90 type=1
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 3 5
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    4
+Number of nodes       6
+Number of dofs        6
+Number of unknowns    4
+Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 1 0 0
+ >>> Starting adaptive simulation based on
+     Continuous global L2-projection error estimates (norm group 1) <<<
+Adaptive step 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 971602
+Max displacement   : 1.5625e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.562500e+06
+		sol2 =  3.750000e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1250
+External energy          (p,w^h)^0.5 : 1250
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 322.749
+Exact relative error (%) : 25
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1230.83
+Error norm a(e,e)^0.5, e=u^r-u^h     : 218.1
+ relative error (% of |u|)   : 16.8939
+Residual error (r(u^r) + J(u^r))^0.5 : 0.645292
+ relative error (% of |u|)   : 0.0499841
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 193.213
+ relative error (% of |u|)   : 14.9662
+Effectivity index             : 0.675757
+Effectivity index, theta^EX          : 1.27441
+Effectivity index, theta^RES         : 0.677756
+Error estimate a(e,e)^0.5, e=w^r-w^h : 218.1
+Relative error (%) : 17.1883
+Effectivity index  : 0.675757
+Root mean square (RMS) of error      : 0.192754
+Min element error                    : 86.4389
+Max element error                    : 127.719
+Average element error                : 107.079
+Refining 2 elements with errors in range \[127.719,127.719] 90% of max error (114.947)
+Refining element 2	u=0.375	h=0.25
+Refining element 3	u=0.625	h=0.25
+Adaptive step 2
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    6
+Number of nodes       8
+Number of dofs        8
+Number of unknowns    6
+Load point #1: patch #1 u=0.5 on element #4 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.08623e+06
+Max displacement   : 1.60156e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.601563e+06
+		sol2 =  4.375000e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1265.53
+External energy          (p,w^h)^0.5 : 1265.53
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 255.155
+Exact relative error (%) : 19.7642
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1256.11
+Error norm a(e,e)^0.5, e=u^r-u^h     : 154.091
+ relative error (% of |u|)   : 11.9358
+Residual error (r(u^r) + J(u^r))^0.5 : 0.653921
+ relative error (% of |u|)   : 0.0506525
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 200.294
+ relative error (% of |u|)   : 15.5147
+Effectivity index             : 0.603911
+Effectivity index, theta^EX          : 1.3889
+Effectivity index, theta^RES         : 0.606474
+Error estimate a(e,e)^0.5, e=w^r-w^h : 154.091
+Relative error (%) : 12.0868
+Effectivity index  : 0.603911
+Root mean square (RMS) of error      : 0.288688
+Min element error                    : 36.1124
+Max element error                    : 76.1813
+Average element error                : 60.4393
+Refining 4 elements with errors in range \[69.0242,76.1813] 90% of max error (68.5631)
+Refining element 1	u=0.125	h=0.25
+Refining element 2	u=0.3125	h=0.125
+Refining element 5	u=0.6875	h=0.125
+Refining element 6	u=0.875	h=0.25
+Adaptive step 3
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       12
+Number of dofs        12
+Number of unknowns    10
+Load point #1: patch #1 u=0.5 on element #6 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.09923e+06
+Max displacement   : 1.64551e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.645508e+06
+		sol2 =  4.375000e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1282.77
+External energy          (p,w^h)^0.5 : 1282.77
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 145.461
+Exact relative error (%) : 11.2673
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1277.67
+Error norm a(e,e)^0.5, e=u^r-u^h     : 114.268
+ relative error (% of |u|)   : 8.85112
+Residual error (r(u^r) + J(u^r))^0.5 : 0.219709
+ relative error (% of |u|)   : 0.0170186
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 81.569
+ relative error (% of |u|)   : 6.31831
+Effectivity index             : 0.785555
+Effectivity index, theta^EX          : 1.34632
+Effectivity index, theta^RES         : 0.787066
+Error estimate a(e,e)^0.5, e=w^r-w^h : 114.268
+Relative error (%) : 8.87271
+Effectivity index  : 0.785555
+Root mean square (RMS) of error      : 0.315573
+Min element error                    : 27.5481
+Max element error                    : 56.153
+Average element error                : 34.4594
+Refining 2 elements with errors in range \[56.153,56.153] 90% of max error (50.5377)
+Refining element 2	u=0.1875	h=0.125
+Refining element 9	u=0.8125	h=0.125
+Adaptive step 4
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    12
+Number of nodes       14
+Number of dofs        14
+Number of unknowns    12
+Load point #1: patch #1 u=0.5 on element #7 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.07517e+06
+Max displacement   : 1.65039e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.650391e+06
+		sol2 =  4.375000e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1284.68
+External energy          (p,w^h)^0.5 : 1284.68
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 127.578
+Exact relative error (%) : 9.88212
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1281.69
+Error norm a(e,e)^0.5, e=u^r-u^h     : 87.4728
+ relative error (% of |u|)   : 6.77561
+Residual error (r(u^r) + J(u^r))^0.5 : 0.249177
+ relative error (% of |u|)   : 0.0193011
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 83.3491
+ relative error (% of |u|)   : 6.4562
+Effectivity index             : 0.685644
+Effectivity index, theta^EX          : 1.33896
+Effectivity index, theta^RES         : 0.687597
+Error estimate a(e,e)^0.5, e=w^r-w^h : 87.4728
+Relative error (%) : 6.79321
+Effectivity index  : 0.685644
+Root mean square (RMS) of error      : 0.16017
+Min element error                    : 19.0401
+Max element error                    : 31.9471
+Average element error                : 24.9334
+Refining 2 elements with errors in range \[31.9471,31.9471] 90% of max error (28.7524)
+Refining element 6	u=0.4375	h=0.125
+Refining element 7	u=0.5625	h=0.125
+Adaptive step 5
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    14
+Number of nodes       16
+Number of dofs        16
+Number of unknowns    14
+Load point #1: patch #1 u=0.5 on element #8 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.15168e+06
+Max displacement   : 1.65527e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.655273e+06
+		sol2 =  4.687500e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1286.57
+External energy          (p,w^h)^0.5 : 1286.57
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 106.739
+Exact relative error (%) : 8.26797
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1284.15
+Error norm a(e,e)^0.5, e=u^r-u^h     : 78.8825
+ relative error (% of |u|)   : 6.11021
+Residual error (r(u^r) + J(u^r))^0.5 : 0.237606
+ relative error (% of |u|)   : 0.0184048
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 70.7535
+ relative error (% of |u|)   : 5.48054
+Effectivity index             : 0.739022
+Effectivity index, theta^EX          : 1.40189
+Effectivity index, theta^RES         : 0.741248
+Error estimate a(e,e)^0.5, e=w^r-w^h : 78.8825
+Relative error (%) : 6.11971
+Effectivity index  : 0.739022
+Root mean square (RMS) of error      : 0.184294
+Min element error                    : 13.2208
+Max element error                    : 25.9422
+Average element error                : 20.7331
+Refining 4 elements with errors in range \[24.8216,25.9422] 90% of max error (23.348)
+Refining element 1	u=0.0625	h=0.125
+Refining element 2	u=0.15625	h=0.0625
+Refining element 13	u=0.84375	h=0.0625
+Refining element 14	u=0.9375	h=0.125
+Adaptive step 6
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    18
+Number of nodes       20
+Number of dofs        20
+Number of unknowns    18
+Load point #1: patch #1 u=0.5 on element #10 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.06824e+06
+Max displacement   : 1.66077e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.660767e+06
+		sol2 =  4.687500e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1288.71
+External energy          (p,w^h)^0.5 : 1288.71
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 76.8119
+Exact relative error (%) : 5.94982
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1286.8
+Error norm a(e,e)^0.5, e=u^r-u^h     : 70.0624
+ relative error (% of |u|)   : 5.42701
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0822871
+ relative error (% of |u|)   : 0.00637393
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 28.7556
+ relative error (% of |u|)   : 2.2274
+Effectivity index             : 0.91213
+Effectivity index, theta^EX          : 1.28649
+Effectivity index, theta^RES         : 0.913201
+Error estimate a(e,e)^0.5, e=w^r-w^h : 70.0624
+Relative error (%) : 5.42863
+Effectivity index  : 0.91213
+Root mean square (RMS) of error      : 0.28721
+Min element error                    : 9.96081
+Max element error                    : 21.1392
+Average element error                : 15.8722
+Refining 8 elements with errors in range \[19.7491,21.1392] 90% of max error (19.0253)
+Refining element 2	u=0.09375	h=0.0625
+Refining element 6	u=0.28125	h=0.0625
+Refining element 7	u=0.34375	h=0.0625
+Refining element 8	u=0.40625	h=0.0625
+Refining element 11	u=0.59375	h=0.0625
+Refining element 12	u=0.65625	h=0.0625
+Refining element 13	u=0.71875	h=0.0625
+Refining element 17	u=0.90625	h=0.0625
+Adaptive step 7
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    26
+Number of nodes       28
+Number of dofs        28
+Number of unknowns    26
+Load point #1: patch #1 u=0.5 on element #14 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.12696e+06
+Max displacement   : 1.66321e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.663208e+06
+		sol2 =  4.687500e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1289.65
+External energy          (p,w^h)^0.5 : 1289.65
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 58.8104
+Exact relative error (%) : 4.55543
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1288.77
+Error norm a(e,e)^0.5, e=u^r-u^h     : 47.6536
+ relative error (% of |u|)   : 3.69123
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0889087
+ relative error (% of |u|)   : 0.00688684
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 31.2907
+ relative error (% of |u|)   : 2.42377
+Effectivity index             : 0.810293
+Effectivity index, theta^EX          : 1.34235
+Effectivity index, theta^RES         : 0.811805
+Error estimate a(e,e)^0.5, e=w^r-w^h : 47.6536
+Relative error (%) : 3.69255
+Effectivity index  : 0.810293
+Root mean square (RMS) of error      : 0.276177
+Min element error                    : 6.64948
+Max element error                    : 16.5618
+Average element error                : 9.0084
+Refining 2 elements with errors in range \[16.5618,16.5618] 90% of max error (14.9057)
+Refining element 6	u=0.21875	h=0.0625
+Refining element 21	u=0.78125	h=0.0625
+Adaptive step 8
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    28
+Number of nodes       30
+Number of dofs        30
+Number of unknowns    28
+Load point #1: patch #1 u=0.5 on element #15 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.12067e+06
+Max displacement   : 1.66382e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.663818e+06
+		sol2 =  4.687500e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1289.89
+External energy          (p,w^h)^0.5 : 1289.89
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 53.3695
+Exact relative error (%) : 4.13399
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1289.2
+Error norm a(e,e)^0.5, e=u^r-u^h     : 42.0719
+ relative error (% of |u|)   : 3.25888
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0892213
+ relative error (% of |u|)   : 0.00691105
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 29.4752
+ relative error (% of |u|)   : 2.28314
+Effectivity index             : 0.788313
+Effectivity index, theta^EX          : 1.3406
+Effectivity index, theta^RES         : 0.789985
+Error estimate a(e,e)^0.5, e=w^r-w^h : 42.0719
+Relative error (%) : 3.25993
+Effectivity index  : 0.788313
+Root mean square (RMS) of error      : 0.156615
+Min element error                    : 6.85073
+Max element error                    : 11.2886
+Average element error                : 7.85509
+Refining 2 elements with errors in range \[11.2886,11.2886] 90% of max error (10.1598)
+Refining element 14	u=0.46875	h=0.0625
+Refining element 15	u=0.53125	h=0.0625
+Adaptive step 9
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    30
+Number of nodes       32
+Number of dofs        32
+Number of unknowns    30
+Load point #1: patch #1 u=0.5 on element #16 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.1605e+06
+Max displacement   : 1.66443e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.664429e+06
+		sol2 =  4.843750e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1290.13
+External energy          (p,w^h)^0.5 : 1290.13
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 47.307
+Exact relative error (%) : 3.66439
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1289.51
+Error norm a(e,e)^0.5, e=u^r-u^h     : 39.8948
+ relative error (% of |u|)   : 3.09024
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0840809
+ relative error (% of |u|)   : 0.00651288
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 25.0147
+ relative error (% of |u|)   : 1.93763
+Effectivity index             : 0.843317
+Effectivity index, theta^EX          : 1.37209
+Effectivity index, theta^RES         : 0.845094
+Error estimate a(e,e)^0.5, e=w^r-w^h : 39.8948
+Relative error (%) : 3.09084
+Effectivity index  : 0.843317
+Root mean square (RMS) of error      : 0.128291
+Min element error                    : 4.67559
+Max element error                    : 9.16302
+Average element error                : 7.22456
+Refining 4 elements with errors in range \[8.78056,9.16302] 90% of max error (8.24672)
+Refining element 1	u=0.03125	h=0.0625
+Refining element 2	u=0.078125	h=0.03125
+Refining element 29	u=0.921875	h=0.03125
+Refining element 30	u=0.96875	h=0.0625
+Adaptive step 10
+Parsing input file SSbeamPointLoad-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 1.2 1 0.01
+	Point: xi = 0.5 load = 1
+	Analytical solution: Expression
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+Parsing <adaptive>
+Parsing input file succeeded.
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, X = 1 0 0
+ >>> SAM model summary <<<
+Number of elements    34
+Number of nodes       36
+Number of dofs        36
+Number of unknowns    34
+Load point #1: patch #1 u=0.5 on element #18 (u=0.5), X = 1 0 0
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.09949e+06
+Max displacement   : 1.66512e+06
+Projecting secondary solution ...
+	Continuous global L2-projection
+  Point #1:	sol1 =  1.665115e+06
+		sol2 =  4.843750e-01  0.000000e+00
+		exact2  5.000000e-01
+Energy norm           a(w^h,w^h)^0.5 : 1290.39
+External energy          (p,w^h)^0.5 : 1290.39
+Exact norm                a(w,w)^0.5 : 1290.99
+Exact error      a(e,e)^0.5, e=w-w^h : 39.3867
+Exact relative error (%) : 3.05088
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1289.84
+Error norm a(e,e)^0.5, e=u^r-u^h     : 37.7806
+ relative error (% of |u|)   : 2.92647
+Residual error (r(u^r) + J(u^r))^0.5 : 0.0291496
+ relative error (% of |u|)   : 0.00225792
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 10.1645
+ relative error (% of |u|)   : 0.787339
+Effectivity index             : 0.959222
+Effectivity index, theta^EX          : 1.21729
+Effectivity index, theta^RES         : 0.959962
+Error estimate a(e,e)^0.5, e=w^r-w^h : 37.7806
+Relative error (%) : 2.92658
+Effectivity index  : 0.959222
+Root mean square (RMS) of error      : 0.220487
+Min element error                    : 3.52568
+Max element error                    : 7.46742
+Average element error                : 6.32734
+   \* Stopping the adaptive cycles as max steps 10 was reached.

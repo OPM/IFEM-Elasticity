@@ -1,0 +1,46 @@
+../Utkrager.xinp -1D -spr
+
+Input file: Utkrager.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Parsing input file Utkrager.xinp
+Parsing <geometry>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,1,0D)
+  Parsing <refine>
+	Refining P1 4
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123456: (fixed)
+Parsing <beam>
+  Parsing <material>
+	Stiffness moduli = 2.05e+11 8.1e+10, mass density = 7850
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.1, moments of inertia = 0.002 0.001 0.001 0.002
+	Shear parameters = 0 0 1.2 1.2
+  Parsing <nodeload>
+	Node 6 dof 2 Load: -1e+06
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 1
+Problem definition:
+ElasticBeam: E = 2.05e+11, G = 8.1e+10, rho = 7850
+             A = 0.1, Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002
+             Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 123456
+ >>> SAM model summary <<<
+Number of elements    5
+Number of nodes       6
+Number of dofs        36
+Number of unknowns    30
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.000822911
+Max Y-displacement : 0.00177416 node 6
+Max z-displacement : 0.00243902 node 6

@@ -1,0 +1,59 @@
+../MaterialImage.xinp -noProj -spr
+
+Input file: MaterialImage.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file MaterialImage.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file quarter-disk-1patch.g2
+	Reading patch 1
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: bottom (1,1,1D)
+	               left (1,2,1D)
+	               model (1,0,2D)
+  Parsing <patchfile>
+  Parsing <refine>
+	Refining P1 7 7
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 1: 1
+Parsing <elasticity>
+	Gravitation vector: 0 0
+  Parsing <texturematerial>
+	Material code 0:
+	 1000 0.4 1
+	 1 0.4 1
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+Material with range \[0,0.5]:
+LinIsotropic: plane stress, E = 1, nu = 0.4, rho = 1, alpha = 1.2e-07
+Material with range \[0.5,1]:
+LinIsotropic: plane stress, E = 1000, nu = 0.4, rho = 1, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+	Constraining P1 E2 in direction(s) 12
+ >>> SAM model summary <<<
+Number of elements    576
+Number of nodes       700
+Number of dofs        1400
+Number of unknowns    1350
+Number of quadrature points 9984 96
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling Neumann matrix terms for boundary 1 on P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 12.8735
+Max X-displacement : 29.4324
+Max Y-displacement : 30.7243
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 5.3714
+External energy ((f,u^h)+(t,u^h)^0.5 : 5.3714

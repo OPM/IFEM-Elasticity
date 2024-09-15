@@ -1,0 +1,49 @@
+../MaterialMultiple.xinp -spr
+
+Input file: MaterialMultiple.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file MaterialMultiple.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file quarter-disk-9patch.g2
+  Parsing <topologysets>
+	Topology sets: bottom (1,1,1D) (2,1,1D) (3,1,1D)
+	               center (5,0,2D)
+	               left (7,2,1D) (8,2,1D) (9,2,1D)
+	               most_patches (1,0,2D) (2,0,2D) (3,0,2D) (4,0,2D) (6,0,2D) (7,0,2D) (8,0,2D) (9,0,2D)
+  Parsing <patchfile>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 1: 1
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 1 0.4 1
+  Parsing <isotropic>
+	Material code 1: 1000 0.4 1
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+Resolving Dirichlet boundary conditions
+	Constraining P7 E2 in direction(s) 12
+	Constraining P8 E2 in direction(s) 12
+	Constraining P9 E2 in direction(s) 12
+ >>> SAM model summary <<<
+Number of elements    576
+Number of nodes       700
+Number of dofs        1400
+Number of unknowns    1350
+Number of quadrature points 9216 96
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 12.8735
+Max X-displacement : 29.4324
+Max Y-displacement : 30.7243
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 5.3714
+External energy ((f,u^h)+(t,u^h)^0.5 : 5.3714

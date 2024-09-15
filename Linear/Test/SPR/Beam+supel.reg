@@ -1,0 +1,96 @@
+../Beam+supel.xinp -1Dsup -spr
+
+Input file: Beam+supel.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+1. Coupled linear static solver
+Parsing input file Beam+supel.xinp
+Parsing <superelem>
+  Parsing <patchfile>
+	Reading data file Supel.dat
+	Reading patch 1
+  Parsing <topologysets>
+	Topology sets: P1 (1,1,4D)
+	               P2 (1,2,4D)
+Parsing <beam>
+  Parsing <geometry>
+  Parsing <patches>
+	Reading inlined patch geometry definition
+	Reading patch 1
+	Reading patch 2
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,1,0D)
+	               end2 (2,1,0D)
+	               support (1,2,0D) (2,2,0D)
+  Parsing <patches>
+  Parsing <refine>
+	Refining P1 3
+	Refining P2 3
+  Parsing <topologysets>
+  Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12346: (fixed)
+  Parsing <material>
+	Stiffness moduli = 2.1e+11 8.07692e+10, mass density = 7850
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.004
+	Shear parameters = 0 0 1.2 1.2
+  Parsing <gravity>
+	Gravitation vector: 0 0 -9.81
+Parsing <coupling>
+  Parsing <connection>
+	Master point: "P1" (1,1,4D)
+	Slave point:  "end1" (1,1,0D)
+  Parsing <connection>
+	Master point: "P2" (1,2,4D)
+	Slave point:  "end2" (2,1,0D)
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+11. 3D superelement solver
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    1
+Number of nodes       2
+Number of dofs        12
+Number of unknowns    12
+12. Linear Elastic Beam solver
+Problem definition:
+ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
+             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.004
+             Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V2 in direction(s) 12346
+	Constraining P2 V2 in direction(s) 12346
+ >>> SAM model summary <<<
+Number of elements    8
+Number of nodes       10
+Number of dofs        60
+Number of unknowns    50
+13. Coupled linear static solver
+Coupling node mapping:
+	3 -> 1
+	8 -> 2
+ >>> SAM model summary <<<
+Number of elements    9
+Number of nodes       12
+Number of dofs        60
+Number of unknowns    50
+21. 3D superelement solver
+Number of quadrature points 1
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+22. Linear Elastic Beam solver
+Number of quadrature points 8
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+23. Coupled linear static solver
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.0160891
+Max Z-displacement : 0.0583388
+Max y-displacement : 0.00783073

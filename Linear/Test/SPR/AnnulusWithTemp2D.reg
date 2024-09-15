@@ -1,0 +1,68 @@
+../AnnulusWithTemp2D.xinp -2Dpstrain -spr
+
+Input file: AnnulusWithTemp2D.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Parsing input file AnnulusWithTemp2D.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file quartulus.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: Bottom (1,1,1D)
+	               Left (1,2,1D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 15 15
+  Parsing <topologysets>
+Parsing <elasticity>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+	Material code 0: 2e+11 0.3 7850 1.2e-05
+	Initial temperature: 273
+	Temperature: r=sqrt(x\*x+y\*y); a=0.03; b=0.04; Ti=373.0; To=293.0; Ti+(To-Ti)\*log(r/a)/log(b/a)
+	Analytical solution: Pipe Ri=0.03 Ro=0.04 Ti=373 To=293
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: E = 2e+11, nu = 0.3, rho = 7850, alpha = 1.2e-05
+Resolving Dirichlet boundary conditions
+	Constraining P1 E2 in direction(s) 1
+	Constraining P1 E1 in direction(s) 2
+ >>> SAM model summary <<<
+Number of elements    256
+Number of nodes       342
+Number of dofs        684
+Number of unknowns    648
+Number of quadrature points 4096
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 1.74959e-05
+Max X-displacement : 2.69689e-05
+Max Y-displacement : 2.69689e-05
+Projecting secondary solution ...
+	Greville point projection
+Energy norm |u^h| = a(u^h,u^h)^0.5   : -3.02129
+Exact norm  |u|   = a(u,u)^0.5       : -3.02129
+Exact error a(e,e)^0.5, e=u-u^h      : -0.00144707
+Exact relative error (%) : 0.0478958
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : -3.02117
+Error norm a(e,e)^0.5, e=u^r-u^h     : -0.00217803
+ relative error (% of |u|)   : 0.0720893
+Exact error a(e,e)^0.5, e=u-u^r      : -0.00170025
+ relative error (% of |u|)   : 0.0562756
+Effectivity index             : 1.50513
+L2-norm |s^r| = (s^r,s^r)^0.5        : -1.32478e+06
+L2-error (e,e)^0.5, e=s^r-s^h        : -1208.39
+ relative error (% of |s^r|) : 0.091214

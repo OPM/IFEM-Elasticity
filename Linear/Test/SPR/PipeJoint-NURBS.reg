@@ -1,0 +1,155 @@
+../PipeJoint.xinp -printMaxPatch -spr
+
+Input file: PipeJoint.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file PipeJoint.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file pipe_bifurcation.g2
+	Reading patch 1
+	Reading patch 2
+	Reading patch 3
+	Reading patch 4
+	Reading patch 5
+	Reading patch 6
+	Reading patch 7
+	Reading patch 8
+	Reading patch 9
+	Reading patch 10
+  Parsing <nodefile>
+	Reading data file pipe_bifurcation.gno
+  Parsing <patchfile>
+  Parsing <nodefile>
+Parsing <boundaryconditions>
+  Parsing <propertyfile>
+	Reading data file pipe_bifurcation.prc
+  Parsing <dirichlet>
+	Dirichlet code 123: (fixed)
+  Parsing <neumann>
+	Neumann code 1001 direction 1: 1e+08
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4
+Problem definition:
+Elasticity: 3D, gravity = 0 0 0
+LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Renumbered 246 nodes.
+Resolving Dirichlet boundary conditions
+	Constraining P1 F1 in direction(s) 123
+	Constraining P2 F1 in direction(s) 123
+	Constraining P3 F1 in direction(s) 123
+	Constraining P4 F1 in direction(s) 123
+	Constraining P5 F1 in direction(s) 123
+	Constraining P6 F1 in direction(s) 123
+ >>> SAM model summary <<<
+Number of elements    12
+Number of nodes       166
+Number of dofs        498
+Number of unknowns    402
+Number of quadrature points 896 64
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Assembling interior matrix terms for P4
+Assembling interior matrix terms for P5
+Assembling interior matrix terms for P6
+Assembling interior matrix terms for P7
+Assembling interior matrix terms for P8
+Assembling interior matrix terms for P9
+Assembling interior matrix terms for P10
+Assembling Neumann matrix terms for boundary 1 on P7
+Assembling Neumann matrix terms for boundary 1 on P8
+Assembling Neumann matrix terms for boundary 1 on P9
+Assembling Neumann matrix terms for boundary 1 on P10
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.0707423
+Max X-displacement : 0.295694
+Max Y-displacement : 0.100096
+Max Z-displacement : 0.0302177
+Projecting secondary solution ...
+	Greville point projection
+Maximum stresses in Gauss points:
+  Max s_xx:              2.685515e+08  X = -58 -10 0	Patch 1
+                         5.116134e+08  X = -10 10 0	Patch 2
+                         5.116134e+08  X = -10 10 0	Patch 3
+                        -5.201099e+08  X = 10 10 0	Patch 4
+                        -5.201099e+08  X = 10 10 0	Patch 5
+                        -2.419987e+08  X = 55 -10 0	Patch 6
+                         7.776961e+08  X = -10 10 0	Patch 7
+                        -7.481686e+08  X = 10 10 0	Patch 8
+                         7.776961e+08  X = -10 10 0	Patch 9
+                        -7.481686e+08  X = 10 10 0	Patch 10
+  Max s_yy:              1.179482e+08  X = -19.3333 -10 0	Patch 1
+                         3.238335e+08  X = -10 10 0	Patch 2
+                         3.238335e+08  X = -10 10 0	Patch 3
+                        -3.410903e+08  X = 10 10 0	Patch 4
+                        -3.410903e+08  X = 10 10 0	Patch 5
+                        -1.209907e+08  X = 18.3333 -10 0	Patch 6
+                         7.628862e+08  X = -10 10 0	Patch 7
+                        -7.469469e+08  X = 10 10 0	Patch 8
+                         7.628862e+08  X = -10 10 0	Patch 9
+                        -7.469469e+08  X = 10 10 0	Patch 10
+  Max s_zz:              1.096901e+08  X = -58 -10 0	Patch 1
+                         2.354670e+08  X = -10 10 0	Patch 2
+                         2.354670e+08  X = -10 10 0	Patch 3
+                        -2.438121e+08  X = 10 10 0	Patch 4
+                        -2.438121e+08  X = 10 10 0	Patch 5
+                         1.041274e+08  X = 18.3333 0 -*10	Patch 6
+                         4.399563e+08  X = -10 10 0	Patch 7
+                        -4.276475e+08  X = 10 10 0	Patch 8
+                         4.399563e+08  X = -10 10 0	Patch 9
+                        -4.276475e+08  X = 10 10 0	Patch 10
+  Max s_xy:             -2.860368e+08  X = 0 0 9	Patch 1
+                         2.692636e+08  X = -10 10 0	Patch 2
+                         2.692636e+08  X = -10 10 0	Patch 3
+                         2.849161e+08  X = 10 10 0	Patch 4
+                         2.849161e+08  X = 10 10 0	Patch 5
+                        -2.924400e+08  X = 0 0 -*9	Patch 6
+                        -4.227691e+08  X = 0 0 9	Patch 7
+                        -4.246762e+08  X = 0 0 -9	Patch 8
+                        -4.227691e+08  X = 0 0 -9	Patch 9
+                        -4.246762e+08  X = 0 0 9	Patch 10
+  Max s_yz:             -6.949937e+07  X = -19.3333 -10 0	Patch 1
+                        -1.808923e+08  X = -6.36396 6.36396 6.36396	Patch 2
+                         1.808923e+08  X = -6.36396 6.36396 -6.36396	Patch 3
+                        -1.780423e+08  X = 6.36396 6.36396 -6.36396	Patch 4
+                         1.780423e+08  X = 6.36396 6.36396 6.36396	Patch 5
+                       [ -]*7.034553e+07  X = 18.3333 0 -*10	Patch 6
+                        -1.934230e+08  X = -6.36396 6.36396 6.36396	Patch 7
+                        -1.934608e+08  X = 6.36396 6.36396 -6.36396	Patch 8
+                         1.934230e+08  X = -6.36396 6.36396 -6.36396	Patch 9
+                         1.934608e+08  X = 6.36396 6.36396 6.36396	Patch 10
+  Max s_xz:             -1.027139e+08  X = 0 -7.07107 7.07107	Patch 1
+                        -7.832311e+07  X = -23.576 6.36396 6.36396	Patch 2
+                         7.832311e+07  X = -23.576 6.36396 -6.36396	Patch 3
+                         8.005224e+07  X = 22.576 6.36396 -6.36396	Patch 4
+                        -8.005224e+07  X = 22.576 6.36396 6.36396	Patch 5
+                        -1.000961e+08  X = 0 -7.07107 7.07107	Patch 6
+                         1.323493e+08  X = -6.36396 15.9093 6.36396	Patch 7
+                        -1.302464e+08  X = 6.36396 15.9093 -6.36396	Patch 8
+                        -1.323493e+08  X = -6.36396 15.9093 -6.36396	Patch 9
+                         1.302464e+08  X = 6.36396 15.9093 6.36396	Patch 10
+  Max von Mises stress:  4.982327e+08  X = 0 0 9	Patch 1
+                         5.441745e+08  X = -10 10 0	Patch 2
+                         5.441745e+08  X = -10 10 0	Patch 3
+                         5.670892e+08  X = 10 10 0	Patch 4
+                         5.670892e+08  X = 10 10 0	Patch 5
+                         5.087880e+08  X = 0 0 -*9	Patch 6
+                         8.066986e+08  X = -10 10 0	Patch 7
+                         8.080089e+08  X = 0 0 -9	Patch 8
+                         8.066986e+08  X = -10 10 0	Patch 9
+                         8.080089e+08  X = 0 0 9	Patch 10
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 41649
+External energy ((f,u^h)+(t,u^h)^0.5 : 41649
+>>> Error estimates based on Greville point projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 41489.2
+Error norm a(e,e)^0.5, e=u^r-u^h     : 15087.3
+ relative error (% of |u^r|) : 36.3645
+L2-norm |s^r| = (s^r,s^r)^0.5        : 1.74378e+10
+L2-error (e,e)^0.5, e=s^r-s^h        : 7.42866e+09
+ relative error (% of |s^r|) : 42.6009

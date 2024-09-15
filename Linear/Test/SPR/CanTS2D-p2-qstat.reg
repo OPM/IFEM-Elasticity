@@ -1,0 +1,128 @@
+../CanTS2D-p2-dyn.xinp -qstatic -spr
+
+Input file: CanTS2D-p2-dyn.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Parsing input file CanTS2D-p2-dyn.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+	Length in Y = 0.4
+  Parsing <refine>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <refine>
+	Refining P1 0 1
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 7 1
+Parsing <boundaryconditions>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <fixpoint>
+  Parsing <propertycodes>
+  Parsing <neumann>
+	Neumann code 1001 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=if(above(t,0.5),0,-1000000)\*sin(3.14159265\*t); F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 1002 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=if(above(t,0.5),0,-1000000)\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Constraining P1 point at 0 0 with code 1
+	Constraining P1 point at 0 0.5 with code 12
+	Constraining P1 point at 0 1 with code 1
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+09 0.29 7820
+Parsing <eigensolver>
+Parsing input file succeeded.
+Equation solver: 1
+Eigenproblem solver: 4
+Number of eigenvalues: 10
+Number of Arnoldi vectors: 20
+Shift value: 0
+Number of Gauss points: 3
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+09, nu = 0.29, rho = 7820, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    32
+Number of nodes       70
+Number of dofs        140
+Number of unknowns    136
+Number of quadrature points 360
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Solving the eigenvalue problem ...
+  EIG_DRV4
+  ========
+  Size of the matrix is          136
+  The number of Ritz values requested is           10
+  The number of Arnoldi vectors generated (NCV) is           20
+  What portion of the spectrum: LM
+  The number of converged Ritz values is           10
+ >>> Computed Eigenvalues <<<
+     Mode	Frequency \[Hz]
+     1		7.18604
+     2		40.4067
+     3		58.8172
+     4		98.6518
+     5		166.762
+     6		176.523
+     7		241.19
+     8		293.906
+     9		320.581
+     10		400.917
+Parsing input file CanTS2D-p2-dyn.xinp
+Parsing <newmarksolver>
+	alpha1 = 0  alpha2 = 0
+	beta = 0.25  gamma = 0.5
+Parsing input file succeeded.
+Problem definition:
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+09, nu = 0.29, rho = 7820, alpha = 1.2e-07
+Quasi-static linear analysis.
+  step=1  time=0.05
+  Displacement L2-norm            : 0.0148717
+               Max X-displacement : 0.00568683
+               Max Y-displacement : 0.038807
+  step=2  time=0.1
+  Displacement L2-norm            : 0.0293773
+               Max X-displacement : 0.0112336
+               Max Y-displacement : 0.0766585
+  step=3  time=0.15
+  Displacement L2-norm            : 0.0431595
+               Max X-displacement : 0.0165038
+               Max Y-displacement : 0.112622
+  step=4  time=0.2
+  Displacement L2-norm            : 0.0558789
+               Max X-displacement : 0.0213676
+               Max Y-displacement : 0.145813
+  step=5  time=0.25
+  Displacement L2-norm            : 0.0672224
+               Max X-displacement : 0.0257053
+               Max Y-displacement : 0.175414
+  step=6  time=0.3
+  Displacement L2-norm            : 0.0769107
+               Max X-displacement : 0.02941
+               Max Y-displacement : 0.200695
+  step=7  time=0.35
+  Displacement L2-norm            : 0.0847052
+               Max X-displacement : 0.0323906
+               Max Y-displacement : 0.221034
+  step=8  time=0.4
+  Displacement L2-norm            : 0.090414
+               Max X-displacement : 0.0345736
+               Max Y-displacement : 0.235931
+  step=9  time=0.45
+  Displacement L2-norm            : 0.0938964
+               Max X-displacement : 0.0359052
+               Max Y-displacement : 0.245018
+  step=10  time=0.5
+  Displacement L2-norm            : 0.0950669
+               Max X-displacement : 0.0363528
+               Max Y-displacement : 0.248072
+  step=11  time=0.55
+  Displacement L2-norm            : 0
+  Time integration completed.

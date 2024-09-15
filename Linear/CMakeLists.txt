@@ -86,6 +86,11 @@ if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_HDF5FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.hreg)
 endif()
+if(SPR_LIBRARIES)
+  file(GLOB SPR_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
+                                   ${PROJECT_SOURCE_DIR}/Test/SPR/*.reg)
+endif()
+
 list(REMOVE_ITEM LINEL_TESTFILES CanTS2D-p2-restart.reg)
 
 if(NOT HDF5_FOUND)
@@ -93,7 +98,7 @@ if(NOT HDF5_FOUND)
 endif()
 
 if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
-  foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES})
+  foreach(TESTFILE ${LINEL_TESTFILES} ${LRE_TESTFILES} ${SPR_TESTFILES})
     ifem_add_test(${TESTFILE} LinEl)
   endforeach()
   foreach(TESTFILE ${LINEL_VTF_FILES} ${LRE_VTF_FILES})

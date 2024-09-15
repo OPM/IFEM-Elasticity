@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Pressurized hemispherical shell, 1/4 of a hemisphere.
+     Quadratic spline Kirchhoff-Love thin shell elements.
+     Polar parametrization with collapsed edge at the top. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry>
+    <patchfile>../../../Shell/Test/hemisphere-symmZ.g2</patchfile>
+    <refine patch="1" u="31" v="31"/>
+    <topologysets>
+      <set name="support" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="pole" type="edge">
+        <item patch="1">2</item>
+      </set>
+      <set name="symmXZ" type="edge">
+        <item patch="1">3</item>
+      </set>
+      <set name="symmYZ" type="edge">
+        <item patch="1">4</item>
+      </set>
+      <set name="hemisphere" type="face">
+        <item patch="1"/>
+      </set>
+    </topologysets>
+    <collapse patch="1" edge="2"/>
+  </geometry>
+
+  <!-- General - Gauss quadrature scheme !-->
+  <discretization>
+    <nGauss default="0"/>
+  </discretization>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="support" type="clamped"/>
+    <dirichlet set="symmXZ" type="symmXZ"/>
+    <dirichlet set="symmYZ" type="symmYZ"/>
+    <dirichlet set="pole" comp="123000"/>
+    <dirichlet set="pole" comp="12"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <KirchhoffLove>
+    <isotropic E="2.0e11" nu="0.3" thickness="0.001"/>
+    <pressure set="hemisphere" type="expression">
+      1000.0*cos(2.0*acos(z))
+    </pressure>
+  </KirchhoffLove>
+
+  <!-- General - point result output !-->
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="1.0" v="1.0"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

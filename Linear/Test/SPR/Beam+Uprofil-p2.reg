@@ -1,0 +1,140 @@
+../Beam+Uprofil-p2.xinp -1D3D -spr
+
+Input file: Beam+Uprofil-p2.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+1. Coupled linear static solver
+Parsing input file Beam+Uprofil-p2.xinp
+Parsing <elasticity>
+  Parsing <patchfile>
+	Reading data file Uprofil.g2
+	Reading patch 1
+	Reading patch 2
+	Reading patch 3
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topology>
+  Parsing <topologysets>
+	Topology sets: P1 (0,0,0D) 0 0.3 0.2
+	               P2 (0,1,0D) 5 0.3 0.2
+	               left (1,5,2D) (2,5,2D) (3,5,2D)
+	               loaded (2,4,2D)
+	               right (1,6,2D) (2,6,2D) (3,6,2D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 1 1 1
+	Raising order of P2 1 1 1
+	Raising order of P3 1 1 1
+  Parsing <refine>
+	Refining P1 2 1 4
+	Refining P2 2 1 4
+	Refining P3 2 1 4
+  Parsing <topology>
+	Connecting P2 F1 to P1 F2 orient 0
+	Connecting P3 F1 to P2 F2 orient 0
+  Parsing <topologysets>
+  Parsing <neumann>
+	Neumann code 1000000 direction 3: -1e+06
+  Parsing <rigid>
+	Slave code 2000000 (P1): Master point index 0 (0 0.3 0.2)
+  Parsing <rigid>
+	Slave code 3000000 (P2): Master point index 1 (5 0.3 0.2)
+Parsing <beam>
+  Parsing <geometry>
+  Parsing <patches>
+	Reading inlined patch geometry definition
+	Reading patch 1
+	Reading patch 2
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,1,0D)
+	               end2 (2,1,0D)
+	               support (1,2,0D) (2,2,0D)
+  Parsing <patches>
+  Parsing <refine>
+	Refining P1 3
+	Refining P2 3
+  Parsing <topologysets>
+  Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12346: (fixed)
+  Parsing <material>
+	Stiffness moduli = 2.1e+11 8.07692e+10, mass density = 7850
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.004
+	Shear parameters = 0 0 1.2 1.2
+Parsing <coupling>
+  Parsing <connection>
+	Master point: "P1" (0,0,0D)
+	Slave point:  "end1" (1,1,0D)
+  Parsing <connection>
+	Master point: "P2" (0,1,0D)
+	Slave point:  "end2" (2,1,0D)
+Parsing <postprocessing>
+  Parsing <resultpoints>
+  Parsing <plot_rigid>
+  Parsing <resultpoints>
+  Parsing <plot_rigid>
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: p+1 (p = polynomial degree of basis)
+11. 3D continuum solver
+Problem definition:
+Elasticity: 3D, gravity = 0 0 0
+LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Renumbered 252 nodes.
+Resolving Dirichlet boundary conditions
+Deleted 48 MPC equations.
+ >>> SAM model summary <<<
+Number of elements    90
+Number of nodes       366
+Number of dofs        1104
+Number of D-dofs      1092
+Number of X-dofs      12
+Number of constraints 312
+Number of unknowns    792
+12. Linear Elastic Beam solver
+Problem definition:
+ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
+             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.004
+             Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
+Resolving Dirichlet boundary conditions
+	Constraining P1 V2 in direction(s) 12346
+	Constraining P2 V2 in direction(s) 12346
+ >>> SAM model summary <<<
+Number of elements    8
+Number of nodes       10
+Number of dofs        60
+Number of unknowns    50
+13. Coupled linear static solver
+Coupling node mapping:
+	367 -> 365
+	372 -> 366
+ >>> SAM model summary <<<
+Number of elements    98
+Number of nodes       376
+Number of dofs        1152
+Number of D-dofs      1152
+Number of constraints 312
+Number of unknowns    830
+21. 3D continuum solver
+Number of quadrature points 2430 135
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Assembling Neumann matrix terms for boundary 4 on P2
+22. Linear Elastic Beam solver
+Number of quadrature points 8
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Assembling interior matrix terms for P2
+23. Coupled linear static solver
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.69527
+Max X-displacement : 0.0177275
+Max Y-displacement : 0.000579702
+Max Z-displacement : 1.28058

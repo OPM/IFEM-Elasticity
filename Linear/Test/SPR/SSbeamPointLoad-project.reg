@@ -1,0 +1,107 @@
+../SSbeamPointLoad-p3.xinp -1DKL -cgl2 -spr
+
+Input file: SSbeamPointLoad-p3.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Enabled projection(s): Continuous global L2-projection
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file SSbeamPointLoad-p3.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+	Length = 2
+  Parsing <projection>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: ends (1,1,0D) (1,2,0D)
+  Parsing <projection>
+  Parsing <refine>
+	Refining P1 1
+  Parsing <raiseorder>
+	Raising order of P1 1
+  Parsing <refine>
+	Refining P1 1
+  Parsing <raiseorder>
+	Raising order of P1 2
+  Parsing <refine>
+	Refining P1 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <EulerBernoulli>
+	Material code 0: 400000 1 0.01
+	Gravitation constant: 10
+	Point: xi = 0.5 load = 0.2
+	Analytical solution: Expression
+	Stress: L=2.0; q=0.1; P=0.2; (q\*x\*(L-x) + P\*if(below(x,L/2.0),x,L-x))/2.0
+	Derivative_11: q=0.1;-q
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5
+	Point 2: P1 xi = 0.2
+	Point 3: P1 xi = 0.8
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 4 6
+Spline basis with C1-continuous patch interfaces is used
+Enabled projection(s): Continuous global L2-projection
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 1
+	Constraining P1 V2 in direction(s) 1
+Result point #1: patch #1 u=0.5, node #4, X = 1 0 0
+Result point #2: patch #1 u=0.2, X = 0.4 0 0
+Result point #3: patch #1 u=0.8, X = 1.6 0 0
+ >>> SAM model summary <<<
+Number of elements    4
+Number of nodes       7
+Number of dofs        7
+Number of unknowns    5
+Load point #1: patch #1 u=0.5 on element #3 (u=0.5), X = 1 0 0
+Number of quadrature points 16
+Processing integrand associated with code 0
+Assembling interior matrix terms for P1
+Done.
+Sum external load : 0.375 0 0
+Solving the equation system ...
+ >>> Solution summary <<<
+L2-norm            : 0.981314
+Max displacement   : 1.8151
+Projecting secondary solution ...
+	Continuous global L2-projection
+Integrating solution norms (FE solution) ...
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 0.727975
+External energy ((f,u^h)+(t,u^h)^0.5 : 0.727975
+Exact norm  |u|   = a(u,u)^0.5       : 0.728011
+Exact error a(e,e)^0.5, e=u-u^h      : 0.00721688
+Exact relative error (%) : 0.991314
+Residual error (r(u) + J(u))^0.5 : 0
+ relative error (% of |u|) : 0
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.727942
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.00698771
+ relative error (% of |u|)   : 0.959836
+Residual error (r(u^r) + J(u^r))^0.5 : 0.00220971
+ relative error (% of |u|)   : 0.303527
+Jump term J(u^r)^0.5          : 0
+ relative error (% of |u|)   : 0
+Exact error a(e,e)^0.5, e=u-u^r      : 0.00180422
+ relative error (% of |u|)   : 0.247829
+Effectivity index             : 0.968246
+Effectivity index, theta^EX          : 1.21825
+Effectivity index, theta^RES         : 1.27443
+L2-norm |s^r| = (s^r,s^r)^0.5        : 0.132903
+L2-error (e,e)^0.5, e=s^r-s^h        : 0.00127578
+ relative error (% of |s^r|) : 0.959928
+  Node #4:	sol1 =  1.625000e+00
+		sol2 =  1.520833e-01 -1.250000e-01
+		exact2  1.500000e-01
+  Point #2:	sol1 =  9.390000e-01
+		sol2 =  7.208333e-02  1.750000e-01
+		exact2  7.200000e-02
+  Point #3:	sol1 =  9.390000e-01
+		sol2 =  7.208333e-02 -1.750000e-01
+		exact2  7.200000e-02
