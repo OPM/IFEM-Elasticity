@@ -112,8 +112,8 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
 
   const size_t nsd = model.getNoSpaceDim();
 
-  size_t iMax[nsd];
-  double dMax[nsd];
+  size_t iMax[3];
+  double dMax[3];
   RealArray RF, Fext;
   double normL2 = model.solutionNorms(solution.front(),dMax,iMax);
   bool haveReac = model.getCurrentReactions(RF,solution.front());
