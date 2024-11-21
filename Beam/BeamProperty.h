@@ -14,9 +14,8 @@
 #ifndef _BEAM_PROPERTY_H
 #define _BEAM_PROPERTY_H
 
-#include <iostream>
+#include "Vec3.h"
 
-class Vec3;
 class RealFunc;
 namespace tinyxml2 { class XMLElement; }
 
@@ -32,6 +31,11 @@ public:
   explicit BeamProperty(const tinyxml2::XMLElement* prop = nullptr);
   //! \brief The destructor deallocates the property functions.
   ~BeamProperty();
+
+  //! \brief Initializes the constant property parameters.
+  void setConstant(const std::vector<double>& values);
+  //! \brief Initializes the eccentricity vectors.
+  void setEccentric(const Vec3& e1, const Vec3& e2) { ecc1 = e1; ecc2 = e2; }
 
   //! \brief Parses beam cross section properties from an XML-element.
   void parse(const tinyxml2::XMLElement* prop);
@@ -93,10 +97,14 @@ public:
   double Iz; //!< Second area moment around local Z-axis
   double It; //!< Torsional constant
 
+  double phi; //!< Angle between local element axes and principal axes
+
   double Ky; //!< Shear reduction factor in local Y-direction
   double Kz; //!< Shear reduction factor in local Z-direction
 
-private:
+  Vec3 ecc1; //!< Eccentricity vector at end 1
+  Vec3 ecc2; //!< Eccentricity vector at end 2
+
   double Sy; //!< Shear centre offset in local Y-direction
   double Sz; //!< Shear centre offset in local Z-direction
 
