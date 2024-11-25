@@ -86,7 +86,7 @@ if(LRSpline_FOUND OR LRSPLINE_FOUND)
   file(GLOB LRE_HDF5FILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/LR/*.hreg)
 endif()
-if(SPR_LIBRARIES)
+if(SPR_FOUND)
   file(GLOB SPR_TESTFILES RELATIVE ${PROJECT_SOURCE_DIR}/Test
                                    ${PROJECT_SOURCE_DIR}/Test/SPR/*.reg)
 endif()
