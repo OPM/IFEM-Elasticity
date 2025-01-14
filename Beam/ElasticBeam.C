@@ -24,6 +24,9 @@
 #include "tinyxml2.h"
 
 
+namespace
+{
+
 /*!
   \brief Base class for beam FE problems containing data for local element axes.
 */
@@ -54,25 +57,24 @@ template <class T> class BeamMats : public T, public LocalBeamAxes
 {
 public:
   //! \brief Default constructor.
-  BeamMats(double a1 = 0.0, double a2 = 0.0, double b = 0.0, double c = 0.0) {}
+  explicit BeamMats(double = 0.0, double = 0.0, double = 0.0, double = 0.0) {}
   //! \brief Empty destructor.
   virtual ~BeamMats() {}
 };
 
 //! Element matrices and data for static beam FE problems
-typedef BeamMats<ElmMats> BeamElmMats;
-
+using BeamElmMats = BeamMats<ElmMats>;
 //! Element matrices and data for linear dynamic beam FE problems
-typedef BeamMats<NewmarkMats> NewmarkBeamMats;
-
-template<> NewmarkBeamMats::BeamMats (double a1, double a2, double b, double c)
-  : NewmarkMats(a1,a2,b,c) {}
-
+using DynBeamMats = BeamMats<NewmarkMats>;
 //! Element matrices and data for nonlinear dynamic beam FE problems
-typedef BeamMats<HHTMats> HHTBeamMats;
+using HHTBeamMats = BeamMats<HHTMats>;
+
+template<> DynBeamMats::BeamMats (double a1, double a2, double b, double c)
+  : NewmarkMats(a1,a2,b,c) {}
 
 template<> HHTBeamMats::BeamMats (double a1, double a2, double b, double)
   : HHTMats(a1,a2,b,true) {}
+}
 
 
 ElasticBeam::ElasticBeam (unsigned short int n) : inLocalAxes(true)
@@ -163,7 +165,7 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
   if (m_mode != SIM::DYNAMIC)
     result = new BeamElmMats();
   else if (intPrm[3] > 0.0)
-    result = new NewmarkBeamMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
+    result = new DynBeamMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
   else
     result = new HHTBeamMats(intPrm[2],intPrm[0],intPrm[1]);
 
@@ -273,9 +275,9 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
 
 
 /*!
-  This method is just a workaround for that we can not cast directly from
-  LocalIntegral& to LocalBeamAxes& due to that class LocalBeamAxes does not
-  inherit class LocalIntegral.
+  This method is just a workaround for that we can not cast directly from a
+  LocalIntegral reference to a LocalBeamAxes reference, due to that class
+  LocalBeamAxes does not inherit class LocalIntegral.
 */
 
 Matrix& ElasticBeam::getLocalAxes (LocalIntegral& elmInt) const
@@ -283,9 +285,60 @@ Matrix& ElasticBeam::getLocalAxes (LocalIntegral& elmInt) const
   if (m_mode != SIM::DYNAMIC)
     return static_cast<BeamElmMats&>(elmInt).Tlg;
   else if (intPrm[3] > 0.0)
-    return static_cast<NewmarkBeamMats&>(elmInt).Tlg;
+    return static_cast<DynBeamMats&>(elmInt).Tlg;
   else
     return static_cast<HHTBeamMats&>(elmInt).Tlg;
+}
+
+
+namespace // Private matrix transformation methods.
+{
+  //! \brief Eccentricity transformation of a beam element vector.
+  void eccTransform (Vector& b, const Vec3& e1, const Vec3& e2)
+  {
+    b( 4) +=  e1.z*b(2) - e1.y*b(3);
+    b( 5) += -e1.z*b(1) + e1.x*b(3);
+    b( 6) +=  e1.y*b(1) - e1.x*b(2);
+    b(10) +=  e2.z*b(8) - e2.y*b(9);
+    b(11) += -e2.z*b(7) + e2.x*b(9);
+    b(12) +=  e2.y*b(7) - e2.x*b(8);
+  }
+
+  //! \brief Eccentricity transformation of a beam element matrix.
+  void eccTransform (Matrix& A, const Vec3& e1, const Vec3& e2)
+  {
+    for (size_t j = 1; j <= 12; j++)
+    {
+      A( 4,j) +=  e1.z*A(2,j) - e1.y*A(3,j);
+      A( 5,j) += -e1.z*A(1,j) + e1.x*A(3,j);
+      A( 6,j) +=  e1.y*A(1,j) - e1.x*A(2,j);
+      A(10,j) +=  e2.z*A(8,j) - e2.y*A(9,j);
+      A(11,j) += -e2.z*A(7,j) + e2.x*A(9,j);
+      A(12,j) +=  e2.y*A(7,j) - e2.x*A(8,j);
+    }
+
+    for (size_t i = 1; i <= 12; i++)
+    {
+      A(i, 4) +=  e1.z*A(i,2) - e1.y*A(i,3);
+      A(i, 5) += -e1.z*A(i,1) + e1.x*A(i,3);
+      A(i, 6) +=  e1.y*A(i,1) - e1.x*A(i,2);
+      A(i,10) +=  e2.z*A(i,8) - e2.y*A(i,9);
+      A(i,11) += -e2.z*A(i,7) + e2.x*A(i,9);
+      A(i,12) +=  e2.y*A(i,7) - e2.x*A(i,8);
+    }
+  }
+
+  //! \brief Shear-centre transformation of a beam element matrix.
+  void shearTransform (Matrix& A, double Sy, double Sz)
+  {
+    for (size_t j = 1; j <= 12; j++)
+      for (size_t i = 0; i <= 6; i += 6)
+        A(i+4,j) += Sy*A(i+3,j) - Sz*A(i+2,j);
+
+    for (size_t i = 1; i <= 12; i++)
+      for (size_t j = 0; j <= 6; j += 6)
+        A(i,j+4) += A(i,j+3)*Sy - A(i,j+2)*Sz;
+  }
 }
 
 
@@ -324,22 +377,13 @@ void ElasticBeam::getMaterialStiffness (Matrix& EK, double L,
   EK( 6,12) =  EIy*(2.0-Aly)/(L+L*Aly);
 
   // Lower triangle from symmetry
-  size_t i, j;
-  for (i = 2; i <= 12; i++)
-    for (j = 1; j < i; j++)
+  for (size_t i = 2; i <= 12; i++)
+    for (size_t j = 1; j < i; j++)
       EK(i,j) = EK(j,i);
 
+  // Adjustment due to non-symmetric cross section
   if (fabs(Sy) + fabs(Sz) > 1.0e-12)
-  {
-    // Adjustment due to non-symmetric cross section
-    for (j = 1; j <= 12; j++)
-      for (i = 0; i <= 6; i += 6)
-        EK(i+4,j) -= Sz*EK(i+2,j) + Sy*EK(i+3,j);
-
-    for (i = 1; i <= 12; i++)
-      for (j = 0; j <= 6; j += 6)
-        EK(i,j+4) -= EK(i,j+2)*Sz + EK(i,j+3)*Sy;
-  }
+    shearTransform(EK,Sy,Sz);
 
 #if INT_DEBUG > 1
   std::cout <<"\nElasticBeam: local material stiffness matrix:"<< EK;
@@ -381,22 +425,13 @@ void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
   EK( 6,12) = -Cy*L2*(0.1+Aly*(0.5+0.25*Aly))/3.0;
 
   // Lower triangle from symmetry
-  size_t i, j;
-  for (i = 2; i <= 12; i++)
-    for (j = 1; j < i; j++)
+  for (size_t i = 2; i <= 12; i++)
+    for (size_t j = 1; j < i; j++)
       EK(i,j) = EK(j,i);
 
+  // Adjustment due to non-symmetric cross section
   if (fabs(Sy) + fabs(Sz) > 1.0e-12)
-  {
-    // Adjustment due to non-symmetric cross section
-    for (j = 1; j <= 12; j++)
-      for (i = 0; i <= 6; i += 6)
-        EK(i+4,j) -= Sz*EK(i+2,j) + Sy*EK(i+3,j);
-
-    for (i = 1; i <= 12; i++)
-      for (j = 0; j <= 6; j += 6)
-        EK(i,j+4) -= EK(i,j+2)*Sz + EK(i,j+3)*Sy;
-  }
+    shearTransform(EK,Sy,Sz);
 
 #if INT_DEBUG > 1
   std::cout <<"ElasticBeam: local geometric stiffness matrix:"<< EK;
@@ -440,42 +475,13 @@ void ElasticBeam::getMassMatrix (Matrix& EM, double rhoA, double Ixx,
   EM( 9,11) = -EM(3,5);
 
   // Lower triangle from symmetry
-  size_t i, j;
-  for (i = 2; i <= 12; i++)
-    for (j = 1; j < i; j++)
+  for (size_t i = 2; i <= 12; i++)
+    for (size_t j = 1; j < i; j++)
       EM(i,j) = EM(j,i);
 
 #if INT_DEBUG > 1
   std::cout <<"ElasticBeam: local mass matrix:"<< EM;
 #endif
-}
-
-
-/*!
-  \brief Eccentricity transformation of a beam element matrix.
-*/
-
-static void eccTransform (Matrix& A, const Vec3& e1, const Vec3& e2)
-{
-  for (int j = 1; j <= 12; j++)
-  {
-    A( 4,j) +=  e1.z*A(2,j) - e1.y*A(3,j);
-    A( 5,j) += -e1.z*A(1,j) + e1.x*A(3,j);
-    A( 6,j) +=  e1.y*A(1,j) - e1.x*A(2,j);
-    A(10,j) +=  e2.z*A(8,j) - e2.y*A(9,j);
-    A(11,j) += -e2.z*A(7,j) + e2.x*A(9,j);
-    A(12,j) +=  e2.y*A(7,j) - e2.x*A(8,j);
-  }
-
-  for (int i = 1; i <= 12; i++)
-  {
-    A(i, 4) +=  e1.z*A(i,2) - e1.y*A(i,3);
-    A(i, 5) += -e1.z*A(i,1) + e1.x*A(i,3);
-    A(i, 6) +=  e1.y*A(i,1) - e1.x*A(i,2);
-    A(i,10) +=  e2.z*A(i,8) - e2.y*A(i,9);
-    A(i,11) += -e2.z*A(i,7) + e2.x*A(i,9);
-    A(i,12) +=  e2.y*A(i,7) - e2.x*A(i,8);
-  }
 }
 
 
@@ -628,8 +634,8 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
                                    const TimeDomain& time, size_t)
 {
-  Vec3 ecc1 = myProp->ecc1;
-  Vec3 ecc2 = myProp->ecc2;
+  Vec3 ecc1 = myProp->ecc1; // End 1 offset in global coordinates
+  Vec3 ecc2 = myProp->ecc2; // End 2 offset in global coordinates
 
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
 
@@ -648,25 +654,7 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
       for (size_t k = 1; k < b.size(); k += 3)
         if (!utl::transform(b,Tlg,k))
           return false;
-
-    if (fabs(myProp->Sy) + fabs(myProp->Sz) > 1.0e-6)
-      for (int i = 1; i <= 3; i++)
-      {
-        ecc1(i) -= Tlg(i,2)*myProp->Sy + Tlg(i,3)*myProp->Sz;
-        ecc2(i) -= Tlg(i,2)*myProp->Sy + Tlg(i,3)*myProp->Sz;
-      }
   }
-
-  // Lambda function for eccentricity transformation of a beam element vector
-  auto&& veccTransform = [](Vector& b, const Vec3& e1, const Vec3& e2)
-  {
-    b( 4) +=  e1.z*b(2) - e1.y*b(3);
-    b( 5) += -e1.z*b(1) + e1.x*b(3);
-    b( 6) +=  e1.y*b(1) - e1.x*b(2);
-    b(10) +=  e2.z*b(8) - e2.y*b(9);
-    b(11) += -e2.z*b(7) + e2.x*b(9);
-    b(12) +=  e2.y*b(7) - e2.x*b(8);
-  };
 
   if (!ecc1.isZero() || !ecc2.isZero())
   {
@@ -674,7 +662,7 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
     for (Matrix& A : elMat.A)
       eccTransform(A,ecc1,ecc2);
     for (Vector& b : elMat.b)
-      veccTransform(b,ecc1,ecc2);
+      eccTransform(b,ecc1,ecc2);
   }
 
   return this->ElasticBase::finalizeElement(elmInt,time);
@@ -700,10 +688,7 @@ NormBase* ElasticBeam::getNormIntegrand (AnaSol* asol) const
 
 size_t ElasticBeamNorm::getNoFields (int fld) const
 {
-  if (fld == 0)
-    return 1;
-
-  return anasol ? 3 : 1;
+  return fld == 0 || !anasol ? 1 : 3;
 }
 
 
@@ -715,10 +700,7 @@ std::string ElasticBeamNorm::getName (size_t, size_t j, const char* prfix) const
      "||e||_L2, e=u^h-u"
   };
 
-  if (!prfix)
-    return u[j-1];
-
-  return prfix + std::string(" ") + u[j-1];
+  return prfix ? prfix + std::string(" ") + u[j-1] : u[j-1];
 }
 
 
