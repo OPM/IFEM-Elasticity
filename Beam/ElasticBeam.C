@@ -571,10 +571,8 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   if ((iS || eKg) && eV.normInf() > 1.0e-16*L0)
   {
     v = eV; // Transform the element displacement vector to local coordinates
-    const Matrix& Tlg = this->getLocalAxes(elmInt);
-    for (size_t k = 1; k < v.size(); k += 3)
-      if (!utl::transform(v,Tlg,k,true))
-        return false;
+    if (!utl::transform(v,this->getLocalAxes(elmInt),true))
+      return false;
 
 #if INT_DEBUG > 1
     std::cout <<"ElasticBeam: v"<< v;
@@ -645,15 +643,13 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
 
     // Transform the element matrices to global coordinates
     for (Matrix& A : elMat.A)
-      for (size_t k = 1; k < A.cols(); k += 3)
-        if (!utl::transform(A,Tlg,k))
-          return false;
+      if (!utl::transform(A,Tlg))
+        return false;
 
     // Transform the element force vectors to global coordinates
     for (Vector& b : elMat.b)
-      for (size_t k = 1; k < b.size(); k += 3)
-        if (!utl::transform(b,Tlg,k))
-          return false;
+      if (!utl::transform(b,Tlg))
+        return false;
   }
 
   if (!ecc1.isZero() || !ecc2.isZero())

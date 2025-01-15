@@ -129,18 +129,15 @@ bool SIMLinElSup::recoverInternalDispl (const Vector& glbSol)
 
     if (sup.sim)
     {
-      bool ok = true;
       Vector sol(supSol);
-      if (!sup.MVP.empty()) // Transform to local superelement axes
-        for (size_t i = 1; i < sol.size() && ok; i += 3)
-          ok = utl::transform(sol,sup.MVP,i,true);
+      // Transform to local superelement axes
+      bool ok = sup.MVP.empty() ? true : utl::transform(sol,sup.MVP,true);
 
       // Recover the internal displacement state
       ok &= sup.sim->recoverInternals(sol,sup.sol);
 
-      if (!sup.MVP.empty()) // Transform back to global axes
-        for (size_t i = 1; i < sup.sol.size() && ok; i += 3)
-          ok = utl::transform(sup.sol,sup.MVP,i);
+      if (!sup.MVP.empty() && ok) // Transform back to global axes
+        ok = utl::transform(sup.sol,sup.MVP);
 
       if (!ok)
       {
