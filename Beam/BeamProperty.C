@@ -95,6 +95,8 @@ bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop,
 
   A = M_PI*(R2-r2);
   I = M_PI*(R2*R2-r2*r2)*0.25;
+  IFEM::cout <<"\tPipe("<< R <<","<< t
+             <<"): A = "<< A <<" I = "<< I << std::endl;
   return true;
 }
 
@@ -112,6 +114,8 @@ bool BeamProperty::parseBox (const tinyxml2::XMLElement* prop,
   A  = B*H;
   Iy = A*H*H/12.0;
   Iz = A*B*B/12.0;
+  IFEM::cout <<"\tBox("<< H <<","<< B
+             <<"): A = "<< A <<" I = "<< Iy <<" "<< Iz << std::endl;
   return true;
 }
 
