@@ -7,7 +7,9 @@ Number of eigenvalues: 10
 Number of Arnoldi vectors: 20
 Shift value: 0
 Number of Gauss points: 4
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
+1. Linear Elastic Beam solver
 Parsing input file NREL_5MW_blade.xinp
 Parsing <beam>
   Parsing <twist>
@@ -30,7 +32,7 @@ Parsing <beam>
   Parsing <gravity>
 	Gravitation vector: 0 0 -9.81
 Parsing <geometry>
-  Generating linear geometry on unit parameter domain \[0,1\]
+  Generating linear geometry on unit parameter domain \[0,1]
 	X0 = 1.5 0.0 0.0
 	X1 = 63.0 0.0 0.0
   Parsing <refine>
@@ -49,6 +51,7 @@ Number of eigenvalues: 10
 Number of Arnoldi vectors: 20
 Shift value: 0
 Number of Gauss points: 1
+11. Linear Elastic Beam solver
 Problem definition:
 ElasticBeam: E = 2.05e+11, G = 7.94e+10, rho = 7850
              A = 0.1, Ix = 0, Iy = 0.001, Iz = 0.001, It = 0.002
@@ -63,16 +66,17 @@ Number of unknowns    738
 Number of quadrature points 123
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+Done.
 Solving the eigenvalue problem ...
  >>> Computed Eigenvalues <<<
      Mode	Frequency \[Hz]
-     1		0.691351
-     2		1.11248
-     3		1.98478
-     4		4.11687
-     5		4.57987
-     6		8.16854
-     7		9.45434
-     8		12.7642
+     1		0.692033
+     2		1.10889
+     3		1.99029
+     4		4.07975
+     5		4.62091
+     6		8.14226
+     7		9.48211
+     8		12.7549
      9		14.8821
-     10		16.8528
+     10		16.8513

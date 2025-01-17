@@ -147,12 +147,15 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
     {
     case SIM::STATIC:
     case SIM::ARCLEN:
-    case SIM::NORMS:
       primsol.resize(nSV);
       break;
 
     case SIM::DYNAMIC:
       primsol.resize(nSV + (intPrm[4] == 1.0 ? 4 : 2));
+      break;
+
+    case SIM::NORMS:
+      primsol.resize(nSV > 0 ? nSV : 1);
       break;
 
     case SIM::BUCKLING:

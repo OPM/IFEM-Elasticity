@@ -52,8 +52,7 @@ public:
   void setProperty(BeamProperty* prop) { myProp = prop; }
 
   //! \brief Defines which FE quantities are needed by the integrand.
-  virtual int getIntegrandType() const
-  { return NO_DERIVATIVES | ELEMENT_CORNERS | NODAL_ROTATIONS; }
+  virtual int getIntegrandType() const;
 
   using ElasticBase::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
@@ -81,10 +80,6 @@ public:
   //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] time Parameters for nonlinear and time-dependent simulations
-  //!
-  //! \details This method is used to transform the beam element matrices
-  //! from the local axes of the element to the global coordinate axes.
-  //! This also includes the effects of eccentric end points, if any.
   virtual bool finalizeElement(LocalIntegral& elmInt,
                                const TimeDomain& time, size_t);
 

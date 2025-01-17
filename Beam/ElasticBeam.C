@@ -156,6 +156,13 @@ BeamProperty* ElasticBeam::parseProp (const tinyxml2::XMLElement* prop)
 }
 
 
+int ElasticBeam::getIntegrandType() const
+{
+  int linearItgType = NO_DERIVATIVES | ELEMENT_CORNERS;
+  return nSV > 0 ? linearItgType | NODAL_ROTATIONS : linearItgType;
+}
+
+
 LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
 {
   ElmMats* result = nullptr;
@@ -218,6 +225,17 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
   if (!this->initElement(MNPC,elmInt))
     return false;
 
+  Matrix& Tlg = this->getLocalAxes(elmInt);
+  if (fe.Tn.size() < 2)
+  {
+    // No end rotation tensors - assuming linear analysis
+    Tlg = fe.Te;
+#if INT_DEBUG > 1
+    std::cout <<"ElasticBeam: local-to-global transformation matrix:"<< Tlg;
+#endif
+    return true;
+  }
+
   Vec3 e1 = fe.XC[1] - fe.XC[0]; // Initial local X-axis
   const Vector& eV = elmInt.vec.front();
   if (!eV.empty())
@@ -232,12 +250,6 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
   if (e1.normalize() <= 1.0e-8)
   {
     std::cerr <<" *** ElasticBeam::initElement: Zero beam length"<< std::endl;
-    return false;
-  }
-
-  if (fe.Tn.size() < 2)
-  {
-    std::cerr <<" *** ElasticBeam::initElement: No end rotations"<< std::endl;
     return false;
   }
 
@@ -260,7 +272,6 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
     e2.cross(e3,e1);
   }
 
-  Matrix& Tlg = this->getLocalAxes(elmInt);
   Tlg.fillColumn(1,e1.ptr());
   Tlg.fillColumn(2,e2.ptr());
   Tlg.fillColumn(3,e3.ptr());
@@ -628,6 +639,12 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   return true;
 }
 
+
+/*!
+  This method is overridden to also transform the element matrices from the
+  local axes of the beam element to the global coordinate axes.
+  This includes the effects of eccentric end points, if any.
+*/
 
 bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
                                    const TimeDomain& time, size_t)
