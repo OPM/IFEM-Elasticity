@@ -253,7 +253,7 @@ bool KirchhoffLoveShell::evalSol (Vector& s, const Vectors& eV,
   if (!this->evalSol(s,sb,eV,fe,X,toLocal))
     return false;
   else
-    s.insert(s.end(),sb.begin(),sb.end());
+    s.push_back(sb.begin(),sb.end());
 
   // Calculate top and bottom surface stresses;
   // stress tensor components, principal stresses and von Mises stress
@@ -266,9 +266,9 @@ bool KirchhoffLoveShell::evalSol (Vector& s, const Vectors& eV,
       p[i] = (s[i] - isurf*sb[i]*6.0/thickness)/thickness;
 
     sigma.principal(sigma_p);
-    s.insert(s.end(),sigma.ptr(),sigma.ptr()+3);
-    s.insert(s.end(),sigma_p.ptr(),sigma_p.ptr()+2);
-    s.insert(s.end(),sigma.vonMises());
+    s.push_back(sigma.ptr(),sigma.ptr()+3);
+    s.push_back(sigma_p.ptr(),sigma_p.ptr()+2);
+    s.push_back(sigma.vonMises());
   }
 
   return true;
@@ -346,7 +346,7 @@ void KirchhoffLoveShell::primaryScalarFields (Matrix& field)
   // Insert the absolute value as the fourth solution component
   double* u = new double[field.cols()];
   for (size_t c = 1; c <= field.cols(); c++)
-    u[c-1] = field.getColumn(c).norm2();
+    u[c-1] = Vec3(field.getColumn(c)).length();
   field.expandRows(1);
   field.fillRow(4,u);
   delete[] u;

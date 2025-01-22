@@ -309,7 +309,7 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vectors& eV,
         s.push_back(q(1)*T(1,2) + q(2)*T(2,2));
       }
       else
-        s.insert(s.end(),q.begin(),q.end());
+        s.push_back(q.begin(),q.end());
     }
   }
   else
