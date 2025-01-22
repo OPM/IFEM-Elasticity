@@ -28,8 +28,8 @@ class SIMLinElBeamC1 : public SIMElastic1D
 public:
   //! \brief Default constructor.
   explicit SIMLinElBeamC1(const char* h = nullptr) { if (h) myHeading = h; }
-  //! \brief Empty destructor.
-  virtual ~SIMLinElBeamC1() {}
+  //! \brief The destructor deletes the material data objects.
+  virtual ~SIMLinElBeamC1();
 
   //! \brief Initializes the property containers of the model.
   virtual void clearProperties();
@@ -72,8 +72,8 @@ public:
   //! \param[in] gNorm The norm values to print
   //! \param[in] rNorm Reference norms for the first norm group
   //! \param[in] prjName Projection name associated with this norm group
-  virtual void printNormGroup (const Vector& gNorm, const Vector& rNorm,
-                               const std::string& prjName) const;
+  virtual void printNormGroup(const Vector& gNorm, const Vector& rNorm,
+                              const std::string& prjName) const;
 
   //! \brief Returns whether an analytical solution is available or not.
   virtual bool haveAnaSol() const;

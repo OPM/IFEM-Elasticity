@@ -27,6 +27,13 @@
 #include "tinyxml2.h"
 
 
+SIMLinElBeamC1::~SIMLinElBeamC1 ()
+{
+  for (Material* mat : mVec)
+    delete mat;
+}
+
+
 void SIMLinElBeamC1::clearProperties ()
 {
   KirchhoffLove* klp = dynamic_cast<KirchhoffLove*>(myProblem);
@@ -363,7 +370,7 @@ double SIMLinElBeamC1::externalEnergy (const Vectors& u,
     else if (load.inod < 0) // This is an element point load
     {
       Vector v = this->SIMgeneric::getSolution(u.front(),&load.xi,0,load.patch);
-      energy += load.pload * v.front();
+      energy += load.pload * v[0];
     }
 
   return energy;
