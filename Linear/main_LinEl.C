@@ -573,15 +573,15 @@ int main (int argc, char** argv)
   // Lambda function to calculate and print out boundary forces
   auto&& printBoundaryForces = [model,zero_tol](const Vector& sol)
   {
-    Vectors forces;
-    if (!model->calcBouForces(forces,Vectors(1,sol)))
+    Real2DMat forces;
+    if (!model->calcBouForces(forces,{sol}))
       return false;
 
     double old_tol = utl::zero_print_tol;
     if (zero_tol > 0.0) utl::zero_print_tol = zero_tol;
 
     size_t sec = 0;
-    for (const Vector& force : forces)
+    for (const RealArray& force : forces)
     {
       IFEM::cout <<"\nBoundary tractions at section "<< ++sec <<":";
       for (double f : force) IFEM::cout <<" "<< utl::trunc(f);

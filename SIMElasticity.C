@@ -102,8 +102,8 @@ void Elastic::printBoundaryForces (const Vector& sf, RealArray& weights,
   for (const std::pair<const int,Vec3>& c : bCode)
   {
     ++isec;
-    Vector force = model->getInterfaceForces(sf,weights,c.first);
-    if (force.normInf() > utl::zero_print_tol)
+    RealArray force = model->getInterfaceForces(sf,weights,c.first);
+    if (Vector(force).normInf() > utl::zero_print_tol)
     {
       IFEM::cout << (indented ? "\n  " : "\n")
                  <<"Interface force at section "<< isec <<":";
@@ -206,7 +206,7 @@ void SIMElasticity<Dim>::clearProperties ()
 */
 
 template<class Dim>
-bool SIMElasticity<Dim>::calcBouForces (Vectors& f, const Vectors& sol)
+bool SIMElasticity<Dim>::calcBouForces (Real2DMat& f, const Vectors& sol)
 {
   f.clear();
   f.reserve(bCode.size());
@@ -228,7 +228,7 @@ bool SIMElasticity<Dim>::calcBouForces (Vectors& f, const Vectors& sol)
 */
 
 template<class Dim>
-bool SIMElasticity<Dim>::getBoundaryForce (Vector& f,
+bool SIMElasticity<Dim>::getBoundaryForce (RealArray& f,
                                            const Vectors& sol,
                                            const TimeStep& tp)
 {
@@ -248,7 +248,7 @@ bool SIMElasticity<Dim>::getBoundaryForce (Vector& f,
 */
 
 template<class Dim>
-bool SIMElasticity<Dim>::getBoundaryReactions (Vectors& rf)
+bool SIMElasticity<Dim>::getBoundaryReactions (Real2DMat& rf)
 {
   rf.resize(bCode.size());
   if (bCode.empty())
@@ -258,7 +258,7 @@ bool SIMElasticity<Dim>::getBoundaryReactions (Vectors& rf)
   bool ok = true;
   for (const std::pair<const int,Vec3>& c : bCode)
   {
-    ok &= this->getCurrentReactions(rf[i],c.first);
+    ok &= this->getCurrentReactions(rf[i],{},c.first);
     Dim::adm.allReduceAsSum(rf[i++]);
   }
 
@@ -269,7 +269,7 @@ bool SIMElasticity<Dim>::getBoundaryReactions (Vectors& rf)
 template<class Dim>
 bool SIMElasticity<Dim>::getBoundaryReactions (Vector& rf, size_t bindex)
 {
-  Vectors rtmp;
+  Real2DMat rtmp;
   if (!this->getBoundaryReactions(rtmp) || bindex > rtmp.size())
     return false;
   else if (bindex > 0)

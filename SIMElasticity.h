@@ -60,16 +60,16 @@ public:
   //! \brief Calculates surface traction resultants.
   //! \param[out] f Calculated traction resultants
   //! \param[in] sol Primary solution vectors
-  virtual bool calcBouForces(Vectors& f, const Vectors& sol);
+  virtual bool calcBouForces(Real2DMat& f, const Vectors& sol);
 
   //! \brief Calculates the traction resultant associated with a given boundary.
   //! \param[out] f Calculated traction resultant
   //! \param[in] sol Primary solution vectors
   //! \param[in] tp Time stepping parameters
-  bool getBoundaryForce(Vector& f, const Vectors& sol, const TimeStep& tp);
+  bool getBoundaryForce(RealArray& f, const Vectors& sol, const TimeStep& tp);
   //! \brief Extracts reaction forces associated with given boundaries.
   //! \param[out] rf Reaction force resultant for specified boundaries
-  bool getBoundaryReactions(Vectors& rf);
+  bool getBoundaryReactions(Real2DMat& rf);
   //! \brief Extracts reaction forces associated with given boundary.
   //! \param[out] rf Reaction force resultant for the specified boundary
   //! \param[in] bindex One-based boundary code index, zero for the sum

@@ -85,7 +85,7 @@ public:
     RealArray reactionForces(myReact);
 
     // Print out the reaction forces
-    Vectors Rforce;
+    Real2DMat Rforce;
     if (ok && this->getBoundaryReactions(Rforce))
     {
       if (Rforce.size() == 1)
@@ -94,17 +94,18 @@ public:
         for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
       }
       else for (size_t i = 0; i < Rforce.size(); i++)
-        if (Rforce[i].normInf() > utl::zero_print_tol)
+        if (Vector(Rforce[i]).normInf() > utl::zero_print_tol)
         {
           IFEM::cout <<"\nReaction force at section "<< i+1 <<" :";
           for (double f : Rforce[i]) IFEM::cout <<" "<< utl::trunc(f);
         }
       if (Rforce.size() > 1)
       {
+        Vector totalForce(Rforce.front());
         for (size_t i = 1; i < Rforce.size(); i++)
-          Rforce.front().add(Rforce[i]);
+          totalForce.add(Rforce[i]);
         IFEM::cout <<"\nTotal reaction force        :";
-        for (double f : Rforce.front()) IFEM::cout <<" "<< utl::trunc(f);
+        for (double f : totalForce) IFEM::cout <<" "<< utl::trunc(f);
       }
 
       RealArray weights;
@@ -115,8 +116,8 @@ public:
     return ok;
   }
 
-  //! \brief Returns current reaction force vector.
-  virtual const Vector* getReactionForces() const
+  //! \brief Returns current reaction force container.
+  virtual const RealArray* getReactionForces() const
   {
     return myReact.empty() ? nullptr : &myReact;
   }
@@ -370,8 +371,8 @@ private:
   //! - = 's' : Perform a modal dynamics simulation
   char dualS;
 
-  Vector myReact; //!< Nodal reaction forces
-  Vector myForces; //!< Internal forces in boundary nodes
+  RealArray myReact;  //!< Nodal reaction forces
+  Vector    myForces; //!< Internal forces in boundary nodes
 
   TopEntity myRetainSet;   //!< Topology set for the retained DOFs
   IntVec    myRetainNodes; //!< List of retained nodes in static condensation

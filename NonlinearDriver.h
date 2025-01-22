@@ -130,8 +130,8 @@ private:
   bool     save0;  //!< If \e true, also save initial configuration
 
   Vector    myForces;  //!< Interface nodal forces
-  Vector    myReacts;  //!< Reaction force container
-  RealArray myWeights; //!< Nodal weights for iterface forces
+  RealArray myReacts;  //!< Reaction force container
+  RealArray myWeights; //!< Nodal weights for the interface forces
 
   AdaptiveSetup* adap; //!< Data and methods for adaptive simulation
   std::string inpfile; //!< Model input file, used when adapting mesh
