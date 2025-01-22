@@ -513,14 +513,15 @@ double SIMKLShell::externalEnergy (const Vectors& u,
   for (const PointLoad& load : myLoads)
     if (load.ldof.second > 0)
     {
-      int idof = madof[load.ldof.first-1] + load.ldof.second-1;
+      size_t idof = madof[load.ldof.first-1] + load.ldof.second-1;
       energy += (*load.p)(time.t) * u.front()(idof);
     }
     else if (load.ldof.second < 0) // This is an element point load
     {
-      Vector v = this->SIMgeneric::getSolution(u.front(),load.xi,0,load.patch);
-      if (-load.ldof.second <= (int)v.size())
-        energy += (*load.p)(time.t) * v(-load.ldof.second);
+      RealArray v = this->getSolution(u.front(),load.xi,0,load.patch);
+      size_t ldof = -load.ldof.second - 1;
+      if (ldof < v.size())
+        energy += (*load.p)(time.t) * v[ldof];
     }
 
   return energy;

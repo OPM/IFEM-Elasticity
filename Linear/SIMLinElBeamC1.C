@@ -368,10 +368,7 @@ double SIMLinElBeamC1::externalEnergy (const Vectors& u,
     if (load.inod > 0)
       energy += load.pload * u.front()(load.inod);
     else if (load.inod < 0) // This is an element point load
-    {
-      Vector v = this->SIMgeneric::getSolution(u.front(),&load.xi,0,load.patch);
-      energy += load.pload * v[0];
-    }
+      energy += load.pload*this->getSolution(u.front(),load.xi,0,load.patch)[0];
 
   return energy;
 }
