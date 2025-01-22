@@ -539,7 +539,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
     else if (i < prjFld.size() && prjFld[i])
     {
       prjFld[i]->valueFE(fe,mr); // this projection has its own basis
-      mr.std::vector<double>::resize(nscmp); // remove shear force components
+      mr.resize(nscmp,utl::RETAIN); // remove shear force components
     }
     else
       continue;

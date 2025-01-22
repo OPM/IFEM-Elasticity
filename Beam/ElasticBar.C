@@ -358,7 +358,7 @@ bool ElasticBar::finalizeElement (LocalIntegral& elmInt,
     for (size_t a = 1; a < nen; a++)
       for (unsigned short int i = 1; i <= npv; i++)
         b(npv*a+i) = b(3*a+i);
-    b.std::vector<double>::resize(npv*nen);
+    b.resize(npv*nen,utl::RETAIN);
   }
 
   return true;

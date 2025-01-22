@@ -1077,7 +1077,12 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
         return false;
 
   bool planeStrain = sigmah.size() == 4 && Cinv.rows() == 3;
-  if (planeStrain) sigmah.erase(sigmah.begin()+2); // Remove the sigma_zz
+  if (planeStrain)
+  {
+    // Remove the sigma_zz
+    sigmah(3) = sigmah(4);
+    sigmah.resize(3,utl::RETAIN);
+  }
 
   double detJW = fe.detJxW;
   if (problem.isAxiSymmetric())
@@ -1103,7 +1108,11 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     // Evaluate the analytical stress field
     sigma = (*anasol)(X);
     if (sigma.size() == 4 && Cinv.rows() == 3)
-      sigma.erase(sigma.begin()+2); // Remove the sigma_zz if plane strain
+    {
+      // Remove the sigma_zz when plane strain
+      sigma(3) = sigma(4);
+      sigma.resize(3,utl::RETAIN);
+    }
 
     // Integrate the energy norm a(u,u)
     pnorm[ip++] += sigma.dot(Cinv*sigma)*detJW;
