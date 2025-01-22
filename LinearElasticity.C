@@ -34,6 +34,13 @@ LinearElasticity::LinearElasticity (unsigned short int n, bool axSym,
 }
 
 
+LinearElasticity::~LinearElasticity ()
+{
+  delete myTemp0;
+  delete myTemp;
+}
+
+
 bool LinearElasticity::parse (const tinyxml2::XMLElement* elem)
 {
   bool initT = !strcasecmp(elem->Value(),"initialtemperature");
@@ -48,11 +55,13 @@ bool LinearElasticity::parse (const tinyxml2::XMLElement* elem)
   if (initT)
   {
     IFEM::cout <<"\tInitial temperature";
+    delete myTemp0; // In case multiple definitions
     myTemp0 = utl::parseRealFunc(tval->Value(),type);
   }
   else
   {
     IFEM::cout <<"\tTemperature";
+    delete myTemp; // In case multiple definitions
     myTemp = utl::parseRealFunc(tval->Value(),type);
   }
   IFEM::cout << std::endl;
@@ -373,7 +382,7 @@ bool LinearElasticity::formInitStrainForces (ElmMats& elMat, const Vector& N,
   eps = this->getThermalStrain(N,N,X)*detJW;
 
   // Stresses due to thermal expansion
-  Vector sigma0;
+  RealArray sigma0;
   if (!C.multiply(eps,sigma0))
     return false;
 

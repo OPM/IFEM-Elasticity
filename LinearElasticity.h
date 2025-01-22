@@ -36,14 +36,13 @@ public:
   //! \param[in] modal If \e true, a modal dynamics simulation is performed
   explicit LinearElasticity(unsigned short int n, bool axSym = false,
                             bool GPout = false, bool modal = false);
-  //! \brief Empty destructor.
-  virtual ~LinearElasticity() {}
+  //! \brief The destructor deletes the temperature fields.
+  virtual ~LinearElasticity();
 
   //! \brief Parses a data section from an XML element.
   virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Defines the solution mode before the element assembly is started.
-  //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
 
   //! \brief Initializes and toggles the use of left-hand-side matrix buffers.

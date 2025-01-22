@@ -269,7 +269,7 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
   if (iop > 0)
   {
     // Calculate the stress tensor, sigma = C*eps
-    Vector sig; // Use a local variable to avoid redimensioning of sigma
+    RealArray sig; // Use a local variable to avoid redimensioning of sigma
     if (eps.dim() != sigma.dim())
     {
       // Account for non-matching tensor dimensions
