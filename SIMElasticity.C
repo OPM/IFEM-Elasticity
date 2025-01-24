@@ -350,7 +350,8 @@ void SIMElasticity<Dim>::preprocessA ()
       if (stressField)
       {
         p.pcode = Property::NEUMANN;
-        Dim::myTracs[p.pindx] = new TractionField(*stressField);
+        if (Dim::myTracs.find(p.pindx) == Dim::myTracs.end())
+          Dim::myTracs[p.pindx] = new TractionField(*stressField);
       }
       else
         p.pcode = Property::UNDEFINED;
