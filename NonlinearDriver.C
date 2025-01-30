@@ -24,7 +24,7 @@
 
 
 NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
-  : NonLinSIM(sim, linear ? NONE : ENERGY), proSol(1)
+  : NonLinSIM(sim, linear ? NONE : ENERGY)
 {
   aStep = 0;
   save0 = opt.pSolOnly = true;
@@ -228,15 +228,18 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 {
   std::streamsize normPrec = outPrec > 3 ? outPrec : 0;
 
+  SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
+  bool doProject = pit != opt.project.end();
+  if (doProject) proSol.resize(1);
+
   if (dtDump <= 0.0) dtDump = params.stopTime + 1.0;
   double nextDump = params.time.t + dtDump;
   double nextSave = params.time.t + opt.dtSave;
   bool getMaxVals = opt.format >= 0 && !opt.pSolOnly;
   const Elasticity* elp = dynamic_cast<const Elasticity*>(model.getProblem());
-  SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
   if (!elp)
     getMaxVals = printMax = false;
-  else if (pit != opt.project.end())
+  else if (doProject)
     getMaxVals = true;
 
   int iStep = aStep = 0; // Save initial state to VTF
@@ -282,7 +285,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       if (!this->calcInterfaceForces(params.time.t))
         return 9;
 
-    if (pit != opt.project.end())
+    if (doProject)
     {
       // Project the secondary results onto the spline basis
       model.setMode(SIM::RECOVERY);
@@ -334,7 +337,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
           if (!model.writeGlvV(myForces,"Internal forces",iStep,nBlock,2))
             return 11;
 
-        if (pit != opt.project.end())
+        if (doProject)
         {
           // Write projected solution fields to VTF-file
           if (!model.writeGlvP(proSol.front(),iStep,
