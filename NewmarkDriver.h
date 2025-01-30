@@ -97,7 +97,9 @@ public:
       return 4;
 
     SIMoptions::ProjectionMap::const_iterator pi = Newmark::opt.project.begin();
-    bool doProject  = pi != Newmark::opt.project.end();
+    bool doProject = pi != Newmark::opt.project.end();
+    if (doProject) proSol.resize(1);
+
     double nextSave = params.time.t + Newmark::opt.dtSave;
 
     // Open output file for result point print, if requested
@@ -120,7 +122,8 @@ public:
       {
         // Project the secondary results onto the spline basis
         Newmark::model.setMode(SIM::RECOVERY);
-        if (!Newmark::model.project(proSol,this->realSolution(),
+        Matrix projs(proSol.front());
+        if (!Newmark::model.project(projs,this->realSolution(),
                                     pi->first,params.time))
           status += 6;
       }
@@ -187,8 +190,11 @@ public:
     return params.deSerialize(data) && this->Newmark::deSerialize(data);
   }
 
-  //! \brief Accesses the projected solution.
-  const Vector& getProjection() const { return proSol; }
+  //! \brief Returns a pointer to the projected solution.
+  const Vector* getProjection() const
+  {
+    return proSol.empty() ? nullptr : proSol.data();
+  }
 
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
@@ -216,7 +222,7 @@ protected:
         return 13;
     }
 
-    if (!Newmark::model.writeGlvP(proSol,iStep,Newmark::nBlock,110,
+    if (!Newmark::model.writeGlvP(proSol.front(),iStep,Newmark::nBlock,110,
                                   prefix.c_str()))
       return 14;
 
@@ -227,7 +233,7 @@ private:
   std::string rptFile;   //!< Name of output file for point/line results
   bool        doInitAcc; //!< If \e true, calculate initial accelerations
 
-  Matrix proSol; //!< Projected secondary solution
+  Vectors proSol; //!< Projected secondary solution
 
 protected:
   TimeStep params; //!< Time stepping parameters
