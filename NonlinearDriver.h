@@ -105,8 +105,11 @@ public:
   //! \param[in] data Container for serialized data
   virtual bool deSerialize(const SerializeMap& data);
 
-  //! \brief Accesses the projected solution.
-  const Vector& getProjection() const { return proSol.front(); }
+  //! \brief Returns a pointer to the projected solution.
+  const Vector* getProjection() const
+  {
+    return proSol.empty() ? nullptr : proSol.data();
+  }
 
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
