@@ -137,7 +137,7 @@ L2-norm            : 1.08623e+06
 Max displacement   : 1.60156e+06
 Projecting secondary solution ...
 	Continuous global L2-projection
-  Point #1:	sol1 =  1.601563e+06
+  Point #1:	sol1 =  1.60156.e+06
 		sol2 =  4.375000e-01  0.000000e+00
 		exact2  5.000000e-01
 Energy norm           a(w^h,w^h)^0.5 : 1265.53
