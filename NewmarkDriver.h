@@ -222,9 +222,11 @@ protected:
         return 13;
     }
 
-    if (!Newmark::model.writeGlvP(proSol.front(),iStep,Newmark::nBlock,110,
-                                  prefix.c_str()))
-      return 14;
+    if (!proSol.empty())
+      if (!Newmark::model.writeGlvP(proSol.front(),iStep,
+                                    Newmark::nBlock,110,
+                                    prefix.c_str()))
+        return 14;
 
     return 0;
   }
