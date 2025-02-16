@@ -100,10 +100,11 @@ bool SIMElasticityWrap<Dim>::deSerializeBasis (const SerializeMap& data)
 template<class Dim>
 bool SIMElasticityWrap<Dim>::init (const TimeStep& tp, bool withRF)
 {
-  return (this->initSystem(Dim::opt.solver,1,1,0,withRF) &&
-          this->initSolution(this->getNoDOFs(),this->getNoSolutions()) &&
-          this->setMode(SIM::INIT) &&
-          this->getIntegrand()->init(tp.time));
+  if (!this->initSystem(Dim::opt.solver,1,1,0,withRF))
+    return false;
+
+  this->initSolution(this->getNoDOFs(),this->getNoSolutions(false));
+  return this->setMode(SIM::INIT) && this->getIntegrand()->init(tp.time);
 }
 
 
