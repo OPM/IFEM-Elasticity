@@ -24,6 +24,7 @@ ElasticBar::ElasticBar (char strm, unsigned short int nd, unsigned short int ns)
 
   nsd = nd; // Number of spatial dimenstions
   npv = nd; // Number of primary unknowns per node
+  nCS = ns; // Number of consecutive solution states in core
   nSV = ns; // Number of solution vectors in core
 
   stiffness = 1.0;

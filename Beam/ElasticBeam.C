@@ -81,6 +81,7 @@ ElasticBeam::ElasticBeam (unsigned short int n) : inLocalAxes(true)
 {
   nsd = 3; // Number of spatial dimenstions
   npv = 6; // Number of primary unknowns per node
+  nCS = n; // Number of consecutive solution states in core
   nSV = n; // Number of solution vectors in core
 
   // Default material parameters

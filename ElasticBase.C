@@ -23,10 +23,10 @@
 
 ElasticBase::ElasticBase () : IntegrandBase(0)
 {
-  nSV = 1; // Default number of solution vectors in core
-
   eM = eKm = eKg = 0;
-  eS = gS  = iS  = dS = 0;
+  eS = gS  = iS  = 0;
+
+  nCS = nSV = 1; // Default number of solution states/vectors in core
 
   memset(intPrm,0,sizeof(intPrm));
 
@@ -147,15 +147,14 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
     {
     case SIM::STATIC:
     case SIM::ARCLEN:
+    case SIM::DYNAMIC:
       primsol.resize(nSV);
       break;
 
-    case SIM::DYNAMIC:
-      primsol.resize(nSV + (intPrm[4] == 1.0 ? 4 : 2));
-      break;
-
     case SIM::NORMS:
-      primsol.resize(nSV > 0 ? nSV : 1);
+      // Using nCS and not nSV here, assuming that element-level
+      // velocity and acceleration is not needed for norm integration
+      primsol.resize(nCS > 0 ? nCS : 1);
       break;
 
     case SIM::BUCKLING:
@@ -171,18 +170,49 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 }
 
 
+/*!
+  This method will also update the member \ref nSV telling how many
+  solution vectors will be allocated in total by the subsequent setMode() call.
+  We here use \a i = 2 to flag that a Newmark time integration scheme will be
+  used, requiring the velocity and acceleration to be stored in addition to the
+  primary solution itself (the displacements). If the HHTSIM driver is used
+  (signalled by \a i = 4), two vectors for the predicted velocity and
+  acceleration, respectively, are needed in addition.
+
+  This method will also allocate the internal \ref bdf member when a BDF-scheme
+  is used for the time integration (signalled by \a i = 5),
+  and set the number of solution stated accordingly.
+*/
+
 void ElasticBase::setIntegrationPrm (unsigned short int i, double prm)
 {
   if (i < sizeof(intPrm)/sizeof(double))
     intPrm[i] = prm;
-  else if (!bdf) // Using a Backward Difference Formula for time discretization
+  else if (!bdf)
+  {
+    // Using a Backward Difference Formula for time discretization
     bdf = new TimeIntegration::BDFD2(2,prm);
+    if (nSV < 4) nSV = nCS = 4; // 2nd order scheme, need 4 consecutive solutions
+  }
+
+  if (i == 4 && intPrm[4] == 1.0) // Using the HHTSIM driver
+    nSV = nCS*3 + 2; // Allocate for {u,v,a} for each state plus predicted {V,A}
+  else if (i == 2 && nSV < nCS*3 && prm != 0.0) // Using other Newmark driver
+    nSV = nCS*3; // Allocate for {u,v,a} for each state
+  else if (i == 2 && prm == 0.0) // Using quasi-static mode
+    nSV = nCS; // Allocate for {u} only
 }
 
 
 double ElasticBase::getIntegrationPrm (unsigned short int i) const
 {
   return i < sizeof(intPrm)/sizeof(double) ? intPrm[i] : 0.0;
+}
+
+
+size_t ElasticBase::getNoSolutions (bool allocated) const
+{
+  return allocated ? primsol.size() : nSV;
 }
 
 

@@ -37,7 +37,7 @@ bool Elasticity::wantPrincipalStress = false;
 bool Elasticity::asolProject         = false;
 
 
-Elasticity::Elasticity (unsigned short int n, bool ax) : axiSymmetry(ax)
+Elasticity::Elasticity (unsigned short int n, bool ax) : dS(0), axiSymmetry(ax)
 {
   nsd = axiSymmetry ? 2 : n;
   nDF = axiSymmetry ? 3 : nsd;
@@ -97,7 +97,8 @@ Material* Elasticity::parseMatProp (char* cline, bool planeStrain)
 }
 
 
-Material* Elasticity::parseMatProp (const tinyxml2::XMLElement* elem, bool planeStrain)
+Material* Elasticity::parseMatProp (const tinyxml2::XMLElement* elem,
+                                    bool planeStrain)
 {
   if (!strcasecmp(elem->Value(),"texturematerial"))
     material = new IsotropicTextureMat(!planeStrain,axiSymmetry);
@@ -143,8 +144,10 @@ void Elasticity::addExtrFunction (FunctionBase* extr)
   if (dynamic_cast<VecFunc*>(extr))
   {
     dualFld.push_back(extr);
-    this->setNoSolutions(1+dualFld.size(),true);
     if (!dualRHS) dualRHS = extr;
+    // Set number of solution states
+    nSV = nCS = 1+dualFld.size();
+    dS = 1;
   }
   else
   {
@@ -161,15 +164,18 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
   if (this->inActive(iEl))
     return result; // element is not in current material group
 
+  const bool linDyn = intPrm[3] > 0.0;
+  const bool useHHT = intPrm[4] == 1.0;
+  const bool useGA  = intPrm[4] == 2.0;
+
   if (m_mode != SIM::DYNAMIC) // linear or nonlinear (quasi-)static analysis
     result = new ElmMats();
   else if (bdf)
     result = new BDFMats(*bdf);
-  else if (intPrm[3] > 0.0) // linear dynamic analysis
-    result = new NewmarkMats(intPrm[0], intPrm[1], intPrm[2], intPrm[3],
-                             intPrm[4] == 2.0);
+  else if (linDyn) // linear dynamic analysis
+    result = new NewmarkMats(intPrm[0], intPrm[1], intPrm[2], intPrm[3], useGA);
   else // nonlinear dynamic analysis
-    result = new HHTMats(intPrm[2], intPrm[0], intPrm[1], intPrm[4] != 1.0);
+    result = new HHTMats(intPrm[2], intPrm[0], intPrm[1], !useHHT);
 
   switch (m_mode)
   {
@@ -189,8 +195,8 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
     case SIM::DYNAMIC:
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
-      result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
-                     intPrm[4] == 1.0 ? 3 : (neumann || intPrm[3] > 0.0 ? 1:2), nsd);
+      result->resize(neumann ? 0 : (intPrm[3] < 0.0 ? 4 : 3),
+                     useHHT ? 3 : (neumann || linDyn ? 1 : 2), nsd);
       break;
 
     case SIM::VIBRATION:

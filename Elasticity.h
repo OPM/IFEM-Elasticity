@@ -40,7 +40,7 @@ protected:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions
   //! \param[in] ax \e If \e true, and axisymmetric 3D formulation is assumed
-  Elasticity(unsigned short int n = 3, bool ax = false);
+  Elasticity(unsigned short int n, bool ax = false);
 
 public:
   //! \brief The destructor frees the dynamically allocated data objects.
@@ -346,6 +346,7 @@ protected:
   mutable std::vector<PointValues> maxVal;  //!< Maximum result values
   mutable std::vector<Vec3Pair>    tracVal; //!< Traction field point values
 
+  unsigned short int  dS; //!< Index to element dual force vector
   unsigned short int nDF; //!< Dimension on deformation gradient (2 or 3)
   bool       axiSymmetry; //!< If \e true, the problem is axi-symmetric
   double           gamma; //!< Numeric stabilization parameter

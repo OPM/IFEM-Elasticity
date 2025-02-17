@@ -58,22 +58,22 @@ public:
   //! \brief Returns the gravitation vector.
   const Vec3& getGravity() const { return gravity; }
 
-  //! \brief Defines the number solution vectors.
-  void setNoSolutions(size_t n, bool dual = false) { nSV = n; dS = dual; }
-
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
   //! \brief Updates the external load vector index for gradient calculation.
   void setLoadGradientMode() { eS = 2; }
 
-  //! \brief Initializes an integration parameter for the integrand.
+  //! \brief Initializes a time integration parameter for the integrand.
   //! \param[in] i Index of the integration parameter to define
   //! \param[in] prm The parameter value to assign
   virtual void setIntegrationPrm(unsigned short int i, double prm);
   //! \brief Returns an integration parameter for the integrand.
   //! \param[in] i Index of the integration parameter to return
   virtual double getIntegrationPrm(unsigned short int i) const;
+
+  //! \brief Returns the total number of solution vectors.
+  virtual size_t getNoSolutions(bool allocated = true) const;
 
   //! \brief Advances the %BDF time step scheme one step forward.
   void advanceStep(double dt, double dtn);
@@ -120,8 +120,9 @@ protected:
   short int eS;  //!< Index to element load vector
   short int gS;  //!< Index to element load gradient vector
   short int iS;  //!< Index to element internal force vector
-  short int dS;  //!< Index to element dual force vector
-  short int nSV; //!< Number of consequtive solution vectors in core
+
+  unsigned short int nCS; //!< Number of consecutive solution states in core
+  unsigned short int nSV; //!< Total number of solution vectors in core
 
   std::vector<const char*> matNames; //!< Element matrix names (for debug print)
   std::vector<const char*> vecNames; //!< Element vector names (for debug print)
