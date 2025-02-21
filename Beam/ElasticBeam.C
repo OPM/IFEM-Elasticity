@@ -26,55 +26,55 @@
 
 namespace
 {
+  /*!
+    \brief Base class for beam problems containing data for local element axes.
+  */
 
-/*!
-  \brief Base class for beam FE problems containing data for local element axes.
-*/
+  class LocalBeamAxes
+  {
+  protected:
+    //! \brief The default constructor is protected to allow sub-classes only.
+    LocalBeamAxes() : Tlg(3,3) {}
 
-class LocalBeamAxes
-{
-protected:
-  //! \brief The default constructor is protected to allow sub-classes only.
-  LocalBeamAxes() : Tlg(3,3) {}
+  public:
+    //! \brief Empty destructor.
+    virtual ~LocalBeamAxes() {}
 
-public:
-  //! \brief Empty destructor.
-  virtual ~LocalBeamAxes() {}
-
-  Matrix Tlg; //!< Local to global transformation matrix
-};
+    Matrix Tlg; //!< Local to global transformation matrix
+  };
 
 
-/*!
-  \brief Class collecting element matrices and data for a beam FE problem.
+  /*!
+    \brief Class collecting element matrices and data for a beam FE problem.
 
-  \details This class is defined as a template, where the template argument
-  defines the parent class. This way sub-classes of different parents may be
-  generated compile-time from the same source code.
-*/
+    \details This class is defined as a template, where the template argument
+    defines the parent class. This way sub-classes of different parents may be
+    generated compile-time from the same source code.
+  */
 
-template <class T> class BeamMats : public T, public LocalBeamAxes
-{
-public:
-  //! \brief Default constructor.
-  explicit BeamMats(double = 0.0, double = 0.0, double = 0.0, double = 0.0) {}
-  //! \brief Empty destructor.
-  virtual ~BeamMats() {}
-};
+  template<class T> class BeamMats : public T, public LocalBeamAxes
+  {
+  public:
+    //! \brief Default constructor.
+    explicit BeamMats(double = 0.0, double = 0.0, double = 0.0, double = 0.0) {}
+  };
 
-//! Element matrices and data for static beam FE problems
-using BeamElmMats = BeamMats<ElmMats>;
-//! Element matrices and data for linear dynamic beam FE problems
-using DynBeamMats = BeamMats<NewmarkMats>;
-//! Element matrices and data for nonlinear dynamic beam FE problems
-using HHTBeamMats = BeamMats<HHTMats>;
+  //! Element matrices and data for static beam FE problems
+  using BeamElmMats = BeamMats<ElmMats>;
+  //! Element matrices and data for linear dynamic beam FE problems
+  using DynBeamMats = BeamMats<NewmarkMats>;
+  //! Element matrices and data for nonlinear dynamic beam FE problems
+  using HHTBeamMats = BeamMats<HHTMats>;
 
-template<> DynBeamMats::BeamMats (double a1, double a2, double b, double c)
-  : NewmarkMats(a1,a2,b,c) {}
+  //! \brief Instantiation for NewmarMats as parent class.
+  template<> DynBeamMats::BeamMats (double a1, double a2, double b, double c)
+    : NewmarkMats(a1,a2,b,c) {}
 
-template<> HHTBeamMats::BeamMats (double a1, double a2, double b, double)
-  : HHTMats(a1,a2,b,true) {}
-}
+  //! \brief Instantiation for HHTMats as parent class.
+  template<> HHTBeamMats::BeamMats (double a1, double a2, double b, double)
+    : HHTMats(a1,a2,b,true) {}
+
+} // namespace
 
 
 ElasticBeam::ElasticBeam (unsigned short int n) : inLocalAxes(true)
@@ -556,23 +556,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 #endif
 
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
-
-  if (hasGrF)
-  {
-    // External (gravitation) forces
-    Vector& S = elMat.b[eS-1];
-    Vec3 gvec = (0.5*rhoA*L0) * (gravity*this->getLocalAxes(elmInt));
-    for (unsigned short int i = 1; i <= 3; i++)
-      S(i) = S(npv+i) = gvec[i-1];
-
-    // If the centre of gravity has an offset w.r.t. the neutral axis,
-    // it will result in an additional torque load on the element
-    if (CG_y != 0.0 || CG_z != 0.0)
-      S(4) = S(npv+4) = gvec.z*CG_y - gvec.y*CG_z;
-#if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: S_ext"<< S << std::endl;
-#endif
-  }
+  Matrix tmpEK;
 
   if (eKm) // Evaluate the material stiffness matrix
     this->getMaterialStiffness(elMat.A[eKm-1],L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
@@ -592,49 +576,56 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
     if (eKg) N = EA*(v(7)-v(1))/L0; // Axial force
   }
 
-  if (iS && !v.empty())
+  bool hasIntS = v.empty() ? false : iS > 0;
+  if (hasIntS)
   {
     v *= -1.0;
 
-    // Internal forces, S_int = Km*v
-    Matrix tmpKm;
-    if (!eKm) this->getMaterialStiffness(tmpKm,L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
-    Matrix& Km = eKm ? elMat.A[eKm-1] : tmpKm;
-    if (!Km.multiply(v,elMat.b[iS-1],false,iS == eS))
+    // Calculate internal forces, S_int = Km*v
+    if (!eKm) this->getMaterialStiffness(tmpEK,L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
+    Matrix& Km = eKm ? elMat.A[eKm-1] : tmpEK;
+    if (!Km.multiply(v,elMat.b[iS-1]))
       return false;
 
 #if INT_DEBUG > 1
-    if (iS == eS)
-      std::cout <<"ElasticBeam: S_ext - S_int"<< elMat.b[iS-1] << std::endl;
-    else
-      std::cout <<"ElasticBeam: -S_int"<< elMat.b[iS-1] << std::endl;
+    std::cout <<"ElasticBeam: -S_int"<< elMat.b[iS-1];
 #endif
   }
 
   if (eKg && N != 0.0)
   {
 #if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: Axial force, N = "<< N << std::endl;
+    std::cout <<"ElasticBeam: Axial force, N = "<< N;
 #endif
 
     // Evaluate the geometric stiffness matrix
-    if (eKg == eKm)
-    {
-      Matrix Kg(12,12);
-      this->getGeometricStiffness(Kg,N,L0,EIy,EIz,Aly,Alz,ItoA,Sy,Sz);
-      elMat.A[eKm-1].add(Kg);
-    }
-    else
-      this->getGeometricStiffness(elMat.A[eKg-1],
-                                  N,L0,EIy,EIz,Aly,Alz,ItoA,Sy,Sz);
+    Matrix& Kg = eKg == eKm ? tmpEK : elMat.A[eKg-1];
+    this->getGeometricStiffness(Kg,N,L0,EIy,EIz,Aly,Alz,ItoA,Sy,Sz);
+    if (eKg == eKm) elMat.A[eKm-1].add(Kg);
   }
 
-  if (eM)
+  Matrix& Mm = eM ? elMat.A[eM-1] : tmpEK;
+  if (eM || hasGrF)
   {
     // Evaluate the mass matrix
-    this->getMassMatrix(elMat.A[eM-1],rhoA,I_xx,I_yy,I_zz,L0);
+    this->getMassMatrix(Mm,rhoA,I_xx,I_yy,I_zz,L0);
     if (CG_y != 0.0 || CG_z != 0.0) // Transform to neutral axis location
-      eccTransform(elMat.A[eM-1],Vec3(0.0,-CG_y,-CG_z),Vec3(0.0,-CG_y,-CG_z));
+      eccTransform(Mm,Vec3(0.0,-CG_y,-CG_z),Vec3(0.0,-CG_y,-CG_z));
+  }
+
+  if (hasGrF)
+  {
+    // Calculate external (gravitation) forces, S_ext = M*g
+    Vec3 gvec = gravity*this->getLocalAxes(elmInt);
+    Vector& S = elMat.b[eS-1];
+    if (!hasIntS) S.fill(0.0);
+    for (size_t i = 1; i <= S.size(); i++)
+      for (size_t j = 0; j < Mm.cols(); j += npv)
+        S(i) += Mm(i,j+1)*gvec.x + Mm(i,j+2)*gvec.y + Mm(i,j+3)*gvec.z;
+
+#if INT_DEBUG > 1
+    std::cout <<"ElasticBeam: "<< (eS == iS ? "S_ext - S_int" : "S_ext") << S;
+#endif
   }
 
   return true;
@@ -642,17 +633,14 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 
 
 /*!
-  This method is overridden to also transform the element matrices from the
-  local axes of the beam element to the global coordinate axes.
+  This method is overridden to also transform the element matrices from
+  the local axes of the beam element to the global coordinate axes.
   This includes the effects of eccentric end points, if any.
 */
 
 bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
                                    const TimeDomain& time, size_t)
 {
-  Vec3 ecc1 = myProp->ecc1; // End 1 offset in global coordinates
-  Vec3 ecc2 = myProp->ecc2; // End 2 offset in global coordinates
-
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
 
   if (inLocalAxes)
@@ -669,6 +657,9 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
       if (!utl::transform(b,Tlg))
         return false;
   }
+
+  const Vec3& ecc1 = myProp->ecc1; // End 1 offset in global coordinates
+  const Vec3& ecc2 = myProp->ecc2; // End 2 offset in global coordinates
 
   if (!ecc1.isZero() || !ecc2.isZero())
   {
@@ -718,12 +709,16 @@ std::string ElasticBeamNorm::getName (size_t, size_t j, const char* prfix) const
 }
 
 
+/*!
+  This just forwards to the base class method not using any FiniteElement data,
+  since the norm evaluation does not need the local-to-global transformation.
+*/
+
 bool ElasticBeamNorm::initElement (const std::vector<int>& MNPC,
                                    const FiniteElement&, const Vec3&, size_t,
                                    LocalIntegral& elmInt)
 {
-  return this->initProjection(MNPC,elmInt) &&
-         myProblem.initElement(MNPC,elmInt);
+  return this->initElement(MNPC,elmInt);
 }
 
 
