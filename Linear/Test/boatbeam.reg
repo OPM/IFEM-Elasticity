@@ -70,8 +70,8 @@ Sum external load : 0 0 -4.10172e+06
 Solving the equation system ...
 	Condition number: 202773
  >>> Solution summary <<<
-L2-norm            : 0.00476012
-Max Z-displacement : 0.0163602
-Max y-displacement : 0.000420108
+L2-norm            : 0.00476039
+Max Z-displacement : 0.0163611
+Max y-displacement : 0.00042015
 Integrating solution norms (FE solution) ...
-L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.117128
+L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.117135

@@ -3,6 +3,7 @@ Beam+supel.xinp -1Dsup
 Input file: Beam+supel.xinp
 Equation solver: 2
 Number of Gauss points: 4
+Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 1. Coupled linear static solver
 Parsing input file Beam+supel.xinp
@@ -35,6 +36,7 @@ Parsing <beam>
   Parsing <material>
 	Stiffness moduli = 2.1e+11 8.07692e+10, mass density = 7850
   Parsing <properties>
+	Box(0.2,0.6): A = 0.12 I = 0.0004 0.0036
     Constant beam properties:
 	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.004
 	Shear parameters = 0 0 1.2 1.2
@@ -83,15 +85,17 @@ Number of unknowns    50
 Number of quadrature points 1
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+Done.
 22. Linear Elastic Beam solver
 Number of quadrature points 8
 Processing integrand associated with code 0
-Assembling interior matrix terms for P1
 Assembling interior matrix terms for P2
+Assembling interior matrix terms for P3
+Done.
 23. Coupled linear static solver
 Solving the equation system ...
 	Condition number: 6756.39
  >>> Solution summary <<<
-L2-norm            : 0.0160891
-Max Z-displacement : 0.0583388
-Max y-displacement : 0.00783073
+L2-norm            : 0.0161842
+Max Z-displacement : 0.0586571
+Max y-displacement : 0.00789439
