@@ -326,12 +326,10 @@ bool SIMElasticBar::createFEMmodel (char)
   bool ok = true;
   ASMbase::resetNumbering();
   for (ASMbase* pch : myModel)
-    if (twist)
-      ok &= static_cast<ASMs1D*>(pch)->generateTwistedFEModel(*twist,XZp);
-    else if (!XZp.isZero())
-      ok &= static_cast<ASMs1D*>(pch)->generateOrientedFEModel(XZp);
-    else
-      ok = pch->generateFEMTopology();
+  {
+    ok &= static_cast<ASMs1D*>(pch)->generateOrientedFEModel(XZp);
+    if (twist && ok) static_cast<ASMs1D*>(pch)->applyTwist(*twist);
+  }
 
   return ok;
 }
