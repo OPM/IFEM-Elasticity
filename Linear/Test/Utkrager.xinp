@@ -20,7 +20,13 @@
   <beam>
     <material E="2.05e11" G="8.1e10"/>
     <properties Ky="1.2" Kz="1.2"/>
-    <nodeload node="6" dof="2" type="constant">-1.0e6</nodeload>
+    <nodeload node="6" dof="2" type="sin">1.570796327 0.0 -1.0e6</nodeload>
   </beam>
+
+  <newmarksolver alpha2="0.003">
+    <timestepping>
+      <step start="0.0" end="2.0">0.05</step>
+    </timestepping>
+  </newmarksolver>
 
 </simulation>

@@ -3,8 +3,21 @@ Utkrager.xinp -1D
 Input file: Utkrager.xinp
 Equation solver: 2
 Number of Gauss points: 4
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+1. Linear Elastic Beam solver
 Parsing input file Utkrager.xinp
+Parsing <beam>
+  Parsing <material>
+	Stiffness moduli = 2.05e+11 8.1e+10, mass density = 7850
+  Parsing <properties>
+    Constant beam properties:
+	Cross section area = 0.1, moments of inertia = 0.002 0.001 0.001 0.002
+	Shear parameters = 0 0 1.2 1.2
+  Parsing <nodeload>
+	Node 6 dof 2 Load: -1e+06\*sin(1.5708\*t)
 Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
   Parsing <refine>
   Parsing <topologysets>
 	Topology sets: end1 (1,1,0D)
@@ -14,18 +27,10 @@ Parsing <geometry>
 Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 123456: (fixed)
-Parsing <beam>
-  Parsing <material>
-	Stiffness moduli = 2.05e+11 8.1e+10, mass density = 7850
-  Parsing <properties>
-    Constant beam properties:
-	Cross section area = 0.1, moments of inertia = 0.002 0.001 0.001 0.002
-	Shear parameters = 0 0 1.2 1.2
-  Parsing <nodeload>
-	Node 6 dof 2 Load: -1e+06
 Parsing input file succeeded.
 Equation solver: 2
 Number of Gauss points: 1
+11. Linear Elastic Beam solver
 Problem definition:
 ElasticBeam: E = 2.05e+11, G = 8.1e+10, rho = 7850
              A = 0.1, Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002
@@ -39,8 +44,13 @@ Number of dofs        36
 Number of unknowns    30
 Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+Done.
+Sum external load : 0 -1e+06 0
 Solving the equation system ...
+	Condition number: 2652.13
  >>> Solution summary <<<
 L2-norm            : 0.000822911
-Max Y-displacement : 0.00177416 node 6
-Max z-displacement : 0.00243902 node 6
+Max Y-displacement : 0.00177416
+Max z-displacement : 0.00243902
+Integrating solution norms (FE solution) ...
+L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.00194572
