@@ -298,6 +298,9 @@ int main (int argc, char** argv)
     return 0;
   }
 
+  if (IFEM::getOptions().discretization < ASM::Spline || args.dim == 1)
+    ASM::cachePolicy = ASM::NO_CACHE;
+
   if (IFEM::getOptions().discretization < ASM::LRSpline)
   {
     if (args.adap)
@@ -317,7 +320,6 @@ int main (int argc, char** argv)
 
   if (args.adap) dynSol = false; // not for adaptive grids
   bool modalS = dynSol && args.dim > 1 && genEigVal; // Modal dynamics solution
-
   IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
   if (!dynSol)
@@ -356,7 +358,7 @@ int main (int argc, char** argv)
     if (KLp)
       model = new SIMLinElBeamC1("Euler-Bernoulli beam solver");
     else
-      model = new SIMLinElBeam("Linear Elastic Beam solver");
+      model = new SIMLinElBeam("Linear Elastic Beam solver", dynSol ? 1 : 0);
   }
   else if (args.dim == 12 && KLp)
   {
@@ -395,9 +397,9 @@ int main (int argc, char** argv)
   else if (KLp)
     model = new SIMLinElKL(nullptr,shell);
   else if (args.dim == 2)
-    model = new SIMLinEl2D(supid, checkRHS, dualSol);
+    model = new SIMLinEl2D(supid,checkRHS,dualSol);
   else
-    model = new SIMLinEl3D(supid, checkRHS, dualSol);
+    model = new SIMLinEl3D(supid,checkRHS,dualSol);
 
   AdaptiveSIM* aSim = nullptr;
   if (!theSim)
