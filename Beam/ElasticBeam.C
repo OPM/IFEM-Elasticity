@@ -7,7 +7,7 @@
 //!
 //! \author Knut Morten Okstad / SINTEF
 //!
-//! \brief Class representing a nonlinear elastic beam.
+//! \brief Class representing a linear elastic beam.
 //!
 //==============================================================================
 
@@ -30,15 +30,15 @@ namespace
     \brief Base class for beam problems containing data for local element axes.
   */
 
-  class LocalBeamAxes
+  class LocalAxes
   {
   protected:
     //! \brief The default constructor is protected to allow sub-classes only.
-    LocalBeamAxes() : Tlg(3,3) {}
+    LocalAxes() : Tlg(3,3) {}
 
   public:
     //! \brief Empty destructor.
-    virtual ~LocalBeamAxes() {}
+    virtual ~LocalAxes() {}
 
     Matrix Tlg; //!< Local to global transformation matrix
   };
@@ -52,7 +52,7 @@ namespace
     generated compile-time from the same source code.
   */
 
-  template<class T> class BeamMats : public T, public LocalBeamAxes
+  template<class T> class BeamMats : public T, public LocalAxes
   {
   public:
     //! \brief Default constructor.
@@ -66,7 +66,7 @@ namespace
   //! Element matrices and data for nonlinear dynamic beam FE problems
   using HHTBeamMats = BeamMats<HHTMats>;
 
-  //! \brief Instantiation for NewmarMats as parent class.
+  //! \brief Instantiation for NewmarkMats as parent class.
   template<> DynBeamMats::BeamMats (double a1, double a2, double b, double c)
     : NewmarkMats(a1,a2,b,c) {}
 
@@ -159,8 +159,7 @@ BeamProperty* ElasticBeam::parseProp (const tinyxml2::XMLElement* prop)
 
 int ElasticBeam::getIntegrandType() const
 {
-  int linearItgType = NO_DERIVATIVES | ELEMENT_CORNERS;
-  return nSV > 0 ? linearItgType | NODAL_ROTATIONS : linearItgType;
+  return NO_DERIVATIVES | ELEMENT_CORNERS;
 }
 
 
@@ -174,8 +173,13 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
     result = new BeamElmMats();
   else if (intPrm[3] > 0.0)
     result = new DynBeamMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
-  else
+  else if (!inLocalAxes)
     result = new HHTBeamMats(intPrm[2],intPrm[0],intPrm[1]);
+  else
+  {
+    std::cerr <<" *** ElasticBeam: For linear dynamics only"<< std::endl;
+    return result;
+  }
 
   switch (m_mode)
   {
@@ -219,77 +223,24 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
 }
 
 
+/*!
+  This method is overridden to also initialize the local-to-global element
+  transformation matrix in the \a elmInt object from the given \a fe object.
+*/
+
 bool ElasticBeam::initElement (const std::vector<int>& MNPC,
                                const FiniteElement& fe, const Vec3&, size_t,
                                LocalIntegral& elmInt)
 {
-  if (!this->initElement(MNPC,elmInt))
-    return false;
-
-  Matrix& Tlg = this->getLocalAxes(elmInt);
-  if (fe.Tn.size() < 2)
-  {
-    // No end rotation tensors - assuming linear analysis
-    Tlg = fe.Te;
-#if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: local-to-global transformation matrix:"<< Tlg;
-#endif
-    return true;
-  }
-
-  Vec3 e1 = fe.XC[1] - fe.XC[0]; // Initial local X-axis
-  const Vector& eV = elmInt.vec.front();
-  if (!eV.empty())
-  {
-    // Fetch nodal displacements
-    Vec3 U0(eV.ptr());
-    Vec3 U1(eV.ptr()+eV.size()-npv);
-    e1 += U1 - U0; // Deformed local X-axis
-  }
-
-  // Calculate the co-rotated element coordinate system
-  if (e1.normalize() <= 1.0e-8)
-  {
-    std::cerr <<" *** ElasticBeam::initElement: Zero beam length"<< std::endl;
-    return false;
-  }
-
-  Vec3 e2(fe.Tn[0][1]+fe.Tn[1][1]); // Sum of the nodal Y-axes
-  Vec3 e3(fe.Tn[0][2]+fe.Tn[1][2]); // Sum of the nodal Z-axes
-  if (fabs(e3.x) < fabs(e2.x))
-  {
-    // Local Y-axis = e3xe1 / |e3xe1|
-    e2.cross(fe.Te*e3,e1);
-    e2.normalize();
-    // Local Z-axis = e1xe2
-    e3.cross(e1,e2);
-  }
-  else
-  {
-    // Local Z-axis = e1xe2 / |e1xe2|
-    e3.cross(e1,fe.Te*e2);
-    e3.normalize();
-    // Local Y-axis = e3xe1
-    e2.cross(e3,e1);
-  }
-
-  Tlg.fillColumn(1,e1.ptr());
-  Tlg.fillColumn(2,e2.ptr());
-  Tlg.fillColumn(3,e3.ptr());
-
-#if INT_DEBUG > 1
-  std::cout <<"ElasticBeam: local-to-global transformation matrix:"<< Tlg
-            <<"ElasticBeam: T1n\n"<< fe.Tn[0] <<"ElasticBeam: T2n\n"<< fe.Tn[1];
-#endif
-
-  return true;
+  this->getLocalAxes(elmInt) = fe.Te;
+  return this->initElement(MNPC,elmInt);
 }
 
 
 /*!
   This method is just a workaround for that we can not cast directly from a
-  LocalIntegral reference to a LocalBeamAxes reference, due to that class
-  LocalBeamAxes does not inherit class LocalIntegral.
+  LocalIntegral reference to a LocalAxes reference, due to that the class
+  LocalAxes does not inherit class LocalIntegral.
 */
 
 Matrix& ElasticBeam::getLocalAxes (LocalIntegral& elmInt) const
@@ -501,37 +452,17 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
                            const FiniteElement& fe,
                            const Vec3& X) const
 {
-  // Calculate initial element length
-  Vec3 X0 = fe.XC[1] - fe.XC[0];
-  double L0 = X0.length();
+  // Calculate beam element length
+  double L0 = (fe.XC[1] - fe.XC[0]).length();
   if (L0 <= 1.0e-8)
   {
-    std::cerr <<" *** ElasticBeam::evalInt: Zero initial element length "
+    std::cerr <<" *** ElasticBeam::evalInt: Zero element length "
               << L0 << std::endl;
     return false;
   }
 #if INT_DEBUG > 1
   std::cout <<"ElasticBeam: iel = "<< fe.iel <<" X = "<< X <<", L0 = "<< L0;
 #endif
-
-  const Vector& eV = elmInt.vec.front();
-  if (!eV.empty())
-  {
-    // Calculate current element length
-    Vec3 U1(eV.ptr(),npv);
-    Vec3 U2(eV.ptr()+eV.size()-npv,npv);
-    Vec3 X1 = X0 + U2 - U1;
-    double L = X1.length();
-    if (L <= 1.0e-8)
-    {
-      std::cerr <<" *** ElasticBeam::evalInt: Zero element length "
-                << L << std::endl;
-      return false;
-    }
-#if INT_DEBUG > 1
-    std::cout <<" L = "<< L <<", U1 = "<< U1 <<" U2 = "<< U2;
-#endif
-  }
 
   if (!myProp)
   {
@@ -561,6 +492,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   if (eKm) // Evaluate the material stiffness matrix
     this->getMaterialStiffness(elMat.A[eKm-1],L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
 
+  const Vector& eV = elmInt.vec.front();
   Vector v;
   double N = 0.0;
 
@@ -571,7 +503,8 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
       return false;
 
 #if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: v"<< v;
+    std::cout <<"ElasticBeam: dL = "<< v(7)-v(1) <<" L = "<< L0 + v(7)-v(1)
+              <<"\nElasticBeam: v"<< v;
 #endif
     if (eKg) N = EA*(v(7)-v(1))/L0; // Axial force
   }

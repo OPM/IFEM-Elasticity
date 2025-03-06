@@ -7,7 +7,7 @@
 //!
 //! \author Knut Morten Okstad / SINTEF
 //!
-//! \brief Class representing a nonlinear elastic beam.
+//! \brief Class representing a linear elastic beam.
 //!
 //==============================================================================
 
@@ -22,14 +22,14 @@ namespace tinyxml2 { class XMLElement; }
 
 
 /*!
-  \brief Class representing the integrand of a nonlinear elastic beam.
+  \brief Class representing the integrand of a linear elastic beam.
 */
 
 class ElasticBeam : public ElasticBase
 {
 public:
   //! \brief The default constructor initializes all pointers to zero.
-  //! \param[in] n Number of consequtive solution vectors to reside in core
+  //! \param[in] n Number of consecutive solution vectors to reside in core
   explicit ElasticBeam(unsigned short int n = 1);
   //! \brief The destructor deallocates the load and property functions.
   virtual ~ElasticBeam();
@@ -79,7 +79,7 @@ public:
   using ElasticBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
-  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //! \param[in] time Parameters for time-dependent simulations
   virtual bool finalizeElement(LocalIntegral& elmInt,
                                const TimeDomain& time, size_t);
 
