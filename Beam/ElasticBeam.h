@@ -146,6 +146,8 @@ public:
   //! \brief Empty destructor.
   virtual ~ElasticBeamNorm() {}
 
+  //! \brief Defines which FE quantities are needed by the integrand.
+  virtual int getIntegrandType() const { return STANDARD; }
   //! \brief Returns the number of reduced-order integration points.
   virtual int getReducedIntegration(int) const { return 0; }
 

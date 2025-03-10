@@ -80,4 +80,4 @@ Max x-displacement : 0.00110453
 Max y-displacement : 0.0152861
 Max z-displacement : 0.00711861
 Integrating solution norms (FE solution) ...
-L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.0345796
+L2-norm: |u^h| = (u^h,u^h)^0.5     : 0.0219788
