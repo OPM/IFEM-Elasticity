@@ -94,6 +94,9 @@ public:
   //! \param[in] eV Primary solution vector for current element
   virtual Vec3 displacement(const FiniteElement& fe, const Vector& eV) const;
 
+  //! \brief Eccentricity transformation of a 2-noded beam element matrix.
+  static void transform(Matrix& A, const Vec3& e1, const Vec3& e2);
+
 protected:
   //! \brief Initializes the property function pointers.
   void initPropFunc();

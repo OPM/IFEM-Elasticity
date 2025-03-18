@@ -305,6 +305,12 @@ namespace // Private matrix transformation methods.
 }
 
 
+void ElasticBeam::transform (Matrix& A, const Vec3& e1, const Vec3& e2)
+{
+  eccTransform(A,e1,e2);
+}
+
+
 /*!
   \details This matrix is taken from page 12 in
   http://people.duke.edu/~hpgavin/cee421/frame-finite-def.pdf
