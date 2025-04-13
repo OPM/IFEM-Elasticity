@@ -50,4 +50,16 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
 int dynamicSim (char* infile, SIMoutput* model, bool fixDup = false,
                 double zero_tol = 1.0e-8, std::streamsize outPrec = 6);
 
+/*!
+  \brief Driver creating a time history from a set of eigenmode shapes.
+  \param[in] infile The input file to parse for time integration setup
+  \param model The isogeometric finite element model
+  \param[in] zero_tol Truncate result values smaller than this to zero
+  \param[in] outPrec Number of digits after the decimal point in result print
+  \return Exit status
+*/
+
+int modeHistSim (char* infile, SIMoutput* model,
+                 double zero_tol = 1.0e-8, std::streamsize outPrec = 6);
+
 #endif

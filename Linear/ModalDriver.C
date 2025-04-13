@@ -13,6 +13,7 @@
 
 #include "ModalDriver.h"
 #include "SIMmodal.h"
+#include "ElasticityUtils.h"
 
 using Parent = NewmarkDriver<NewmarkSIM>; //!< Convenience renaming
 
@@ -116,6 +117,42 @@ SIM::ConvStatus ModalDriver::checkConvergence (TimeStep& tp)
 }
 
 
+bool ModesHistorySIM::parse (const tinyxml2::XMLElement* elem)
+{
+  return params.parse(elem) && this->EigenModeSIM::parse(elem);
+}
+
+
+int ModesHistorySIM::solve (char* infile, double ztol, std::streamsize outPrec)
+{
+  IFEM::cout <<"\nGenerating time history from eigenmode shapes."<< std::endl;
+  int status = strcasestr(infile,".xinp") && this->readXML(infile) ? 0 : 1;
+  utl::profiler->stop("Model input");
+
+  model.opt.print(IFEM::cout,true) << std::endl;
+  this->printProblem();
+
+  if (status == 0 && !model.preprocess())
+    status = 2;
+  else if (status == 0 && model.opt.format >= 0 && !this->saveModel(infile))
+    status = 3;
+
+  if (Elastic::time > 1.0)
+    params.stopTime = Elastic::time;
+
+  this->initSol(0,0);
+  for (int iStep = 1; status == 0 && this->advanceStep(params); iStep++)
+    if (this->solveStep(params,SIM::DYNAMIC,ztol,outPrec) != SIM::CONVERGED)
+      status = 5;
+    else if (!this->saveStep(iStep,params.time.t))
+      status = 11;
+    else if (!model.saveResults(solution,params.time.t,iStep))
+      status = 13;
+
+  return status;
+}
+
+
 int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
               SIMoutput* model, DataExporter* exporter,
               double zero_tol, std::streamsize outPrec)
@@ -169,4 +206,12 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   int status = simulator.solveProblem(exporter,restart,zero_tol,outPrec);
   delete restart;
   return status;
+}
+
+
+int modeHistSim (char* infile, SIMoutput* model,
+                 double zero_tol, std::streamsize outPrec)
+{
+  ModesHistorySIM simulator(*model);
+  return simulator.solve(infile,zero_tol,outPrec);
 }

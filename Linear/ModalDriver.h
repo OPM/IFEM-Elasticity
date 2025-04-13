@@ -16,6 +16,7 @@
 
 #include "NewmarkDriver.h"
 #include "NewmarkSIM.h"
+#include "EigenModeSIM.h"
 
 
 /*!
@@ -28,9 +29,6 @@ public:
   //! \brief The constructor forwards to the parent class constructor.
   explicit ModalDriver(SIMbase& sim, bool qs = false)
     : NewmarkDriver<NewmarkSIM>(sim) { qstatic = qs; }
-
-  //! \brief Empty destructor.
-  virtual ~ModalDriver() {}
 
   //! \brief Calculates/returns the current real solution vectors.
   virtual const Vectors& realSolutions(bool returnCurrent);
@@ -60,6 +58,30 @@ public:
 
 private:
   bool qstatic; //!< If \e true, use quasi-static simulation driver
+};
+
+
+/*!
+  \brief Driver creating a time history from a set of eigenmode shapes.
+*/
+
+class ModesHistorySIM : public EigenModeSIM
+{
+public:
+  //! \brief The constructor forwards to the parent class constructor.
+  explicit ModesHistorySIM(SIMbase& sim) : EigenModeSIM(sim) {}
+
+protected:
+  using EigenModeSIM::parse;
+  //! \brief Parses a data section from an XML document.
+  virtual bool parse(const tinyxml2::XMLElement* elem);
+
+public:
+  //! \brief Initializes the solver and runs through the time history.
+  int solve(char* infile, double ztol = 1.0e-8, std::streamsize outPrec = 0);
+
+private:
+  TimeStep params; //!< Time stepping parameters
 };
 
 #endif
