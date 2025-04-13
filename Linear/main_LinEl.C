@@ -23,6 +23,7 @@
 #include "ImmersedBoundaries.h"
 #include "AdaptiveSIM.h"
 #include "DynamicSim.h"
+#include "MultiLoadCaseSim.h"
 #include "HDF5Writer.h"
 #include "Utilities.h"
 #include "ElementBlock.h"
@@ -73,6 +74,7 @@
   \arg -free : Ignore all boundary conditions (use in free vibration analysis)
   \arg -dynamic : Solve the linear dynamics problem using modal transformation
   \arg -qstatic : Solve the linear dynamics problem as quasi-static
+  \arg -mlc : Solve the linear static problem as a multi-load-case problem
   \arg -time : Time for evaluation of possible time-dependent functions
   \arg -dumpModes : Dump projected eigenmode solution
   \arg -strain : Output strains instead of stresses to VTF and result points
@@ -122,6 +124,7 @@ int main (int argc, char** argv)
   bool noError = false;
   char dualSol = false;
   char dynSol = false;
+  bool mlcase = false;
   bool dumpModes = false;
   bool dumpNodeMap = false;
   bool tracRes = false;
@@ -239,6 +242,8 @@ int main (int argc, char** argv)
       dynSol = 'd';
     else if (!strncmp(argv[i],"-qstat",6))
       dynSol = 's';
+    else if (!strncmp(argv[i],"-mlc",4))
+      mlcase = true;
     else if (!strcmp(argv[i],"-dumpModes"))
       dumpModes = true;
     else if (!infile)
@@ -291,7 +296,7 @@ int main (int argc, char** argv)
                "[-staticCond [<sid>]]",
                "[-DGL2]","[-CGL2]","[-SCR]","[-VDSA]","[-LSQ]","[-QUASI]",
                "[-eig <iop> [-nev <nev>] [-ncv <ncv] [-shift <shf>] [-free]]",
-               "[-dynamic|-qstatic]","[-ignore <p1> <p2> ...]","[-fixDup]",
+               "[-dynamic|-qstatic|-mlc]","[-ignore <p1> <p2> ...]","[-fixDup]",
                "[-dual]","[-checkRHS]","[-check]","[-ignoreSol]","[-RHSOnly]",
                "[-printMax[Patch]]","[-dumpASC]","[-dumpMatlab [<setnames>]]",
                "[-dumpModes]","[-outPrec <nd>]","[-ztol <eps>]","[-strain]"});
@@ -320,9 +325,10 @@ int main (int argc, char** argv)
 
   if (args.adap) dynSol = false; // not for adaptive grids
   bool modalS = dynSol && args.dim > 1 && genEigVal; // Modal dynamics solution
+
   IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
-  if (!dynSol)
+  if (!mlcase && !dynSol)
     IFEM::cout <<"\nEvaluation time for property functions: "<< Elastic::time;
   else if (Elastic::time > 1.0)
     IFEM::cout <<"\nSimulation stop time: "<< Elastic::time;
@@ -429,6 +435,9 @@ int main (int argc, char** argv)
 
   if (dynSol && !modalS) // Invoke the linear Newmark time integration simulator
     return terminate(dynamicSim(infile,model,fixDup,zero_tol,outPrec));
+
+  if (mlcase) // Solve the multi-load-case linear static problem
+    return terminate(mlcSim(infile,model,fixDup,dumpNodeMap,zero_tol,outPrec));
 
   // Read in model definitions
   if (!theSim->read(infile))
