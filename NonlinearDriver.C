@@ -122,7 +122,7 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
   {
     model.setMode(SIM::NORMS);
     model.setQuadratureRule(opt.nGauss[1]);
-    if (!model.solutionNorms(time,solution,gNorm))
+    if (!model.solutionNorms(time,solution,gNorm,this->getNorms()))
       gNorm.clear();
   }
   else
@@ -349,6 +349,9 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
           if (!model.writeGlvN(eNorm,iStep,nBlock,{pit->second}))
             return 11;
         }
+        else // Write element norms without projections
+          if (!model.writeGlvN(eNorm,iStep,nBlock))
+            return 11;
       }
 
       if (elp) elp->enableMaxValCalc(false);

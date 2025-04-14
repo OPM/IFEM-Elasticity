@@ -111,6 +111,12 @@ public:
     return proSol.empty() ? nullptr : proSol.data();
   }
 
+  //! \brief Returns a pointer to the element norms, if they are to be saved.
+  Matrix* getNorms()
+  {
+    return opt.saveNorms ? &eNorm : nullptr;
+  }
+
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
 

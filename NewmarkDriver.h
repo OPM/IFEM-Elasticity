@@ -196,6 +196,9 @@ public:
     return proSol.empty() ? nullptr : proSol.data();
   }
 
+  //! \brief Dummy method required for template instantiation.
+  Matrix* getNorms() { return nullptr; }
+
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
 
