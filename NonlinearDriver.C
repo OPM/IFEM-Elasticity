@@ -330,6 +330,10 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       // Save solution variables to VTF for visualization
       if (opt.format >= 0)
       {
+        if (model.hasElementActivator() &&
+            !this->saveModel(geoBlk,nBlock,params.time.t))
+          return 11;
+
         if (!this->saveStep(iStep,params.time.t))
           return 11;
 
