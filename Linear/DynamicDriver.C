@@ -18,7 +18,6 @@
 #include "ElasticityUtils.h"
 #include "DataExporter.h"
 #include "HDF5Writer.h"
-#include "Profiler.h"
 
 
 int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
@@ -36,9 +35,7 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
     simulator.setStopTime(Elastic::time);
 
   model->opt.print(IFEM::cout,true) << std::endl;
-  simulator.printProblem();
-
-  utl::profiler->stop("Model input");
+  simulator.printProblem(true);
 
   // Preprocess the model and establish data structures for the algebraic system
   if (!model->preprocess({},fixDup))
