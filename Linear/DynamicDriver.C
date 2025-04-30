@@ -67,6 +67,8 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
     writer->registerWriter(new HDF5Writer(fileName,model->getProcessAdm()));
 
     int results = DataExporter::PRIMARY | DataExporter::DISPLACEMENT;
+    if (!model->opt.pSolOnly) results |= DataExporter::SECONDARY;
+    if (model->opt.saveNorms) results |= DataExporter::NORMS;
     writer->registerField("u","solution",DataExporter::SIM,results);
     writer->setFieldValue("u",model,&simulator.getSolution());
     results = -DataExporter::PRIMARY;
