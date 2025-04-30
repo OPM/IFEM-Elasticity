@@ -30,6 +30,10 @@ public:
   explicit ModalDriver(SIMbase& sim, bool qs = false)
     : NewmarkDriver<NewmarkSIM>(sim) { qstatic = qs; }
 
+  //! \brief Prints out problem-specific data to the log stream.
+  //! \param[in] stopInputTimer If \e true, stop file input timer before print
+  virtual void printProblem(bool stopInputTimer) const;
+
   //! \brief Calculates/returns the current real solution vectors.
   virtual const Vectors& realSolutions(bool returnCurrent);
   //! \brief Returns a const reference to the current real solution vector.

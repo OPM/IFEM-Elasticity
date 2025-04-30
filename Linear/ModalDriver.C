@@ -18,6 +18,18 @@
 using Parent = NewmarkDriver<NewmarkSIM>; //!< Convenience renaming
 
 
+void ModalDriver::printProblem (bool stopInputTimer) const
+{
+  if (qstatic)
+  {
+    this->MultiStepSIM::printProblem(stopInputTimer);
+    IFEM::cout <<"Quasi-static linear analysis."<< std::endl;
+  }
+  else
+    this->Parent::printProblem(stopInputTimer);
+}
+
+
 const Vectors& ModalDriver::realSolutions (bool returnCurrent)
 {
   if (returnCurrent)
@@ -127,10 +139,9 @@ int ModesHistorySIM::solve (char* infile, double ztol, std::streamsize outPrec)
 {
   IFEM::cout <<"\nGenerating time history from eigenmode shapes."<< std::endl;
   int status = strcasestr(infile,".xinp") && this->readXML(infile) ? 0 : 1;
-  utl::profiler->stop("Model input");
 
   model.opt.print(IFEM::cout,true) << std::endl;
-  this->printProblem();
+  this->printProblem(true);
 
   if (status == 0 && !model.preprocess())
     status = 2;
@@ -167,12 +178,13 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   if (!strcasestr(infile,".xinp") || !simulator.readXML(infile))
     return 1;
 
+  simulator.printProblem(true);
+
   // Initialize the modal time-domain simulation
   simulator.initPrm();
   // Set beta=0 for quasi-static simulation
   if (qstatic) model->setIntegrationPrm(2,0.0);
   simulator.initSol(qstatic ? 1 : 3, nM);
-  simulator.printProblem();
 
   // Save FE model to VTF file for visualization
   if (model->opt.format >= 0 && !simulator.saveModel(infile))
