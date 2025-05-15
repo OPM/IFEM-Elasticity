@@ -23,7 +23,7 @@ class Material;
 class TimeStep;
 struct TimeDomain;
 
-typedef std::vector<Material*> MaterialVec; //!< Convenience declaration
+using MaterialVec = std::vector<Material*>; //!< Convenience declaration
 
 
 /*!
@@ -42,6 +42,9 @@ public:
 
   //! \brief The destructor frees the dynamically allocated material properties.
   virtual ~SIMElasticity();
+
+  //! \brief Prints out problem-specific data to the log stream.
+  virtual bool printProblem() const;
 
   //! \brief Returns the name of this simulator (for use in the HDF5 export).
   virtual std::string getName() const { return "Elasticity"; }
@@ -160,6 +163,8 @@ protected:
 private:
   bool plotRgd; //!< If \e true, output rigid couplings as VTF geometry
   int  aCode;   //!< Analytical BC code (used by destructor)
+
+  mutable bool printed; //!< If \e true, the problem definition as been printed
 };
 
 #endif
