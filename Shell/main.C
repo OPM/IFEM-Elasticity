@@ -41,8 +41,7 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
     simulator.setStopTime(stopTime);
 
   model.opt.print(IFEM::cout,true) << std::endl;
-
-  utl::profiler->stop("Model input");
+  simulator.printProblem(true);
 
   // Preprocess the model and establish data structures for the algebraic system
   if (!model.preprocess())

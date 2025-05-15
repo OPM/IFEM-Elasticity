@@ -37,7 +37,7 @@ public:
   virtual ~SIMElasticBar();
 
   //! \brief Prints out problem-specific data to the log stream.
-  virtual void printProblem() const;
+  virtual bool printProblem() const;
 
   //! \brief Creates the computational FEM model from the spline patches.
   //! \details Reimplemented to account for twist angle in beam problems.
