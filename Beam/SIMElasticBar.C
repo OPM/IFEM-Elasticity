@@ -48,12 +48,12 @@ SIMElasticBar::~SIMElasticBar ()
 }
 
 
-void SIMElasticBar::printProblem () const
+bool SIMElasticBar::printProblem () const
 {
-  if (!printed)
-    this->SIM1D::printProblem();
+  // Avoid printing problem definition more than once
+  if (printed) return false;
 
-  printed = true; // Avoid printing problem definition more than once
+  return printed = this->SIM1D::printProblem();
 }
 
 

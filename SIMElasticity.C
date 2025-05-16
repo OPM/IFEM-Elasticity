@@ -119,8 +119,8 @@ template<class Dim>
 SIMElasticity<Dim>::SIMElasticity (bool checkRHS) : Dim(Dim::dimension,checkRHS)
 {
   myContext = "elasticity";
+  plotRgd = printed = false;
   aCode = 0;
-  plotRgd = false;
 }
 
 
@@ -133,6 +133,16 @@ SIMElasticity<Dim>::~SIMElasticity ()
 
   for (Material* mat : mVec)
     delete mat;
+}
+
+
+template<class Dim>
+bool SIMElasticity<Dim>::printProblem () const
+{
+  // Avoid printing problem definition more than once
+  if (printed) return false;
+
+  return printed = this->Dim::printProblem();
 }
 
 
