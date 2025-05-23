@@ -33,11 +33,6 @@ public:
   //! \param sim Reference to the spline FE model
   //! \param[in] adaptive If \e true, use adaptive mesh refinement
   explicit ArcLengthDriver(SIMbase& sim, bool = false, bool adaptive = false);
-  //! \brief Empty destructor.
-  virtual ~ArcLengthDriver() {}
-
-  //! \brief Does nothing, overrides parent class method.
-  virtual void initPrm() {}
 
   //! \brief Advances the load step one step forward.
   virtual bool advanceStep(TimeStep& param, bool);
