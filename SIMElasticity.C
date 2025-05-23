@@ -12,10 +12,8 @@
 //==============================================================================
 
 #include "SIMElasticity.h"
-
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
-#include "SIMgeneric.h"
 #include "MaterialBase.h"
 
 #include "AnaSol.h"
@@ -147,7 +145,7 @@ bool SIMElasticity<Dim>::printProblem () const
 
 
 /*!
-  This method is reimplemented to print out the external load in the beginning
+  This method is overridden to print out the external load in the beginning
   of the load step in case of arc-length solution driver.
 */
 
@@ -730,7 +728,7 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
 
 
 /*!
-  This method is reimplemented to handle dirichlet conditions on the explicit
+  This method is overridden to handle Dirichlet conditions on the explicit
   master nodes of rigid couplings which not are regular nodes in a patch.
   These nodes may also have rotational degrees of freedom.
 */
@@ -738,7 +736,7 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
 template<class Dim>
 bool SIMElasticity<Dim>::addConstraint (int patch, int lndx, int ldim,
                                         int dirs, int code, int& ngnod,
-                                        char basis)
+                                        char basis, bool ovrD)
 {
   if (patch == 0 && ldim == 0)
   {
@@ -763,7 +761,7 @@ bool SIMElasticity<Dim>::addConstraint (int patch, int lndx, int ldim,
     }
   }
 
-  return this->Dim::addConstraint(patch,lndx,ldim,dirs,code,ngnod,basis);
+  return this->Dim::addConstraint(patch,lndx,ldim,dirs,code,ngnod,basis,ovrD);
 }
 
 

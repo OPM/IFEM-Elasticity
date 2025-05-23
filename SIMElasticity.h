@@ -29,7 +29,7 @@ using MaterialVec = std::vector<Material*>; //!< Convenience declaration
 /*!
   \brief Driver class for isogeometric FEM analysis of elasticity problems.
   \details The class incapsulates data and methods for solving elasticity
-  problems using NURBS-based finite elements. It reimplements the parse methods
+  problems using NURBS-based finite elements. It overrides the parse methods
   and some property initialization methods of the parent class.
 */
 
@@ -103,7 +103,7 @@ protected:
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from
   virtual bool parse(char* keyWord, std::istream& is);
-  //! \brief Parses a data section from an XML element
+  //! \brief Parses a data section from an XML element.
   //! \param[in] elem The XML element to parse
   virtual bool parse(const tinyxml2::XMLElement* elem);
 
@@ -115,8 +115,10 @@ protected:
   //! \param[in] code In-homegeneous Dirichlet condition property code
   //! \param ngnod Total number of global nodes in the model (might be updated)
   //! \param[in] basis Which basis to apply the constraint to (mixed methods)
+  //! \param[in] ovrD If \e true, override conflicting Dirichlet conditions
   virtual bool addConstraint(int patch, int lndx, int ldim,
-                             int dirs, int code, int& ngnod, char basis);
+                             int dirs, int code, int& ngnod,
+                             char basis, bool ovrD);
 
   //! \brief Initializes material properties for integration of interior terms.
   //! \param[in] propInd Physical property index
@@ -156,15 +158,15 @@ public:
   virtual bool writeGlvG(int& nBlock, const char* inpFile, bool doClear = true);
 
 protected:
-  MaterialVec mVec;      //!< Material data
-  std::string myContext; //!< XML-tag to search for problem inputs within
+  MaterialVec mVec;         //!< Material data
+  std::string myContext;    //!< XML-tag to search for problem inputs within
   std::map<int,Vec3> bCode; //!< Property codes for boundary traction resultants
 
 private:
   bool plotRgd; //!< If \e true, output rigid couplings as VTF geometry
   int  aCode;   //!< Analytical BC code (used by destructor)
 
-  mutable bool printed; //!< If \e true, the problem definition as been printed
+  mutable bool printed; //!< If \e true, the problem definition has been printed
 };
 
 #endif
