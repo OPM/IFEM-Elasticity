@@ -15,13 +15,10 @@
 #include "FiniteElement.h"
 #include "ElmMats.h"
 #include "TimeDomain.h"
-#include "Utilities.h"
 #include "BDF.h"
-#include "IFEM.h"
-#include "tinyxml2.h"
 
 
-ElasticBase::ElasticBase () : IntegrandBase(0)
+ElasticBase::ElasticBase ()
 {
   eM = eKm = eKg = 0;
   eS = gS  = iS  = 0;
@@ -37,31 +34,6 @@ ElasticBase::ElasticBase () : IntegrandBase(0)
 ElasticBase::~ElasticBase ()
 {
   delete bdf;
-}
-
-
-bool ElasticBase::parse (const tinyxml2::XMLElement* elem)
-{
-  if (!strcasecmp(elem->Value(),"gravity") && nsd > 0)
-  {
-    utl::getAttribute(elem,"x",gravity.x);
-    IFEM::cout <<"\tGravitation vector: "<< gravity.x;
-    if (nsd >= 2)
-    {
-      utl::getAttribute(elem,"y",gravity.y);
-      IFEM::cout <<" "<< gravity.y;
-    }
-    if (nsd >= 3)
-    {
-      utl::getAttribute(elem,"z",gravity.z);
-      IFEM::cout <<" "<< gravity.z;
-    }
-    IFEM::cout << std::endl;
-  }
-  else
-    return false;
-
-  return true;
 }
 
 
@@ -192,7 +164,8 @@ void ElasticBase::setIntegrationPrm (unsigned short int i, double prm)
   {
     // Using a Backward Difference Formula for time discretization
     bdf = new TimeIntegration::BDFD2(2,prm);
-    if (nSV < 4) nSV = nCS = 4; // 2nd order scheme, need 4 consecutive solutions
+    if (nSV < 4)
+      nSV = nCS = 4; // 2nd order scheme, we need 4 consecutive solutions
   }
 
   if (i == 4 && intPrm[4] == 1.0) // Using the HHTSIM driver

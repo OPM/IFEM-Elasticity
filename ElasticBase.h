@@ -14,8 +14,7 @@
 #ifndef _ELASTIC_BASE_H
 #define _ELASTIC_BASE_H
 
-#include "IntegrandBase.h"
-#include "Vec3.h"
+#include "HasGravityBase.h"
 
 class Material;
 namespace TimeIntegration { class BDFD2; }
@@ -25,7 +24,7 @@ namespace TimeIntegration { class BDFD2; }
   \brief Base class representing the FEM integrand of elasticity problems.
 */
 
-class ElasticBase : public IntegrandBase
+class ElasticBase : public HasGravityBase
 {
 protected:
   //! \brief The default constructor is protected to allow sub-classes only.
@@ -41,9 +40,6 @@ public:
   virtual Material* parseMatProp(const tinyxml2::XMLElement*)
   { return nullptr; }
 
-  //! \brief Parses a data section from an XML-element.
-  virtual bool parse(const tinyxml2::XMLElement* elem);
-
   //! \brief Defines the material properties.
   virtual void setMaterial(Material*) {}
   //! \brief Returns the current material object.
@@ -51,12 +47,6 @@ public:
 
   //! \brief Initializes time integration parameters.
   virtual bool init(const TimeDomain&) { return true; }
-
-  //! \brief Defines the gravitation vector.
-  void setGravity(double gx, double gy = 0.0, double gz = 0.0)
-  { gravity.x = gx; gravity.y = gy; gravity.z = gz; }
-  //! \brief Returns the gravitation vector.
-  const Vec3& getGravity() const { return gravity; }
 
   //! \brief Defines the solution mode before the element assembly is started.
   //! \param[in] mode The solution mode to use
@@ -96,7 +86,7 @@ public:
   virtual bool evalPoint(LocalIntegral& elmInt, const FiniteElement& fe,
                          const Vec3& pval);
 
-  using IntegrandBase::finalizeElement;
+  using HasGravityBase::finalizeElement;
   //! \brief Finalizes the element matrices after the numerical integration.
   //! \param elmInt The local integral object to receive the contributions
   //! \param[in] time Parameters for nonlinear and time-dependent simulations
@@ -108,8 +98,6 @@ public:
                                const TimeDomain& time, size_t = 0);
 
 protected:
-  Vec3 gravity; //!< Gravitation vector
-
   // Finite element quantities, i.e., indices into element matrices and vectors.
   // These indices will be identical for all elements in a model and can thus
   // be stored here, even when doing multi-threading. Note that the indices are
