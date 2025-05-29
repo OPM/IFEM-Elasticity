@@ -35,22 +35,24 @@ bool SIMLinElSup::parse (const tinyxml2::XMLElement* elem)
   if (strcasecmp(elem->Value(),"elasticity"))
     return this->SIMsupel::parse(elem);
 
+  std::string supId;
+  if (!utl::getAttribute(elem,"supId",supId))
+    return true; // Not a superelement
+
+  // This <elasticity> block defines the FE model of a superelement
+  IFEM::cout <<"  Parsing FE model for superelement \""<< supId <<"\"\n";
+  SIMgeneric* supEl = new SIMLinEl3D("Linear elastic superelement",false);
   const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
-    if (!strcasecmp(child->Value(),"superelement"))
+    if (!supEl->parse(child))
     {
-      std::string supId;
-      if (utl::getAttribute(child,"id",supId) && !supId.empty())
-      {
-        // This <elasticity> block defines the FE model of a superelement
-        SIMgeneric* sup = new SIMLinEl3D("Linear elastic superelement",false);
-        if (sup->parse(elem))
-          mySubSim[supId].sim = sup;
-        else
-          delete sup;
-      }
-      break;
+      delete supEl;
+      std::cerr <<" *** Failure."<< std::endl;
+      return false;
     }
+
+  mySubSim[supId].sim = supEl;
+  IFEM::cout <<"  FE model \""<< supId <<"\" loaded."<< std::endl;
 
   return true;
 }
@@ -68,9 +70,9 @@ bool SIMLinElSup::preprocessB ()
   // Preprocess the superelement FE models for the recovery process
   bool ok = true;
   for (std::pair<const std::string,FEmodel>& sub : mySubSim)
-    ok &= (sub.second.sim->preprocess({},fixDup) &&
-           sub.second.sim->initSystem(LinAlg::SPARSE,0,0) &&
-           sub.second.sim->setMode(SIM::RECOVERY));
+    if (sub.second.sim)
+      ok &= (sub.second.sim->preprocess({},fixDup) &&
+             sub.second.sim->setMode(SIM::RECOVERY));
 
   return ok;
 }
@@ -113,48 +115,6 @@ ElementBlock* SIMLinElSup::tesselatePatch (size_t pidx) const
 }
 
 
-bool SIMLinElSup::recoverInternalDispl (const Vector& glbSol)
-{
-  size_t pidx = 0;
-  for (SuperElm& sup : mySups)
-  {
-    ASMbase* pch = myModel[pidx++];
-
-    // Extract superelement solution vector from the global solution vector
-    Vector supSol;
-    pch->extractNodalVec(glbSol, supSol, mySam->getMADOF());
-#if INT_DEBUG > 2
-    std::cout <<"\nSolution vector for superelement "<< pch->idx+1 << supSol;
-#endif
-
-    if (sup.sim)
-    {
-      Vector sol(supSol);
-      // Transform to local superelement axes
-      bool ok = sup.MVP.empty() ? true : utl::transform(sol,sup.MVP,true);
-
-      // Recover the internal displacement state
-      ok &= sup.sim->recoverInternals(sol,sup.sol);
-
-      if (!sup.MVP.empty() && ok) // Transform back to global axes
-        ok = utl::transform(sup.sol,sup.MVP);
-
-      if (!ok)
-      {
-        std::cerr <<"\n *** SIMLinElSup::recoverInternalDispl: Failed to"
-                  <<" recover internal displacements for superelement "
-                  << pch->idx+1 << std::endl;
-        return false;
-      }
-    }
-    else // No substructure FE model - just use the superelement displacements
-      sup.sol = supSol;
-  }
-
-  return true;
-}
-
-
 IntegrandBase* SIMLinElSup::getMyProblem () const
 {
   for (const std::pair<const std::string,FEmodel>& sub : mySubSim)
@@ -192,13 +152,12 @@ int SIMLinElSup::writeGlvS1 (const Vector& psol, int iStep, int& nBlock,
   else if (psol.empty())
     return 0;
 
-  // Recover internal displacements for all superelements
-
-  if (!this->recoverInternalDispl(psol))
-    return -9;
-
   VTF* vtf = this->getVTF();
   if (!vtf) return -99;
+
+  // Recover internal displacements for all superelements
+  if (!this->recoverInternalDOFs(psol))
+    return -9;
 
   IntVec vID;
   std::vector<IntVec> sID;

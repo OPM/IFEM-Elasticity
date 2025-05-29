@@ -31,10 +31,6 @@ public:
   //! \brief The destructor deletes the FE substructure data.
   virtual ~SIMLinElSup();
 
-  //! \brief Performs recovery of the internal displacements for superelements.
-  //! \param[in] glbSol Global solution vector
-  bool recoverInternalDispl(const Vector& glbSol);
-
 protected:
   using SIMsupel::parse;
   //! \brief Parses a data section from an XML element
