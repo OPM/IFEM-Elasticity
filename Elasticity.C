@@ -12,6 +12,7 @@
 //==============================================================================
 
 #include "Elasticity.h"
+#include "ElasticityUtils.h"
 #include "GlobalIntegral.h"
 #include "IsotropicTextureMat.h"
 #include "FiniteElement.h"
@@ -86,24 +87,28 @@ bool Elasticity::parse (const tinyxml2::XMLElement* elem)
 }
 
 
-Material* Elasticity::parseMatProp (char* cline, bool planeStrain)
+Material* Elasticity::parseMatProp (char* cline)
 {
+  bool planeStress = nsd == 2 ? !Elastic::planeStrain : false;
+
   double E   = atof(strtok(cline," "));
   double nu  = atof(strtok(nullptr," "));
   double rho = atof(strtok(nullptr," "));
   IFEM::cout << E <<" "<< nu <<" "<< rho << std::endl;
-  material = new LinIsotropic(E,nu,rho,!planeStrain,axiSymmetry);
+  material = new LinIsotropic(E,nu,rho,planeStress,axiSymmetry);
   return material;
 }
 
 
-Material* Elasticity::parseMatProp (const tinyxml2::XMLElement* elem,
-                                    bool planeStrain)
+Material* Elasticity::parseMatProp (const tinyxml2::XMLElement* elem)
 {
+  utl::getAttribute(elem,"planeStrain",Elastic::planeStrain);
+  bool planeStress = nsd == 2 ? !Elastic::planeStrain : false;
+
   if (!strcasecmp(elem->Value(),"texturematerial"))
-    material = new IsotropicTextureMat(!planeStrain,axiSymmetry);
+    material = new IsotropicTextureMat(planeStress,axiSymmetry);
   else
-    material = new LinIsotropic(!planeStrain,axiSymmetry);
+    material = new LinIsotropic(planeStress,axiSymmetry);
   material->parse(elem);
   return material;
 }

@@ -36,9 +36,9 @@ public:
   virtual ~ElasticBase();
 
   //! \brief Parses material properties from a character string.
-  virtual Material* parseMatProp(char*, bool) { return nullptr; }
+  virtual Material* parseMatProp(char* = nullptr) { return nullptr; }
   //! \brief Parses material properties from an XML-element.
-  virtual Material* parseMatProp(const tinyxml2::XMLElement*, bool)
+  virtual Material* parseMatProp(const tinyxml2::XMLElement*)
   { return nullptr; }
 
   //! \brief Parses a data section from an XML-element.

@@ -312,8 +312,8 @@ bool SIMElasticity<Dim>::haveAnaSol () const
 
 
 /*!
-  This method is reimplemented inserting a call to the method getIntegrand().
-  This makes sure the integrand has been allocated in case of minimum input.
+  This method is overridden inserting a call to the getIntegrand() method.
+  This ensures the integrand has been allocated in case of minimum input.
   It also resolves inhomogeneous boundary condition fields in case they are
   derived from the analytical solution.
 */
@@ -329,7 +329,7 @@ void SIMElasticity<Dim>::preprocessA ()
   if (Dim::opt.discretization < ASM::Spline)
     Elasticity::wantPrincipalStress = false;
 
-  if (Dim::dualField)
+  if (Dim::dualField && elInt)
     static_cast<Elasticity*>(elInt)->setDualRHS(Dim::dualField);
 
   if (!Dim::mySol) return;
@@ -380,7 +380,7 @@ bool SIMElasticity<Dim>::preprocessBeforeAsmInit (int& ngnod)
 
 
 /*!
-  This method is reimplemented to ensure that threading groups are established
+  This method is overridden to ensure that threading groups are established
   for the patch faces subjected to boundary force integration.
   In addition, the reference point for moment calculation \b X0 of each boundary
   is calculated based on the control/nodal point coordinates.
@@ -461,20 +461,20 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
   int nmat = 0;
   int nConstPress = 0;
   int nLinearPress = 0;
+  ElasticBase* elInt = this->getIntegrand();
 
   if (!strncasecmp(keyWord,"ISOTROPIC",9))
   {
     nmat = atoi(keyWord+10);
     IFEM::cout <<"\nNumber of isotropic materials: "<< nmat << std::endl;
-    ElasticBase* elInt = this->getIntegrand();
     for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
     {
       int code = atoi(strtok(cline," "));
       IFEM::cout <<"\tMaterial code "<< code <<": ";
       if (code > 0)
         this->setPropertyType(code,Property::MATERIAL,mVec.size());
-      bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
-      mVec.push_back(elInt->parseMatProp((char*)nullptr,planeStrain));
+      if (elInt)
+        mVec.push_back(elInt->parseMatProp());
       IFEM::cout << std::endl;
     }
   }
@@ -487,7 +487,8 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
     IFEM::cout <<"\nGravitation vector: "<< gx <<" "<< gy;
     if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
     IFEM::cout << std::endl;
-    this->getIntegrand()->setGravity(gx,gy,gz);
+    if (elInt)
+      elInt->setGravity(gx,gy,gz);
   }
 
   else if (!strncasecmp(keyWord,"CONSTANT_PRESSURE",17))
@@ -561,12 +562,11 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
   {
     nmat = atoi(keyWord+8);
     IFEM::cout <<"\nNumber of materials: "<< nmat << std::endl;
-    ElasticBase* elInt = this->getIntegrand();
     for (int i = 0; i < nmat && (cline = utl::readLine(is)); i++)
     {
       IFEM::cout <<"\tMaterial data: ";
-      bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
-      mVec.push_back(elInt->parseMatProp(cline,planeStrain));
+      if (elInt)
+        mVec.push_back(elInt->parseMatProp(cline));
 
       while ((cline = strtok(nullptr," ")))
         if (!strncasecmp(cline,"ALL",3))
@@ -585,11 +585,11 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
     }
   }
 
-  else if (!strncasecmp(keyWord,"LOCAL_SYSTEM",12))
+  else if (!strncasecmp(keyWord,"LOCAL_SYSTEM",12) && elInt)
   {
     size_t i = 12;
     while (i < strlen(keyWord) && isspace(keyWord[i])) i++;
-    static_cast<Elasticity*>(this->getIntegrand())->parseLocalSystem(keyWord+i);
+    static_cast<Elasticity*>(elInt)->parseLocalSystem(keyWord+i);
   }
 
   else if (!strncasecmp(keyWord,"ANASOL",6))
@@ -643,6 +643,8 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
     return this->Dim::parse(elem);
 
   bool result = true;
+  ElasticBase* elInt = this->getIntegrand();
+
   const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
 
@@ -667,9 +669,8 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
       IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
       int code = this->parseMaterialSet(child,mVec.size());
       IFEM::cout <<"\tMaterial code "<< code <<":";
-      utl::getAttribute(child,"planeStrain",Elastic::planeStrain);
-      bool planeStrain = Dim::dimension == 2 ? Elastic::planeStrain : true;
-      mVec.push_back(this->getIntegrand()->parseMatProp(child,planeStrain));
+      if (elInt)
+        mVec.push_back(elInt->parseMatProp(child));
     }
 
     else if (!strcasecmp(child->Value(),"bodyforce"))
@@ -717,10 +718,10 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
     else if (!strcasecmp(child->Value(),"dualfield"))
     {
       FunctionBase* exf = this->parseDualTag(child,2);
-      if (exf)
-        static_cast<Elasticity*>(this->getIntegrand())->addExtrFunction(exf);
+      if (exf && elInt)
+        static_cast<Elasticity*>(elInt)->addExtrFunction(exf);
     }
-    else if (!this->getIntegrand()->parse(child))
+    else if (!(elInt && elInt->parse(child)))
       result &= this->Dim::parse(child);
 
   return result;
@@ -834,7 +835,7 @@ void SIMElasticity<Dim>::printNormGroup (const Vector& gNorm,
 
 
 /*!
-  This method is reimplemented to account for potential rigid couplings.
+  This method is overridden to account for potential rigid couplings.
 */
 
 template<class Dim>

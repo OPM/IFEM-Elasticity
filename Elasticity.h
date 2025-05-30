@@ -47,10 +47,9 @@ public:
   virtual ~Elasticity();
 
   //! \brief Parses material properties from a character string.
-  virtual Material* parseMatProp(char* cline, bool planeStrain = true);
+  virtual Material* parseMatProp(char* cline);
   //! \brief Parses material properties from an XML-element.
-  virtual Material* parseMatProp(const tinyxml2::XMLElement* elem,
-                                 bool planeStrain = true);
+  virtual Material* parseMatProp(const tinyxml2::XMLElement* elem);
 
   //! \brief Parses local coordinate system definition from a character string.
   bool parseLocalSystem(const char* cline);
