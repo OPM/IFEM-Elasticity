@@ -16,6 +16,23 @@
 #include "tinyxml2.h"
 
 
+bool ElasticityArgs::parseArg (const char* argv)
+{
+  if (this->SIMargsBase::parseArg(argv))
+    return true;
+  else if (!strcmp(argv,"-sup"))
+    dim = 4;
+  else if (!strcmp(argv,"-1D3D"))
+    dim = 13;
+  else if (!strcmp(argv,"-1Dsup"))
+    dim = 14;
+  else
+    return false;
+
+  return true;
+}
+
+
 bool ElasticityArgs::parse (const tinyxml2::XMLElement* elem)
 {
   if (!strcasecmp(elem->Value(),"eigensolver") &&
@@ -27,6 +44,10 @@ bool ElasticityArgs::parse (const tinyxml2::XMLElement* elem)
       value = utl::getValue(child,"mode");
     if (value) eig = atoi(value);
   }
+  else if (!strcasecmp(elem->Value(),"superelem") && dim == 3)
+    dim = 4;
+  else if (!strcasecmp(elem->Value(),"beam") && dim == 4)
+    dim = 14;
 
   return this->SIMargsBase::parse(elem);
 }

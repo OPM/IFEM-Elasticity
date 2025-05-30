@@ -212,10 +212,6 @@ int main (int argc, char** argv)
       isC1 = KLp = true;
       shell = !strncmp(argv[i]+7,"shel",4);
     }
-    else if (!strcmp(argv[i],"-1D3D"))
-      args.dim = 13;
-    else if (!strcmp(argv[i],"-1Dsup"))
-      args.dim = 14;
     else if (!strncmp(argv[i],"-2Dpstra",8))
     {
       args.dim = 2;

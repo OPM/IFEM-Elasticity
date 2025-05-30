@@ -27,6 +27,9 @@ public:
   //! \brief Default constructor.
   ElasticityArgs() : SIMargsBase("elasticity"), eig(0) {}
 
+  //! \brief Parses a command-line argument.
+  virtual bool parseArg(const char* argv);
+
 protected:
   //! \brief Parses a data section from an XML element.
   virtual bool parse(const tinyxml2::XMLElement* elem);
