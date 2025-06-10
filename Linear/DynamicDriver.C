@@ -50,7 +50,7 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
   simulator.initSol(3);
 
   // Initialize the linear equation solver
-  if (!simulator.initEqSystem(false,0))
+  if (!simulator.initEqSystem(false))
     return 3;
 
   // Open HDF5 result database, if requested

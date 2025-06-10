@@ -49,7 +49,7 @@ int mlcSim (char* infile, SIMoutput* model, bool fixDup, bool dumpNodeMap,
   simulator.initSol();
 
   // Initialize the linear equation solver
-  if (!simulator.initEqSystem())
+  if (!simulator.initEqSystem(true,model->getNoFields()))
     return 3;
 
   // Open HDF5 result database, if requested
