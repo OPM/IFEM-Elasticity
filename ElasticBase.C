@@ -105,10 +105,24 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::RHS_ONLY:
-      eS = 1;
+      eS = iS = 1;
+      if (nSV > nCS) // RHS-only with Newmark time integration
+      {
+        // We still need the element matrices for calculation of the
+        // inertia and damping forces when doing Newmark time integration
+        eM = 2;
+        eKm = 3;
+        if (intPrm[3] == 0.0) eKg = 3;
+        if (intPrm[4] == 1.0) eS = 3;
+        vecNames = { vNames[1], vNames[4], vNames[0] };
+      }
+      else
+        vecNames = { vNames[1] };
+      break;
+
     case SIM::INT_FORCES:
       iS = 1;
-      vecNames = { vNames[mode == SIM::RHS_ONLY ? 1 : 3] };
+      vecNames = { vNames[3] };
       break;
 
     default:
@@ -130,15 +144,32 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       break;
 
     case SIM::BUCKLING:
-    case SIM::RHS_ONLY:
     case SIM::INT_FORCES:
     case SIM::RECOVERY:
       primsol.resize(1);
       break;
 
+    case SIM::RHS_ONLY:
+      primsol.resize(nSV > nCS ? nSV : 1);
+      break;
+
     default:
       primsol.clear();
     }
+}
+
+
+/*!
+  This method is overridden to optionally return the actual solution mode
+  (DYNAMIC or STATIC), when the current mode flag \a m_mode is RHS_ONLY.
+*/
+
+SIM::SolutionMode ElasticBase::getMode (bool simMode) const
+{
+  if (simMode && m_mode == SIM::RHS_ONLY)
+    return nSV > nCS ? SIM::DYNAMIC : SIM::STATIC;
+
+  return m_mode;
 }
 
 

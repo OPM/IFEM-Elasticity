@@ -68,19 +68,23 @@ bool KirchhoffLove::parse (const tinyxml2::XMLElement* elem)
 
 void KirchhoffLove::setMode (SIM::SolutionMode mode)
 {
-  m_mode = isModal && mode == SIM::DYNAMIC ? SIM::RHS_ONLY : mode;
+  m_mode = mode;
+  if (mode == SIM::DYNAMIC && isModal)
+    mode = m_mode = SIM::RHS_ONLY; // Modal dynamics requires RHS-vector only
+  else if (mode == SIM::RHS_ONLY && !isModal && intPrm[2] != 0.0)
+    mode = SIM::DYNAMIC; // RHS-only with Newmark time integration
 
   eM = eK = 0;
   eS = gS = iS = 0;
 
-  if (m_mode == SIM::DYNAMIC)
+  if (mode == SIM::DYNAMIC)
     primsol.resize(3);
-  else if (m_mode >= SIM::RHS_ONLY)
+  else if (mode >= SIM::RHS_ONLY)
     primsol.resize(1);
   else
     primsol.clear();
 
-  switch (m_mode)
+  switch (mode)
     {
     case SIM::ARCLEN:
       gS = 2;
@@ -115,6 +119,20 @@ void KirchhoffLove::setMode (SIM::SolutionMode mode)
     default:
       ;
     }
+}
+
+
+/*!
+  This method is overridden to optionally return the actual solution mode
+  (DYNAMIC or STATIC), when the current mode flag \a m_mode is RHS_ONLY.
+*/
+
+SIM::SolutionMode KirchhoffLove::getMode (bool simMode) const
+{
+  if (simMode && m_mode == SIM::RHS_ONLY)
+    return intPrm[2] != 0.0 ? SIM::DYNAMIC : SIM::STATIC;
+
+  return m_mode;
 }
 
 
@@ -170,7 +188,7 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
   if (this->inActive(iEl))
     return result; // element is not in current material group
 
-  if (m_mode == SIM::DYNAMIC && !isModal)
+  if (this->getMode(true) == SIM::DYNAMIC && !isModal)
     result = new NewmarkMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
   else
     result = new ElmMats();
@@ -189,7 +207,7 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
       result->rhsOnly = neumann;
       result->withLHS = !neumann;
       result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
-                     neumann || intPrm[3] > 0.0 ? 1 : 2, nsd);
+                     neumann || intPrm[3] > 0.0 ? 1 : 2, npv);
       break;
 
     case SIM::VIBRATION:
@@ -201,7 +219,14 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
       break;
 
     case SIM::RHS_ONLY:
-      result->resize(neumann ? 0 : 1, 1, npv);
+      if (isModal || intPrm[2] == 0.0)
+        result->resize(neumann ? 0 : 1, 1, npv);
+      else // RHS-only with Newmark time integration
+	result->resize(neumann ? 0 : (intPrm[3] >= 0.0 ? 3 : 4),
+                       neumann || intPrm[3] > 0.0 ? 1 : 2, npv);
+      result->rhsOnly = true;
+      result->withLHS = false;
+      break;
 
     case SIM::RECOVERY:
       result->rhsOnly = true;
@@ -209,7 +234,7 @@ LocalIntegral* KirchhoffLove::getLocalIntegral (size_t nen, size_t iEl,
       break;
 
     default:
-      ;
+      result->withLHS = false;
     }
 
   result->redim(npv*nen);

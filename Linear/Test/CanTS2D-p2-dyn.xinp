@@ -46,6 +46,7 @@
   </discretization>
 
   <newmarksolver>
+    <nupdate>0</nupdate>
     <timestepping>
       <step start="0.0" end="2.0">0.05</step>
     </timestepping>

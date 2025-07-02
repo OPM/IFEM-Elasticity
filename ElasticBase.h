@@ -49,8 +49,9 @@ public:
   virtual bool init(const TimeDomain&) { return true; }
 
   //! \brief Defines the solution mode before the element assembly is started.
-  //! \param[in] mode The solution mode to use
   virtual void setMode(SIM::SolutionMode mode);
+  //! \brief Returns current solution mode.
+  virtual SIM::SolutionMode getMode(bool simMode) const;
   //! \brief Updates the external load vector index for gradient calculation.
   void setLoadGradientMode() { eS = 2; }
 

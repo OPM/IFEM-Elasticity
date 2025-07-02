@@ -77,7 +77,7 @@ namespace
 } // namespace
 
 
-ElasticBeam::ElasticBeam (unsigned short int n) : inLocalAxes(true)
+ElasticBeam::ElasticBeam (unsigned short int n) : myType(STD), inLocalAxes(true)
 {
   nsd = 3; // Number of spatial dimenstions
   npv = 6; // Number of primary unknowns per node
@@ -169,12 +169,18 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
   if (this->inActive(iEl))
     return result; // element is not in current material group
 
-  if (m_mode != SIM::DYNAMIC)
+  if (this->getMode(true) != SIM::DYNAMIC)
     result = new BeamElmMats();
   else if (intPrm[3] > 0.0)
+  {
+    myType = DYN;
     result = new DynBeamMats(intPrm[0],intPrm[1],intPrm[2],intPrm[3]);
+  }
   else if (!inLocalAxes)
+  {
+    myType = HHT;
     result = new HHTBeamMats(intPrm[2],intPrm[0],intPrm[1]);
+  }
   else
   {
     std::cerr <<" *** ElasticBeam: For linear dynamics only"<< std::endl;
@@ -206,6 +212,14 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
       break;
 
     case SIM::RHS_ONLY:
+      if (myType == STD)
+        result->resize(0,1);
+      else // RHS-only for dynamics problem
+        result->resize(intPrm[3] >= 0.0 ? 3 : 4, intPrm[3] > 0.0 ? 1 : 2);
+      result->rhsOnly = true;
+      result->withLHS = false;
+      break;
+
     case SIM::INT_FORCES:
       result->resize(0,1);
       result->rhsOnly = true;
@@ -213,7 +227,7 @@ LocalIntegral* ElasticBeam::getLocalIntegral (size_t, size_t iEl, bool) const
       break;
 
     default:
-      ;
+      result->withLHS = false;
   }
 
   result->redim(12);
@@ -245,12 +259,13 @@ bool ElasticBeam::initElement (const std::vector<int>& MNPC,
 
 Matrix& ElasticBeam::getLocalAxes (LocalIntegral& elmInt) const
 {
-  if (m_mode != SIM::DYNAMIC)
-    return static_cast<BeamElmMats&>(elmInt).Tlg;
-  else if (intPrm[3] > 0.0)
-    return static_cast<DynBeamMats&>(elmInt).Tlg;
-  else
-    return static_cast<HHTBeamMats&>(elmInt).Tlg;
+  switch (myType) {
+  case STD: return static_cast<BeamElmMats&>(elmInt).Tlg;
+  case DYN: return static_cast<DynBeamMats&>(elmInt).Tlg;
+  case HHT: return static_cast<HHTBeamMats&>(elmInt).Tlg;
+  }
+  static Matrix dummy;
+  return dummy;
 }
 
 

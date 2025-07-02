@@ -119,6 +119,9 @@ protected:
   void getMassMatrix(Matrix& EM, double rhoA, double Ixx,
                      double Iyy, double Izz, double L) const;
 
+private:
+  mutable enum { STD, DYN, HHT } myType; //!< Enum for element matrix type
+
 protected:
   // Material property parameters (constant)
   double E;   //!< Young's modulus

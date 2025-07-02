@@ -173,16 +173,16 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
   const bool useHHT = intPrm[4] == 1.0;
   const bool useGA  = intPrm[4] == 2.0;
 
-  if (m_mode != SIM::DYNAMIC) // linear or nonlinear (quasi-)static analysis
-    result = new ElmMats();
-  else if (bdf)
+  if (bdf) // time integration using Backward Difference Formula
     result = new BDFMats(*bdf);
-  else if (linDyn) // linear dynamic analysis
+  else if (this->getMode(true) != SIM::DYNAMIC)
+    result = new ElmMats(); // linear or nonlinear (quasi-)static analysis
+  else if (linDyn) // linear dynamic analysis with Newmark time integration
     result = new NewmarkMats(intPrm[0], intPrm[1], intPrm[2], intPrm[3], useGA);
-  else // nonlinear dynamic analysis
+  else // nonlinear dynamic analysis with Newmark time integration
     result = new HHTMats(intPrm[2], intPrm[0], intPrm[1], !useHHT);
 
-  switch (m_mode)
+  switch (bdf && m_mode == SIM::STATIC ? SIM::DYNAMIC : m_mode)
   {
     case SIM::STATIC:
     case SIM::MASS_ONLY:
@@ -214,6 +214,15 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
       break;
 
     case SIM::RHS_ONLY:
+      if (nSV > nCS) // RHS-only with Newmark time integration
+        result->resize(neumann ? 0 : (intPrm[3] < 0.0 ? 4 : 3),
+                       useHHT ? 3 : (neumann || linDyn ? 1 : 2), nsd);
+      else
+        result->resize(neumann ? 0 : 1, 1, nsd);
+      result->rhsOnly = true;
+      result->withLHS = false;
+      break;
+
     case SIM::INT_FORCES:
       result->resize(neumann ? 0 : 1, 1, nsd);
 
@@ -223,7 +232,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
       break;
 
     default:
-      ;
+      result->withLHS = false;
   }
 
   result->redim(nsd*nen);

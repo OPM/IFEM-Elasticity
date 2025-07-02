@@ -37,7 +37,7 @@ ElasticBeam: E = 2.05e+11, G = 8.1e+10, rho = 7850
              A = 0.1, Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002
              Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
 Newmark predictor/multicorrector: beta = 0.25 gamma = 0.5
- updating coefficient matrices in the first 20 iterations in each time step
+ using constant coefficient matrices
  using zero acceleration predictor
 Stiffness-proportional damping (alpha2): 0.003
 11. Linear Elastic Beam solver
