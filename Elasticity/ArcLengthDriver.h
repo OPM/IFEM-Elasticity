@@ -41,7 +41,7 @@ public:
   //! \param param Time stepping parameters
   //! \param[in] zero_tol Truncate norm values smaller than this to zero
   //! \param[in] outPrec Number of digits after the decimal point in norm print
-  virtual SIM::ConvStatus solveStep(TimeStep& param, SIM::SolutionMode,
+  virtual SIM::ConvStatus solveStep(TimeStep& param,
                                     double zero_tol, std::streamsize outPrec);
 
   //! \brief Does nothing, overrides parent class method.

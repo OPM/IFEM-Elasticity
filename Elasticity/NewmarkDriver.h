@@ -36,8 +36,6 @@ public:
   //! \brief The constructor forwards to the parent class constructor.
   //! \param sim Reference to the spline FE model
   explicit NewmarkDriver(SIMbase& sim) : Newmark(sim) { doInitAcc = false; }
-  //! \brief Empty destructor.
-  virtual ~NewmarkDriver() {}
 
 protected:
   using Newmark::parse;
@@ -119,7 +117,7 @@ public:
     for (int iStep = 0; status == 0 && this->advanceStep(params);)
     {
       // Solve the dynamic FE problem at this time step
-      if (this->solveStep(params,SIM::DYNAMIC,ztol,outPrec) != SIM::CONVERGED)
+      if (this->solveStep(params,ztol,outPrec) != SIM::CONVERGED)
       {
         status = 5;
         break;

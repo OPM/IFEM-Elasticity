@@ -153,7 +153,7 @@ int ModesHistorySIM::solve (char* infile, double ztol, std::streamsize outPrec)
 
   this->initSol(0,0);
   for (int iStep = 1; status == 0 && this->advanceStep(params); iStep++)
-    if (this->solveStep(params,SIM::DYNAMIC,ztol,outPrec) != SIM::CONVERGED)
+    if (this->solveStep(params,ztol,outPrec) != SIM::CONVERGED)
       status = 5;
     else if (!this->saveStep(iStep,params.time.t))
       status = 11;

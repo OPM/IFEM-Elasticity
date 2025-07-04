@@ -317,7 +317,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       }
 
       // Solve the nonlinear FE problem at this load step
-      stat = this->solveStep(params,SIM::STATIC,zero_tol,normPrec);
+      stat = this->solveStep(params,zero_tol,normPrec);
     }
     while (stat == SIM::DIVERGED);
 

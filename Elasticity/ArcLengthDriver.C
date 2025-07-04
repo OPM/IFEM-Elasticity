@@ -62,7 +62,6 @@ bool ArcLengthDriver::advanceStep (TimeStep& param, bool)
 
 
 SIM::ConvStatus ArcLengthDriver::solveStep (TimeStep& param,
-                                            SIM::SolutionMode,
                                             double zero_tolerance,
                                             std::streamsize outPrec)
 {
