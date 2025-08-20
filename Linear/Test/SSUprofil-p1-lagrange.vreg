@@ -1,0 +1,58 @@
+SSUprofil-p1.xinp -lagrange
+
+Step 1
+  Element block 1
+    165 nodes
+    80 elements
+    Displacement: 'Solution'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_zz'
+    Scalar: 's_xy'
+    Scalar: 's_yz'
+    Scalar: 's_xz'
+    Scalar: 'von Mises stress'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'volume'
+  Element block 2
+    165 nodes
+    80 elements
+    Displacement: 'Solution'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_zz'
+    Scalar: 's_xy'
+    Scalar: 's_yz'
+    Scalar: 's_xz'
+    Scalar: 'von Mises stress'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'volume'
+  Element block 3
+    165 nodes
+    80 elements
+    Displacement: 'Solution'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+    Scalar: 's_xx'
+    Scalar: 's_yy'
+    Scalar: 's_zz'
+    Scalar: 's_xy'
+    Scalar: 's_yz'
+    Scalar: 's_xz'
+    Scalar: 'von Mises stress'
+    Scalar: 'a(u^h,u^h)^0.5'
+    Scalar: 'volume'
+  Element block 4
+    16 nodes
+    2 elements
+  Element block 5
+    640 nodes
+    640 elements
+    Vector: 'Tractions'
