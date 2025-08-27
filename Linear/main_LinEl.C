@@ -456,7 +456,7 @@ int main (int argc, char** argv)
   utl::profiler->stop("Model input");
 
   // Establish the FE data structures
-  if (!theSim->preprocess(ignoredPatches,fixDup))
+  if (!theSim->preprocessC(ignoredPatches,fixDup,Elastic::time))
     return terminate(2);
 
   SIMoptions::ProjectionMap& pOpt = model->opt.project;
