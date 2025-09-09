@@ -165,7 +165,7 @@ public:
   //! \param nBlock Running result block counter
   //! \param[in] iStep Load/time step identifier
   //! \param[in] idBlock Result block ID number
-  virtual bool writeGlvA(int& nBlock, int iStep, int idBlock) const
+  virtual bool writeGlvA(int& nBlock, int iStep, double, int idBlock) const
   {
     if (myForces.empty()) return true;
 

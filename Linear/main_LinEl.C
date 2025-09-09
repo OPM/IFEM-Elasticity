@@ -889,7 +889,7 @@ int main (int argc, char** argv)
         return terminate(15);
 
     // Write internal force vector to VTF-file
-    if (!model->writeGlvA(nBlock,1,2+vizRHS))
+    if (!model->writeGlvA(nBlock,1,0.0,2+vizRHS))
       return terminate(15);
 
     // Write solution fields to VTF-file
