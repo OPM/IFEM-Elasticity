@@ -128,7 +128,7 @@ public:
           status += 6;
       }
 
-      utl::profiler->start("Postprocessing");
+      PROFILE("Postprocessing"); // the rest are various post-processing tasks
 
       // Print solution components at the user-defined points
       Newmark::model.setMode(SIM::RECOVERY);
@@ -163,8 +163,6 @@ public:
         if (this->serialize(data) && !restart->writeData(data))
           status += 17;
       }
-
-      utl::profiler->stop("Postprocessing");
     }
 
     if (os)

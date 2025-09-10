@@ -244,8 +244,11 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
   int iStep = aStep = 0; // Save initial state to VTF
   if (save0 && opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)
+  {
+    PROFILE("Postprocessing");
     if (!this->saveStep(-(++iStep),params.time.t))
       return 4;
+  }
 
   // Initialize mesh adaptation parameters
   if (adap && !adap->initPrm(1))
@@ -306,7 +309,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       adap->printNorms(gNorm,Vectors(),eNorm);
     }
 
-    utl::profiler->start("Postprocessing");
+    PROFILE("Postprocessing"); // all the rest are various post-processing tasks
 
     // Print solution components at the user-defined points
     model.setMode(SIM::RECOVERY);
@@ -402,8 +405,6 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       elp->printMaxVals(outPrec,id+6); // stress triaxiality, T
       elp->printMaxVals(outPrec,id+7); // Lode parameter, L
     }
-
-    utl::profiler->stop("Postprocessing");
   }
 
   return 0;
@@ -465,5 +466,8 @@ bool NonlinearDriver::adaptMesh (int& aStep)
       model.injectPatchSolution(soli[i],solution[p*nsol+i],model.getPatch(p+1));
 
   // Write updated geometry and (homogeneous) Dirichlet BCs to VTF-file
-  return opt.format < 0 ? true : this->saveModel(geoBlk,nBlock);
+  if (opt.format < 0) return true;
+
+  PROFILE("Postprocessing");
+  return this->saveModel(geoBlk,nBlock);
 }
