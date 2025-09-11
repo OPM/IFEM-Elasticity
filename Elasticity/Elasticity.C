@@ -182,7 +182,7 @@ LocalIntegral* Elasticity::getLocalIntegral (size_t nen, size_t iEl,
   else // nonlinear dynamic analysis with Newmark time integration
     result = new HHTMats(intPrm[2], intPrm[0], intPrm[1], !useHHT);
 
-  switch (bdf && m_mode == SIM::STATIC ? SIM::DYNAMIC : m_mode)
+  switch (m_mode)
   {
     case SIM::STATIC:
     case SIM::MASS_ONLY:

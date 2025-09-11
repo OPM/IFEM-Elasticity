@@ -40,7 +40,8 @@ ElasticBase::~ElasticBase ()
 
 void ElasticBase::setMode (SIM::SolutionMode mode)
 {
-  m_mode = mode;
+  m_mode = bdf && mode == SIM::STATIC ? SIM::DYNAMIC : mode;
+
   eM = eKm = eKg = 0;
   eS = gS  = iS  = 0;
 
@@ -169,7 +170,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
 SIM::SolutionMode ElasticBase::getMode (bool simMode) const
 {
   if (simMode && m_mode == SIM::RHS_ONLY)
-    return nSV > nCS ? SIM::DYNAMIC : SIM::STATIC;
+    return nSV > nCS || bdf ? SIM::DYNAMIC : SIM::STATIC;
 
   return m_mode;
 }
