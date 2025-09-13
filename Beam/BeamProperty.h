@@ -43,7 +43,7 @@ public:
   static bool parsePipe(const tinyxml2::XMLElement* prop, double& A, double& I);
   //! \brief Parses massive box cross section properties from an XML-element.
   static bool parseBox(const tinyxml2::XMLElement* prop, double& A,
-                       double& Iy, double& Iz);
+                       double& Iy, double& Iz, double& It);
 
   //! \brief Evaluates the beam properties at the specified point \a X.
   void eval(const Vec3& X, double L, double E, double G, double rho,

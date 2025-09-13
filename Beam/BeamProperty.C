@@ -102,7 +102,7 @@ bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop,
 
 
 bool BeamProperty::parseBox (const tinyxml2::XMLElement* prop,
-                             double& A, double& Iy, double& Iz)
+                             double& A, double& Iy, double& Iz, double& It)
 {
   double H = 0.0;
   if (!utl::getAttribute(prop,"H",H))
@@ -110,12 +110,15 @@ bool BeamProperty::parseBox (const tinyxml2::XMLElement* prop,
 
   double B = H;
   utl::getAttribute(prop,"B",B);
+  IFEM::cout <<"\tBox("<< H <<","<< B;
 
   A  = B*H;
   Iy = A*H*H/12.0;
   Iz = A*B*B/12.0;
-  IFEM::cout <<"\tBox("<< H <<","<< B
-             <<"): A = "<< A <<" I = "<< Iy <<" "<< Iz << std::endl;
+  if (H > B) std::swap(B,H);
+  It = A*H*H*(1.0 - 0.63*(H/B)*(1.0-pow(H/B,4.0)/12.0))/3.0;
+  IFEM::cout <<"): A = "<< A <<" I = "<< Iy <<" "<< Iz <<" "<< It << std::endl;
+
   return true;
 }
 
@@ -128,9 +131,9 @@ void BeamProperty::parse (const tinyxml2::XMLElement* prop)
     It = Ix = Iz*2.0;
     Ky = Kz = 2.0;
   }
-  else if (parseBox(prop,A,Iy,Iz))
+  else if (parseBox(prop,A,Iy,Iz,It))
   {
-    It = Ix = Iy + Iz;
+    Ix = Iy + Iz;
     Ky = Kz = 1.2;
   }
 

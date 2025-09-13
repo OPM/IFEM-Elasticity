@@ -3,7 +3,6 @@
 Input file: Beam+supel.xinp
 Equation solver: 1
 Number of Gauss points: 4
-Evaluation time for property functions: 1
 Solution component output zero tolerance: 1e-06
 1. Coupled linear static solver
 Parsing input file Beam+supel.xinp
@@ -36,9 +35,9 @@ Parsing <beam>
   Parsing <material>
 	Stiffness moduli = 2.1e+11 8.07692e+10, mass density = 7850
   Parsing <properties>
-	Box(0.2,0.6): A = 0.12 I = 0.0004 0.0036
+	Box(0.2,0.6): A = 0.12 I = 0.0004 0.0036 0.00126435
     Constant beam properties:
-	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.004
+	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.00126435
 	Shear parameters = 0 0 1.2 1.2
   Parsing <gravity>
 	Gravitation vector: 0 0 -9.81
@@ -62,7 +61,7 @@ Number of unknowns    12
 12. Linear Elastic Beam solver
 Problem definition:
 ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
-             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.004
+             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.00126435
              Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
 Resolving Dirichlet boundary conditions
 	Constraining P1 V2 in direction(s) 12346

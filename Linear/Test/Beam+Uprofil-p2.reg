@@ -62,8 +62,9 @@ Parsing <beam>
   Parsing <material>
 	Stiffness moduli = 2.1e+11 8.07692e+10, mass density = 7850
   Parsing <properties>
+	Box(0.2,0.6): A = 0.12 I = 0.0004 0.0036 0.00126435
     Constant beam properties:
-	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.004
+	Cross section area = 0.12, moments of inertia = 0.004 0.0004 0.0036 0.00126435
 	Shear parameters = 0 0 1.2 1.2
 Parsing <coupling>
   Parsing <connection>
@@ -98,7 +99,7 @@ Number of unknowns    792
 12. Linear Elastic Beam solver
 Problem definition:
 ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
-             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.004
+             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.00126435
              Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
 Resolving Dirichlet boundary conditions
 	Constraining P1 V2 in direction(s) 12346
@@ -129,11 +130,11 @@ Assembling Neumann matrix terms for boundary 4 on P2
 22. Linear Elastic Beam solver
 Number of quadrature points 8
 Processing integrand associated with code 0
-Assembling interior matrix terms for P1
-Assembling interior matrix terms for P2
+Assembling interior matrix terms for P4
+Assembling interior matrix terms for P5
 23. Coupled linear static solver
 Solving the equation system ...
-	Condition number: 9.82578e+08
+	Condition number: 9.82604e+08
  >>> Solution summary <<<
 L2-norm            : 0.69527
 Max X-displacement : 0.0177275
