@@ -20,7 +20,7 @@
 
 class KirchhoffLove;
 
-typedef std::pair<double,double> Doubles; //!< Convenience type
+using Doubles = std::pair<double,double>; //!< Convenience type alias
 
 
 /*!
@@ -131,10 +131,11 @@ private:
   bool assemblePoint(int patch, const double* u, double f, int ldof);
 
 protected:
-  RealArray tVec;     //!< Shell thickness data
-  PloadVec  myLoads;  //!< Nodal/element point loads
-  int       aCode[3]; //!< Analytical BC codes (used by destructor)
-  LLdomain  lineLoad; //!< Domain definition of the line load
+  RealArray  tVec;     //!< Shell thickness data
+  SclFuncMap tFunc;    //!< Shell thickness functions
+  PloadVec   myLoads;  //!< Nodal/element point loads
+  int        aCode[3]; //!< Analytical BC codes (used by destructor)
+  LLdomain   lineLoad; //!< Domain definition of the line load
 };
 
 

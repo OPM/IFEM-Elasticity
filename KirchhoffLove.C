@@ -16,7 +16,7 @@
 #include "FiniteElement.h"
 #include "NewmarkMats.h"
 #include "TimeDomain.h"
-#include "Function.h"
+#include "Functions.h"
 #include "Utilities.h"
 #include "Vec3Oper.h"
 #include "Tensor.h"
@@ -29,7 +29,8 @@ KirchhoffLove::KirchhoffLove (unsigned short int n, bool m) : IntegrandBase(n)
   npv = nsd < 3 ? 1 : 3; // Number of primary unknowns per node
 
   gravity = 0.0;
-  thickness = 0.1;
+  constantT = true;
+  thickness = new ConstFunc(0.1);
 
   material = nullptr;
   fluxFld = nullptr;
@@ -49,7 +50,9 @@ KirchhoffLove::KirchhoffLove (unsigned short int n, bool m) : IntegrandBase(n)
 
 KirchhoffLove::~KirchhoffLove ()
 {
-  if (locSys) delete locSys;
+  if (constantT)
+    delete thickness;
+  delete locSys;
 }
 
 
@@ -145,6 +148,24 @@ void KirchhoffLove::setIntegrationPrm (unsigned short int i, double prm)
 double KirchhoffLove::getIntegrationPrm (unsigned short int i) const
 {
   return i < sizeof(intPrm)/sizeof(double) ? intPrm[i] : 0.0;
+}
+
+
+void KirchhoffLove::setThickness (double t)
+{
+  if (constantT)
+    delete thickness;
+  thickness = new ConstFunc(t);
+  constantT = true;
+}
+
+
+void KirchhoffLove::setThickness (RealFunc* tf)
+{
+  if (constantT)
+    delete thickness;
+  thickness = tf;
+  constantT = false;
 }
 
 
@@ -257,7 +278,7 @@ Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n, bool grd) const
 {
   Vec3 p;
   if (!grd)
-    p.z = material->getMassDensity(X)*gravity*thickness;
+    p.z = material->getMassDensity(X) * gravity * (*thickness)(X);
 
   for (RealFunc* pf : presFld)
     if (n.isZero()) // Assume pressure acts in global Z-direction
@@ -331,7 +352,7 @@ void KirchhoffLove::formBodyForce (Vector& ES, RealArray& sumLoad,
 void KirchhoffLove::formMassMatrix (Matrix& EM, const Vector& N,
                                     const Vec3& X, double detJW) const
 {
-  double rhow = material->getMassDensity(X)*thickness*detJW;
+  double rhow = material->getMassDensity(X) * (*thickness)(X) * detJW;
   if (rhow == 0.0) return;
 
   if (npv == 1)

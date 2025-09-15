@@ -50,6 +50,9 @@ SIMKLShell::SIMKLShell (const char* heading, bool isShell)
 
 SIMKLShell::~SIMKLShell ()
 {
+  for (SclFuncMap::value_type& tf : tFunc)
+    delete tf.second;
+
   for (PointLoad& load : myLoads)
     delete load.p;
 
@@ -90,12 +93,15 @@ void SIMKLShell::clearProperties()
     klp->setPressure(nullptr);
   }
 
+  for (SclFuncMap::value_type& tf : tFunc)
+    delete tf.second;
   for (Material* mat : mVec)
     delete mat;
   for (PointLoad& load : myLoads)
     delete load.p;
 
   tVec.clear();
+  tFunc.clear();
   mVec.clear();
   myLoads.clear();
 
@@ -218,20 +224,32 @@ bool SIMKLShell::parse (const tinyxml2::XMLElement* elem)
     else if (!strcasecmp(child->Value(),"isotropic"))
     {
       int code = this->parseMaterialSet(child,mVec.size());
+      IFEM::cout <<"\tMaterial code "<< code <<":";
 
-      double E = 1000.0, nu = 0.3, rho = 1.0, thk = 0.1;
-      utl::getAttribute(child,"E",E);
-      utl::getAttribute(child,"nu",nu);
-      utl::getAttribute(child,"rho",rho);
-      utl::getAttribute(child,"thickness",thk);
-
-      mVec.push_back(new LinIsotropic(E,nu,rho,true));
-      tVec.push_back(thk);
-      IFEM::cout <<"\tMaterial code "<< code <<": "
-                 << E <<" "<< nu <<" "<< rho <<" "<< thk << std::endl;
+      double t = 0.0;
+      utl::getAttribute(child,"thickness",t);
+      tVec.push_back(t);
+      mVec.push_back(new LinIsotropic(true));
+      mVec.back()->parse(child);
       klp->setMaterial(mVec.front());
-      if (tVec.front() != 0.0)
-        klp->setThickness(tVec.front());
+
+      const tinyxml2::XMLElement* thick = child->FirstChildElement("thickness");
+      if (thick && thick->FirstChild())
+      {
+        std::string type;
+        utl::getAttribute(thick,"type",type,true);
+        IFEM::cout <<"\n\t  Thickness function ("<< type <<") ";
+        tFunc[code] = utl::parseRealFunc(thick->FirstChild()->Value(),type);
+        if (klp->constantThickness())
+          klp->setThickness(tFunc[code]);
+      }
+      else
+      {
+        IFEM::cout << (child->FirstChildElement() ? "\n\tt=" : " ") << t;
+        if (tVec.front() != 0.0 && klp->constantThickness())
+          klp->setThickness(tVec.front());
+      }
+      IFEM::cout << std::endl;
     }
 
     else if (!strcasecmp(child->Value(),"pointload") && child->FirstChild())
@@ -344,7 +362,11 @@ bool SIMKLShell::initMaterial (size_t propInd)
   if (!klp) return false;
 
   klp->setMaterial(mVec[propInd]);
-  if (tVec[propInd] != 0.0)
+
+  SclFuncMap::const_iterator tit = tFunc.find(propInd);
+  if (tit != tFunc.end())
+    klp->setThickness(tit->second);
+  else if (tVec[propInd] != 0.0)
     klp->setThickness(tVec[propInd]);
 
   return true;

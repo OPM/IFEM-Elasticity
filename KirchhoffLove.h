@@ -62,10 +62,15 @@ public:
   //! \param[in] i Index of the integration parameter to return
   virtual double getIntegrationPrm(unsigned short int i) const;
 
+  //! \brief Returns \e true if onyl a constant thickness has been specified.
+  bool constantThickness() const { return constantT; }
+
   //! \brief Defines the gravitation constant.
   void setGravity(double g) { gravity = g; }
-  //! \brief Defines the plate/shell thickness.
-  void setThickness(double t) { thickness = t; }
+  //! \brief Defines the constant plate/shell thickness.
+  void setThickness(double t);
+  //! \brief Defines the plate/shell thickness as a function.
+  void setThickness(RealFunc* tf = nullptr);
   //! \brief Defines the material properties.
   void setMaterial(Material* mat) { material = mat; }
   //! \brief Defines the pressure field.
@@ -202,9 +207,9 @@ protected:
   unsigned short int iS; //!< Index to internal force vector
 
   // Physical properties
-  Material* material;  //!< Material data and constitutive relation
-  double    thickness; //!< Plate/shell thickness
   double    gravity;   //!< Gravitation constant
+  RealFunc* thickness; //!< Pointer to plate/shell thickness function
+  Material* material;  //!< Material data and constitutive relation
 
   VecFunc*      fluxFld; //!< Pointer to explicit boundary traction field
   TractionFunc* tracFld; //!< Pointer to implicit boundary traction field
@@ -223,6 +228,9 @@ protected:
   //! \details The interpretation of each parameter is the same as in the class
   //! ElasticBase. See ElasticBase::intPrm.
   double intPrm[4];
+
+private:
+  bool constantT; //!< If \e true, a constant plate/shell thickness is assigned
 };
 
 #endif

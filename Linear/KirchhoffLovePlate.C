@@ -33,7 +33,7 @@ KirchhoffLovePlate::KirchhoffLovePlate (unsigned short int n, short int v,
 
 void KirchhoffLovePlate::printLog () const
 {
-  IFEM::cout <<"KirchhoffLovePlate: thickness = "<< thickness
+  IFEM::cout <<"KirchhoffLovePlate: thickness = "<< (*thickness)(Vec3())
              <<", gravity = "<< gravity << std::endl;
   if (version > 1)
     IFEM::cout <<"\tUsing tensorial formulation (constant D)."<< std::endl;
@@ -53,7 +53,7 @@ void KirchhoffLovePlate::printLog () const
 
 double KirchhoffLovePlate::getStiffness (const Vec3& X) const
 {
-  return material->getPlateStiffness(X,thickness);
+  return material->getPlateStiffness(X,(*thickness)(X));
 }
 
 
@@ -108,7 +108,8 @@ bool KirchhoffLovePlate::formCmatrix (Matrix& C, const FiniteElement& fe,
   if (!material->evaluate(C,dummy,U,fe,X,dummy,dummy, invers ? -1 : 1))
     return false;
 
-  double factor = thickness*thickness*thickness/12.0;
+  double T = (*thickness)(X);
+  double factor = T*T*T/12.0;
   C.multiply(invers ? 1.0/factor : factor);
   return true;
 }
@@ -163,7 +164,7 @@ bool KirchhoffLovePlate::evalK2 (Matrix& EK,
                                  const FiniteElement& fe, const Vec3& X) const
 {
   // Evaluate the scaled plate stiffness at this point
-  double DdJxW = material->getPlateStiffness(X,thickness)*fe.detJxW;
+  double DdJxW = material->getPlateStiffness(X,(*thickness)(X))*fe.detJxW;
 
   // Integrate the stiffness matrix
   Vector d2NdX2 = fe.d2NdX2.getColumn(1,1);

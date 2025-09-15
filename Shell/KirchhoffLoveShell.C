@@ -16,13 +16,14 @@
 #include "FiniteElement.h"
 #include "ElmMats.h"
 #include "ElmNorm.h"
+#include "Function.h"
 #include "Vec3Oper.h"
 #include "IFEM.h"
 
 
 void KirchhoffLoveShell::printLog () const
 {
-  IFEM::cout <<"KirchhoffLoveShell: thickness = "<< thickness
+  IFEM::cout <<"KirchhoffLoveShell: thickness = "<< (*thickness)(Vec3())
              <<", gravity = "<< gravity << std::endl;
 
   if (!material)
@@ -96,8 +97,8 @@ bool KirchhoffLoveShell::formDmatrix (Matrix& Dm, Matrix& Db,
   if (!material->evaluate(Dm,dummy,U,fe,X,dummy,dummy, invers ? -1 : 1))
     return false;
 
-  double factorm = thickness;
-  double factorb = thickness*thickness*thickness/12.0;
+  double factorm = (*thickness)(X);
+  double factorb = factorm*factorm*factorm/12.0;
 
   Db = Dm;
   Dm.multiply(invers ? 1.0/factorm : factorm);
@@ -255,6 +256,8 @@ bool KirchhoffLoveShell::evalSol (Vector& s, const Vectors& eV,
   else
     s.push_back(sb.begin(),sb.end());
 
+  double T = (*thickness)(X);
+
   // Calculate top and bottom surface stresses;
   // stress tensor components, principal stresses and von Mises stress
   SymmTensor sigma(2);
@@ -263,7 +266,7 @@ bool KirchhoffLoveShell::evalSol (Vector& s, const Vectors& eV,
   {
     double* p = const_cast<double*>(sigma.ptr());
     for (size_t i = 0; i < 3; i++)
-      p[i] = (s[i] - isurf*sb[i]*6.0/thickness)/thickness;
+      p[i] = (s[i] - isurf*sb[i]*6.0/T)/T;
 
     sigma.principal(sigma_p);
     s.push_back(sigma.ptr(),sigma.ptr()+3);
