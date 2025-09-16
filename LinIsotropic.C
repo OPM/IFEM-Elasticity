@@ -75,21 +75,23 @@ LinIsotropic::~LinIsotropic ()
 
 void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
 {
-  if (Emod >= 0.0 && utl::getAttribute(elem,"E",Emod))
+  const tinyxml2::XMLElement* child = elem->FirstChildElement();
+
+  if (Emod >= 0.0 && utl::getAttribute(elem,"E",Emod) && !child)
     IFEM::cout <<" "<< Emod;
-  if (utl::getAttribute(elem,"nu",nu))
+  if (utl::getAttribute(elem,"nu",nu) && !child)
     IFEM::cout <<" "<< nu;
-  if (utl::getAttribute(elem,"rho",rho))
+  if (utl::getAttribute(elem,"rho",rho) && !child)
     IFEM::cout <<" "<< rho;
-  if (utl::getAttribute(elem,"alpha",alpha))
+  if (utl::getAttribute(elem,"alpha",alpha) && !child)
     IFEM::cout <<" "<< alpha;
-  if (utl::getAttribute(elem,"cp",heatcapacity))
+  if (utl::getAttribute(elem,"cp",heatcapacity) && !child)
     IFEM::cout <<" "<< heatcapacity;
-  if (utl::getAttribute(elem,"kappa",conductivity))
+  if (utl::getAttribute(elem,"kappa",conductivity) && !child)
     IFEM::cout <<" "<< conductivity;
 
   // Lambda function for parsing a spatial property function.
-  auto&& parseSpatialFunc = [](const tinyxml2::XMLElement* child, const char* name)
+  auto&& parseSpatialFunc = [child](const char* name)
   {
     std::string type;
     utl::getAttribute(child,"type",type,true);
@@ -99,32 +101,48 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
   };
 
   // Lambda function for parsing a scalar property function.
-  auto&& parseScalarFunc = [](const tinyxml2::XMLElement* child)
+  auto&& parseScalarFunc = [child](const char* name)
   {
     std::string type;
     utl::getAttribute(child,"type",type,true);
-    IFEM::cout <<" ";
+    IFEM::cout <<"\n\t  "<< name <<" function ";
     const tinyxml2::XMLNode* aval = child->FirstChild();
     return aval ? utl::parseTimeFunc(aval->Value(),type) : nullptr;
   };
 
-  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (Emod >= 0.0 && !Efunc && !strcasecmp(child->Value(),"stiffness"))
-      Efunc = parseSpatialFunc(child,"Stiffness");
+      Efunc = parseSpatialFunc("Stiffness");
     else if (!strcasecmp(child->Value(),"poisson"))
-      nuFunc = parseSpatialFunc(child,"Poisson's ratio");
+      nuFunc = parseSpatialFunc("Poisson's ratio");
     else if (!strcasecmp(child->Value(),"density"))
-      rhoFunc = parseSpatialFunc(child,"Mass density");
+      rhoFunc = parseSpatialFunc("Mass density");
     else if (!strcasecmp(child->Value(),"thermalexpansion"))
-      Afunc = parseScalarFunc(child);
+      Afunc = parseScalarFunc("Thermal expansion");
     else if (!strcasecmp(child->Value(),"heatcapacity"))
-      Cpfunc = parseScalarFunc(child);
+      Cpfunc = parseScalarFunc("Heat capacity");
     else if (!strcasecmp(child->Value(),"conductivity"))
-      condFunc = parseScalarFunc(child);
+      condFunc = parseScalarFunc("Conductivity");
 
-  if (!Efunc && !nuFunc && !rhoFunc && !Afunc && !Cpfunc && !condFunc)
-    IFEM::cout << std::endl;
+  if (Efunc || nuFunc || rhoFunc || Afunc || Cpfunc || condFunc)
+  {
+    // Write out the constant parameters if no function
+    std::stringstream str;
+    if (!Efunc && elem->Attribute("E"))
+      str <<"  E="<< Emod;
+    if (!nuFunc && elem->Attribute("nu"))
+      str <<"  nu="<< nu;
+    if (!rhoFunc && elem->Attribute("rho"))
+      str <<"  rho="<< rho;
+    if (!Afunc && elem->Attribute("alpha"))
+      str <<"  alpha="<< alpha;
+    if (!Cpfunc && elem->Attribute("cp"))
+      str <<"  cp="<< heatcapacity;
+    if (!condFunc && elem->Attribute("kappa"))
+      str <<"  kappa="<< conductivity;
+    if (!str.str().empty())
+      IFEM::cout <<"\n\t"<< str.str();
+  }
 }
 
 
