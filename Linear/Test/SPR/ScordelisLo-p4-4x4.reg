@@ -43,7 +43,7 @@ Spline basis with C1-continuous patch interfaces is used
 Enabled projection(s): Continuous global L2-projection
 Problem definition:
 KirchhoffLoveShell: thickness = 0.25, gravity = -1
-LinIsotropic: plane stress, E = 4.32e+08, nu = 0, rho = 360, alpha = 0
+LinIsotropic: plane stress, E = 4.32e+08, nu = 0, rho = 360, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 V1 in direction(s) 2
 	Constraining P1 E3 in direction(s) 13

@@ -23,7 +23,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 23123: (fixed)
 Parsing <KirchhoffLove>
-	Material code 0: 1e+07 0 1 0.05
+	Material code 0: 1e+07 0 0.05
 	Point: P1 xi = 1 0 direction = 3 load = -50
 	Point: P1 xi = 1 1 direction = 3 load = -50
 Parsing <nonlinearsolver>
@@ -33,7 +33,7 @@ Number of Gauss points: p+1 (p = polynomial degree of basis)
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 KirchhoffLoveShell: thickness = 0.05, gravity = 0
-LinIsotropic: plane stress, E = 1e+07, nu = 0, rho = 1, alpha = 0
+LinIsotropic: plane stress, E = 1e+07, nu = 0, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 23123
 	Constraining P1 in direction(s) 2

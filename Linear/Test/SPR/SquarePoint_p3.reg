@@ -24,7 +24,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 1: (fixed)
 Parsing <kirchhofflove>
-	Material code 0: 2.1e+11 0.3 1 0.1
+	Material code 0: 2.1e+11 0.3 0.1
 	Point: P1 xi = 0.5 0.5 load = 10000
 	Analytic solution: NavierPlate a=10 b=10 t=0.1 E=2.1e+11 nu=0.3 pz=10000 xi=0.5 eta=0.5
 NavierPlate: w_centre = 0.0006032093628
@@ -41,7 +41,7 @@ Number of Gauss points: 4
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 KirchhoffLovePlate: thickness = 0.1, gravity = 0
-LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1, alpha = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 1
 	Constraining P1 E2 in direction(s) 1

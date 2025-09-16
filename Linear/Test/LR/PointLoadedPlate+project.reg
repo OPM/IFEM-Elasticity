@@ -30,7 +30,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 1: (fixed)
 Parsing <kirchhofflove>
-	Material code 0: 1 0.3 1 1
+	Material code 0: 1 0.3 1
 	Point: P1 xi = 0.5 0.5 load = 1
 Parsing <postprocessing>
   Parsing <projection>
@@ -49,7 +49,7 @@ LR-spline basis functions are used
 Enabled projection(s): Continuous global L2-projection
 Problem definition:
 KirchhoffLovePlate: thickness = 1, gravity = 0
-LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 1, alpha = 0
+LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 1
 	Constraining P1 E2 in direction(s) 1
@@ -119,7 +119,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 1: (fixed)
 Parsing <kirchhofflove>
-	Material code 0: 1 0.3 1 1
+	Material code 0: 1 0.3 1
 	Point: P1 xi = 0.5 0.5 load = 1
 Parsing <postprocessing>
   Parsing <projection>
@@ -132,7 +132,7 @@ Parsing <adaptive>
 Parsing input file succeeded.
 Problem definition:
 KirchhoffLovePlate: thickness = 1, gravity = 0
-LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 1, alpha = 0
+LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 1
 	Constraining P1 E2 in direction(s) 1
@@ -199,7 +199,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 1: (fixed)
 Parsing <kirchhofflove>
-	Material code 0: 1 0.3 1 1
+	Material code 0: 1 0.3 1
 	Point: P1 xi = 0.5 0.5 load = 1
 Parsing <postprocessing>
   Parsing <projection>
@@ -212,7 +212,7 @@ Parsing <adaptive>
 Parsing input file succeeded.
 Problem definition:
 KirchhoffLovePlate: thickness = 1, gravity = 0
-LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 1, alpha = 0
+LinIsotropic: plane stress, E = 1, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 1
 	Constraining P1 E2 in direction(s) 1

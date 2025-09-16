@@ -40,7 +40,7 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 12: (fixed)
 Parsing <KirchhoffLove>
-	Material code 0: 2e+11 0.3 1 0.001
+	Material code 0: 2e+11 0.3 0.001
 	Pressure code 1000001 (expression): 1000.0\*cos(2.0\*acos(z))
 Parsing <postprocessing>
   Parsing <resultpoints>
@@ -51,7 +51,7 @@ Number of Gauss points: p+1 (p = polynomial degree of basis)
 Spline basis with C1-continuous patch interfaces is used
 Problem definition:
 KirchhoffLoveShell: thickness = 0.001, gravity = 0
-LinIsotropic: plane stress, E = 2e+11, nu = 0.3, rho = 1, alpha = 0
+LinIsotropic: plane stress, E = 2e+11, nu = 0.3, rho = 7850, alpha = 1.2e-07
 Renumbered 1056 nodes.
 Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 123123
