@@ -116,10 +116,10 @@ list(APPEND TEST_APPS LinEl)
 
 # Unit tests
 add_library(LinearElasticity STATIC ${PROJECT_SOURCE_DIR}/SIMLinEl2D.C ${PROJECT_SOURCE_DIR}/AnalyticSolutions.C)
-IFEM_add_test_app(${PROJECT_SOURCE_DIR}/Test/*.C
-                  ${PROJECT_SOURCE_DIR}/Test
-                  LinEl 0
-                  LinearElasticity Elasticity ${IFEM_LIBRARIES})
+IFEM_add_test_app(SOURCES ${PROJECT_SOURCE_DIR}/Test/*.C
+                  WORKDIR ${PROJECT_SOURCE_DIR}/Test
+                  NAME LinEl
+                  LIBRARIES LinearElasticity Elasticity ${IFEM_LIBRARIES})
 list(APPEND TEST_APPS LinEl-test)
 
 if(IFEM_COMMON_APP_BUILD)
