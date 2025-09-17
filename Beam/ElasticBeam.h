@@ -37,6 +37,11 @@ public:
   //! \brief Prints out the problem definition to the log stream.
   virtual void printLog() const;
 
+  //! \brief Parses a data section from an XML-element.
+  virtual bool parse(const tinyxml2::XMLElement* elem);
+
+  //! \brief Toggles the use of lumped mass matrix.
+  void useLumpedMass(bool lumped = true) { lumpedMass = lumped; }
   //! \brief Defines the (constant) beam stiffness.
   void setStiffness(double e, double g) { E = e; G = g; }
   //! \brief Defines the (constant) line mass.
@@ -132,6 +137,7 @@ protected:
   VecFunc*      lineLoad; //!< Time and/or space-dependent line load
   VecFunc*      cplLoad;  //!< Time and/or space-dependent moment load
 
+  bool lumpedMass; //!< If \e true, a lumped mass matrix is used
   //! If \e true, the element matrices are established in local axes
   //! and must be transformed to global axis directions before assembly
   bool inLocalAxes;

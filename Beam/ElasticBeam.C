@@ -89,6 +89,8 @@ ElasticBeam::ElasticBeam (unsigned short int n) : myType(STD), inLocalAxes(true)
   G   = 7.94e10;
   rho = 7.85e3;
 
+  lumpedMass = false;
+
   this->initPropFunc();
 }
 
@@ -116,8 +118,25 @@ void ElasticBeam::printLog () const
     static BeamProperty defProp;
     const_cast<ElasticBeam*>(this)->myProp = &defProp;
   }
+  IFEM::cout << *myProp;
 
-  IFEM::cout << *myProp << std::endl;
+  if (lumpedMass)
+    IFEM::cout <<"\n             Lumped mass formulation";
+
+  IFEM::cout << std::endl;
+}
+
+
+bool ElasticBeam::parse (const tinyxml2::XMLElement* elem)
+{
+  if (this->ElasticBase::parse(elem))
+    return true;
+  else if (strcasecmp(elem->Value(),"lumpedMass"))
+    return false;
+
+  lumpedMass = true;
+
+  return true;
 }
 
 
@@ -424,7 +443,7 @@ void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
 
 
 /*!
-  \details This matrix is taken from
+  \details The consistent mass matrix is taken from
   http://www.stanford.edu/class/aa244a/mfiles/mbeam3d.m
 */
 
@@ -436,32 +455,41 @@ void ElasticBeam::getMassMatrix (Matrix& EM, double rhoA, double Ixx,
   double AM3 = L*AM2;
 
   EM.resize(12,12,true);
-  EM( 1, 1) =  EM( 7, 7) = AM/3.0;
-  EM( 2, 2) =  EM( 8, 8) = AM*1.3/3.5 + Izz*1.2/L;
-  EM( 3, 3) =  EM( 9, 9) = AM*1.3/3.5 + Iyy*1.2/L;
-  EM( 4, 4) =  EM(10,10) = L*Ixx/3.0;
-  EM( 5, 5) =  EM(11,11) = AM3/105.0  + Iyy*L*0.4/3.0;
-  EM( 6, 6) =  EM(12,12) = AM3/105.0  + Izz*L*0.4/3.0;
+  if (lumpedMass)
+  {
+    EM(1,1) = EM(2,2) = EM(3,3) = EM(7,7) = EM(8,8) = EM(9,9) = 0.5*AM;
+    EM(4,4) = EM(10,10) = 0.5*L*Ixx;
+    EM(5,5) = EM(6,6) = EM(11,11) = EM(12,12) = AM3/420.0;
+  }
+  else // consistent mass
+  {
+    EM( 1, 1) =  EM( 7, 7) = AM/3.0;
+    EM( 2, 2) =  EM( 8, 8) = AM*1.3/3.5 + Izz*1.2/L;
+    EM( 3, 3) =  EM( 9, 9) = AM*1.3/3.5 + Iyy*1.2/L;
+    EM( 4, 4) =  EM(10,10) = L*Ixx/3.0;
+    EM( 5, 5) =  EM(11,11) = AM3/105.0  + Iyy*L*0.4/3.0;
+    EM( 6, 6) =  EM(12,12) = AM3/105.0  + Izz*L*0.4/3.0;
 
-  EM( 1, 7) =  AM/6.0;
-  EM( 2, 6) =  AM2*1.1/21.0 + Izz*0.1;
-  EM( 2, 8) =  AM *0.9/7.0  - Izz*1.2/L;
-  EM( 2,12) = -AM2*1.3/42.0 + Izz*0.1;
-  EM( 3, 5) = -AM2*1.1/21.0 - Iyy*0.1;
-  EM( 3, 9) =  AM *0.9/7.0  - Iyy*1.2/L;
-  EM( 3,11) =  AM2*1.3/42.0 - Iyy*0.1;
-  EM( 4,10) =  EM(4,4)*0.5;
-  EM( 5, 9) = -EM(3,11);
-  EM( 5,11) = -AM3/140.0    - Iyy*L/30.0;
-  EM( 6, 8) = -EM(2,12);
-  EM( 6,12) = -AM3/140.0    - Izz*L/30.0;
-  EM( 8,12) = -EM(2,6);
-  EM( 9,11) = -EM(3,5);
+    EM( 1, 7) =  AM/6.0;
+    EM( 2, 6) =  AM2*1.1/21.0 + Izz*0.1;
+    EM( 2, 8) =  AM *0.9/7.0  - Izz*1.2/L;
+    EM( 2,12) = -AM2*1.3/42.0 + Izz*0.1;
+    EM( 3, 5) = -AM2*1.1/21.0 - Iyy*0.1;
+    EM( 3, 9) =  AM *0.9/7.0  - Iyy*1.2/L;
+    EM( 3,11) =  AM2*1.3/42.0 - Iyy*0.1;
+    EM( 4,10) =  EM(4,4)*0.5;
+    EM( 5, 9) = -EM(3,11);
+    EM( 5,11) = -AM3/140.0    - Iyy*L/30.0;
+    EM( 6, 8) = -EM(2,12);
+    EM( 6,12) = -AM3/140.0    - Izz*L/30.0;
+    EM( 8,12) = -EM(2,6);
+    EM( 9,11) = -EM(3,5);
 
-  // Lower triangle from symmetry
-  for (size_t i = 2; i <= 12; i++)
-    for (size_t j = 1; j < i; j++)
-      EM(i,j) = EM(j,i);
+    // Lower triangle from symmetry
+    for (size_t i = 2; i <= 12; i++)
+      for (size_t j = 1; j < i; j++)
+        EM(i,j) = EM(j,i);
+  }
 
 #if INT_DEBUG > 1
   std::cout <<"ElasticBeam: local mass matrix:"<< EM;
@@ -563,8 +591,14 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   {
     // Evaluate the mass matrix
     this->getMassMatrix(Mm,rhoA,I_xx,I_yy,I_zz,L0);
-    if (CG_y != 0.0 || CG_z != 0.0) // Transform to neutral axis location
+    if (CG_y != 0.0 || CG_z != 0.0)
+    {
+      // Transform to neutral axis location
       eccTransform(Mm,Vec3(0.0,-CG_y,-CG_z),Vec3(0.0,-CG_y,-CG_z));
+#if INT_DEBUG > 1
+      std::cout <<"ElasticBeam: mass matrix related to neutral axis:"<< Mm;
+#endif
+    }
   }
 
   if (hasGrF)
