@@ -60,8 +60,8 @@ Number of dofs        12
 Number of unknowns    12
 12. Linear Elastic Beam solver
 Problem definition:
-ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
-             A = 0.12, Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.00126435
+ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850, A = 0.12
+             Ix = 0.004, Iy = 0.0004, Iz = 0.0036, It = 0.00126435
              Ky = 1.2, Kz = 1.2, Sy = 0, Sz = 0
 Resolving Dirichlet boundary conditions
 	Constraining P1 V2 in direction(s) 12346

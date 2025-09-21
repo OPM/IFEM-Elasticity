@@ -49,8 +49,8 @@ Parsing input file succeeded.
 Equation solver: 1
 Number of Gauss points: 1
 Problem definition:
-ElasticBeam: E = 2.1e+11, G = 8.1e+10, rho = 7850
-             A = 0.00149226, Ix = 3.37623e-06, Iy = 1.68812e-06, Iz = 1.68812e-06, It = 3.37623e-06
+ElasticBeam: E = 2.1e+11, G = 8.1e+10, rho = 7850, A = 0.0014922
+             Ix = 3.37623e-06, Iy = 1.68812e-06, Iz = 1.68812e-06, It = 3.37623e-06
              Ky = 2, Kz = 2, Sy = 0, Sz = 0
 Renumbered 10 nodes.
 Resolving Dirichlet boundary conditions

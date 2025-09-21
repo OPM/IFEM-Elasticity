@@ -51,8 +51,8 @@ Equation solver: 2
 Number of Gauss points: 1
 11. Linear Elastic Beam solver
 Problem definition:
-ElasticBeam: E = 2.05e+11, G = 7.94e+10, rho = 7850
-             A = 0.1, Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002
+ElasticBeam: E = 2.05e+11, G = 7.94e+10, rho = 7850, A = 0.1
+             Ix = 0.002, Iy = 0.001, Iz = 0.001, It = 0.002
              Ky = 0, Kz = 0, Sy = 0, Sz = 0
 Resolving Dirichlet boundary conditions
 	Constraining P1 V1 in direction(s) 1234

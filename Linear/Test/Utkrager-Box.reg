@@ -1,0 +1,125 @@
+Utkrager-Box.xinp -1D -dynamic
+
+Input file: Utkrager-Box.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Solution component output zero tolerance: 1e-06
+Using the linear dynamics simulation driver.
+Parsing input file Utkrager-Box.xinp
+Parsing <discretization>
+Parsing <beam>
+  Parsing <properties>
+	Box(200,100,10): A = 5600 I = 2.77867e+07 8.98667e+06 2.08864e+07 K = 3.5 1.55556
+    Constant beam properties:
+	Cross section area = 5600, moments of inertia = 3.67733e+07 2.77867e+07 8.98667e+06 2.08864e+07
+	Shear parameters = 0 0 3.5 1.55556
+  Parsing <material>
+	Stiffness moduli = 2e+08 7.69231e+07, mass density = 7.85e-06
+  Parsing <nodeload>
+	Node 5 dof 2 Load: 1e+09\*t
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]
+	Length = 100
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: end1 (1,1,0D)
+  Parsing <refine>
+	Refining P1 4
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123456: (fixed)
+Parsing <newmarksolver>
+	alpha1 = 0  alpha2 = 0.05
+	beta = 0.25  gamma = 0.5
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 1
+Lagrangian basis functions are used
+Problem definition:
+ElasticBeam: E = 2e+08, G = 7.69231e+07, rho = 7.85e-06, A = 5600
+             Ix = 3.67733e+07, Iy = 2.77867e+07, Iz = 8.98667e+06, It = 2.08864e+07
+             Ky = 3.5, Kz = 1.55556, Sy = 0, Sz = 0
+Newmark predictor/multicorrector: beta = 0.25 gamma = 0.5
+ using constant coefficient matrices
+ using zero acceleration predictor
+Stiffness-proportional damping (alpha2): 0.05
+11. Linear Elastic Beam solver
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 123456
+ >>> SAM model summary <<<
+Number of elements    5
+Number of nodes       6
+Number of dofs        36
+Number of unknowns    30
+  step=1  time=0.01
+  Displacement L2-norm            : 0.000175308
+               Max Y-displacement : 0.000629292
+  Velocity L2-norm                : 0.0350617
+               Max Y-velocity     : 0.125858
+  Acceleration L2-norm            : 7.01234
+               Max Y-acceleration : 25.1717
+  step=2  time=0.02
+  Displacement L2-norm            : 0.000669363
+               Max Y-displacement : 0.00240276
+  Velocity L2-norm                : 0.0637491
+               Max Y-velocity     : 0.228836
+  Acceleration L2-norm            : 1.27485
+               Max Y-acceleration : 4.57623
+  step=3  time=0.03
+  Displacement L2-norm            : 0.00142421
+               Max Y-displacement : 0.00511238
+  Velocity L2-norm                : 0.0872201
+               Max Y-velocity     : 0.313087
+  Acceleration L2-norm            : 5.96903
+               Max Y-acceleration : 21.4266
+  step=4  time=0.04
+  Displacement L2-norm            : 0.00239243
+               Max Y-displacement : 0.00858793
+  Velocity L2-norm                : 0.106424
+               Max Y-velocity     : 0.382023
+  Acceleration L2-norm            : 2.12821
+               Max Y-acceleration : 7.6395
+  step=5  time=0.05
+  Displacement L2-norm            : 0.00353523
+               Max Y-displacement : 0.0126902
+  Velocity L2-norm                : 0.122136
+               Max Y-velocity     : 0.438423
+  Acceleration L2-norm            : 5.27058
+               Max Y-acceleration : 18.9194
+  step=6  time=0.06
+  Displacement L2-norm            : 0.00482087
+               Max Y-displacement : 0.0173051
+  Velocity L2-norm                : 0.134992
+               Max Y-velocity     : 0.48457
+  Acceleration L2-norm            : 2.69943
+               Max Y-acceleration : 9.68995
+  step=7  time=0.07
+  Displacement L2-norm            : 0.00622337
+               Max Y-displacement : 0.0223396
+  Velocity L2-norm                : 0.145509
+               Max Y-velocity     : 0.522325
+  Acceleration L2-norm            : 4.80297
+               Max Y-acceleration : 17.2409
+  step=8  time=0.08
+  Displacement L2-norm            : 0.0077215
+               Max Y-displacement : 0.0277173
+  Velocity L2-norm                : 0.154115
+               Max Y-velocity     : 0.553217
+  Acceleration L2-norm            : 3.08177
+               Max Y-acceleration : 11.0624
+  step=9  time=0.09
+  Displacement L2-norm            : 0.00929786
+               Max Y-displacement : 0.0333758
+  Velocity L2-norm                : 0.161156
+               Max Y-velocity     : 0.57849
+  Acceleration L2-norm            : 4.4899
+               Max Y-acceleration : 16.1171
+  step=10  time=0.1
+  Displacement L2-norm            : 0.0109382
+               Max Y-displacement : 0.0392641
+  Velocity L2-norm                : 0.166917
+               Max Y-velocity     : 0.599171
+  Acceleration L2-norm            : 3.33767
+               Max Y-acceleration : 11.981
+  Time integration completed.

@@ -88,8 +88,8 @@ Number of constraints 156
 Number of unknowns    90
 12. Linear Elastic Beam solver
 Problem definition:
-ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850
-             A = 0.00596903, Ix = 5.40197e-05, Iy = 2.70098e-05, Iz = 2.70098e-05, It = 5.40197e-05
+ElasticBeam: E = 2.1e+11, G = 8.07692e+10, rho = 7850, A = 0.0059690
+             Ix = 5.40197e-05, Iy = 2.70098e-05, Iz = 2.70098e-05, It = 5.40197e-05
              Ky = 2, Kz = 2, Sy = 0, Sz = 0
 Resolving Dirichlet boundary conditions
 	Constraining P1 V1 in direction(s) 12345

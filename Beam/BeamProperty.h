@@ -39,11 +39,14 @@ public:
 
   //! \brief Parses beam cross section properties from an XML-element.
   void parse(const tinyxml2::XMLElement* prop);
+
   //! \brief Parses circular cross section properties from an XML-element.
-  static bool parsePipe(const tinyxml2::XMLElement* prop, double& A, double& I);
-  //! \brief Parses massive box cross section properties from an XML-element.
-  static bool parseBox(const tinyxml2::XMLElement* prop, double& A,
-                       double& Iy, double& Iz, double& It);
+  static bool parsePipe(const tinyxml2::XMLElement* prop, double& A, double& I,
+                        double* K = nullptr);
+  //! \brief Parses box cross section properties from an XML-element.
+  static bool parseBox(const tinyxml2::XMLElement* prop,
+                       double& A, double& I1, double& I2, double& J,
+                       double* K1 = nullptr, double* K2 = nullptr);
 
   //! \brief Evaluates the beam properties at the specified point \a X.
   void eval(const Vec3& X, double L, double E, double G, double rho,
@@ -107,16 +110,10 @@ public:
 
   double Sy; //!< Shear centre offset in local Y-direction
   double Sz; //!< Shear centre offset in local Z-direction
-
-  //! \brief Output stream operator.
-  friend std::ostream& operator<<(std::ostream& os, const BeamProperty& prop)
-  {
-    return os <<"\n             A = "<< prop.A
-              <<", Ix = "<< prop.Ix <<", Iy = "<< prop.Iy
-              <<", Iz = "<< prop.Iz <<", It = "<< prop.It
-              <<"\n             Ky = "<< prop.Ky <<", Kz = "<< prop.Kz
-              <<", Sy = "<< prop.Sy <<", Sz = "<< prop.Sz;
-  }
 };
+
+
+//! \brief Global output stream operator.
+std::ostream& operator<<(std::ostream& os, const BeamProperty& prop);
 
 #endif

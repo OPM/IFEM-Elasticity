@@ -14,7 +14,7 @@
 #include "BeamProperty.h"
 #include "Functions.h"
 #include "Utilities.h"
-#include "Vec3.h"
+#include "Vec3Oper.h"
 #include "IFEM.h"
 #include "tinyxml2.h"
 #include <fstream>
@@ -78,7 +78,7 @@ void BeamProperty::setConstant (const std::vector<double>& values)
 
 
 bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop,
-                              double& A, double& I)
+                              double& A, double& I, double* K)
 {
   double D, R;
   if (!utl::getAttribute(prop,"R",R))
@@ -95,6 +95,9 @@ bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop,
 
   A = M_PI*(R2-r2);
   I = M_PI*(R2*R2-r2*r2)*0.25;
+
+  if (K) *K = r2 > 0.0 ? 2.0 : 1.0/0.9;
+
   IFEM::cout <<"\tPipe("<< R <<","<< t
              <<"): A = "<< A <<" I = "<< I << std::endl;
   return true;
@@ -102,7 +105,8 @@ bool BeamProperty::parsePipe (const tinyxml2::XMLElement* prop,
 
 
 bool BeamProperty::parseBox (const tinyxml2::XMLElement* prop,
-                             double& A, double& Iy, double& Iz, double& It)
+                             double& A, double& I1, double& I2,
+                             double& J, double* K1, double* K2)
 {
   double H = 0.0;
   if (!utl::getAttribute(prop,"H",H))
@@ -112,30 +116,52 @@ bool BeamProperty::parseBox (const tinyxml2::XMLElement* prop,
   utl::getAttribute(prop,"B",B);
   IFEM::cout <<"\tBox("<< H <<","<< B;
 
-  A  = B*H;
-  Iy = A*H*H/12.0;
-  Iz = A*B*B/12.0;
-  if (H > B) std::swap(B,H);
-  It = A*H*H*(1.0 - 0.63*(H/B)*(1.0-pow(H/B,4.0)/12.0))/3.0;
-  IFEM::cout <<"): A = "<< A <<" I = "<< Iy <<" "<< Iz <<" "<< It << std::endl;
+  double t1 = 0.0;
+  if (utl::getAttribute(prop,"t",t1) || utl::getAttribute(prop,"t1",t1))
+  {
+    double t2 = t1;
+    IFEM::cout <<","<< t1;
+    if (utl::getAttribute(prop,"t2",t2))
+      IFEM::cout <<","<< t2;
 
+    double Bi = B - 2.0*t2;
+    double Hi = H - 2.0*t1;
+
+    A  = B*H - Bi*Hi;
+    I1 = (B*H*H*H - Bi*Hi*Hi*Hi)/12.0;
+    I2 = (H*B*B*B - Hi*Bi*Bi*Bi)/12.0;
+    J  = 2.0*t2*t1*pow((B-t2)*(H-t1),2.0) / (B*t2 + H*t1 - t2*t2 - t1*t1);
+    if (K1) *K1 = 0.5*A/(Bi*t1);
+    if (K2) *K2 = 0.5*A/(Hi*t2);
+  }
+  else
+  {
+    A  = B*H;
+    I1 = B*H*H*H/12.0;
+    I2 = H*B*B*B/12.0;
+    if (H > B) std::swap(B,H);
+    J  = B*H*H*H*(1.0 - 0.63*(H/B)*(1.0-pow(H/B,4.0)/12.0))/3.0;
+    if (K1) *K1 = 1.2;
+    if (K2) *K2 = 1.2;
+  }
+
+  IFEM::cout <<"): A = "<< A <<" I = "<< I1 <<" "<< I2 <<" "<< J;
+  if (K1 && K2) IFEM::cout <<" K = "<< *K1 <<" "<< *K2;
+  IFEM::cout << std::endl;
   return true;
 }
 
 
 void BeamProperty::parse (const tinyxml2::XMLElement* prop)
 {
-  if (parsePipe(prop,A,Iz))
+  if (parsePipe(prop,A,Iz,&Kz))
   {
+    Ky = Kz;
     Iy = Iz;
     It = Ix = Iz*2.0;
-    Ky = Kz = 2.0;
   }
-  else if (parseBox(prop,A,Iy,Iz,It))
-  {
+  else if (parseBox(prop,A,Iy,Iz,It,&Ky,&Kz))
     Ix = Iy + Iz;
-    Ky = Kz = 1.2;
-  }
 
   utl::getAttribute(prop,"A",A);
   utl::getAttribute(prop,"Ix",Ix);
@@ -256,7 +282,7 @@ bool BeamProperty::readCSV (const char* fileName)
 
   if (crossSections.empty()) return false;
 
-  // Lambda function to get data values for the given key
+  // Lambda function returning the cross section data values for given key.
   auto&& getValues = [&crossSections,fileName](const std::string& key)
   {
     std::map<std::string,DataLine>::const_iterator it = crossSections.find(key);
@@ -264,7 +290,8 @@ bool BeamProperty::readCSV (const char* fileName)
 
     std::cerr <<"  ** BeamProperty::readCSV: Property \""<< key
               <<"\" not found in "<< fileName << std::endl;
-    return std::vector<double>();
+    static const std::vector<double> empty;
+    return empty;
   };
 
   const std::vector<double>& xVal = getValues("x");
@@ -278,7 +305,7 @@ bool BeamProperty::readCSV (const char* fileName)
   IFEM::cout << std::endl;
 #endif
 
-  // Lambda function for defining a piece-wise linear property
+  // Lambda function creating a piece-wise linear property function.
   auto&& propertyFunc = [&xVal,getValues](const std::string& key)
   {
     const std::vector<double>& fVals = getValues(key);
@@ -356,4 +383,20 @@ void BeamProperty::eval (const Vec3& X,
 double BeamProperty::evalRho (const Vec3& X, double rho) const
 {
   return rhofunc ? (*rhofunc)(X) : rho*(Axfunc ? (*Axfunc)(X) : A);
+}
+
+
+std::ostream& operator<< (std::ostream& os, const BeamProperty& prop)
+{
+  const char* newline = "\n             ";
+
+  os <<", A = "<< prop.A
+     << newline <<"Ix = "<< prop.Ix <<", Iy = "<< prop.Iy <<", Iz = "<< prop.Iz
+     <<", It = "<< prop.It << newline <<"Ky = "<< prop.Ky <<", Kz = "<< prop.Kz
+     <<", Sy = "<< prop.Sy <<", Sz = "<< prop.Sz;
+  if (fabs(prop.phi) > 1.0e-6) os << newline <<"phi = "<< prop.phi;
+  if (!prop.ecc1.isZero()) os << newline <<"ecc1 = "<< prop.ecc1;
+  if (!prop.ecc2.isZero()) os << newline <<"ecc2 = "<< prop.ecc2;
+
+  return os;
 }
