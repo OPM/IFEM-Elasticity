@@ -22,7 +22,7 @@ ElasticBar::ElasticBar (char strm, unsigned short int nd, unsigned short int ns)
 {
   strain_meassure = strm;
 
-  nsd = nd; // Number of spatial dimenstions
+  nsd = nd; // Number of spatial dimensions
   npv = nd; // Number of primary unknowns per node
   nCS = ns; // Number of consecutive solution states in core
   nSV = ns; // Number of solution vectors in core

@@ -22,6 +22,7 @@
 #include "Vec3Oper.h"
 #include "IFEM.h"
 #include "tinyxml2.h"
+#include <array>
 
 
 namespace
@@ -79,7 +80,7 @@ namespace
 
 ElasticBeam::ElasticBeam (unsigned short int n) : myType(STD), inLocalAxes(true)
 {
-  nsd = 3; // Number of spatial dimenstions
+  nsd = 3; // Number of spatial dimensions
   npv = 6; // Number of primary unknowns per node
   nCS = n; // Number of consecutive solution states in core
   nSV = n; // Number of solution vectors in core
@@ -121,7 +122,11 @@ void ElasticBeam::printLog () const
   IFEM::cout << *myProp;
 
   if (lumpedMass)
+  {
     IFEM::cout <<"\n             Lumped mass formulation";
+    if (lumpedMass != 1)
+      IFEM::cout <<" (version "<< static_cast<int>(lumpedMass) <<")";
+  }
 
   IFEM::cout << std::endl;
 }
@@ -134,7 +139,8 @@ bool ElasticBeam::parse (const tinyxml2::XMLElement* elem)
   else if (strcasecmp(elem->Value(),"lumpedMass"))
     return false;
 
-  lumpedMass = true;
+  if (!utl::getAttribute(elem,"version",lumpedMass))
+    lumpedMass = 1;
 
   return true;
 }
@@ -437,7 +443,7 @@ void ElasticBeam::getGeometricStiffness (Matrix& EK, double N, double L,
     shearTransform(EK,Sy,Sz);
 
 #if INT_DEBUG > 1
-  std::cout <<"ElasticBeam: local geometric stiffness matrix:"<< EK;
+  std::cout <<"\nElasticBeam: local geometric stiffness matrix:"<< EK;
 #endif
 }
 
@@ -455,7 +461,7 @@ void ElasticBeam::getMassMatrix (Matrix& EM, double rhoA, double Ixx,
   double AM3 = L*AM2;
 
   EM.resize(12,12,true);
-  if (lumpedMass)
+  if (lumpedMass > 0)
   {
     EM(1,1) = EM(2,2) = EM(3,3) = EM(7,7) = EM(8,8) = EM(9,9) = 0.5*AM;
     EM(4,4) = EM(10,10) = 0.5*L*Ixx;
@@ -463,6 +469,8 @@ void ElasticBeam::getMassMatrix (Matrix& EM, double rhoA, double Ixx,
   }
   else // consistent mass
   {
+    if (lumpedMass < 0) Iyy = Izz = 0.0; // To comply with FEDEMs BEAM35 routine
+
     EM( 1, 1) =  EM( 7, 7) = AM/3.0;
     EM( 2, 2) =  EM( 8, 8) = AM*1.3/3.5 + Izz*1.2/L;
     EM( 3, 3) =  EM( 9, 9) = AM*1.3/3.5 + Iyy*1.2/L;
@@ -492,7 +500,7 @@ void ElasticBeam::getMassMatrix (Matrix& EM, double rhoA, double Ixx,
   }
 
 #if INT_DEBUG > 1
-  std::cout <<"ElasticBeam: local mass matrix:"<< EM;
+  std::cout <<"\nElasticBeam: local mass matrix:"<< EM;
 #endif
 }
 
@@ -502,17 +510,13 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
                            const Vec3& X) const
 {
   // Calculate beam element length
-  double L0 = (fe.XC[1] - fe.XC[0]).length();
+  const double L0 = (fe.XC[1] - fe.XC[0]).length();
   if (L0 <= 1.0e-8)
   {
-    std::cerr <<" *** ElasticBeam::evalInt: Zero element length "
-              << L0 << std::endl;
+    std::cerr <<" *** ElasticBeam::evalInt: Element "<< fe.iel
+              <<" has zero length "<< L0 << std::endl;
     return false;
   }
-#if INT_DEBUG > 1
-  std::cout <<"ElasticBeam: iel = "<< fe.iel <<" X = "<< X <<", L0 = "<< L0;
-#endif
-
   if (!myProp)
   {
     std::cerr <<" *** ElasticBeam::evalInt: No properties."<< std::endl;
@@ -522,55 +526,64 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
   // Evaluate beam stiffness and mass properties at this point
   double EA, EIy, EIz, GIt, Aly, Alz, ItoA;
   double rhoA, I_xx, I_yy, I_zz, CG_y, CG_z, Sy, Sz;
-  bool hasGrF = gravity.isZero() ? false : eS > 0;
+  const bool hasGrF = gravity.isZero() ? false : eS > 0;
   myProp->eval(X, L0, E, G, rho, hasGrF, eM > 0,
                EA, EIy, EIz, GIt, Aly, Alz,
                rhoA, CG_y, CG_z, I_xx, I_yy, I_zz, ItoA, Sy, Sz);
 #if INT_DEBUG > 1
-  std::cout <<"\n             EA = "<< EA
+  std::cout <<"ElasticBeam: iel = "<< fe.iel <<" X = "<< X <<", L0 = "<< L0
+            <<"\n             EA = "<< EA
             <<" EI = "<< EIy <<" "<< EIz <<" GIt = "<< GIt
-            <<", Alpha_y = "<< Aly <<" Alpha_z = "<< Alz;
-  std::cout <<", rho*A = "<< rhoA <<" rho*I = "<< I_xx <<" "<< I_yy <<" "<< I_zz
+            <<", Alpha_y = "<< Aly <<" Alpha_z = "<< Alz
+            <<", rho*A = "<< rhoA <<" rho*I = "<< I_xx <<" "<< I_yy <<" "<< I_zz
             <<", CoG = "<< CG_y <<" "<< CG_z
             <<", Sy = "<< Sy <<" Sz = "<< Sz << std::endl;
 #endif
 
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
-  Matrix tmpEK;
 
   if (eKm) // Evaluate the material stiffness matrix
     this->getMaterialStiffness(elMat.A[eKm-1],L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
 
-  const Vector& eV = elmInt.vec.front();
-  Vector v;
+  const Vector& eVg = elmInt.vec.front(); // global element displacement vector
+  const bool hasDis = eVg.normInf() > 1.0e-16*L0;
+
+  Vector eVl;
+  Matrix tmpMat;
   double N = 0.0;
 
-  if ((iS || eKg) && eV.normInf() > 1.0e-16*L0)
+  if ((iS || eKg) && hasDis)
   {
-    v = eV; // Transform the element displacement vector to local coordinates
-    if (!utl::transform(v,this->getLocalAxes(elmInt),true))
-      return false;
-
+    // Establish the deformed configuration
 #if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: dL = "<< v(7)-v(1) <<" L = "<< L0 + v(7)-v(1)
-              <<"\nElasticBeam: v"<< v;
+    double old_tol = utl::zero_print_tol;
+    utl::zero_print_tol = 1.0e-15;
+    std::cout <<"\nElasticBeam: v (global)"<< eVg;
 #endif
-    if (eKg) N = EA*(v(7)-v(1))/L0; // Axial force
+    eVl = eVg; // Transform the element displacement vector to local coordinates
+    if (!utl::transform(eVl,this->getLocalAxes(elmInt),true))
+      return false;
+    const double dL = eVl(7) - eVl(1);
+#if INT_DEBUG > 1
+    std::cout <<"ElasticBeam: v (local)"<< eVl
+              <<"ElasticBeam: dL = "<< dL <<" L = "<< L0+dL << std::endl;
+    utl::zero_print_tol = old_tol;
+#endif
+    if (eKg) N = EA * dL/L0; // Axial force
   }
 
-  bool hasIntS = v.empty() ? false : iS > 0;
+  if (iS) elMat.b[iS-1].fill(0.0);
+  const bool hasIntS = eVl.empty() ? false : iS > 0;
   if (hasIntS)
   {
-    v *= -1.0;
-
     // Calculate internal forces, S_int = Km*v
-    if (!eKm) this->getMaterialStiffness(tmpEK,L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
-    Matrix& Km = eKm ? elMat.A[eKm-1] : tmpEK;
-    if (!Km.multiply(v,elMat.b[iS-1]))
+    Matrix& Km = eKm ? elMat.A[eKm-1] : tmpMat;
+    if (!eKm) this->getMaterialStiffness(Km,L0,EA,GIt,EIy,EIz,Aly,Alz,Sy,Sz);
+    if (!Km.multiply(eVl,elMat.b[iS-1],false,-1))
       return false;
 
 #if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: -S_int"<< elMat.b[iS-1];
+    elMat.printVec(std::cout,iS-1,"\nElasticBeam: -S_int");
 #endif
   }
 
@@ -581,12 +594,12 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 #endif
 
     // Evaluate the geometric stiffness matrix
-    Matrix& Kg = eKg == eKm ? tmpEK : elMat.A[eKg-1];
+    Matrix& Kg = eKg == eKm ? tmpMat : elMat.A[eKg-1];
     this->getGeometricStiffness(Kg,N,L0,EIy,EIz,Aly,Alz,ItoA,Sy,Sz);
     if (eKg == eKm) elMat.A[eKm-1].add(Kg);
   }
 
-  Matrix& Mm = eM ? elMat.A[eM-1] : tmpEK;
+  Matrix& Mm = eM ? elMat.A[eM-1] : tmpMat;
   if (eM || hasGrF)
   {
     // Evaluate the mass matrix
@@ -606,13 +619,15 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
     // Calculate external (gravitation) forces, S_ext = M*g
     Vec3 gvec = gravity*this->getLocalAxes(elmInt);
     Vector& S = elMat.b[eS-1];
-    if (!hasIntS) S.fill(0.0);
+    if (eS != iS) S.fill(0.0);
     for (size_t i = 1; i <= S.size(); i++)
       for (size_t j = 0; j < Mm.cols(); j += npv)
         S(i) += Mm(i,j+1)*gvec.x + Mm(i,j+2)*gvec.y + Mm(i,j+3)*gvec.z;
 
 #if INT_DEBUG > 1
-    std::cout <<"ElasticBeam: "<< (eS == iS ? "S_ext - S_int" : "S_ext") << S;
+    std::string label("\nElasticBeam: S_ext");
+    if (eS == iS && hasIntS) label.append(" - S_int");
+    elMat.printVec(std::cout,eS-1,label.c_str());
 #endif
   }
 
@@ -629,6 +644,7 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
                                    const TimeDomain& time, size_t)
 {
+  const bool hasEcc = !myProp->ecc1.isZero() || !myProp->ecc2.isZero();
   ElmMats& elMat = static_cast<ElmMats&>(elmInt);
 
   if (inLocalAxes)
@@ -636,26 +652,54 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
     const Matrix& Tlg = this->getLocalAxes(elmInt);
 
     // Transform the element matrices to global coordinates
+    int imat = 0;
     for (Matrix& A : elMat.A)
-      if (!utl::transform(A,Tlg))
+      if (++imat == eM && lumpedMass == 2)
+        for (size_t k = 3; k < A.rows(); k += 3)
+        {
+          // Special transformation when lumped mass matrix
+          std::array<double,3> tmp{ A(k+1,k+1), A(k+2,k+2), A(k+3,k+3) };
+          A(k+1,k+1) = A(k+2,k+2) = A(k+3,k+3) = 0.0;
+          for (int i = 1; i <= 3; i++)
+            for (int j = 1; j <= 3; j++)
+              A(k+i,k+i) += tmp[j-1]*Tlg(i,j)*Tlg(i,j);
+        }
+      else if (!utl::transform(A,Tlg))
         return false;
+
+#if INT_DEBUG > 1
+    for (size_t i = 0; i < elMat.A.size(); i++)
+      elMat.printMat(std::cout,i,"\nElasticBeam: global element matrix");
+#endif
 
     // Transform the element force vectors to global coordinates
     for (Vector& b : elMat.b)
       if (!utl::transform(b,Tlg))
         return false;
-  }
 
-  const Vec3& ecc1 = myProp->ecc1; // End 1 offset in global coordinates
-  const Vec3& ecc2 = myProp->ecc2; // End 2 offset in global coordinates
+    if (hasEcc)
+    {
+      std::array<Vec3,2> ecc{ myProp->ecc1, myProp->ecc2 };
+      // Transform all element matrices from eccentric end points to grid points
+      int imat = 0;
+      for (Matrix& A : elMat.A)
+        if (++imat == eM && lumpedMass == 2)
+          for (int i = 0, j = 0; i < 2; i++, j += 6)
+          {
+            // Special transformation when lumped mass matrix
+            double x = ecc[i].x;
+            double y = ecc[i].y;
+            double z = ecc[i].z;
+            A(j+4,j+4) += A(j+3,j+3)*y*y + A(j+2,j+2)*z*z;
+            A(j+5,j+5) += A(j+3,j+3)*x*x + A(j+1,j+1)*z*z;
+            A(j+6,j+6) += A(j+2,j+2)*x*x + A(j+1,j+1)*y*y;
+          }
+        else
+          eccTransform(A,ecc[0],ecc[1]);
 
-  if (!ecc1.isZero() || !ecc2.isZero())
-  {
-    // Transform all element matrices from eccentric end points to grid points
-    for (Matrix& A : elMat.A)
-      eccTransform(A,ecc1,ecc2);
-    for (Vector& b : elMat.b)
-      eccTransform(b,ecc1,ecc2);
+      for (Vector& b : elMat.b)
+        eccTransform(b,ecc[0],ecc[1]);
+    }
   }
 
   return this->ElasticBase::finalizeElement(elmInt,time);

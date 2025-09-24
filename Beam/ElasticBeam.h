@@ -41,7 +41,7 @@ public:
   virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Toggles the use of lumped mass matrix.
-  void useLumpedMass(bool lumped = true) { lumpedMass = lumped; }
+  void useLumpedMass(char lumped = true) { lumpedMass = lumped; }
   //! \brief Defines the (constant) beam stiffness.
   void setStiffness(double e, double g) { E = e; G = g; }
   //! \brief Defines the (constant) line mass.
@@ -137,10 +137,15 @@ protected:
   VecFunc*      lineLoad; //!< Time and/or space-dependent line load
   VecFunc*      cplLoad;  //!< Time and/or space-dependent moment load
 
-  bool lumpedMass; //!< If \e true, a lumped mass matrix is used
+  //! - If negative, use consistent mass but ignore the Iyy and Izz inertias.
+  //! - If zero, use consistent mass including the Iyy and Izz inertia terms.
+  //! - If 1, use lumped mass matrix.
+  //! - If 2, use lumped mass with a special local-to-global transformation.
+  char lumpedMass; //!< \brief Mass matrix formulation option.
+
   //! If \e true, the element matrices are established in local axes
-  //! and must be transformed to global axis directions before assembly
-  bool inLocalAxes;
+  //! and must be transformed to global axis directions before assembly.
+  bool inLocalAxes; //!< \brief Local-to-global transformation option.
 };
 
 

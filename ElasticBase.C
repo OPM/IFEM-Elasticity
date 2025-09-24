@@ -66,7 +66,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
       eS  = iS  = 1;
       if (intPrm[3] > 0.0)
         eKg = 0; // Linear analysis, no geometric stiffness
-      matNames = { mNames[0] };
+      matNames = { mNames[1] };
       vecNames = { vNames[1], vNames[2] };
       break;
 
@@ -114,6 +114,7 @@ void ElasticBase::setMode (SIM::SolutionMode mode)
         eKm = 3;
         if (intPrm[3] == 0.0) eKg = 3;
         if (intPrm[4] == 1.0) eS = 3;
+        matNames = { mNames[0], mNames[2], mNames[1] };
         vecNames = { vNames[1], vNames[4], vNames[0] };
       }
       else
