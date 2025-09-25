@@ -19,7 +19,7 @@
 #include "AlgEqSystem.h"
 #include "ASMs2D.h"
 #ifdef HAS_LRSPLINE
-#include "ASMu2D.h"
+#include "LR/ASMu2D.h"
 #endif
 #include "SAM.h"
 #include "Functions.h"
