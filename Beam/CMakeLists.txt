@@ -1,14 +1,27 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.22)
 
-project(Beam)
+project(Beam LANGUAGES C CXX)
 
-include_directories(${PROJECT_SOURCE_DIR}/..)
+ifem_add_library(
+  NAME
+    Beam
+  SOURCES
+    BeamProperty.C
+    ElasticBar.C
+    ElasticBeam.C
+    ElasticCable.C
+    SIMElastic1D.C
+    SIMElasticBar.C
+  HEADERS
+    BeamProperty.h
+    ElasticBar.h
+    ElasticBeam.h
+    ElasticCable.h
+    SIMElastic1D.h
+    SIMElasticBar.h
+    SIMLinElBeam.h
+  LIBRARIES
+    Elasticity
+)
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-
-file(GLOB Beam_SOURCES *.C)
-file(GLOB Beam_HEADERS *.h)
-add_library(Beam STATIC ${Beam_SOURCES})
-
-list(APPEND CHECK_SOURCES ${Beam_SOURCES})
-set(CHECK_SOURCES ${CHECK_SOURCES} PARENT_SCOPE)
+target_include_directories(Beam INTERFACE ${PROJECT_SOURCE_DIR})

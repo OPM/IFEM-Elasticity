@@ -1,12 +1,40 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.22)
 
-project(Elasticity)
+project(Elasticity LANGUAGES C CXX)
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-
-file(GLOB El_SOURCES *.C)
-file(GLOB El_HEADERS *.h)
-add_library(Elasticity STATIC ${El_SOURCES})
-
-list(APPEND CHECK_SOURCES ${El_SOURCES})
-set(CHECK_SOURCES ${CHECK_SOURCES} PARENT_SCOPE)
+ifem_add_library(
+  NAME
+    Elasticity
+  SOURCES
+    ArcLengthDriver.C
+    ElasticBase.C
+    ElasticityArgs.C
+    Elasticity.C
+    IsotropicTextureMat.C
+    KirchhoffLove.C
+    LinearElasticity.C
+    LinIsotropic.C
+    LocalSystems.C
+    NonlinearDriver.C
+    SIMElasticity.C
+    SIMElasticityWrap.C
+    SIMRigid.C
+  HEADERS
+    ArcLengthDriver.h
+    ElasticBase.h
+    ElasticityArgs.h
+    Elasticity.h
+    ElasticityUtils.h
+    IsotropicTextureMat.h
+    KirchhoffLove.h
+    LinearElasticity.h
+    LinIsotropic.h
+    MaterialBase.h
+    NewmarkDriver.h
+    NonlinearDriver.h
+    SIMElasticity.h
+    SIMElasticityWrap.h
+    SIMRigid.h
+  LIBRARIES
+    IFEM
+)
