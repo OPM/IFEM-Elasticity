@@ -547,12 +547,20 @@ bool ElasticBeam::evalInt (LocalIntegral& elmInt,
 
   const Vector& eVg = elmInt.vec.front(); // global element displacement vector
   const bool hasDis = eVg.normInf() > 1.0e-16*L0;
+  const bool hasEcc = !myProp->ecc1.isZero() || !myProp->ecc2.isZero();
+
+  if (eKg && hasDis && hasEcc)
+  {
+    std::cerr <<" *** ElasticBeam::evalInt: Geometric stiffness for eccentric"
+              <<" beam element currently not supported."<< std::endl;
+    return false;
+  }
 
   Vector eVl;
   Matrix tmpMat;
   double N = 0.0;
 
-  if ((iS || eKg) && hasDis)
+  if ((iS || eKg) && hasDis && !hasEcc)
   {
     // Establish the deformed configuration
 #if INT_DEBUG > 1
@@ -700,6 +708,27 @@ bool ElasticBeam::finalizeElement (LocalIntegral& elmInt,
       for (Vector& b : elMat.b)
         eccTransform(b,ecc[0],ecc[1]);
     }
+  }
+
+  const Vector& eVg = elmInt.vec.front(); // global element displacement vector
+  if (iS && hasEcc && eVg.normInf() > 0.0)
+  {
+    if (eKm < 1 || eKg == eKm)
+    {
+      std::cerr <<" *** ElasticBeam::finalizeElement:"
+                <<" No material stiffness matrix."<< std::endl;
+      return false;
+    }
+
+    // Calculate internal forces, S_int = Km*v
+    if (!elMat.A[eKm-1].multiply(eVg,elMat.b[iS-1],false,-1))
+      return false;
+
+#if INT_DEBUG > 1
+    std::string label("\nElasticBeam: ");
+    label.append(eS ? "S_ext - S_int" : "-S_int");
+    elMat.printVec(std::cout,iS-1,label.c_str());
+#endif
   }
 
   return this->ElasticBase::finalizeElement(elmInt,time);

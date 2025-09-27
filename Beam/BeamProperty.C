@@ -178,6 +178,12 @@ void BeamProperty::parse (const tinyxml2::XMLElement* prop)
              <<"\n\tShear parameters = "<< Sy <<" "<< Sz <<" "<< Ky <<" "<< Kz
              << std::endl;
 
+  if (utl::getAttribute(prop,"Ecc1",ecc1))
+    IFEM::cout <<"\tEccentricity at end 1 = "<< ecc1 << std::endl;
+
+  if (utl::getAttribute(prop,"Ecc2",ecc2))
+    IFEM::cout <<"\tEccentricity at end 2 = "<< ecc2 << std::endl;
+
   if (prop->FirstChild() && this->readCSV(prop->FirstChild()->Value()))
     return; // Property functions are defined from a csv data file
 
