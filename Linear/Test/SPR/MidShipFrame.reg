@@ -168,7 +168,7 @@ Assembling interior matrix terms for P7
 Assembling interior matrix terms for P8
 Assembling interior matrix terms for P9
 Assembling interior matrix terms for P10
-Reaction force     : -2.57405e+06 .*e-06
+Reaction force     : -2.57405e+06 .*e-0[56]
 Projecting secondary solution ...
 	Continuous global L2-projection
 Integrating solution norms (FE solution) ...
