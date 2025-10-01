@@ -59,8 +59,8 @@ protected:
   //! \param[in] iStep Load case identifier
   //! \param nBlock Running result block counter
   //! \param[in] idBlock Starting value of result block numbering
-  virtual bool writeGlvS2(const Vector&, int iStep, int& nBlock,
-                          double, int idBlock, int);
+  virtual int writeGlvS2(const Vector&, int iStep, int& nBlock,
+                         double, int idBlock, int);
 
 private:
   //! \brief Struct representing a FE substructure.

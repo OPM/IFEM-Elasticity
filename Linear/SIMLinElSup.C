@@ -226,14 +226,14 @@ int SIMLinElSup::writeGlvS1 (const Vector& psol, int iStep, int& nBlock,
   it does not need access to the global primary solution vector.
 */
 
-bool SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
-                              double, int idBlock, int)
+int SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
+                             double, int idBlock, int)
 {
   if (adm.dd.isPartitioned() && adm.getProcId() != 0)
-    return true;
+    return 0;
 
   VTF* vtf = this->getVTF();
-  if (!vtf) return false;
+  if (!vtf) return -99;
 
   IntegrandBase* problem = this->getMyProblem();
 
@@ -257,7 +257,7 @@ bool SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
         LocalSystem::patch = pch->idx+1;
         supsim->setPatchMaterial(pch->idx);
         if (!pch->evalSolution(subfield, *problem, supsim->opt.nViz))
-          return false;
+          return -1;
 
         if (field.empty())
           field = subfield;
@@ -275,7 +275,7 @@ bool SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
 
     // Output as scalar fields
     if (!writeFields(field, ++geomID, nBlock, sID, vtf))
-      return false;
+      return -3;
   }
 
   // Write result block identifications
@@ -287,5 +287,5 @@ bool SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
     ok = vtf->writeSblk(sID[i], problem->getField2Name(i).c_str(),
                         idBlock++, iStep);
 
-  return ok;
+  return ok ? idBlock : -5;
 }
