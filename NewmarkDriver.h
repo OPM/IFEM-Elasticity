@@ -140,7 +140,16 @@ public:
 
         // Save solution variables to VTF
         if (Newmark::opt.format >= 0)
-          status += this->saveStep(iStep,doProject ? pi->second : "");
+        {
+          if (!this->saveStep(iStep,params))
+            status += 11;
+
+          else if (doProject)
+            if (!Newmark::model.writeGlvP(proSol.front(),iStep,
+                                          Newmark::nBlock,110,
+                                          pi->second.c_str()))
+              status += 14;
+        }
 
         // Save solution variables to HDF5
         if (writer && !writer->dumpTimeLevel(&params))
@@ -174,15 +183,13 @@ public:
     return status;
   }
 
-  //! \brief Serialize solution state for restarting purposes.
-  //! \param data Container for serialized data
+  //! \brief Serializes the solution state for restarting purposes.
   virtual bool serialize(HDF5Restart::SerializeData& data) const
   {
     return params.serialize(data) && this->Newmark::serialize(data);
   }
 
-  //! \brief Set solution from a serialized state.
-  //! \param[in] data Container for serialized data
+  //! \brief Restores the solution from a serialized state.
   virtual bool deSerialize(const HDF5Restart::SerializeData& data)
   {
     return params.deSerialize(data) && this->Newmark::deSerialize(data);
@@ -199,38 +206,6 @@ public:
 
   //! \brief Overrides the stop time that was read from the input file.
   void setStopTime(double t) { params.stopTime = t; }
-
-protected:
-  using Newmark::saveStep;
-  //! \brief Saves the converged solution to VTF file.
-  int saveStep(int iStep, const std::string& prefix)
-  {
-    if (!this->saveStep(iStep,params.time.t))
-      return 11;
-
-    int ip = this->numSolution() - 2;
-    if (ip > 0)
-    {
-      int nf = Newmark::model.getNoFields();
-      if (!Newmark::model.writeGlvS1(this->realSolution(ip),iStep,
-                                     Newmark::nBlock,params.time.t,
-                                     "velocity",40,10+nf))
-        return 12;
-
-      if (!Newmark::model.writeGlvS1(this->realSolution(++ip),iStep,
-                                     Newmark::nBlock,params.time.t,
-                                     "acceleration",50,10+nf))
-        return 13;
-    }
-
-    if (!proSol.empty())
-      if (!Newmark::model.writeGlvP(proSol.front(),iStep,
-                                    Newmark::nBlock,110,
-                                    prefix.c_str()))
-        return 14;
-
-    return 0;
-  }
 
 private:
   std::string rptFile;   //!< Name of output file for point/line results
