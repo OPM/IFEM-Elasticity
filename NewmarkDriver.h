@@ -140,7 +140,7 @@ public:
 
         // Save solution variables to VTF
         if (Newmark::opt.format >= 0)
-          status += this->saveStep(iStep,pi->second);
+          status += this->saveStep(iStep,doProject ? pi->second : "");
 
         // Save solution variables to HDF5
         if (writer && !writer->dumpTimeLevel(&params))
