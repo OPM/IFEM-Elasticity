@@ -229,8 +229,21 @@ ifem_add_regression_test(
     Utkrager-dyn.reg
     Utkrager-Ecc.reg
     Utkrager-Pipe.reg
+    Utkrager-dump.reg
+    Utkrager-load.reg
     WedgeStretch.reg
 )
+
+if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
+  set_tests_properties(LinEl+Utkrager-load.reg
+                       PROPERTIES DEPENDS
+                       LinEl+Utkrager-dump.reg)
+
+  set_tests_properties(LinEl+Utkrager-dump.reg
+                       PROPERTIES FIXTURES_SETUP Dump)
+  set_tests_properties(LinEl+Utkrager-load.reg
+                       PROPERTIES FIXTURES_REQUIRED Dump)
+endif()
 
 ifem_add_regression_test(
   TARGET

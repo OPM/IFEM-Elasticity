@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Basic 1D elastic beam test. Cantilever beam with tip shear load. !-->
+
+<simulation>
+
+  <geometry>
+    <refine patch="1" u="4"/>
+    <topologysets>
+      <set name="end1" type="vertex">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="end1" comp="123456"/>
+  </boundaryconditions>
+
+  <beam>
+    <material E="2.05e11" G="8.1e10"/>
+    <properties Ky="1.2" Kz="1.2"/>
+    <nodeload node="6" dof="2" type="sin">1.570796327 0.0 -1.0e6</nodeload>
+  </beam>
+
+  <linearsolver class="dense">
+    <storeFactor write="true">Utkrager-Nmat.dat</storeFactor>
+  </linearsolver>
+
+  <newmarksolver alpha2="0.003">
+    <nupdate>0</nupdate>
+    <timestepping>
+      <step start="0.0" end="2.0">0.05</step>
+    </timestepping>
+  </newmarksolver>
+
+</simulation>
