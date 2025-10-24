@@ -147,13 +147,12 @@ static bool writeFields (const Matrix& field, int geomID,
 int SIMLinElSup::writeGlvS1 (const Vector& psol, int iStep, int& nBlock,
                              double, const char*, int idBlock, int, bool)
 {
-  if (adm.dd.isPartitioned() && adm.getProcId() != 0)
-    return 0;
-  else if (psol.empty())
-    return 0;
+  if (psol.empty())
+    return idBlock;
 
   VTF* vtf = this->getVTF();
-  if (!vtf) return -99;
+  if (!vtf)
+    return idBlock;
 
   // Recover internal displacements for all superelements
   if (!this->recoverInternalDOFs(psol))
@@ -229,11 +228,9 @@ int SIMLinElSup::writeGlvS1 (const Vector& psol, int iStep, int& nBlock,
 int SIMLinElSup::writeGlvS2 (const Vector&, int iStep, int& nBlock,
                              double, int idBlock, int)
 {
-  if (adm.dd.isPartitioned() && adm.getProcId() != 0)
-    return 0;
-
   VTF* vtf = this->getVTF();
-  if (!vtf) return -99;
+  if (!vtf)
+    return idBlock;
 
   IntegrandBase* problem = this->getMyProblem();
 
