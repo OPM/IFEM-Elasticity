@@ -16,7 +16,7 @@
 #include "NewmarkSIM.h"
 #include "NewmarkDriver.h"
 #include "ElasticityUtils.h"
-#include "DataExporter.h"
+#include "HDF5Restart.h"
 #include "HDF5Writer.h"
 
 
@@ -33,6 +33,8 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
   // Let the stop time specified on command-line override input file setting
   if (Elastic::time > 1.0)
     simulator.setStopTime(Elastic::time);
+  else if (Elastic::time < 0.0)
+    simulator.setStopTime(-Elastic::time);
 
   model->opt.print(IFEM::cout,true) << std::endl;
   simulator.printProblem(true);
@@ -53,8 +55,13 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
   if (!simulator.initEqSystem(false))
     return 3;
 
+  // Load solution state from serialized data in case of restart
+  if (!simulator.checkForRestart())
+    return 4;
+
   // Open HDF5 result database, if requested
   DataExporter* writer = nullptr;
+  HDF5Restart* restart = nullptr;
   if (model->opt.dumpHDF5(infile))
   {
     const std::string& fileName = model->opt.hdf5;
@@ -75,8 +82,21 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
     writer->setFieldValue("a",model,&simulator.getAcceleration());
   }
 
+  if (model->opt.restartInc > 0)
+  {
+    std::string hdf5file(infile);
+    if (!model->opt.hdf5.empty())
+      hdf5file = model->opt.hdf5 + "_restart";
+    else
+      hdf5file.replace(hdf5file.find_last_of('.'),std::string::npos,"_restart");
+    IFEM::cout <<"\nWriting HDF5 file "<< hdf5file <<".hdf5"<< std::endl;
+    restart = new HDF5Restart(hdf5file,model->getProcessAdm(),
+                              model->opt.restartInc);
+  }
+
   // Now invoke the main solution driver
-  int status = simulator.solveProblem(writer,nullptr,zero_tol,outPrec);
+  int status = simulator.solveProblem(writer,restart,zero_tol,outPrec);
   delete writer;
+  delete restart;
   return status;
 }
