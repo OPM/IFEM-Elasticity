@@ -158,11 +158,20 @@ bool SIMElasticBar::parse (const tinyxml2::XMLElement* elem)
   if (!bar && !beam)
     return false;
 
+  // List of tags parsed by this class
+  static const std::set<std::string> myTags = {
+    "geometry", "boundaryconditions", // these are parsed by SIMinput, but...
+    "material", "properties", "pointload", "nodeload",
+    "Zdirection", "zdirection", "twist"
+  };
+
   bool ok = true;
   const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child && ok; child = child->NextSiblingElement())
   {
-    IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
+    if (myTags.find(child->Value()) != myTags.end())
+      IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
+
     if (!strcasecmp(child->Value(),"material"))
     {
       double E = 2.1e11, rho = 7.85e3;

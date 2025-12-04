@@ -139,6 +139,7 @@ bool ElasticBeam::parse (const tinyxml2::XMLElement* elem)
   else if (strcasecmp(elem->Value(),"lumpedMass"))
     return false;
 
+  IFEM::cout <<"  Parsing <"<< elem->Value() <<">"<< std::endl;
   if (!utl::getAttribute(elem,"version",lumpedMass))
     lumpedMass = 1;
 
@@ -157,20 +158,25 @@ void ElasticBeam::setBeamLoad (VecFunc* load, bool cpl)
 
 void ElasticBeam::parseBeamLoad (const tinyxml2::XMLElement* load)
 {
+  bool lLoad = false;
+  if (!strcasecmp(load->Value(),"lineload"))
+    lLoad = true;
+  else if (strcasecmp(load->Value(),"cplload"))
+    return;
+
+  IFEM::cout <<"  Parsing <"<< load->Value() <<">"<< std::endl;
   std::string type;
   utl::getAttribute(load,"type",type,true);
-  if (!strcasecmp(load->Value(),"lineload"))
+  if (lLoad)
   {
     IFEM::cout <<"\tDistributed load";
     lineLoad = utl::parseVecFunc(load->FirstChild()->Value(),type);
   }
-  else if (!strcasecmp(load->Value(),"cplload"))
+  else
   {
     IFEM::cout <<"\tDistributed moment load";
     cplLoad = utl::parseVecFunc(load->FirstChild()->Value(),type);
   }
-  else
-    return;
 
   IFEM::cout << std::endl;
 }
