@@ -356,8 +356,9 @@ size_t KirchhoffLovePlate::getNoFields (int fld) const
     return nsd;
 
   size_t n = nsd*(nsd+1)/2; // bending moments
-  if (version == 1 && m_mode >= SIM::RECOVERY)
-    n += nsd; // shear forces
+  if (version == 1)
+    if (m_mode == SIM::INIT || m_mode >= SIM::RECOVERY)
+      n += nsd; // shear forces
 
   return n;
 }
