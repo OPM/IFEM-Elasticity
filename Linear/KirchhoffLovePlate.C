@@ -51,9 +51,9 @@ void KirchhoffLovePlate::printLog () const
 }
 
 
-double KirchhoffLovePlate::getStiffness (const Vec3& X) const
+double KirchhoffLovePlate::getStiffness (const Vec3& X, double age) const
 {
-  return material->getPlateStiffness(X,(*thickness)(X));
+  return material->getPlateStiffness(X,(*thickness)(X),age);
 }
 
 
@@ -164,7 +164,7 @@ bool KirchhoffLovePlate::evalK2 (Matrix& EK,
                                  const FiniteElement& fe, const Vec3& X) const
 {
   // Evaluate the scaled plate stiffness at this point
-  double DdJxW = material->getPlateStiffness(X,(*thickness)(X))*fe.detJxW;
+  double DdJxW = material->getPlateStiffness(X,(*thickness)(X),fe.age)*fe.detJxW;
 
   // Integrate the stiffness matrix
   Vector d2NdX2 = fe.d2NdX2.getColumn(1,1);
@@ -301,7 +301,7 @@ bool KirchhoffLovePlate::evalSol (Vector& s, const Vectors& eV,
       for (unsigned char c = 1; c <= nsd; c++)
         for (unsigned char d = 1; d <= nsd; d++)
           q(d) += eV.front().dot(fe.d3NdX3.getColumn(c,c,d));
-      q *= -this->getStiffness(X);
+      q *= -this->getStiffness(X,fe.age);
 
       if (toLocal && locSys && nsd == 2)
       {
@@ -457,7 +457,7 @@ bool KirchhoffLovePlateNorm::evalInt (LocalIntegral& elmInt,
 
   // Evaluate the body load
   double p = problem.getPressure(X).z;
-  if (version > 1) p /= problem.getStiffness(X);
+  if (version > 1) p /= problem.getStiffness(X,fe.age);
   // Evaluate the displacement field
   double w = pnorm.vec.front().dot(fe.N);
   // Integrate the external energy (p,w^h)

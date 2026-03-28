@@ -748,7 +748,7 @@ bool Elasticity::evalSol2 (Vector& s, const Vectors& eV,
 
   // Additional result variables?
   for (int i = 1; i <= material->getNoIntVariables(); i++)
-    s.push_back(material->getInternalVariable(i,nullptr,fe.iGP));
+    s.push_back(material->getInternalVariable(i,fe.iGP));
 
   if (!calcMaxVal || maxVal.empty())
     return true; // Avoid thread sync if no max value calculation
@@ -977,11 +977,7 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
   else if (i == nStress)
     name += "von Mises " + std::string(wantStrain ? "strain" : "stress");
   else if ((int)(i -= nStress) <= material->getNoIntVariables())
-  {
-    char varName[32];
-    material->getInternalVariable(i,varName);
-    name += varName;
-  }
+    name += material->getInternalLabel(i);
   else if ((i -= material->getNoIntVariables()) <= nsd)
     name += "P" + std::to_string(i);
 

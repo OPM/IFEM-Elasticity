@@ -26,7 +26,7 @@ LinIsotropic::LinIsotropic (bool ps, bool ax) : planeStress(ps), axiSymmetry(ax)
 {
   Efunc  = nuFunc = rhoFunc = nullptr;
   Efield = nullptr;
-  Cpfunc = Afunc = condFunc = nullptr;
+  Eaging = Cpfunc = Afunc = condFunc = nullptr;
 
   // Default material properties - typical values for steel (SI units)
   Emod = 2.05e11;
@@ -41,7 +41,7 @@ LinIsotropic::LinIsotropic (RealFunc* E, double v, double den, bool ps, bool ax)
   : Efunc(E), Efield(nullptr), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
   nuFunc = rhoFunc = nullptr;
-  Cpfunc = Afunc = condFunc = nullptr;
+  Eaging = Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
   alpha = 1.2e-7;
@@ -53,7 +53,7 @@ LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
   : Efunc(nullptr), Efield(E), nu(v), rho(den), planeStress(ps), axiSymmetry(ax)
 {
   nuFunc = rhoFunc = nullptr;
-  Cpfunc = Afunc = condFunc = nullptr;
+  Eaging = Cpfunc = Afunc = condFunc = nullptr;
 
   Emod = -1.0; // Should not be referenced
   alpha = 1.2e-7;
@@ -63,12 +63,13 @@ LinIsotropic::LinIsotropic (Field* E, double v, double den, bool ps, bool ax)
 
 LinIsotropic::~LinIsotropic ()
 {
-  delete Efield;
   delete Efunc;
+  delete Eaging;
+  delete Efield;
   delete nuFunc;
   delete rhoFunc;
-  delete Afunc;
   delete Cpfunc;
+  delete Afunc;
   delete condFunc;
 }
 
@@ -111,8 +112,13 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
   };
 
   for (; child; child = child->NextSiblingElement())
-    if (Emod >= 0.0 && !Efunc && !strcasecmp(child->Value(),"stiffness"))
-      Efunc = parseSpatialFunc("Stiffness");
+    if (!strcasecmp(child->Value(),"stiffness"))
+    {
+      if (bool aging = false; utl::getAttribute(child,"aging",aging) && aging)
+        Eaging = parseScalarFunc("Stiffness age");
+      else if (Emod >= 0.0 && !Efunc)
+        Efunc = parseSpatialFunc("Stiffness");
+    }
     else if (!strcasecmp(child->Value(),"poisson"))
       nuFunc = parseSpatialFunc("Poisson's ratio");
     else if (!strcasecmp(child->Value(),"density"))
@@ -124,11 +130,11 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
     else if (!strcasecmp(child->Value(),"conductivity"))
       condFunc = parseScalarFunc("Conductivity");
 
-  if (Efunc || nuFunc || rhoFunc || Afunc || Cpfunc || condFunc)
+  if (Efunc || Eaging || nuFunc || rhoFunc || Afunc || Cpfunc || condFunc)
   {
     // Write out the constant parameters if no function
     std::stringstream str;
-    if (!Efunc && elem->Attribute("E"))
+    if (!Efunc && !Eaging && elem->Attribute("E"))
       str <<"  E="<< Emod;
     if (!nuFunc && elem->Attribute("nu"))
       str <<"  nu="<< nu;
@@ -141,7 +147,7 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
     if (!condFunc && elem->Attribute("kappa"))
       str <<"  kappa="<< conductivity;
     if (!str.str().empty())
-      IFEM::cout <<"\n\t"<< str.str();
+      IFEM::cout <<"\t"<< str.str() << std::endl;
   }
 }
 
@@ -210,6 +216,8 @@ bool LinIsotropic::evaluate (Matrix& C, SymmTensor& sigma, double& U,
     E = Efield->valueFE(fe);
   else if (Efunc)
     E = (*Efunc)(X);
+  else if (Eaging)
+    E = (*Eaging)(fe.age);
 
   if (nuFunc)
     const_cast<LinIsotropic*>(this)->nu = (*nuFunc)(X);
@@ -330,6 +338,8 @@ bool LinIsotropic::evaluate (double& lambda, double& mu,
     E = Efield->valueFE(fe);
   else if (Efunc)
     E = (*Efunc)(X);
+  else if (Eaging)
+    E = (*Eaging)(fe.age);
 
   // Evaluate the Lame parameters
   mu = 0.5*E/(1.0+nu);
@@ -339,15 +349,16 @@ bool LinIsotropic::evaluate (double& lambda, double& mu,
 }
 
 
-double LinIsotropic::getStiffness (const Vec3& X) const
+double LinIsotropic::getStiffness (const Vec3& X, double age) const
 {
-  return Efunc ? (*Efunc)(X) : Emod;
+  return Efunc ? (*Efunc)(X) : (Eaging ? (*Eaging)(age) : Emod);
 }
 
 
-double LinIsotropic::getPlateStiffness (const Vec3& X, double t) const
+double LinIsotropic::getPlateStiffness (const Vec3& X,
+                                        double t, double age) const
 {
-  double E = Efunc ? (*Efunc)(X) : Emod;
+  double E = Efunc ? (*Efunc)(X) : (Eaging ? (*Eaging)(age) : Emod);
   double v = nuFunc ? (*nuFunc)(X) : nu;
   return E*t*t*t / (12.0 - 12.0*v*v);
 }

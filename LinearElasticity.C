@@ -333,7 +333,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     h = (fe.XC[4] - fe.XC.front()).length();
 
   // Evaluate the stiffness at current point
-  double E = material->getStiffness(X)*gamma;
+  double E = material->getStiffness(X,fe.age)*gamma;
 
   // Evaluate the stabilization constant
   double hJW = pow(h,2*fe.p+1)*E*fe.detJxW;

@@ -99,7 +99,7 @@ public:
                                const TimeDomain& time, size_t = 0);
 
   //! \brief Returns the plate stiffness parameter at the specified point \a X.
-  double getStiffness(const Vec3& X) const;
+  double getStiffness(const Vec3& X, double age = 0.0) const;
 
   //! \brief Returns a pointer to an Integrand for solution norm evaluation.
   //! \note The Integrand object is allocated dynamically and has to be deleted

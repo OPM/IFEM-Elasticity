@@ -39,7 +39,7 @@ public:
   //! \brief Empty destructor.
   virtual ~Material() {}
 
-  //! \brief Parses material parementers from an XML element.
+  //! \brief Parses material parameters from an XML element.
   virtual void parse(const tinyxml2::XMLElement*) {}
 
   //! \brief Prints out material parameters to the log stream.
@@ -60,9 +60,10 @@ public:
   virtual void assignScalarField(Field*, size_t = 0) {}
 
   //! \brief Evaluates the stiffness at current point.
-  virtual double getStiffness(const Vec3&) const { return 1.0; }
+  virtual double getStiffness(const Vec3&, double = 0.0) const { return 1.0; }
   //! \brief Evaluates the plate stiffness parameter at current point.
-  virtual double getPlateStiffness(const Vec3&, double) const { return 0.0; }
+  virtual double getPlateStiffness(const Vec3&,
+                                   double, double = 0.0) const { return 0.0; }
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
   //! \brief Evaluates the heat capacity for given temperature.
@@ -80,12 +81,12 @@ public:
   //! \param[in] X Cartesian coordinates of current point
   //! \param[in] F Deformation gradient at current point
   //! \param[in] eps Strain tensor at current point
-  //! \param[in] iop Calculation option;
-  //!  -1 : Calculate the inverse constitutive matrix only,
-  //!   0 : Calculate the consitutive matrix only,
-  //!   1 : Calculate Cauchy stresses and the tangent constitutive matrix,
-  //!   2 : 2nd Piola-Kirchhoff stresses and tangent constitutive matrix,
-  //!   3 : Calculate the strain energy density only.
+  //! \param[in] iop Calculation option:
+  //! - -1 : Calculate the inverse constitutive matrix only
+  //! -  0 : Calculate the constitutive matrix only
+  //! -  1 : Calculate Cauchy stresses and the tangent constitutive matrix
+  //! -  2 : 2nd Piola-Kirchhoff stresses and tangent constitutive matrix
+  //! -  3 : Calculate the strain energy density only
   //! \param[in] prm Nonlinear solution algorithm parameters
   //! \param[in] Fpf Deformation gradient for push-forward transformation
   virtual bool evaluate(Matrix& C, SymmTensor& sigma, double& U,
@@ -98,12 +99,31 @@ public:
   virtual bool evaluate(double&, double&, const FiniteElement&,
                         const Vec3&) const { return false; }
 
+  //! \brief Returns whether the material model has diverged or not.
+  virtual bool diverged(size_t = 0) const { return false; }
+
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
+
+  //! \brief Returns the label of an internal variable.
+  //! \param[in] idx 1-based index of the internal variable
+  const char* getInternalLabel(int idx) const
+  {
+    static char label[32];
+    this->getInternalVar(idx,label);
+    return label;
+  }
+
+  //! \brief Returns the value of an internal variable.
+  //! \param[in] idx 1-based index of the internal variable
+  //! \param[in] iGP 1-based global integration point counter
+  double getInternalVariable(int idx, size_t iGP) const
+  {
+    return this->getInternalVar(idx,nullptr,iGP);
+  }
+
   //! \brief Returns an internal variable associated with the material model.
-  virtual double getInternalVariable(int, char*, size_t=0) const { return 0.0; }
-  //! \brief Returns whether the material model has diverged.
-  virtual bool diverged(size_t = 0) const { return false; }
+  virtual double getInternalVar(int, char*, size_t = 0) const { return 0.0; }
 };
 
 #endif
