@@ -90,9 +90,9 @@ public:
   virtual void initIntegration(size_t nGp, size_t nBp);
 
   //! \brief Initializes the integrand for a new result point loop.
-  //! \param[in] lambda Load parameter
-  //! \param[in] prinDirs If \e true, compute/store principal directions
-  virtual void initResultPoints(double lambda, bool prinDirs);
+  //! \param[in] time Current time
+  //! \param[in] prinDirs If &gt; 0, compute/store principal directions
+  virtual void initResultPoints(double time, char prinDirs);
 
   using ElasticBase::getLocalIntegral;
   //! \brief Returns a local integral container for the given element.
@@ -223,8 +223,9 @@ public:
   //! to calculate the maximum stress values in the model. If the argument \a nP
   //! is equal to 1, only the global maxima over all patches in the model are
   //! determined. Otherwise, if it equals the number of patches in the model,
-  //! the maximum values are computed for each patch separately.
-  void initMaxVals(size_t nP = 1);
+  //! the maximum values are computed for each patch separately. If \a nP is 0,
+  //! the max-values buffer is initialized to zero without touching its size.
+  void initMaxVals(size_t nP = 0);
 
   //! \brief Returns a pointer to the max values for external update.
   std::vector<PointValues>* getMaxVals() const { return &maxVal; }

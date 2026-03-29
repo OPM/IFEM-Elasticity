@@ -313,9 +313,11 @@ void Elasticity::initIntegration (size_t, size_t nBp)
 }
 
 
-void Elasticity::initResultPoints (double, bool prinDir)
+void Elasticity::initResultPoints (double time, char prinDir)
 {
-  if (wantPrincipalStress && prinDir)
+  myTime = time;
+
+  if (wantPrincipalStress && prinDir > 0)
   {
     if (!pDirBuf) pDirBuf = new Vec3Vec();
     pDirBuf->clear();
@@ -1018,7 +1020,7 @@ void Elasticity::printMaxVals (std::streamsize precision, size_t comp) const
       continue; // no value
 
     std::string name = this->getField2Name(i,nullptr);
-    os <<"  Max "<< name <<":";
+    os <<"  Max "<< name.substr(0,16) <<":";
     if (name.size() < 16)
       os << std::string(16-name.size(),' ');
     for (size_t p = 0; p < maxVal[i].size(); p++)
