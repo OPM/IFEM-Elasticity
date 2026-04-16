@@ -898,7 +898,7 @@ int main (int argc, char** argv)
       return terminate(16);
 
     if (displ.size() > 1)
-      if (!model->writeGlvS1(displ[1],1,nBlock,0.0,"Dual solution",90,-1))
+      if (model->writeGlvS1(displ[1],1,nBlock,0.0,"Dual solution",90,-1) < 0)
         return terminate(16);
 
     std::vector<PointValues>* maxVals = lelp ? lelp->getMaxVals() : nullptr;
