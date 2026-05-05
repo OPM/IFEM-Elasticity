@@ -28,6 +28,7 @@ NonlinearDriver::NonlinearDriver (SIMbase& sim, bool linear, bool adaptive)
 {
   aStep = 0;
   save0 = opt.pSolOnly = true;
+  saveE0 = false;
 
   if (adaptive)
   {
@@ -94,6 +95,8 @@ bool NonlinearDriver::parse (const tinyxml2::XMLElement* elem)
     for (; child; child = child->NextSiblingElement())
       if (!strcasecmp(child->Value(),"direct2nd"))
         opt.pSolOnly = false;
+      else if (!strcasecmp(child->Value(),"saveNewElms0"))
+        saveE0 = true;
       else if (!strcasecmp(child->Value(),"skipInit"))
         save0 = false;
       else if (!strcasecmp(child->Value(),"resultpoints") &&
@@ -233,6 +236,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
   if (doProject) proSol.resize(1);
 
   if (dtDump <= 0.0) dtDump = params.stopTime + 1.0;
+  double lastSave = params.time.t;
   double nextDump = params.time.t + dtDump;
   double nextSave = params.time.t + opt.dtSave;
   bool getMaxVals = opt.format >= 0 && !opt.pSolOnly;
@@ -260,11 +264,31 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
   SIM::ConvStatus stat = SIM::OK;
   while (this->advanceStep(params))
   {
-    int bStep = aStep; // Check for mesh adaptation
+    const double tn = params.time.t; // Current (pseudo) time
+    const int bStep = aStep; // Check for mesh adaptation
     if (params.step > 1 && !this->adaptMesh(aStep))
       return 6;
     else if (aStep > bStep)
+    {
       IFEM::cout <<"\nResuming nonlinear solution on the new mesh"<< std::endl;
+      if (opt.format >= 0)
+        lastSave = tn; // Updated geometry was saved
+    }
+    else if (opt.format >= 0 && saveE0)
+      if (model.hasElementActivator(tn,lastSave))
+      {
+        // More elements are activated,
+        // save start configuration for new model (primary solution only).
+        // The time stamp needs to be slighly less than the current time tn,
+        // otherwise they will not show up in GLview.
+        PROFILE("Postprocessing");
+        if (this->saveModel(geoBlk,nBlock,tn) &&
+            model.writeGlvS1(solution.front(),++iStep,nBlock,tn) > 0 &&
+            model.writeGlvStep(iStep,tn-0.1*params.time.dt))
+          lastSave = tn;
+        else
+          return 11;
+      }
 
     do // Cut-back loop
     {
@@ -286,9 +310,8 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
     if (stat != SIM::CONVERGED)
       return 7;
 
-    if (model.haveBoundaryReactions())
-      if (!this->calcInterfaceForces(params.time.t))
-        return 9;
+    if (model.haveBoundaryReactions() && !this->calcInterfaceForces(tn))
+      return 9;
 
     if (doProject)
     {
@@ -315,17 +338,17 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
     // Print solution components at the user-defined points
     model.setMode(SIM::RECOVERY);
-    this->dumpResults(params.time.t,IFEM::cout,outPrec);
+    this->dumpResults(tn,IFEM::cout,outPrec);
 
     if (params.hasReached(nextDump))
     {
       // Dump primary solution for inspection or external processing
       if (oss)
-        this->dumpStep(params.step,params.time.t,*oss,false);
+        this->dumpStep(params.step,tn,*oss,false);
       else
-        this->dumpStep(params.step,params.time.t,IFEM::cout);
+        this->dumpStep(params.step,tn,IFEM::cout);
 
-      nextDump = params.time.t + dtDump;
+      nextDump = tn + dtDump;
     }
 
     if (opt.dtSave <= 0.0 || params.hasReached(nextSave))
@@ -335,16 +358,20 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
       // Save solution variables to VTF for visualization
       if (opt.format >= 0)
       {
-        if (model.hasElementActivator() &&
-            !this->saveModel(geoBlk,nBlock,params.time.t))
-          return 11;
-
-        if (!this->saveStep(iStep,params.time.t))
-          return 11;
-
-        if (!myForces.empty())
-          if (!model.writeGlvV(myForces,"Internal forces",iStep,nBlock,2))
+        if (model.hasElementActivator(tn,lastSave))
+        {
+          // More elements are activated, save updated model
+          if (this->saveModel(geoBlk,nBlock,tn))
+            lastSave = tn;
+          else
             return 11;
+        }
+
+        if (!this->saveStep(iStep,tn))
+          return 11;
+
+        if (!model.writeGlvV(myForces,"Internal forces",iStep,nBlock,2))
+          return 11;
 
         if (doProject)
         {
@@ -371,25 +398,22 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
       // Save solution state to restart HDF5 file
       if (restart && restart->dumpStep(params))
-      {
-        SerializeMap data;
-        if (this->serialize(data) && !restart->writeData(data))
+        if (SerializeMap dat; this->serialize(dat) && !restart->writeData(dat))
           return 12;
-      }
 
       // Save solution variables to grid files, if specified
-      if (!model.saveResults(solution,params.time.t,iStep))
+      if (!model.saveResults(solution,tn,iStep))
         return 13;
 
       if (elp) elp->enableMaxValCalc(true);
 
-      nextSave = params.time.t + opt.dtSave;
+      nextSave = tn + opt.dtSave;
       if (nextSave > params.stopTime)
         nextSave = params.stopTime; // Always save the final step
     }
     else if (getMaxVals)
     {
-      if (!model.eval2ndSolution(solution.front(),params.time.t))
+      if (!model.eval2ndSolution(solution.front(),tn))
         return 14;
 
       if (!model.writeGlvP(proSol.front(),0,nBlock,0,nullptr,elp->getMaxVals()))

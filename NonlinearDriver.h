@@ -137,6 +137,7 @@ private:
   char     calcEn; //!< Flag for calculation of solution energy norm
   int      aStep;  //!< Adaptive mesh refinement step
   bool     save0;  //!< If \e true, also save initial configuration
+  bool     saveE0; //!< If \e true, save added elements in initial configuration
 
   Vector    myForces;  //!< Interface nodal forces
   RealArray myReacts;  //!< Reaction force container
