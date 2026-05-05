@@ -10,7 +10,7 @@ Parsing input file PolePinchedSphere-p3.xinp
 Parsing <discretization>
 Parsing <geometry>
   Parsing <patchfile>
-	Reading data file ../../Shell/Test/hemisphere-symmZ.g2
+	Reading data file ../Shell/hemisphere-symmZ.g2
 	Reading patch 1
   Parsing <raiseorder>
   Parsing <refine>

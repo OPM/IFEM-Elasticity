@@ -38,7 +38,7 @@ PROJECT_NUMBER         = 90A354
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = @CMAKE_BINARY_DIR@/doc/Apps/ShellEl
+OUTPUT_DIRECTORY       = @CMAKE_BINARY_DIR@/doc/Apps/LinEl
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -565,8 +565,10 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/DoxyWarnings.log
 # with spaces.
 
 INPUT                  = @PROJECT_SOURCE_DIR@ \
-                         @PROJECT_SOURCE_DIR@/.. \
-			 @PROJECT_BINARY_DIR@
+                         @PROJECT_SOURCE_DIR@/Beam \
+                         @PROJECT_SOURCE_DIR@/Linear \
+                         @PROJECT_SOURCE_DIR@/Shell \
+                         @EXTRA_DOXY_PATHS@
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 

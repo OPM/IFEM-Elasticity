@@ -21,7 +21,7 @@ the application and typing
 
 To compile, first navigate to the root catalogue `<App root>`.
 
-1. `cd IFEM-Elasticity/Linear`
+1. `cd IFEM-Elasticity`
 2. `mkdir Debug`
 3. `cd Debug`
 5. `cmake -DCMAKE_BUILD_TYPE=Debug ..`
@@ -36,6 +36,6 @@ and get a faster running code.
 
 IFEM uses the cmake test system.
 To compile and run all regression- and unit-tests, navigate to your build
-folder (i.e. `<App root>/IFEM-Elasticity/Linear/Debug`) and type
+folder (i.e. `<App root>/IFEM-Elasticity/Debug`) and type
 
     make check
