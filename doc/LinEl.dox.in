@@ -16,13 +16,13 @@
 \author Knut Morten Okstad, SINTEF Digital, Trondheim
 
 \section intro Introduction
-This is a linear elasticity application built on top of the IFEM library.
-It solves the static linear elasticity equations for 2D or 3D continuum domains,
-as well as for some beam and plate formulations.
-The application can also perform eigenvalue analysis (free vibration and
-linearized buckling), and perform adaptive analysis, based on either
-the exact error distributions (for problems with known analytical solution)
-or recovery-based error estimates.
+This is a selection of linear elasticity applications built on top of the
+IFEM library. There are solvers for the static linear elasticity equations
+for 2D or 3D continuum domains, as well as for some beam, plate
+and shell formulations. The applications can also perform eigenvalue analysis
+(free vibration and linearized buckling), and perform adaptive analysis,
+based on either the exact error distributions (for problems with known
+analytical solution) or recovery-based error estimates.
 
 Refer to the documents in the sub-folder <i>doc/Integrands</i>
 for the underlying equations forming the basis of the integrand implementations.

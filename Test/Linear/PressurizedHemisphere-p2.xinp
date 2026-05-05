@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!-- Pinched spherical shell, 1/8 of a full sphere.
-     Prescribed deflection of the top point.
-     Cubic NURBS Kirchhoff-Love thin shell elements.
+<!-- Pressurized hemispherical shell, 1/4 of a hemisphere.
+     Quadratic spline Kirchhoff-Love thin shell elements.
      Polar parametrization with collapsed edge at the top. !-->
 
 <simulation>
 
   <!-- General - geometry definitions !-->
   <geometry>
-    <patchfile>../../../Shell/Test/hemisphere-symmZ.g2</patchfile>
-    <raiseorder patch="1" u="1" v="1"/>
-    <refine patch="1" u="7" v="7"/>
+    <patchfile>../Shell/hemisphere-symmZ.g2</patchfile>
+    <refine patch="1" u="31" v="31"/>
     <topologysets>
-      <set name="symmXY" type="edge">
+      <set name="support" type="edge">
         <item patch="1">1</item>
       </set>
       <set name="pole" type="edge">
-        <item patch="1">2</item>
-      </set>
-      <set name="polevx" type="vertex">
         <item patch="1">2</item>
       </set>
       <set name="symmXZ" type="edge">
@@ -42,17 +37,19 @@
 
   <!-- General - boundary conditions !-->
   <boundaryconditions>
-    <dirichlet set="symmXY" type="symmXY"/>
+    <dirichlet set="support" type="clamped"/>
     <dirichlet set="symmXZ" type="symmXZ"/>
     <dirichlet set="symmYZ" type="symmYZ"/>
     <dirichlet set="pole" comp="123000"/>
     <dirichlet set="pole" comp="12"/>
-    <dirichlet set="polevx" comp="3">-0.1</dirichlet>
   </boundaryconditions>
 
   <!-- Problem specific block !-->
   <KirchhoffLove>
     <isotropic E="2.0e11" nu="0.3" thickness="0.001"/>
+    <pressure set="hemisphere" type="expression">
+      1000.0*cos(2.0*acos(z))
+    </pressure>
   </KirchhoffLove>
 
   <!-- General - point result output !-->

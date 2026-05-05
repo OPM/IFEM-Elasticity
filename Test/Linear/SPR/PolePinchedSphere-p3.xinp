@@ -9,7 +9,7 @@
 
   <!-- General - geometry definitions !-->
   <geometry>
-    <patchfile>../../Shell/Test/hemisphere-symmZ.g2</patchfile>
+    <patchfile>../../Shell/hemisphere-symmZ.g2</patchfile>
     <raiseorder patch="1" u="1" v="1"/>
     <refine patch="1" u="7" v="7"/>
     <topologysets>
