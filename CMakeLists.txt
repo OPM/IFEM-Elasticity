@@ -380,7 +380,7 @@ endif()
 # For generating the doxy
 ifem_add_doc_target(
   TARGET
-    LinEl
+    Elasticity
   EXTRA_DIRS
      ${BeamGeometry_DIRECTORY}
 )
