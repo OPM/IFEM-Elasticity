@@ -155,14 +155,12 @@ void SIMElasticity<Dim>::printStep (int istep, const TimeDomain& time) const
   Dim::adm.cout <<"\n  step="<< istep <<"  time="<< time.t;
 
   if (Dim::myProblem->getMode() == SIM::ARCLEN)
-  {
-    RealArray extLo;
-    if (this->extractScalars(extLo))
+    if (RealArray extLo; this->extractScalars(extLo))
     {
       Dim::adm.cout <<"  Sum(Fex) =";
-      for (double f : extLo) Dim::adm.cout <<" "<< utl::trunc(f);
+      for (double f : extLo)
+        Dim::adm.cout <<" "<< utl::trunc(f);
     }
-  }
 
   Dim::adm.cout << std::endl;
 }
@@ -579,8 +577,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
           if (pid < 1) continue;
 
           IFEM::cout <<" (for P"<< patch <<")"<< std::endl;
-          Dim::myProps.push_back(Property(Property::MATERIAL,
-                                          mVec.size()-1,pid,3));
+          Dim::myProps.emplace_back(Property::MATERIAL,mVec.size()-1,pid,3);
         }
     }
   }
@@ -652,10 +649,8 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
         !strcasecmp(child->Value(),"texturematerial"))
     {
       if (!strcasecmp(child->Value(),"texturematerial"))
-      {
-        Real2DMat domain;
         for (ASMbase* pch : Dim::myModel)
-          if (pch->getParameterDomain(domain))
+          if (Real2DMat domain; pch->getParameterDomain(domain))
             for (size_t d = 0; d < domain.size(); d++)
               if (domain[d].front() != 0.0 || domain[d].back() != 1.0)
               {
@@ -665,12 +660,13 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
                           << domain[d].back() << std::endl;
                 return false;
               }
-      }
+
       IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
       int code = this->parseMaterialSet(child,mVec.size());
       IFEM::cout <<"\tMaterial code "<< code <<":";
       if (elInt)
         mVec.push_back(elInt->parseMatProp(child));
+      IFEM::cout << std::endl;
     }
 
     else if (!strcasecmp(child->Value(),"bodyforce"))
@@ -740,9 +736,8 @@ bool SIMElasticity<Dim>::addConstraint (int patch, int lndx, int ldim,
                                         char basis, bool ovrD)
 {
   if (patch == 0 && ldim == 0)
-  {
-    typename Dim::IdxVec3* masterPt = this->getDiscretePoint(lndx);
-    if (masterPt) {
+    if (std::pair<int,Vec3>* masterPt = this->getDiscretePoint(lndx); masterPt)
+    {
       for (ASMbase* pch : Dim::myModel)
       {
         // Check if this patch has master points that should be constrained.
@@ -760,7 +755,6 @@ bool SIMElasticity<Dim>::addConstraint (int patch, int lndx, int ldim,
                 <<") is not present in any patch.\n";
       return false;
     }
-  }
 
   return this->Dim::addConstraint(patch,lndx,ldim,dirs,code,ngnod,basis,ovrD);
 }

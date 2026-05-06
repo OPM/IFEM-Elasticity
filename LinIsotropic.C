@@ -147,7 +147,7 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
     if (!condFunc && elem->Attribute("kappa"))
       str <<"  kappa="<< conductivity;
     if (!str.str().empty())
-      IFEM::cout <<"\t"<< str.str() << std::endl;
+      IFEM::cout <<"\t"<< str.str();
   }
 }
 
