@@ -28,8 +28,8 @@ POINTLOAD 1
   1     0.5 0.5 1.0e3
 
 # Analytical solution
-# Specifier        a    b   t   E      nu  pz    xi  eta
-ANASOL NavierPlate 10.0 8.0 0.1 2.1e11 0.3 1.0e3 0.5 0.5
+# Specifier        a    b   pz    xi  eta
+ANASOL NavierPlate 10.0 8.0 1.0e3 0.5 0.5
 
 RESULTPOINTS 1
 # patch xi eta

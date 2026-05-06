@@ -15,14 +15,14 @@ CONSTRAINTS 2
   1     1    1
   1     2    2
 
+ISOTROPIC 1
+# code E      nu  rho
+  0    1000.0 0.3 0.0
+
 # Analytical solution
-# Specifier a   F0   nu
-ANASOL Hole 1.0 10.0 0.3
+# Specifier a   F0
+ANASOL Hole 1.0 10.0
 
 PRESSURE 1
 # patch edge
   1     4
-
-ISOTROPIC 1
-# code E      nu  rho
-  0    1000.0 0.3 0.0

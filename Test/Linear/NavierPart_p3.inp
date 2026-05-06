@@ -28,8 +28,8 @@ PRESSURE 1
   0    1.0e3 StepXY 4.0 3.2 to 6.0 4.8
 
 # Analytical solution
-# Specifier        a    b   t   E      nu  pz    xi  eta c   d
-ANASOL NavierPlate 10.0 8.0 0.1 2.1e11 0.3 1.0e3 0.5 0.5 2.0 1.6
+# Specifier        a    b   pz    xi  eta c   d
+ANASOL NavierPlate 10.0 8.0 1.0e3 0.5 0.5 2.0 1.6
 
 RESULTPOINTS 1
 # patch xi eta

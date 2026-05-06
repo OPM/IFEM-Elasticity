@@ -14,6 +14,7 @@
 #include "SIMLinElKL.h"
 #include "KirchhoffLovePlate.h"
 #include "KirchhoffLoveShell.h"
+#include "MaterialBase.h"
 #include "AnalyticSolutions.h"
 #include "AnaSol.h"
 #include "IFEM.h"
@@ -43,10 +44,10 @@ bool SIMLinElKL::parseAnaSol (char* keyWord, std::istream& is)
   {
     double a  = atof(strtok(nullptr," "));
     double b  = atof(strtok(nullptr," "));
-    double t  = atof(strtok(nullptr," "));
-    double E  = atof(strtok(nullptr," "));
-    double nu = atof(strtok(nullptr," "));
     double pz = atof(strtok(nullptr," "));
+    double t  = this->getProblem()->getThickness(Vec3());
+    double E  = this->getProblem()->getMaterial()->getStiffness(Vec3());
+    double nu = this->getProblem()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\nAnalytic solution: NavierPlate a="<< a <<" b="<< b
                <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
     if ((cline = strtok(nullptr," ")))
@@ -89,20 +90,19 @@ bool SIMLinElKL::parseAnaSol (const tinyxml2::XMLElement* elem)
   utl::getAttribute(elem,"type",type,true);
   if (type == "navierplate")
   {
-    double a = 0.0, b = 0.0, c = 0.0, d = 0.0, t = 0.0;
-    double E = 10000.0, nu = 0.3, pz = 1.0, xi = 0.0, eta = 0.0;
+    double a = 0.0, b = 0.0, c = 0.0, d = 0.0, pz = 1.0, xi = 0.0, eta = 0.0;
     int max_mn = 100;
     utl::getAttribute(elem,"a",a);
     utl::getAttribute(elem,"b",b);
     utl::getAttribute(elem,"c",c);
     utl::getAttribute(elem,"d",d);
-    utl::getAttribute(elem,"t",t);
-    utl::getAttribute(elem,"E",E);
-    utl::getAttribute(elem,"nu",nu);
     utl::getAttribute(elem,"pz",pz);
     utl::getAttribute(elem,"xi",xi);
     utl::getAttribute(elem,"eta",eta);
     utl::getAttribute(elem,"nTerm",max_mn);
+    double t  = this->getProblem()->getThickness(Vec3());
+    double E  = this->getProblem()->getMaterial()->getStiffness(Vec3());
+    double nu = this->getProblem()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\tAnalytic solution: NavierPlate a="<< a <<" b="<< b
                <<" t="<< t <<" E="<< E <<" nu="<< nu <<" pz="<< pz;
     if (xi != 0.0 && eta != 0.0)
@@ -122,12 +122,12 @@ bool SIMLinElKL::parseAnaSol (const tinyxml2::XMLElement* elem)
   }
   else if (type == "circularplate")
   {
-    double R = 0.0, t = 0.0, E = 10000.0, nu = 0.3, P = 1000000.0;
+    double R = 0.0, P = 1000000.0;
     utl::getAttribute(elem,"R",R);
-    utl::getAttribute(elem,"t",t);
-    utl::getAttribute(elem,"E",E);
-    utl::getAttribute(elem,"nu",nu);
     utl::getAttribute(elem,"P",P);
+    double t  = this->getProblem()->getThickness(Vec3());
+    double E  = this->getProblem()->getMaterial()->getStiffness(Vec3());
+    double nu = this->getProblem()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\tAnalytic solution: CircularPlate R="<< R <<" t="<< t
                <<" E="<< E <<" nu="<< nu <<" P="<< P << std::endl;
     if (!mySol)

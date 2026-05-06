@@ -13,6 +13,7 @@
 
 #include "SIMLinEl.h"
 #include "AnalyticSolutions.h"
+#include "MaterialBase.h"
 
 
 template<> bool SIMLinEl2D::parseDimSpecific (char* cline)
@@ -21,7 +22,7 @@ template<> bool SIMLinEl2D::parseDimSpecific (char* cline)
   {
     double a  = atof(strtok(nullptr," "));
     double F0 = atof(strtok(nullptr," "));
-    double nu = atof(strtok(nullptr," "));
+    double nu = this->getIntegrand()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\nAnalytical solution: Hole a="<< a <<" F0="<< F0
                <<" nu="<< nu << std::endl;
     if (!mySol)
@@ -31,7 +32,7 @@ template<> bool SIMLinEl2D::parseDimSpecific (char* cline)
   {
     double a  = atof(strtok(nullptr," "));
     double F0 = atof(strtok(nullptr," "));
-    double nu = atof(strtok(nullptr," "));
+    double nu = this->getIntegrand()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\nAnalytical solution: Lshape a="<< a <<" F0="<< F0
                <<" nu="<< nu << std::endl;
     if (!mySol)
@@ -61,7 +62,7 @@ template<> bool SIMLinEl2D::parseDimSpecific (char* cline)
     double a  = atof(strtok(nullptr," "));
     double b  = atof(strtok(nullptr," "));
     double u0 = atof(strtok(nullptr," "));
-    double E  = atof(strtok(nullptr," "));
+    double E  = this->getIntegrand()->getMaterial()->getStiffness(Vec3());
     IFEM::cout <<"\nAnalytical solution: Curved Beam a="<< a <<" b="<< b
                <<" u0="<< u0 <<" E="<< E << std::endl;
     if (!mySol)
@@ -79,10 +80,10 @@ template<> bool SIMLinEl2D::parseDimSpecific (const tinyxml2::XMLElement* child,
 {
   if (type == "hole")
   {
-    double a = 0.0, F0 = 0.0, nu = 0.0;
+    double a = 0.0, F0 = 0.0;
     utl::getAttribute(child,"a",a);
     utl::getAttribute(child,"F0",F0);
-    utl::getAttribute(child,"nu",nu);
+    double nu = this->getIntegrand()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\tAnalytical solution: Hole a="<< a <<" F0="<< F0
                <<" nu="<< nu << std::endl;
     if (!mySol)
@@ -90,10 +91,10 @@ template<> bool SIMLinEl2D::parseDimSpecific (const tinyxml2::XMLElement* child,
   }
   else if (type == "lshape")
   {
-    double a = 0.0, F0 = 0.0, nu = 0.0;
+    double a = 0.0, F0 = 0.0;
     utl::getAttribute(child,"a",a);
     utl::getAttribute(child,"F0",F0);
-    utl::getAttribute(child,"nu",nu);
+    double nu = this->getIntegrand()->getMaterial()->getPoissonRatio(Vec3());
     IFEM::cout <<"\tAnalytical solution: Lshape a="<< a <<" F0="<< F0
                <<" nu="<< nu << std::endl;
     if (!mySol)
@@ -123,11 +124,11 @@ template<> bool SIMLinEl2D::parseDimSpecific (const tinyxml2::XMLElement* child,
   }
   else if (type == "curved")
   {
-    double a = 0.0, b = 0.0, u0 = 0.0, E = 0.0;
+    double a = 0.0, b = 0.0, u0 = 0.0;
     utl::getAttribute(child,"a",a);
     utl::getAttribute(child,"b",b);
     utl::getAttribute(child,"u0",u0);
-    utl::getAttribute(child,"E",E);
+    double E = this->getIntegrand()->getMaterial()->getStiffness(Vec3());
     IFEM::cout <<"\tAnalytical solution: Curved Beam a="<< a <<" b="<< b
                <<" u0="<< u0 <<" E="<< E << std::endl;
     if (!mySol)
@@ -136,19 +137,18 @@ template<> bool SIMLinEl2D::parseDimSpecific (const tinyxml2::XMLElement* child,
   else if (type == "pipe")
   {
     double Ri = 0.0, Ro = 0.0, Ti = 0.0, To = 0.0, T0 = 273.0;
-    double E = 0.0, nu = 0.0, alpha = 0.0;
     bool polar = false;
     utl::getAttribute(child,"Ri",Ri);
     utl::getAttribute(child,"Ro",Ro);
     utl::getAttribute(child,"Ti",Ti);
     utl::getAttribute(child,"To",To);
     utl::getAttribute(child,"Tref",T0);
-    utl::getAttribute(child,"E",E);
-    utl::getAttribute(child,"nu",nu);
-    utl::getAttribute(child,"alpha",alpha);
     utl::getAttribute(child,"polar",polar);
+    double E = this->getIntegrand()->getMaterial()->getStiffness(Vec3());
+    double nu = this->getIntegrand()->getMaterial()->getPoissonRatio(Vec3());
+    double alpha = this->getIntegrand()->getMaterial()->getThermalExpansion();
     IFEM::cout <<"\tAnalytical solution: Pipe Ri="<< Ri <<" Ro="<< Ro
-               <<" Ti="<< Ti <<" To="<< To << std::endl;
+               <<" Ti="<< Ti <<" To="<< To <<" Tref="<< T0 << std::endl;
     if (!mySol)
       mySol = new AnaSol(new Pipe(Ri,Ro,Ti,To,T0,E,nu,alpha,false,polar));
   }

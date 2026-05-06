@@ -27,9 +27,7 @@
       r=sqrt(x*x+y*y); a=0.03; b=0.04; Ti=373.0; To=293.0;
       Ti+(To-Ti)*log(r/a)/log(b/a)
     </temperature>
-    <anasol type="pipe"
-            Ri="0.03" Ro="0.04" Ti="373.0" To="293.0" Tref="273.0"
-            E="2.0e11" nu="0.3" alpha="1.2e-5"/>
+    <anasol type="pipe" Ri="0.03" Ro="0.04" Ti="373.0" To="293.0" Tref="273.0"/>
   </elasticity>
 
 </simulation>
