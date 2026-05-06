@@ -169,6 +169,12 @@ void KirchhoffLove::setThickness (RealFunc* tf)
 }
 
 
+double KirchhoffLove::getThickness (const Vec3& X) const
+{
+  return (*thickness)(X);
+}
+
+
 void KirchhoffLove::setPressure (RealFunc* pf)
 {
   if (pf)
@@ -278,7 +284,7 @@ Vec3 KirchhoffLove::getPressure (const Vec3& X, const Vec3& n, bool grd) const
 {
   Vec3 p;
   if (!grd)
-    p.z = material->getMassDensity(X) * gravity * (*thickness)(X);
+    p.z = material->getMassDensity(X) * gravity * this->getThickness(X);
 
   for (RealFunc* pf : presFld)
     if (n.isZero()) // Assume pressure acts in global Z-direction
@@ -352,7 +358,7 @@ void KirchhoffLove::formBodyForce (Vector& ES, RealArray& sumLoad,
 void KirchhoffLove::formMassMatrix (Matrix& EM, const Vector& N,
                                     const Vec3& X, double detJW) const
 {
-  double rhow = material->getMassDensity(X) * (*thickness)(X) * detJW;
+  double rhow = material->getMassDensity(X) * this->getThickness(X) * detJW;
   if (rhow == 0.0) return;
 
   if (npv == 1)

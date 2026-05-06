@@ -64,14 +64,16 @@ public:
   //! \brief Evaluates the plate stiffness parameter at current point.
   virtual double getPlateStiffness(const Vec3&,
                                    double, double = 0.0) const { return 0.0; }
+  //! \brief Evaluates the Poisson's ratio at current point.
+  virtual double getPoissonRatio(const Vec3&) const { return 0.0; }
   //! \brief Evaluates the mass density at current point.
   virtual double getMassDensity(const Vec3&) const { return 0.0; }
   //! \brief Evaluates the heat capacity for given temperature.
-  virtual double getHeatCapacity(double) const { return 1.0; }
+  virtual double getHeatCapacity(double = 0.0) const { return 1.0; }
   //! \brief Evaluates the thermal conductivity for given temperature.
-  virtual double getThermalConductivity(double) const { return 1.0; }
+  virtual double getThermalConductivity(double = 0.0) const { return 1.0; }
   //! \brief Evaluates the thermal expansion coefficient for given temperature.
-  virtual double getThermalExpansion(double) const { return 0.0; }
+  virtual double getThermalExpansion(double = 0.0) const { return 0.0; }
 
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point

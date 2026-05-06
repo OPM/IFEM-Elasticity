@@ -71,8 +71,12 @@ public:
   void setThickness(double t);
   //! \brief Defines the plate/shell thickness as a function.
   void setThickness(RealFunc* tf = nullptr);
+  //! \brief Returns the plate/shell thickness at specified point.
+  double getThickness(const Vec3& X) const;
   //! \brief Defines the material properties.
   void setMaterial(Material* mat) { material = mat; }
+  //! \brief Returns the current material object.
+  Material* getMaterial() const { return material; }
   //! \brief Defines the pressure field.
   void setPressure(RealFunc* pf = nullptr);
   //! \brief Defines the line load function.

@@ -364,6 +364,12 @@ double LinIsotropic::getPlateStiffness (const Vec3& X,
 }
 
 
+double LinIsotropic::getPoissonRatio (const Vec3& X) const
+{
+  return nuFunc ? (*nuFunc)(X) : nu;
+}
+
+
 double LinIsotropic::getMassDensity (const Vec3& X) const
 {
   return rhoFunc ? (*rhoFunc)(X) : rho;

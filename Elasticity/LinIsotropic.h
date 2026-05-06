@@ -76,8 +76,10 @@ public:
   virtual double getStiffness(const Vec3& X, double age) const;
   //! \brief Evaluates the plate stiffness parameter at current point.
   virtual double getPlateStiffness(const Vec3& X, double t, double age) const;
+  //! \brief Evaluates the Poisson's ratio at current point.
+  virtual double getPoissonRatio(const Vec3& X) const;
   //! \brief Evaluates the mass density at current point.
-  virtual double getMassDensity(const Vec3&) const;
+  virtual double getMassDensity(const Vec3& X) const;
   //! \brief Evaluates the heat capacity for given temperature.
   virtual double getHeatCapacity(double T) const;
   //! \brief Evaluates the thermal conductivity for given temperature.
