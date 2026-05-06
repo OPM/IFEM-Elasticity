@@ -98,7 +98,9 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
     utl::getAttribute(child,"type",type,true);
     IFEM::cout <<"\n\t  "<< name <<" function ("<< type <<") ";
     const tinyxml2::XMLNode* aval = child->FirstChild();
-    return aval ? utl::parseRealFunc(aval->Value(),type) : nullptr;
+    RealFunc* f = aval ? utl::parseRealFunc(aval->Value(),type) : nullptr;
+    IFEM::cout << std::endl;
+    return f;
   };
 
   // Lambda function for parsing a scalar property function.
@@ -146,7 +148,9 @@ void LinIsotropic::parse (const tinyxml2::XMLElement* elem)
       str <<"  cp="<< heatcapacity;
     if (!condFunc && elem->Attribute("kappa"))
       str <<"  kappa="<< conductivity;
-    if (!str.str().empty())
+    if (str.str().empty())
+      IFEM::cout <<"\t(no constant material parameters)";
+    else
       IFEM::cout <<"\t"<< str.str();
   }
 }
