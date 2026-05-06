@@ -291,24 +291,19 @@ protected:
 
     // Check for static condensation
     const tinyxml2::XMLElement* sctag = nullptr;
-    const tinyxml2::XMLElement* child = elem->FirstChildElement();
     if (!strcasecmp(elem->Value(),SIMElasticity<Dim>::myContext.c_str()))
-      for (; child; child = child->NextSiblingElement())
-      {
+      for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+           child; child = child->NextSiblingElement())
         if (!strcasecmp(child->Value(),"staticCondensation"))
           sctag = child; // Delay parsing until the FE data have been parsed
         else if (!strcasecmp(child->Value(),"superelement"))
-        {
-          std::string sId;
-          if (utl::getAttribute(child,"id",sId))
-          if (!supSC.empty() && sId != supSC)
-          {
-            // Ignore superelements not specified for static condensation
-            IFEM::cout <<"\tIgnoring superelement \""<< sId <<"\""<< std::endl;
-            return true;
-          }
-        }
-      }
+          if (std::string id; utl::getAttribute(child,"id",id))
+            if (!supSC.empty() && id != supSC)
+            {
+              // Ignore superelements not specified for static condensation
+              IFEM::cout <<"\tIgnoring superelement \""<< id <<"\""<< std::endl;
+              return true;
+            }
 
     if (!this->SIMElasticity<Dim>::parse(elem))
       return false;
