@@ -2,7 +2,7 @@
 
 <!-- Simply supported square plate with central point load.
      Cubic spline Kirchhoff-Love thin plate elements.
-     Varying plat thickness and material properties. -->
+     Varying plate thickness and material properties. -->
 
 <simulation>
 
@@ -26,9 +26,6 @@
       <thickness type="expression">0.1+0.01*x*y</thickness>
     </isotropic>
     <pointload patch="1" xi="0.5" eta="0.5" onElement="true">10000.0</pointload>
-    <anasol type="NavierPlate"
-            a="10.0" b="10.0" t="0.1" E="2.1e11" nu="0.3"
-            xi="0.5" eta="0.5" pz="10000.0"/>
   </kirchhofflove>
 
   <postprocessing>
