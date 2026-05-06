@@ -9,7 +9,7 @@
 
 # Define the name of the executable here
 mysim=NonLinEl
-if ! which $mysim; then mysim=../Release/bin/$mysim; fi
+if ! which $mysim; then mysim=../../Release/bin/$mysim; fi
 
 run () {
 # This function runs a simulation with the specified options,
