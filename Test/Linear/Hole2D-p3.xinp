@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Infinite membrane with a circular hole.
+     Neumann boundary conditions from analytical solution.
+     Static linear-elastic analysis, cubic NURBS elements. !-->
+
+<simulation>
+
+  <!-- General - geometry definitions !-->
+  <geometry dim="2">
+    <patchfile>hole2D.g2</patchfile>
+    <refine patch="1" u="3" v="3"/>
+    <topologysets>
+      <set name="SymmX" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="SymmY" type="edge">
+        <item patch="1">2</item>
+      </set>
+      <set name="Neumann" type="edge">
+        <item patch="1">4</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <!-- General - boundary conditions !-->
+  <boundaryconditions>
+    <dirichlet set="SymmX" comp="1"/>
+    <dirichlet set="SymmY" comp="2"/>
+    <neumann set="Neumann" type="anasol"/>
+  </boundaryconditions>
+
+  <!-- Problem specific block !-->
+  <elasticity>
+    <isotropic E="1000" nu="0.3" planeStrain="true"/>
+    <anasol type="hole" a="1.0" F0="10.0"/>
+  </elasticity>
+
+</simulation>

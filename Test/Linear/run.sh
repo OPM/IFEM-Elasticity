@@ -46,9 +46,9 @@ if [ ! -d Reference ]; then mkdir Reference; fi
 # Format: run <inputfile> [<options>]
 #####################################
 
-run Hole2D-p3.inp Hole2D-NURBS    -2Dpstrain -vtf 1 -nviz 4 -hdf5
-run Hole2D-p3.inp Hole2D-Lagrange -2Dpstrain -vtf 1 -lagrange
-run Hole2D-p3.inp Hole2D-Spectral -2Dpstrain -vtf 1 -spectral
+run Hole2D-p3.xinp Hole2D-NURBS    -vtf 1 -nviz 4 -hdf5
+run Hole2D-p3.xinp Hole2D-Lagrange -vtf 1 -lagrange
+run Hole2D-p3.xinp Hole2D-Spectral -vtf 1 -spectral
 
 run Cylinder-p4.inp Cylinder-NURBS    -checkRHS -vtf 1 -nviz 5 -hdf5
 run Cylinder-p4.inp Cylinder-Lagrange -checkRHS -vtf 1 -lagrange -nGauss 5
