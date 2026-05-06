@@ -1,7 +1,7 @@
 // $Id$
 //==============================================================================
 //!
-//! \file LinEl.dox
+//! \file Elasticity.dox
 //!
 //! \date Jan 30 2017
 //!
@@ -11,25 +11,35 @@
 //!
 //==============================================================================
 
-/*! \mainpage Isogemetric FEM Linear %Elasticity application
+/*! \mainpage Isogemetric Finite Element Elasticity applications
 
 \author Knut Morten Okstad, SINTEF Digital, Trondheim
 
 \section intro Introduction
-This is a selection of linear elasticity applications built on top of the
-IFEM library. There are solvers for the static linear elasticity equations
-for 2D or 3D continuum domains, as well as for some beam, plate
-and shell formulations. The applications can also perform eigenvalue analysis
+This is a set of elasticity applications built on top of the IFEM library.
+The following applications can be built built:
+
+\li **LinEl** is a solver for the static linear elasticity equation
+over 2D or 3D continuum domains, as well as for some beam, plate
+and shell formulations. The application can also perform eigenvalue analysis
 (free vibration and linearized buckling), and perform adaptive analysis,
 based on either the exact error distributions (for problems with known
 analytical solution) or recovery-based error estimates.
+
+\li **ShellEl** is a solver for quasi-static nonlinear shell analysis based
+on Kirchhoff--Love shell formulation. The application can also solve
+snap-through problems using arc-length path-following solution algorithms.
+
+\li **NonLinEl** is a solver for quasi-static and dynamic finite deformation
+problems over 2D or 3D continuum domains. Hyper-elastic and elasto-plastic
+material behavior is supported, in addition to linear elastic materials.
 
 Refer to the documents in the sub-folder <i>doc/Integrands</i>
 for the underlying equations forming the basis of the integrand implementations.
 
 IFEM is an object-oriented toolbox for implementing isogeometric finite element
 (FE) solvers for linear and nonlinear partial differential equations (PDEs).
-The toolbox is developed through the ICADA project at SINTEF ICT, Trondheim.
+The toolbox is developed through the ICADA project at SINTEF Digital, Trondheim.
 The purpose of this code is to serve as a common base for isogeometric
 PDE-simulators, using splines and NURBS as basis functions in the FE
 formulations. The toolbox contains methods for doing linear and nonlinear,
