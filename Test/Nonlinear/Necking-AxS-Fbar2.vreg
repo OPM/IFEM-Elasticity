@@ -1,0 +1,53 @@
+Necking-AxS-Fbar2.xinp
+
+Step 1
+  Element block 1
+    153 nodes
+    128 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+Step 2
+  Element block 1
+    153 nodes
+    128 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'Global L2 projection s_rr'
+    Scalar: 'Global L2 projection s_zz'
+    Scalar: 'Global L2 projection s_tt'
+    Scalar: 'Global L2 projection s_zr'
+    Scalar: 'Global L2 projection von Mises stress'
+    Scalar: 'Global L2 projection E_pp'
+    Scalar: 'Global L2 projection s_h'
+    Scalar: 'Global L2 projection s_1'
+    Scalar: 'Global L2 projection s_2'
+    Scalar: 'Global L2 projection s_3'
+    Scalar: 'Global L2 projection T'
+    Scalar: 'Global L2 projection L'
+Step 3
+  Element block 1
+    153 nodes
+    128 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'Global L2 projection s_rr'
+    Scalar: 'Global L2 projection s_zz'
+    Scalar: 'Global L2 projection s_tt'
+    Scalar: 'Global L2 projection s_zr'
+    Scalar: 'Global L2 projection von Mises stress'
+    Scalar: 'Global L2 projection E_pp'
+    Scalar: 'Global L2 projection s_h'
+    Scalar: 'Global L2 projection s_1'
+    Scalar: 'Global L2 projection s_2'
+    Scalar: 'Global L2 projection s_3'
+    Scalar: 'Global L2 projection T'
+    Scalar: 'Global L2 projection L'

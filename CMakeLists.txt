@@ -21,6 +21,9 @@ endif()
 if(NOT TARGET IFEM::Elasticity)
   add_subdirectory(Elasticity)
 endif()
+if(NOT TARGET IFEM::FiniteDeformation)
+  add_subdirectory(FiniteDeformation)
+endif()
 if(NOT TARGET IFEM::LinearElasticity)
   add_subdirectory(Linear)
 endif()
@@ -63,6 +66,18 @@ ifem_add_application(
     IFEM::Shell
 )
 
+ifem_add_application(
+  NAME
+    NonLinEl
+  SOURCES
+    main_NonLinEl.C
+    NLargs.C
+  HEADERS
+    NLargs.h
+  LIBRARIES
+    IFEM::FiniteDeformation
+)
+
 # Regression tests
 enable_testing()
 
@@ -81,6 +96,13 @@ ifem_add_hdf5_test(
     LRSpline_FOUND
   TEST_FILES
     Linear/LR/Lshape-adap-p2.hreg
+)
+
+ifem_add_hdf5_test(
+  TARGET
+    NonLinEl
+  TEST_FILES
+    Nonlinear/PrintConcrete2D2-p2.hreg
 )
 
 ifem_add_vtf_test(
@@ -112,6 +134,15 @@ ifem_add_vtf_test(
     ShellEl
   TEST_FILES
     Shell/PinchedHemisphere-p4.vreg
+)
+
+ifem_add_vtf_test(
+  TARGET
+    NonLinEl
+  TEST_FILES
+    Nonlinear/Contact3D_Q1P0_sphere_PL.vreg
+    Nonlinear/FBlock-h8x3-Q3Q2.vreg
+    Nonlinear/Necking-AxS-Fbar2.vreg
 )
 
 ifem_add_restart_test(
@@ -236,6 +267,45 @@ ifem_add_regression_test(
     Shell/PolePinchedSphere_p2.reg
 )
 
+ifem_add_regression_test(
+  TARGET
+    NonLinEl
+  TEST_FILES
+    Nonlinear/CanTS2D-p2-genalpha.reg
+    Nonlinear/CanTS2D-p2-linear.reg
+    Nonlinear/CanTS2D-p2.reg
+    Nonlinear/CanTS-p1.reg
+    Nonlinear/CanTS-p2.reg
+    Nonlinear/CanTS-p3.reg
+    Nonlinear/Contact2D_Q1P0_cyl_AL.reg
+    Nonlinear/Contact2D_Q1P0_cyl_PL.reg
+    Nonlinear/Contact2D_Q1P0_plane_PL.reg
+    Nonlinear/Contact3D_Q1P0_cyl_AL.reg
+    Nonlinear/Contact3D_Q1P0_cyl_PL.reg
+    Nonlinear/Contact3D_Q1P0_plane_PL.reg
+    Nonlinear/Contact3D_Q1P0_sphere_PL.reg
+    Nonlinear/Cook2D-h1-p2.reg
+    Nonlinear/Cook2D-p1-h1.reg
+    Nonlinear/Cook2D-p2-h1.reg
+    Nonlinear/Cyl-p2.reg
+    Nonlinear/Cyl-p3.reg
+    Nonlinear/Cyl-p4.reg
+    Nonlinear/FallingBeam2D.reg
+    Nonlinear/FBlock-h8x2-Q4P3.reg
+    Nonlinear/FBlock-h8x2-Q4Q3.reg
+    Nonlinear/FBlock-h8x3-Q3P2.reg
+    Nonlinear/FBlock-h8x3-Q3Q2.reg
+    Nonlinear/FBlock-h9x5-Q2P1.reg
+    Nonlinear/FBlock-h9x5-Q2Q1.reg
+    Nonlinear/Ironing2D-Q2L-AL-13x5-hardening.reg
+    Nonlinear/Ironing2D-Q2L-AL-13x5-hardnexpr.reg
+    Nonlinear/Necking-Q2P1.reg
+    Nonlinear/Necking-Q2-Q1.reg
+    Nonlinear/Necking-Q2Q1.reg
+    Nonlinear/PrintConcrete2D-p2.reg
+    Nonlinear/PrintConcrete2D2-p2.reg
+)
+
 if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)
   set_tests_properties(LinEl+Linear/Utkrager-load.reg
                        PROPERTIES DEPENDS
@@ -357,6 +427,33 @@ ifem_add_regression_test(
     Linear/SPR/triangular-neumann.reg
     Linear/SPR/Utkrager.reg
     Linear/SPR/WedgeStretch.reg
+)
+
+ifem_add_regression_test(
+  TARGET
+    NonLinEl
+  CONDITIONS
+    LRSpline_FOUND
+  TEST_FILES
+    Nonlinear/CanTS2D-p2-adap.reg
+)
+
+ifem_add_regression_test(
+  TARGET
+    NonLinEl
+  CONDITIONS
+    VTFWriter_FOUND
+  TEST_FILES
+    Nonlinear/Necking-AxS-Fbar2.reg
+)
+
+ifem_add_regression_test(
+  TARGET
+    NonLinEl
+  CONDITIONS
+    NOT VTFWriter_FOUND
+  TEST_FILES
+    Nonlinear/Necking-AxS-Fbar2-noVTF.reg
 )
 
 # Unit tests

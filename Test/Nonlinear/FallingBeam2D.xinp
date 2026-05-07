@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- 2D free-falling beam with a tip shear load. Dynamic simulation. !-->
+
+<simulation>
+
+  <geometry dim="2" Lx="2.0" Ly="0.4">
+    <refine type="uniform" patch="1" v="1"/>
+    <raiseorder patch="1" u="1" v="1"/>
+    <refine type="uniform" patch="1" u="7" v="1"/>
+    <topologysets>
+      <set name="fixed_end" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="free_end" type="edge">
+        <item patch="1">2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <neumann set="fixed_end" direction="1" type="expression">
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=if(above(t,0.5),0,-100000)*sin(3.14159265*t);
+      F0*(L*H/I)*Y
+    </neumann>
+    <neumann set="fixed_end" direction="2" type="expression">
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=if(above(t,0.5),0,-100000)*sin(3.14159265*t);
+     -F0*(H*H/I)*(0.5-x/L)*(0.25-Y*Y)
+    </neumann>
+    <neumann set="free_end" direction="2" type="expression">
+      L=2; H=0.4; I=H*H*H/12; Y=y/H-0.5;
+      F0=if(above(t,0.6),0,-100000)*sin(3.14159265*t);
+     -F0*(H*H/I)*(0.5-x/L)*(0.25-Y*Y)
+    </neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="2.068e8" nu="0.29" rho="7820.0"/>
+  </elasticity>
+
+  <newmarksolver version="oldHHT" alpha2="-0.003">
+    <trueinertia/>
+    <timestepping>
+      <step start="0.0" end="0.5">0.1</step>
+      <step start="0.5" end="2.0">0.02</step>
+    </timestepping>
+  </newmarksolver>
+
+</simulation>

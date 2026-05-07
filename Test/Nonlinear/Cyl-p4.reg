@@ -1,0 +1,67 @@
+Cyl-p4.xinp
+
+Input file: Cyl-p4.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Basis function values are precalculated but not cached
+Parsing input file Cyl-p4.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file half_pipe.g2
+	Reading patch 1
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 2 3 2
+  Parsing <refine>
+	Refining P1 1 1 0
+Parsing <boundaryconditions>
+  Parsing <propertyfile>
+	Reading data file faceload2.prc
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 3: (fixed)
+  Parsing <neumann>
+	Neumann code 4 direction 1 (linear): -235\*t
+  Parsing <neumann>
+	Neumann code 5 direction 1 (linear): 235\*t
+Parsing <finitedeformation>
+	Material code 0 (13): 16800 0.4 0
+Parsing <nonlinearsolver>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 4
+Basis function values are precalculated but not cached
+Problem definition:
+NonlinearElasticityUL: Updated Lagrangian formulation
+Elasticity: 3D, gravity = 0 0 0
+LinIsotropic: E = 16800, nu = 0.4, rho = 0, alpha = 1.2e-07
+NeoHookeMaterial: mVER = 1 iVOL = 3 kappa = 24000 mu = 6000
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 V6 in direction(s) 1
+	Constraining P1 F1 in direction(s) 2
+	Constraining P1 F2 in direction(s) 2
+	Constraining P1 F3 in direction(s) 3
+ >>> SAM model summary <<<
+Number of elements    8
+Number of nodes       264
+Number of dofs        792
+Number of unknowns    699
+  step=1  time=0.25
+  Primary solution summary: L2-norm            : 0.913394
+                            Max X-displacement : 2.66322
+                            Max Y-displacement : 1.10125
+                            Max Z-displacement : 0.0973311
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 48.4223	 a(u^h,u^h) = 2344.714994
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 47.2256	(f,u)+(t,u) = 2230.261347
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 9951.33
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 4082.46	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 7002.09	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 8575.78
+  Time integration completed.

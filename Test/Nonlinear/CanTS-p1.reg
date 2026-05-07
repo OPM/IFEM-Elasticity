@@ -1,0 +1,135 @@
+CanTS-p1.xinp -dense -ztol 1.0e-6
+
+Input file: CanTS-p1.xinp
+Equation solver: 0
+Number of Gauss points: 4
+Basis function values are precalculated but not cached
+Norm output zero tolerance: 1e-06
+Parsing input file CanTS-p1.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^3
+	Length in X = 10
+	Length in Y = 0.1478
+	Length in Z = 0.1
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed_end (1,1,2D)
+	               free_end (1,2,2D)
+  Parsing <refine>
+	Refining P1 9 0 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 123: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 3 (linear): 18224\*t
+Parsing <finitedeformation>
+	Material code 0: 1e+08 0 0
+Parsing <nonlinearsolver>
+Parsing input file succeeded.
+Equation solver: 0
+Number of Gauss points: 4
+Basis function values are precalculated but not cached
+Problem definition:
+NonlinearElasticityTL: Total Lagrangian formulation
+Elasticity: 3D, gravity = 0 0 0
+LinIsotropic: E = 1e+08, nu = 0, rho = 0, alpha = 1.2e-07
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 F1 in direction(s) 123
+ >>> SAM model summary <<<
+Number of elements    10
+Number of nodes       44
+Number of dofs        132
+Number of unknowns    120
+  step=1  time=0.1
+  Primary solution summary: L2-norm            : 0.0422387
+                            Max X-displacement : 0.00229467
+                            Max Z-displacement : 0.142922
+  Total external load: Sum(Fex) = 0 0 26.935
+  Total reaction forces: Sum(R) = 0 0 26.935
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1.96186	 a(u^h,u^h) = 3.848876894
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 1.96196	(f,u)+(t,u) = 3.849281559
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=2  time=0.2
+  Primary solution summary: L2-norm            : 0.0844348
+                            Max X-displacement : 0.00702851
+                            Max Z-displacement : 0.285686
+  Total external load: Sum(Fex) = 0 0 53.87
+  Total reaction forces: Sum(R) = 0 0 53.87
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.92186	 a(u^h,u^h) = 15.38096383
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 3.92268	(f,u)+(t,u) = 15.38742828
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=3  time=0.3
+  Primary solution summary: L2-norm            : 0.126546
+                            Max X-displacement : 0.0141846
+                            Max Z-displacement : 0.428114
+  Total external load: Sum(Fex) = 0 0 80.805
+  Total reaction forces: Sum(R) = 0 0 80.805
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.87816	 a(u^h,u^h) = 34.55281959
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 5.88094	(f,u)+(t,u) = 34.58546037
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=4  time=0.4
+  Primary solution summary: L2-norm            : 0.168531
+                            Max X-displacement : 0.023736
+                            Max Z-displacement : 0.570031
+  Total external load: Sum(Fex) = 0 0 107.74
+  Total reaction forces: Sum(R) = 0 0 107.74
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.82896	 a(u^h,u^h) = 61.29267015
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 7.83553	(f,u)+(t,u) = 61.39545525
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=5  time=0.5
+  Primary solution summary: L2-norm            : 0.210349
+                            Max X-displacement : 0.0356462
+                            Max Z-displacement : 0.711264
+  Total external load: Sum(Fex) = 0 0 134.675
+  Total reaction forces: Sum(R) = 0 0 134.675
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 9.77248	 a(u^h,u^h) = 95.50133235
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 9.78525	(f,u)+(t,u) = 95.75110267
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=6  time=0.6
+  Primary solution summary: L2-norm            : 0.25196
+                            Max X-displacement : 0.0498696
+                            Max Z-displacement : 0.851646
+  Total external load: Sum(Fex) = 0 0 161.61
+  Total reaction forces: Sum(R) = 0 0 161.61
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 11.707	 a(u^h,u^h) = 137.053471
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 11.729	(f,u)+(t,u) = 137.5684613
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=7  time=0.7
+  Primary solution summary: L2-norm            : 0.293326
+                            Max X-displacement : 0.0663518
+                            Max Z-displacement : 0.991016
+  Total external load: Sum(Fex) = 0 0 188.545
+  Total reaction forces: Sum(R) = 0 0 188.545
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 13.6308	 a(u^h,u^h) = 185.7991555
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 13.6655	(f,u)+(t,u) = 186.7468974
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=8  time=0.8
+  Primary solution summary: L2-norm            : 0.334411
+                            Max X-displacement : 0.0850308
+                            Max Z-displacement : 1.12922
+  Total external load: Sum(Fex) = 0 0 215.48
+  Total reaction forces: Sum(R) = 0 0 215.48
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 15.5424	 a(u^h,u^h) = 241.5656757
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 15.5939	(f,u)+(t,u) = 243.1701819
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=9  time=0.9
+  Primary solution summary: L2-norm            : 0.375181
+                            Max X-displacement : 0.105837
+                            Max Z-displacement : 1.26612
+  Total external load: Sum(Fex) = 0 0 242.415
+  Total reaction forces: Sum(R) = 0 0 242.415
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 17.4402	 a(u^h,u^h) = 304.1595703
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 17.5131	(f,u)+(t,u) = 306.7077203
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  step=10  time=1
+  Primary solution summary: L2-norm            : 0.415602
+                            Max X-displacement : 0.128696
+                            Max Z-displacement : 1.40158
+  Total external load: Sum(Fex) = 0 0 269.35
+  Total reaction forces: Sum(R) = 0 0 269.35
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 19.3228	 a(u^h,u^h) = 373.3688202
+  External energy: ((f,u^h)+(t,u^h))^0.5 : 19.422	(f,u)+(t,u) = 377.2158858
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 0.1478
+  Time integration completed.

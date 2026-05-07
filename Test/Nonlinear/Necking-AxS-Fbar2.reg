@@ -1,0 +1,123 @@
+Necking-AxS-Fbar2.xinp -outPrec 6 -printMax
+
+Input file: Necking-AxS-Fbar2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Enabled projection(s): Continuous global L2-projection
+Norm- and component output precision: 6
+Parsing input file Necking-AxS-Fbar2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file strip2D1rett.g2
+	Reading patch 1
+  Parsing <refine>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: bottom (1,3,1D)
+	               left (1,1,1D)
+	               top (1,4,1D)
+  Parsing <patchfile>
+  Parsing <refine>
+	Refining P1 dir=2 0.240484
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 3 3
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 1000002 (linear): 1\*t
+Parsing <finitedeformation>
+	Material code 0: 206.9 0.29 0 0 0.12924 0 1 0.45 0.715 16.93 1
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <vtfformat>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P1 xi = 0 1
+	Point 3: P1 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3
+Enabled projection(s): Continuous global L2-projection
+Secondary solution variables are not saved.
+Problem definition:
+NonlinearElasticityFbar: F-bar formulation, 0 volumetric points in each direction.
+NonlinearElasticityUL: Updated Lagrangian formulation
+Axial-symmetric Elasticity problem
+Elasticity: 2D, gravity = 0 0
+PlasticMaterial: pMAT = 206.9 0.29 0 0 164.206 80.1938 0.12924 0 1 0.45 0.715 16.93 1
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P1 E3 in direction(s) 2
+	Constraining P1 E4 in direction(s) 2 code = 1000002
+Result point #1: patch #1 (u,v)=(1,0), node #6, X = 6.29757 0 0
+Result point #2: patch #1 (u,v)=(0,1), node #61, X = 0 26.667 0
+Result point #3: patch #1 (u,v)=(1,1), node #66, X = 6.413 26.667 0
+ >>> SAM model summary <<<
+Number of elements    32
+Number of nodes       66
+Number of dofs        132
+Number of constraints 6
+Number of unknowns    109
+Global L2 projection will be used to compute
+smoothed secondary solution fields.
+  step=1  time=0.5
+  Primary solution summary: L2-norm            : 0.187342
+                            Max X-displacement : 0.0627259
+                            Max Y-displacement : 0.5
+  Total reaction forces: Sum(R) = -0.000167269 0
+  displacement\*reactions: (R,u) = -32.0799
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.98645	 a(u^h,u^h) = 15.89174819
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.00499	(f,u)+(t,u) = 16.03992671
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 29.9518
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 9.98449	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 24.4548	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 29.9509
+  Node #6:	sol1 = -6.272588e-02  0.000000e+00
+		sol2 =  2.134761e-03  5.269919e-01  4.355787e-03  6.878553e-04  5.237515e-01  1.869690e-02  1.778275e-01  5.269928e-01  4.355787e-03  2.133859e-03  3.395264e-01 -9.915332e-01
+		reac =  0.000000e+00  1.003909e+01
+  Node #61:	sol1 =  0.000000e+00  5.000000e-01
+		sol2 =  1.136316e+00  1.696453e+00  1.315619e+00  0.000000e+00  4.954479e-01  1.184243e-02  1.382796e+00  1.696453e+00  1.315619e+00  1.136316e+00  2.791002e+00 -3.597906e-01
+		reac = -1.674577e-04 -6.659936e-01
+  Node #66:	sol1 = -4.824122e-02  5.000000e-01
+		sol2 = -2.417020e-03  5.038017e-01 -2.090469e-03  2.221030e-03  5.060701e-01  1.368816e-02  1.664314e-01  5.038114e-01 -2.090469e-03 -2.426765e-03  3.288702e-01 -9.986714e-01
+		reac =  0.000000e+00 -1.005864e+01
+  Max von Mises stress:  5.237804e-01  X = 6.29757 0 0
+  Max E_pp:              1.870467e-02  X = 6.29757 0 0
+  Max T:                 2.791002e+00  X = 0 26.667 0
+  Max L:                -1.000547e+00  X = 4.00812 26.667 0
+  step=2  time=1
+  Primary solution summary: L2-norm            : 0.37265
+                            Max X-displacement : 0.12386
+                            Max Y-displacement : 1
+  Total reaction forces: Sum(R) = -0.000222734
+  displacement\*reactions: (R,u) = -69.7485
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.02592	 a(u^h,u^h) = 49.36349869
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -7.03683	(f,u)+(t,u) = 49.51698012
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 33.1589
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 11.0538	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 27.0731	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 33.1576
+  Node #6:	sol1 = -1.238600e-01  0.000000e+00
+		sol2 =  2.865381e-03  5.852897e-01  5.839198e-03  8.130832e-04  5.809448e-01  3.840422e-02  1.979981e-01  5.852909e-01  5.839198e-03  2.864246e-03  3.408208e-01 -9.897843e-01
+		reac =  0.000000e+00  1.092076e+01
+  Node #61:	sol1 =  0.000000e+00  1.000000e+00
+		sol2 =  2.457655e+00  3.069214e+00  2.659907e+00  0.000000e+00  5.396491e-01  2.637438e-02  2.728925e+00  3.069214e+00  2.659907e+00  2.457655e+00  5.056852e+00 -3.385690e-01
+		reac =  2.040475e-04 -7.247899e-01
+  Node #66:	sol1 = -1.008359e-01  1.000000e+00
+		sol2 = -2.721760e-03  5.561029e-01 -3.209447e-03  2.452684e-03  5.590848e-01  3.010575e-02  1.833906e-01  5.561137e-01 -2.732524e-03 -3.209447e-03  3.280192e-01 -9.982946e-01
+		reac =  0.000000e+00 -1.092517e+01
+  Max von Mises stress:  5.809800e-01  X = 6.29757 0 0
+  Max E_pp:              3.841662e-02  X = 6.29757 0 0
+  Max T:                 5.056852e+00  X = 0 26.667 0
+  Max L:                -1.000032e+00  X = 0 4.00813 0
+  Time integration completed.

@@ -1,0 +1,846 @@
+FallingBeam2D.xinp
+
+Input file: FallingBeam2D.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Parsing input file FallingBeam2D.xinp
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+	Length in Y = 0.4
+  Parsing <refine>
+  Parsing <raiseorder>
+  Parsing <topologysets>
+	Topology sets: fixed_end (1,1,1D)
+	               free_end (1,2,1D)
+	Refining P1 0 1
+	Raising order of P1 1 1
+	Refining P1 7 1
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <neumann>
+	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=if(above(t,0.5),0,-100000)\*sin(3.14159265\*t); F0\*(L\*H/I)\*Y
+  Parsing <neumann>
+	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=if(above(t,0.5),0,-100000)\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+  Parsing <neumann>
+	Neumann code 3000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=if(above(t,0.6),0,-100000)\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+Parsing <elasticity>
+	Material code 0: 2.068e+08 0.29 7820
+Parsing <newmarksolver>
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 4
+Problem definition:
+NonlinearElasticityTL: Total Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+08, nu = 0.29, rho = 7820
+Newmark predictor/multicorrector: beta = 0.3025 gamma = 0.6
+ using constant displacement predictor
+Stiffness-proportional damping (alpha2): 0.003
+Resolving Dirichlet boundary conditions
+ >>> SAM model summary <<<
+Number of elements    32
+Number of nodes       70
+Number of dofs        140
+Number of unknowns    140
+  step=1  time=0.1
+  Displacement L2-norm            : 0.00447597
+               Max X-displacement : 0.00858437
+               Max Y-displacement : 0.0115596
+  Velocity L2-norm                : 0.0887795
+               Max X-velocity     : 0.170268
+               Max Y-velocity     : 0.22928
+  Acceleration L2-norm            : 1.47966
+               Max X-acceleration : 2.83781
+               Max Y-acceleration : 3.82134
+  step=2  time=0.2
+  Displacement L2-norm            : 0.00906917
+               Max X-displacement : 0.0174857
+               Max Y-displacement : 0.0232626
+  Velocity L2-norm                : 0.00627548
+               Max X-velocity     : 0.011446
+               Max Y-velocity     : 0.0137363
+  Acceleration L2-norm            : 2.38404
+               Max X-acceleration : 4.54709
+               Max Y-acceleration : 6.20567
+  step=3  time=0.3
+  Displacement L2-norm            : 0.0114858
+               Max X-displacement : 0.0231682
+               Max Y-displacement : 0.029651
+  Velocity L2-norm                : 0.0412586
+               Max X-velocity     : 0.0977025
+               Max Y-velocity     : 0.111952
+  Acceleration L2-norm            : 2.19552
+               Max X-acceleration : 4.62723
+               Max Y-acceleration : 5.85651
+  step=4  time=0.4
+  Displacement L2-norm            : 0.0139985
+               Max X-displacement : 0.0283322
+               Max Y-displacement : 0.0359155
+  Velocity L2-norm                : 0.0132547
+               Max X-velocity     : 0.0173349
+               Max Y-velocity     : 0.0315695
+  Acceleration L2-norm            : 1.97816
+               Max X-acceleration : 4.69704
+               Max Y-acceleration : 5.48182
+  step=5  time=0.5
+  Displacement L2-norm            : 0.014258
+               Max X-displacement : 0.0291094
+               Max Y-displacement : 0.0363731
+  Velocity L2-norm                : 0.0100248
+               Max X-velocity     : 0.0158087
+               Max Y-velocity     : 0.0204175
+  Acceleration L2-norm            : 1.07589
+               Max X-acceleration : 3.59758
+               Max Y-acceleration : 3.21912
+  step=6  time=0.52
+  Displacement L2-norm            : 0.00939268
+               Max X-displacement : 0.00973625
+               Max Y-displacement : 0.0257424
+  Velocity L2-norm                : 0.693084
+               Max X-velocity     : 1.96232
+               Max Y-velocity     : 2.16242
+  Acceleration L2-norm            : 57.9892
+               Max X-acceleration : 165.566
+               Max Y-acceleration : 181.079
+  step=7  time=0.54
+  Displacement L2-norm            : 0.0149866
+               Max X-displacement : 0.00930113
+               Max Y-displacement : 0.0377851
+  Velocity L2-norm                : 0.833472
+               Max X-velocity     : 0.587465
+               Max Y-velocity     : 1.54053
+  Acceleration L2-norm            : 70.3038
+               Max X-acceleration : 279.964
+               Max Y-acceleration : 179.559
+  step=8  time=0.56
+  Displacement L2-norm            : 0.0354505
+               Max X-displacement : 0.0158524
+               Max Y-displacement : 0.0853347
+  Velocity L2-norm                : 1.33805
+               Max X-velocity     : 0.758987
+               Max Y-velocity     : 3.6167
+  Acceleration L2-norm            : 61.0665
+               Max X-acceleration : 211.179
+               Max Y-acceleration : 150.602
+  step=9  time=0.58
+  Displacement L2-norm            : 0.0672086
+               Max X-displacement : 0.0374233
+               Max Y-displacement : 0.174843
+  Velocity L2-norm                : 1.89088
+               Max X-velocity     : 1.54474
+               Max Y-velocity     : 5.34485
+  Acceleration L2-norm            : 36.0744
+               Max X-acceleration : 146.039
+               Max Y-acceleration : 91.8551
+  step=10  time=0.6
+  Displacement L2-norm            : 0.104981
+               Max X-displacement : 0.0629784
+               Max Y-displacement : 0.270724
+  Velocity L2-norm                : 1.94893
+               Max X-velocity     : 1.50508
+               Max Y-velocity     : 4.25959
+  Acceleration L2-norm            : 46.4195
+               Max X-acceleration : 107.445
+               Max Y-acceleration : 119.512
+  step=11  time=0.62
+  Displacement L2-norm            : 0.143376
+               Max X-displacement : 0.0870628
+               Max Y-displacement : 0.354084
+  Velocity L2-norm                : 1.97746
+               Max X-velocity     : 2.21132
+               Max Y-velocity     : 4.05812
+  Acceleration L2-norm            : 24.661
+               Max X-acceleration : 80.1793
+               Max Y-acceleration : 62.8858
+  step=12  time=0.64
+  Displacement L2-norm            : 0.182555
+               Max X-displacement : 0.127322
+               Max Y-displacement : 0.447008
+  Velocity L2-norm                : 2.01563
+               Max X-velocity     : 2.05996
+               Max Y-velocity     : 5.23493
+  Acceleration L2-norm            : 32.4595
+               Max X-acceleration : 53.6875
+               Max Y-acceleration : 80.2654
+  step=13  time=0.66
+  Displacement L2-norm            : 0.222185
+               Max X-displacement : 0.161143
+               Max Y-displacement : 0.554204
+  Velocity L2-norm                : 2.03368
+               Max X-velocity     : 2.54324
+               Max Y-velocity     : 5.49192
+  Acceleration L2-norm            : 8.93923
+               Max X-acceleration : 19.5335
+               Max Y-acceleration : 17.8949
+  step=14  time=0.68
+  Displacement L2-norm            : 0.261365
+               Max X-displacement : 0.209781
+               Max Y-displacement : 0.65694
+  Velocity L2-norm                : 1.98446
+               Max X-velocity     : 2.32763
+               Max Y-velocity     : 4.78487
+  Acceleration L2-norm            : 24.954
+               Max X-acceleration : 63.2721
+               Max Y-acceleration : 56.3368
+  step=15  time=0.7
+  Displacement L2-norm            : 0.299812
+               Max X-displacement : 0.254489
+               Max Y-displacement : 0.747425
+  Velocity L2-norm                : 1.98099
+               Max X-velocity     : 2.95024
+               Max Y-velocity     : 4.26004
+  Acceleration L2-norm            : 7.22092
+               Max X-acceleration : 21.6641
+               Max Y-acceleration : 11.951
+  step=16  time=0.72
+  Displacement L2-norm            : 0.337922
+               Max X-displacement : 0.309313
+               Max Y-displacement : 0.835124
+  Velocity L2-norm                : 1.98015
+               Max X-velocity     : 2.78077
+               Max Y-velocity     : 4.50581
+  Acceleration L2-norm            : 18.0093
+               Max X-acceleration : 37.4893
+               Max Y-acceleration : 45.5438
+  step=17  time=0.74
+  Displacement L2-norm            : 0.376003
+               Max X-displacement : 0.362971
+               Max Y-displacement : 0.928519
+  Velocity L2-norm                : 2.00718
+               Max X-velocity     : 3.17982
+               Max Y-velocity     : 4.83567
+  Acceleration L2-norm            : 8.52798
+               Max X-acceleration : 25.1082
+               Max Y-acceleration : 12.6103
+  step=18  time=0.76
+  Displacement L2-norm            : 0.41383
+               Max X-displacement : 0.422976
+               Max Y-displacement : 1.02189
+  Velocity L2-norm                : 1.99398
+               Max X-velocity     : 3.19202
+               Max Y-velocity     : 4.50581
+  Acceleration L2-norm            : 12.9109
+               Max X-acceleration : 27.5825
+               Max Y-acceleration : 33.2828
+  step=19  time=0.78
+  Displacement L2-norm            : 0.450987
+               Max X-displacement : 0.484619
+               Max Y-displacement : 1.10697
+  Velocity L2-norm                : 1.97938
+               Max X-velocity     : 3.37279
+               Max Y-velocity     : 4.00076
+  Acceleration L2-norm            : 8.86481
+               Max X-acceleration : 20.6867
+               Max Y-acceleration : 19.899
+  step=20  time=0.8
+  Displacement L2-norm            : 0.487573
+               Max X-displacement : 0.548962
+               Max Y-displacement : 1.18618
+  Velocity L2-norm                : 1.9836
+               Max X-velocity     : 3.4634
+               Max Y-velocity     : 3.91748
+  Acceleration L2-norm            : 9.34578
+               Max X-acceleration : 20.9041
+               Max Y-acceleration : 21.4625
+  step=21  time=0.82
+  Displacement L2-norm            : 0.5238
+               Max X-displacement : 0.616629
+               Max Y-displacement : 1.26509
+  Velocity L2-norm                : 1.99198
+               Max X-velocity     : 3.53993
+               Max Y-velocity     : 3.97433
+  Acceleration L2-norm            : 8.75204
+               Max X-acceleration : 17.7903
+               Max Y-acceleration : 20.8479
+  step=22  time=0.84
+  Displacement L2-norm            : 0.559566
+               Max X-displacement : 0.684782
+               Max Y-displacement : 1.34252
+  Velocity L2-norm                : 1.99043
+               Max X-velocity     : 3.646
+               Max Y-velocity     : 3.77033
+  Acceleration L2-norm            : 7.3631
+               Max X-acceleration : 12.1031
+               Max Y-acceleration : 17.3469
+  step=23  time=0.86
+  Displacement L2-norm            : 0.594699
+               Max X-displacement : 0.756514
+               Max Y-displacement : 1.41429
+  Velocity L2-norm                : 1.98519
+               Max X-velocity     : 3.64367
+               Max Y-velocity     : 3.40716
+  Acceleration L2-norm            : 8.21158
+               Max X-acceleration : 15.9651
+               Max Y-acceleration : 18.6994
+  step=24  time=0.88
+  Displacement L2-norm            : 0.629177
+               Max X-displacement : 0.827429
+               Max Y-displacement : 1.47996
+  Velocity L2-norm                : 1.98526
+               Max X-velocity     : 3.75351
+               Max Y-velocity     : 3.15808
+  Acceleration L2-norm            : 6.60563
+               Max X-acceleration : 8.17886
+               Max Y-acceleration : 14.7702
+  step=25  time=0.9
+  Displacement L2-norm            : 0.663043
+               Max X-displacement : 0.901509
+               Max Y-displacement : 1.54176
+  Velocity L2-norm                : 1.98714
+               Max X-velocity     : 3.69137
+               Max Y-velocity     : 3.02221
+  Acceleration L2-norm            : 7.58545
+               Max X-acceleration : 13.2612
+               Max Y-acceleration : 17.5488
+  step=26  time=0.92
+  Displacement L2-norm            : 0.696276
+               Max X-displacement : 0.974131
+               Max Y-displacement : 1.60016
+  Velocity L2-norm                : 1.98815
+               Max X-velocity     : 3.77712
+               Max Y-velocity     : 2.81862
+  Acceleration L2-norm            : 6.43727
+               Max X-acceleration : 6.16675
+               Max Y-acceleration : 14.4863
+  step=27  time=0.94
+  Displacement L2-norm            : 0.728804
+               Max X-displacement : 1.0486
+               Max Y-displacement : 1.65352
+  Velocity L2-norm                : 1.98639
+               Max X-velocity     : 3.69306
+               Max Y-velocity     : 2.51711
+  Acceleration L2-norm            : 7.08052
+               Max X-acceleration : 10.0331
+               Max Y-acceleration : 16.3903
+  step=28  time=0.96
+  Displacement L2-norm            : 0.760593
+               Max X-displacement : 1.1216
+               Max Y-displacement : 1.70103
+  Velocity L2-norm                : 1.98641
+               Max X-velocity     : 3.72458
+               Max Y-velocity     : 2.23355
+  Acceleration L2-norm            : 6.45101
+               Max X-acceleration : 5.27388
+               Max Y-acceleration : 14.426
+  step=29  time=0.98
+  Displacement L2-norm            : 0.791634
+               Max X-displacement : 1.19474
+               Max Y-displacement : 1.74337
+  Velocity L2-norm                : 1.98687
+               Max X-velocity     : 3.64023
+               Max Y-velocity     : 2.00077
+  Acceleration L2-norm            : 6.74644
+               Max X-acceleration : 6.83009
+               Max Y-acceleration : 15.2494
+  step=30  time=1
+  Displacement L2-norm            : 0.821902
+               Max X-displacement : 1.26642
+               Max Y-displacement : 1.78095
+  Velocity L2-norm                : 1.98667
+               Max X-velocity     : 3.69845
+               Max Y-velocity     : 2.2064
+  Acceleration L2-norm            : 6.48121
+               Max X-acceleration : 4.93643
+               Max Y-acceleration : 14.2049
+  step=31  time=1.02
+  Displacement L2-norm            : 0.851364
+               Max X-displacement : 1.33691
+               Max Y-displacement : 1.81331
+  Velocity L2-norm                : 1.98634
+               Max X-velocity     : 3.70785
+               Max Y-velocity     : 2.46481
+  Acceleration L2-norm            : 6.55951
+               Max X-acceleration : 6.94767
+               Max Y-acceleration : 14.4721
+  step=32  time=1.04
+  Displacement L2-norm            : 0.880004
+               Max X-displacement : 1.40561
+               Max Y-displacement : 1.84011
+  Velocity L2-norm                : 1.98684
+               Max X-velocity     : 3.7158
+               Max Y-velocity     : 2.74015
+  Acceleration L2-norm            : 6.48899
+               Max X-acceleration : 6.72313
+               Max Y-acceleration : 13.7148
+  step=33  time=1.06
+  Displacement L2-norm            : 0.907807
+               Max X-displacement : 1.4721
+               Max Y-displacement : 1.86153
+  Velocity L2-norm                : 1.98702
+               Max X-velocity     : 3.70005
+               Max Y-velocity     : 2.98319
+  Acceleration L2-norm            : 6.47187
+               Max X-acceleration : 7.57599
+               Max Y-acceleration : 13.8722
+  step=34  time=1.08
+  Displacement L2-norm            : 0.934742
+               Max X-displacement : 1.5363
+               Max Y-displacement : 1.87772
+  Velocity L2-norm                : 1.98646
+               Max X-velocity     : 3.65883
+               Max Y-velocity     : 3.19263
+  Acceleration L2-norm            : 6.47873
+               Max X-acceleration : 8.18002
+               Max Y-acceleration : 13.2251
+  step=35  time=1.1
+  Displacement L2-norm            : 0.960788
+               Max X-displacement : 1.59749
+               Max Y-displacement : 1.88864
+  Velocity L2-norm                : 1.9862
+               Max X-velocity     : 3.61273
+               Max Y-velocity     : 3.40838
+  Acceleration L2-norm            : 6.43826
+               Max X-acceleration : 8.4683
+               Max Y-acceleration : 13.2907
+  step=36  time=1.12
+  Displacement L2-norm            : 0.985939
+               Max X-displacement : 1.65578
+               Max Y-displacement : 1.89433
+  Velocity L2-norm                : 1.98669
+               Max X-velocity     : 3.52905
+               Max Y-velocity     : 3.63678
+  Acceleration L2-norm            : 6.4625
+               Max X-acceleration : 9.42325
+               Max Y-acceleration : 12.9498
+  step=37  time=1.14
+  Displacement L2-norm            : 1.01019
+               Max X-displacement : 1.71043
+               Max Y-displacement : 1.89496
+  Velocity L2-norm                : 1.98706
+               Max X-velocity     : 3.44906
+               Max Y-velocity     : 3.84392
+  Acceleration L2-norm            : 6.42867
+               Max X-acceleration : 9.5304
+               Max Y-acceleration : 12.63
+  step=38  time=1.16
+  Displacement L2-norm            : 1.03352
+               Max X-displacement : 1.76156
+               Max Y-displacement : 1.89064
+  Velocity L2-norm                : 1.98664
+               Max X-velocity     : 3.32846
+               Max Y-velocity     : 4.01626
+  Acceleration L2-norm            : 6.44802
+               Max X-acceleration : 10.5017
+               Max Y-acceleration : 12.335
+  step=39  time=1.18
+  Displacement L2-norm            : 1.05591
+               Max X-displacement : 1.80856
+               Max Y-displacement : 1.88146
+  Velocity L2-norm                : 1.98625
+               Max X-velocity     : 3.21358
+               Max Y-velocity     : 4.17695
+  Acceleration L2-norm            : 6.4275
+               Max X-acceleration : 10.6236
+               Max Y-acceleration : 11.8041
+  step=40  time=1.2
+  Displacement L2-norm            : 1.07735
+               Max X-displacement : 1.85143
+               Max Y-displacement : 1.86762
+  Velocity L2-norm                : 1.98652
+               Max X-velocity     : 3.06344
+               Max Y-velocity     : 4.33981
+  Acceleration L2-norm            : 6.43796
+               Max X-acceleration : 11.4436
+               Max Y-acceleration : 11.3983
+  step=41  time=1.22
+  Displacement L2-norm            : 1.09786
+               Max X-displacement : 1.88978
+               Max Y-displacement : 1.84941
+  Velocity L2-norm                : 1.98691
+               Max X-velocity     : 2.91169
+               Max Y-velocity     : 4.48788
+  Acceleration L2-norm            : 6.42817
+               Max X-acceleration : 11.6262
+               Max Y-acceleration : 10.7646
+  step=42  time=1.24
+  Displacement L2-norm            : 1.11743
+               Max X-displacement : 1.92351
+               Max Y-displacement : 1.82704
+  Velocity L2-norm                : 1.98676
+               Max X-velocity     : 2.7348
+               Max Y-velocity     : 4.60588
+  Acceleration L2-norm            : 6.43208
+               Max X-acceleration : 12.2346
+               Max Y-acceleration : 10.1796
+  step=43  time=1.26
+  Displacement L2-norm            : 1.13604
+               Max X-displacement : 1.95239
+               Max Y-displacement : 1.80066
+  Velocity L2-norm                : 1.9864
+               Max X-velocity     : 2.54987
+               Max Y-velocity     : 4.70269
+  Acceleration L2-norm            : 6.42861
+               Max X-acceleration : 12.4523
+               Max Y-acceleration : 9.49803
+  step=44  time=1.28
+  Displacement L2-norm            : 1.1537
+               Max X-displacement : 1.97629
+               Max Y-displacement : 1.77056
+  Velocity L2-norm                : 1.98645
+               Max X-velocity     : 2.34811
+               Max Y-velocity     : 4.79064
+  Acceleration L2-norm            : 6.42912
+               Max X-acceleration : 12.843
+               Max Y-acceleration : 8.72825
+  step=45  time=1.3
+  Displacement L2-norm            : 1.17042
+               Max X-displacement : 1.99508
+               Max Y-displacement : 1.73711
+  Velocity L2-norm                : 1.98674
+               Max X-velocity     : 2.13566
+               Max Y-velocity     : 4.86473
+  Acceleration L2-norm            : 6.42856
+               Max X-acceleration : 13.0426
+               Max Y-acceleration : 8.01759
+  step=46  time=1.32
+  Displacement L2-norm            : 1.1862
+               Max X-displacement : 2.00867
+               Max Y-displacement : 1.70062
+  Velocity L2-norm                : 1.98676
+               Max X-velocity     : 1.91193
+               Max Y-velocity     : 4.91411
+  Acceleration L2-norm            : 6.42785
+               Max X-acceleration : 13.2351
+               Max Y-acceleration : 7.09297
+  step=47  time=1.34
+  Displacement L2-norm            : 1.20106
+               Max X-displacement : 2.01698
+               Max Y-displacement : 1.66134
+  Velocity L2-norm                : 1.98654
+               Max X-velocity     : 1.67756
+               Max Y-velocity     : 4.93981
+  Acceleration L2-norm            : 6.42825
+               Max X-acceleration : 13.362
+               Max Y-acceleration : 6.3544
+  step=48  time=1.36
+  Displacement L2-norm            : 1.21499
+               Max X-displacement : 2.01995
+               Max Y-displacement : 1.61959
+  Velocity L2-norm                : 1.98648
+               Max X-velocity     : 1.43568
+               Max Y-velocity     : 4.94957
+  Acceleration L2-norm            : 6.4274
+               Max X-acceleration : 13.3826
+               Max Y-acceleration : 5.3198
+  step=49  time=1.38
+  Displacement L2-norm            : 1.22802
+               Max X-displacement : 2.0176
+               Max Y-displacement : 1.57578
+  Velocity L2-norm                : 1.98663
+               Max X-velocity     : 1.18494
+               Max Y-velocity     : 4.94393
+  Acceleration L2-norm            : 6.42789
+               Max X-acceleration : 13.3945
+               Max Y-acceleration : 4.54849
+  step=50  time=1.4
+  Displacement L2-norm            : 1.24017
+               Max X-displacement : 2.00992
+               Max Y-displacement : 1.5303
+  Velocity L2-norm                : 1.98671
+               Max X-velocity     : 0.929493
+               Max Y-velocity     : 4.91743
+  Acceleration L2-norm            : 6.42729
+               Max X-acceleration : 13.2666
+               Max Y-acceleration : 3.45814
+  step=51  time=1.42
+  Displacement L2-norm            : 1.25144
+               Max X-displacement : 2.00315
+               Max Y-displacement : 1.51444
+  Velocity L2-norm                : 1.98661
+               Max X-velocity     : 0.780082
+               Max Y-velocity     : 4.89124
+  Acceleration L2-norm            : 6.42761
+               Max X-acceleration : 13.1866
+               Max Y-acceleration : 2.86296
+  step=52  time=1.44
+  Displacement L2-norm            : 1.26187
+               Max X-displacement : 2.01385
+               Max Y-displacement : 1.61114
+  Velocity L2-norm                : 1.98653
+               Max X-velocity     : 1.03943
+               Max Y-velocity     : 4.92861
+  Acceleration L2-norm            : 6.42728
+               Max X-acceleration : 13.2816
+               Max Y-acceleration : 3.68165
+  step=53  time=1.46
+  Displacement L2-norm            : 1.27148
+               Max X-displacement : 2.01926
+               Max Y-displacement : 1.70634
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 1.29251
+               Max Y-velocity     : 4.94908
+  Acceleration L2-norm            : 6.42743
+               Max X-acceleration : 13.3832
+               Max Y-acceleration : 4.67511
+  step=54  time=1.48
+  Displacement L2-norm            : 1.28029
+               Max X-displacement : 2.01933
+               Max Y-displacement : 1.79968
+  Velocity L2-norm                : 1.98665
+               Max X-velocity     : 1.53943
+               Max Y-velocity     : 4.9506
+  Acceleration L2-norm            : 6.42728
+               Max X-acceleration : 13.3626
+               Max Y-acceleration : 5.5085
+  step=55  time=1.5
+  Displacement L2-norm            : 1.28834
+               Max X-displacement : 2.01407
+               Max Y-displacement : 1.89081
+  Velocity L2-norm                : 1.98662
+               Max X-velocity     : 1.77788
+               Max Y-velocity     : 4.93113
+  Acceleration L2-norm            : 6.42732
+               Max X-acceleration : 13.3116
+               Max Y-acceleration : 6.40256
+  step=56  time=1.52
+  Displacement L2-norm            : 1.29566
+               Max X-displacement : 2.0035
+               Max Y-displacement : 1.97936
+  Velocity L2-norm                : 1.98657
+               Max X-velocity     : 2.00722
+               Max Y-velocity     : 4.89184
+  Acceleration L2-norm            : 6.42727
+               Max X-acceleration : 13.1701
+               Max Y-acceleration : 7.20932
+  step=57  time=1.54
+  Displacement L2-norm            : 1.30227
+               Max X-displacement : 1.98767
+               Max Y-displacement : 2.065
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 2.22603
+               Max Y-velocity     : 4.83465
+  Acceleration L2-norm            : 6.42726
+               Max X-acceleration : 12.9705
+               Max Y-acceleration : 8.00823
+  step=58  time=1.56
+  Displacement L2-norm            : 1.30824
+               Max X-displacement : 1.96668
+               Max Y-displacement : 2.14743
+  Velocity L2-norm                : 1.98661
+               Max X-velocity     : 2.43304
+               Max Y-velocity     : 4.75942
+  Acceleration L2-norm            : 6.42725
+               Max X-acceleration : 12.7038
+               Max Y-acceleration : 8.75454
+  step=59  time=1.58
+  Displacement L2-norm            : 1.31358
+               Max X-displacement : 1.94062
+               Max Y-displacement : 2.22634
+  Velocity L2-norm                : 1.98661
+               Max X-velocity     : 2.6276
+               Max Y-velocity     : 4.6652
+  Acceleration L2-norm            : 6.42723
+               Max X-acceleration : 12.3641
+               Max Y-acceleration : 9.45617
+  step=60  time=1.6
+  Displacement L2-norm            : 1.31836
+               Max X-displacement : 1.90965
+               Max Y-displacement : 2.30145
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 2.80802
+               Max Y-velocity     : 4.55254
+  Acceleration L2-norm            : 6.42723
+               Max X-acceleration : 11.9713
+               Max Y-acceleration : 10.1156
+  step=61  time=1.62
+  Displacement L2-norm            : 1.3226
+               Max X-displacement : 1.87391
+               Max Y-displacement : 2.3725
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 2.97419
+               Max Y-velocity     : 4.423
+  Acceleration L2-norm            : 6.42721
+               Max X-acceleration : 11.5023
+               Max Y-acceleration : 10.7134
+  step=62  time=1.64
+  Displacement L2-norm            : 1.32638
+               Max X-displacement : 1.8336
+               Max Y-displacement : 2.43925
+  Velocity L2-norm                : 1.9866
+               Max X-velocity     : 3.12432
+               Max Y-velocity     : 4.27741
+  Acceleration L2-norm            : 6.42721
+               Max X-acceleration : 10.9872
+               Max Y-acceleration : 11.2662
+  step=63  time=1.66
+  Displacement L2-norm            : 1.32973
+               Max X-displacement : 1.78892
+               Max Y-displacement : 2.50149
+  Velocity L2-norm                : 1.9866
+               Max X-velocity     : 3.25859
+               Max Y-velocity     : 4.11587
+  Acceleration L2-norm            : 6.4272
+               Max X-acceleration : 10.4012
+               Max Y-acceleration : 11.7511
+  step=64  time=1.68
+  Displacement L2-norm            : 1.33271
+               Max X-displacement : 1.74012
+               Max Y-displacement : 2.55901
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.3754
+               Max Y-velocity     : 3.93901
+  Acceleration L2-norm            : 6.42719
+               Max X-acceleration : 9.77217
+               Max Y-acceleration : 12.1828
+  step=65  time=1.7
+  Displacement L2-norm            : 1.33537
+               Max X-displacement : 1.68744
+               Max Y-displacement : 2.61165
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.47486
+               Max Y-velocity     : 3.74816
+  Acceleration L2-norm            : 6.42718
+               Max X-acceleration : 9.08285
+               Max Y-acceleration : 12.5456
+  step=66  time=1.72
+  Displacement L2-norm            : 1.33779
+               Max X-displacement : 1.63116
+               Max Y-displacement : 2.65926
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.55591
+               Max Y-velocity     : 3.54455
+  Acceleration L2-norm            : 6.42718
+               Max X-acceleration : 8.35224
+               Max Y-acceleration : 12.8465
+  step=67  time=1.74
+  Displacement L2-norm            : 1.34001
+               Max X-displacement : 1.57158
+               Max Y-displacement : 2.70174
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.61848
+               Max Y-velocity     : 3.329
+  Acceleration L2-norm            : 6.42717
+               Max X-acceleration : 7.57416
+               Max Y-acceleration : 13.0791
+  step=68  time=1.76
+  Displacement L2-norm            : 1.3421
+               Max X-displacement : 1.50901
+               Max Y-displacement : 2.73898
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.66204
+               Max Y-velocity     : 3.10246
+  Acceleration L2-norm            : 6.42716
+               Max X-acceleration : 6.75753
+               Max Y-acceleration : 13.2429
+  step=69  time=1.78
+  Displacement L2-norm            : 1.34412
+               Max X-displacement : 1.44377
+               Max Y-displacement : 2.77093
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.68646
+               Max Y-velocity     : 2.86623
+  Acceleration L2-norm            : 6.42715
+               Max X-acceleration : 5.9066
+               Max Y-acceleration : 13.3394
+  step=70  time=1.8
+  Displacement L2-norm            : 1.34614
+               Max X-displacement : 1.37621
+               Max Y-displacement : 2.79754
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.69159
+               Max Y-velocity     : 2.62169
+  Acceleration L2-norm            : 6.42715
+               Max X-acceleration : 5.02176
+               Max Y-acceleration : 13.3634
+  step=71  time=1.82
+  Displacement L2-norm            : 1.34823
+               Max X-displacement : 1.30668
+               Max Y-displacement : 2.81882
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.67737
+               Max Y-velocity     : 2.37006
+  Acceleration L2-norm            : 6.42714
+               Max X-acceleration : 4.11513
+               Max Y-acceleration : 13.3208
+  step=72  time=1.84
+  Displacement L2-norm            : 1.35045
+               Max X-displacement : 1.23555
+               Max Y-displacement : 2.83478
+  Velocity L2-norm                : 1.98659
+               Max X-velocity     : 3.64395
+               Max Y-velocity     : 2.11257
+  Acceleration L2-norm            : 6.42713
+               Max X-acceleration : 3.18143
+               Max Y-acceleration : 13.2049
+  step=73  time=1.86
+  Displacement L2-norm            : 1.35287
+               Max X-displacement : 1.16318
+               Max Y-displacement : 2.84547
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.6445
+               Max Y-velocity     : 2.11618
+  Acceleration L2-norm            : 6.42712
+               Max X-acceleration : 3.00915
+               Max Y-acceleration : 13.1775
+  step=74  time=1.88
+  Displacement L2-norm            : 1.35555
+               Max X-displacement : 1.08996
+               Max Y-displacement : 2.85097
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.6777
+               Max Y-velocity     : 2.37362
+  Acceleration L2-norm            : 6.42712
+               Max X-acceleration : 3.93943
+               Max Y-acceleration : 13.3036
+  step=75  time=1.9
+  Displacement L2-norm            : 1.35856
+               Max X-displacement : 1.01627
+               Max Y-displacement : 2.85138
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.69158
+               Max Y-velocity     : 2.62519
+  Acceleration L2-norm            : 6.42711
+               Max X-acceleration : 4.85457
+               Max Y-acceleration : 13.3611
+  step=76  time=1.92
+  Displacement L2-norm            : 1.36196
+               Max X-displacement : 0.942493
+               Max Y-displacement : 2.84683
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.6862
+               Max Y-velocity     : 2.86961
+  Acceleration L2-norm            : 6.4271
+               Max X-acceleration : 5.7396
+               Max Y-acceleration : 13.348
+  step=77  time=1.94
+  Displacement L2-norm            : 1.36582
+               Max X-displacement : 0.869018
+               Max Y-displacement : 2.83748
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.66148
+               Max Y-velocity     : 3.10563
+  Acceleration L2-norm            : 6.4271
+               Max X-acceleration : 6.59873
+               Max Y-acceleration : 13.2656
+  step=78  time=1.96
+  Displacement L2-norm            : 1.37019
+               Max X-displacement : 0.796228
+               Max Y-displacement : 2.8235
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.61763
+               Max Y-velocity     : 3.33201
+  Acceleration L2-norm            : 6.42709
+               Max X-acceleration : 7.4204
+               Max Y-acceleration : 13.1137
+  step=79  time=1.98
+  Displacement L2-norm            : 1.37514
+               Max X-displacement : 0.724504
+               Max Y-displacement : 2.8051
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.55482
+               Max Y-velocity     : 3.54751
+  Acceleration L2-norm            : 6.42708
+               Max X-acceleration : 8.20519
+               Max Y-acceleration : 12.893
+  step=80  time=2
+  Displacement L2-norm            : 1.38071
+               Max X-displacement : 0.654223
+               Max Y-displacement : 2.78251
+  Velocity L2-norm                : 1.98658
+               Max X-velocity     : 3.47342
+               Max Y-velocity     : 3.75102
+  Acceleration L2-norm            : 6.42707
+               Max X-acceleration : 8.9458
+               Max Y-acceleration : 12.6052
+  Time integration completed.

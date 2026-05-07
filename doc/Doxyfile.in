@@ -936,6 +936,7 @@ WARN_LOGFILE           = @PROJECT_BINARY_DIR@/DoxyWarnings.log
 INPUT                  = @PROJECT_SOURCE_DIR@ \
                          @PROJECT_SOURCE_DIR@/Beam \
                          @PROJECT_SOURCE_DIR@/Elasticity \
+                         @PROJECT_SOURCE_DIR@/FiniteDeformation \
                          @PROJECT_SOURCE_DIR@/Linear \
                          @PROJECT_SOURCE_DIR@/Shell \
                          @EXTRA_DOXY_PATHS@
