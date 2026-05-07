@@ -1,0 +1,368 @@
+CanTS2D-p2-adap.xinp -2D -adap
+
+Input file: CanTS2D-p2-adap.xinp
+Equation solver: 2
+Number of Gauss points: 4
+LR-spline basis functions are used
+Parsing input file CanTS2D-p2-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 2
+	Length in Y = 0.4
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed_corner (1,1,0D) (1,3,0D)
+	               fixed_end (1,1,1D)
+	               free_end (1,2,1D)
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <refine>
+	Refining P1 7 1
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=-1000000\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+09 0.29 7820
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+	Refinement scheme: 2
+	Refinement percentage: 5 type=6 (eps = 1e-06)
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3 4
+LR-spline basis functions are used
+Enabled projection(s): Continuous global L2-projection
+Problem definition:
+NonlinearElasticityTL: Total Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+09, nu = 0.29, rho = 7820, alpha = 1.2e-07
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 2
+	Constraining P1 V3 in direction(s) 2
+	Constraining P1 E1 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    16
+Number of nodes       40
+Number of dofs        80
+Number of unknowns    74
+Global L2 projection will be used to compute
+smoothed secondary solution fields.
+ >>> Starting adaptive simulation based on
+     Global L2 projection error estimates (norm group 1) <<<
+  step=1  time=0.05
+  Primary solution summary: L2-norm            : 0.0148791
+                            Max X-displacement : 0.00612471
+                            Max Y-displacement : 0.0388431
+  Total reaction forces: Sum(R) = .* -156434
+Energy norm           a(u^h,u^h)^0.5 : 77.8643
+External energy((f,u^h)+(t,u^h))^0.5 : 77.8711
+>>> Error estimates based on Global L2 projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 77.8496
+Error norm a(e,e)^0.5, e=u^r-u^h     : 1.5105
+ relative error (% of |u^r|) : 1.94027
+Error estimate a(e,e)^0.5, e=u^r-u^h : 1.5105
+Relative error (%) : 1.93954
+Root mean square (RMS) of error      : 0.0553003
+Min element error                    : 0.34925
+Max element error                    : 0.418856
+Average element error                : 0.377048
+Refining 2 basis functions with errors in range \[2.40571,2.40571]
+Refined mesh: 34 elements 64 nodes.
+Parsing input file CanTS2D-p2-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed_corner (1,1,0D) (1,3,0D)
+	               fixed_end (1,1,1D)
+	               free_end (1,2,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=-1000000\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+09 0.29 7820
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+NonlinearElasticityTL: Total Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+09, nu = 0.29, rho = 7820, alpha = 1.2e-07
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 2
+	Constraining P1 V3 in direction(s) 2
+	Constraining P1 E1 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    34
+Number of nodes       64
+Number of dofs        128
+Number of unknowns    120
+Transferring 2x80 solution variables to the new mesh
+Resuming nonlinear solution on the new mesh
+  step=2  time=0.1
+  Primary solution summary: L2-norm            : 0.023414
+                            Max X-displacement : 0.01295
+                            Max Y-displacement : 0.0768836
+  Total reaction forces: Sum(R) = .* -309017
+Energy norm           a(u^h,u^h)^0.5 : 153.772
+External energy((f,u^h)+(t,u^h))^0.5 : 153.824
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 153.75
+Error norm a(e,e)^0.5, e=u^r-u^h     : 2.57669
+ relative error (% of |u^r|) : 1.67589
+Error estimate a(e,e)^0.5, e=u^r-u^h : 2.57669
+Relative error (%) : 1.67542
+Root mean square (RMS) of error      : 0.637556
+Min element error                    : 0.119898
+Max element error                    : 0.73962
+Average element error                : 0.372611
+Refining 4 basis functions with errors in range \[4.2802,4.34961]
+Refined mesh: 58 elements 96 nodes.
+Parsing input file CanTS2D-p2-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed_corner (1,1,0D) (1,3,0D)
+	               fixed_end (1,1,1D)
+	               free_end (1,2,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=-1000000\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+09 0.29 7820
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+NonlinearElasticityTL: Total Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+09, nu = 0.29, rho = 7820, alpha = 1.2e-07
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 2
+	Constraining P1 V3 in direction(s) 2
+	Constraining P1 E1 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    58
+Number of nodes       96
+Number of dofs        192
+Number of unknowns    184
+Transferring 2x128 solution variables to the new mesh
+Resuming nonlinear solution on the new mesh
+  step=3  time=0.15
+  Primary solution summary: L2-norm            : 0.0358325
+                            Max X-displacement : 0.0201963
+                            Max Y-displacement : 0.11301
+  Total reaction forces: Sum(R) = .* -453990
+Energy norm           a(u^h,u^h)^0.5 : 225.666
+External energy((f,u^h)+(t,u^h))^0.5 : 225.832
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 225.654
+Error norm a(e,e)^0.5, e=u^r-u^h     : 2.36903
+ relative error (% of |u^r|) : 1.04985
+Error estimate a(e,e)^0.5, e=u^r-u^h : 2.36903
+Relative error (%) : 1.04974
+Root mean square (RMS) of error      : 0.771503
+Min element error                    : 0.123305
+Max element error                    : 0.907885
+Average element error                : 0.24629
+Refining 6 basis functions with errors in range \[3.38891,4.06687]
+Refined mesh: 100 elements 150 nodes.
+Parsing input file CanTS2D-p2-adap.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: fixed_corner (1,1,0D) (1,3,0D)
+	               fixed_end (1,1,1D)
+	               free_end (1,2,1D)
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=-1000000\*sin(3.14159265\*t); -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+Parsing <elasticity>
+  Parsing <isotropic>
+	Material code 0: 2.068e+09 0.29 7820
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <projection>
+Parsing <adaptive>
+Parsing input file succeeded.
+Problem definition:
+NonlinearElasticityTL: Total Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+LinIsotropic: plane stress, E = 2.068e+09, nu = 0.29, rho = 7820, alpha = 1.2e-07
+Using C^(p-1) continuous displacement basis
+Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 2
+	Constraining P1 V3 in direction(s) 2
+	Constraining P1 E1 in direction(s) 1
+ >>> SAM model summary <<<
+Number of elements    100
+Number of nodes       150
+Number of dofs        300
+Number of unknowns    288
+Transferring 2x192 solution variables to the new mesh
+Resuming nonlinear solution on the new mesh
+  step=4  time=0.2
+  Primary solution summary: L2-norm            : 0.0455895
+                            Max X-displacement : 0.0275235
+                            Max Y-displacement : 0.146417
+  Total reaction forces: Sum(R) = .* -587785
+Energy norm           a(u^h,u^h)^0.5 : 291.876
+External energy((f,u^h)+(t,u^h))^0.5 : 292.234
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 291.867
+Error norm a(e,e)^0.5, e=u^r-u^h     : 2.26624
+ relative error (% of |u^r|) : 0.776463
+Error estimate a(e,e)^0.5, e=u^r-u^h : 2.26624
+Relative error (%) : 0.776416
+Root mean square (RMS) of error      : 0.794059
+Min element error                    : 0.0297749
+Max element error                    : 0.832894
+Average element error                : 0.177477
+  step=5  time=0.25
+  Primary solution summary: L2-norm            : 0.0547524
+                            Max X-displacement : 0.034554
+                            Max Y-displacement : 0.176029
+  Total reaction forces: Sum(R) = .* -707107
+Energy norm           a(u^h,u^h)^0.5 : 350.556
+External energy((f,u^h)+(t,u^h))^0.5 : 351.177
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 350.545
+Error norm a(e,e)^0.5, e=u^r-u^h     : 2.72603
+ relative error (% of |u^r|) : 0.777653
+Error estimate a(e,e)^0.5, e=u^r-u^h : 2.72603
+Relative error (%) : 0.777606
+Root mean square (RMS) of error      : 0.794214
+Min element error                    : 0.0356991
+Max element error                    : 1.00763
+Average element error                : 0.213468
+  step=6  time=0.3
+  Primary solution summary: L2-norm            : 0.0625391
+                            Max X-displacement : 0.0409179
+                            Max Y-displacement : 0.201227
+  Total reaction forces: Sum(R) = 0.0[0-9]* -809017
+Energy norm           a(u^h,u^h)^0.5 : 400.43
+External energy((f,u^h)+(t,u^h))^0.5 : 401.356
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 400.418
+Error norm a(e,e)^0.5, e=u^r-u^h     : 3.1186
+ relative error (% of |u^r|) : 0.778837
+Error estimate a(e,e)^0.5, e=u^r-u^h : 3.1186
+Relative error (%) : 0.778789
+Root mean square (RMS) of error      : 0.794374
+Min element error                    : 0.0407506
+Max element error                    : 1.15829
+Average element error                : 0.244191
+  step=7  time=0.35
+  Primary solution summary: L2-norm            : 0.0687742
+                            Max X-displacement : 0.0462701
+                            Max Y-displacement : 0.221423
+  Total reaction forces: Sum(R) = 0.0[0-9]* -891007
+Energy norm           a(u^h,u^h)^0.5 : 440.371
+External energy((f,u^h)+(t,u^h))^0.5 : 441.604
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 440.358
+Error norm a(e,e)^0.5, e=u^r-u^h     : 3.43435
+ relative error (% of |u^r|) : 0.7799
+Error estimate a(e,e)^0.5, e=u^r-u^h : 3.43435
+Relative error (%) : 0.779852
+Root mean square (RMS) of error      : 0.794523
+Min element error                    : 0.0448148
+Max element error                    : 1.28045
+Average element error                : 0.268894
+  step=8  time=0.4
+  Primary solution summary: L2-norm            : 0.0733226
+                            Max X-displacement : 0.0503178
+                            Max Y-displacement : 0.236164
+  Total reaction forces: Sum(R) = 0.0[0-9]* -951057
+Energy norm           a(u^h,u^h)^0.5 : 469.511
+External energy((f,u^h)+(t,u^h))^0.5 : 471.006
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 469.497
+Error norm a(e,e)^0.5, e=u^r-u^h     : 3.66555
+ relative error (% of |u^r|) : 0.78074
+Error estimate a(e,e)^0.5, e=u^r-u^h : 3.66555
+Relative error (%) : 0.780693
+Root mean square (RMS) of error      : 0.794644
+Min element error                    : 0.047794
+Max element error                    : 1.37043
+Average element error                : 0.286979
+  step=9  time=0.45
+  Primary solution summary: L2-norm            : 0.0760892
+                            Max X-displacement : 0.0528388
+                            Max Y-displacement : 0.245134
+  Total reaction forces: Sum(R) = 0.0[0-9]* -987688
+Energy norm           a(u^h,u^h)^0.5 : 487.237
+External energy((f,u^h)+(t,u^h))^0.5 : 488.908
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 487.222
+Error norm a(e,e)^0.5, e=u^r-u^h     : 3.80656
+ relative error (% of |u^r|) : 0.781278
+Error estimate a(e,e)^0.5, e=u^r-u^h : 3.80656
+Relative error (%) : 0.781231
+Root mean square (RMS) of error      : 0.794723
+Min element error                    : 0.0496131
+Max element error                    : 1.42554
+Average element error                : 0.298008
+  step=10  time=0.5
+  Primary solution summary: L2-norm            : 0.0770176
+                            Max X-displacement : 0.0536947
+                            Max Y-displacement : 0.248145
+  Total reaction forces: Sum(R) = .* -1e+06
+Energy norm           a(u^h,u^h)^0.5 : 493.186
+External energy((f,u^h)+(t,u^h))^0.5 : 494.919
+>>> Error estimates based on Continuous global L2-projection <<<
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 493.171
+Error norm a(e,e)^0.5, e=u^r-u^h     : 3.85395
+ relative error (% of |u^r|) : 0.781463
+Error estimate a(e,e)^0.5, e=u^r-u^h : 3.85395
+Relative error (%) : 0.781416
+Root mean square (RMS) of error      : 0.794751
+Min element error                    : 0.0502249
+Max element error                    : 1.44409
+Average element error                : 0.301714
+  Time integration completed.

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<simulation>
+
+  <geometry dim="2">
+    <patches>
+      200 1 0 0 2 0\
+      2 2 0 0 1 1\
+      2 2 0 0 1 1\
+      0.0 0.0\
+      2.0 0.0\
+      0.0 1.0\
+      2.0 1.0\
+      200 1 0 0 2 0\
+      2 2 0 0 1 1\
+      2 2 0 0 1 1\
+      2.0 0.0\
+      4.0 0.0\
+      2.0 1.0\
+      4.0 1.0\
+    </patches>
+    <raiseorder lowerpatch="1" upperpatch="2" u="1" v="1"/>
+    <refine lowerpatch="1" upperpatch="2" u="3"/>
+    <topology>
+      <connection master="1" medge="2" slave="2" sedge="1"/>
+    </topology>
+    <topologysets>
+      <set name="fixed" type="edge">
+        <item patch="1">1</item>
+      </set>
+    </topologysets>
+    <activation patch="1">20.0*t-1.0</activation>
+    <activation patch="2">20.0*t+79.0</activation>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="fixed" comp="12"/>
+  </boundaryconditions>
+
+  <finitedeformation>
+    <formulation>
+      <updatedlagrange/>
+    </formulation>
+    <gravity y="-9.81"/>
+    <druckerprager E="1.4e6" nu="0.3" rho="2070" beta="35">
+      <stiffness aging="true" type="piecewiselinear">Betong.dat 2</stiffness>
+      <yieldlimit beta="35" type="piecewiselinear">Betong.dat 3</yieldlimit>
+    </druckerprager>
+  </finitedeformation>
+
+  <discretization>
+    <nGauss>3 4</nGauss>
+  </discretization>
+
+  <timestepping>
+    <step start="0.0" end="170">17</step>
+  </timestepping>
+
+  <linearsolver>
+    <class fixzeros="true"/>
+  </linearsolver>
+
+  <postprocessing>
+    <vtfformat merge="true">BINARY</vtfformat>
+    <direct2nd/>
+  </postprocessing>
+
+</simulation>

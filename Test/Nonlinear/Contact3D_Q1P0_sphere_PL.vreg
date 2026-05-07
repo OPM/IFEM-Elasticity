@@ -1,0 +1,667 @@
+Contact3D_Q1P0_sphere_PL.xinp
+
+WARNING: Ignoring transformationresult block
+WARNING: Ignoring glviewtransformation block
+Step 1
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 2
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 3
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 4
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 5
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 6
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 7
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 8
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 9
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 10
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 11
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 12
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 13
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 14
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 15
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 16
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 17
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 18
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 19
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 20
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 21
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 22
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 23
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 24
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 25
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 26
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 27
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 28
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 29
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 30
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 31
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 32
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 33
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 34
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 35
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 36
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 37
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 38
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 39
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 40
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 41
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 42
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 43
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 44
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 45
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 46
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 47
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 48
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 49
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 50
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements
+Step 51
+  Element block 1
+    729 nodes
+    512 elements
+    Displacement: 'Solution'
+    Scalar: 'fix_X'
+    Scalar: 'fix_Y'
+    Scalar: 'u_x'
+    Scalar: 'u_y'
+    Scalar: 'u_z'
+  Element block 2
+    10622 nodes
+    10800 elements

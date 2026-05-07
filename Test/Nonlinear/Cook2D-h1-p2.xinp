@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Cooks membrane, 2D plastic model, quadratic Lagrange elements. !-->
+
+<simulation>
+
+  <geometry dim="2">
+    <patchfile>cook2d.g2</patchfile>
+    <refine patch="1" u="1" v="1"/>
+    <raiseorder patch="1" u="1" v="1"/>
+    <topologysets>
+      <set name="fixed_end" type="edge">
+        <item patch="1">1</item>
+      </set>
+      <set name="free_end" type="edge">
+        <item patch="1">2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="fixed_end" comp="12"/>
+    <neumann set="free_end" direction="2" type="linear">0.3125</neumann>
+  </boundaryconditions>
+
+  <finitedeformation>
+    <formulation>
+      <mixed type="Fbar">2</mixed>
+    </formulation>
+    <plastic Bmod="164.21" Smod="80.1938" Hiso="0.12924"
+             yield="1" Y0="0.45" Yinf="0.715" beta="16.93"/>
+  </finitedeformation>
+
+  <discretization type="lagrange">
+    <nGauss>3</nGauss>
+  </discretization>
+
+  <nonlinearsolver>
+    <timestepping>
+      <step start="0.0" end="1.0">0.05</step>
+    </timestepping>
+    <maxit value="20"/>
+    <rtol value="1.0e-16"/>
+    <dtol value="1.0e2"/>
+    <energy2/>
+  </nonlinearsolver>
+
+  <postprocessing>
+    <resultpoints printmapping="true">
+      <point patch="1" u="1.0" v="0.0"/>
+      <point patch="1" u="1.0" v="0.5"/>
+      <point patch="1" u="1.0" v="1.0"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

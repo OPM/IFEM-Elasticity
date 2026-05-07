@@ -1,0 +1,3267 @@
+Ironing2D-Q2L-AL-13x5-hardening.xinp -ztol 1.0e-4
+
+Input file: Ironing2D-Q2L-AL-13x5-hardening.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Lagrangian basis functions are used
+Norm output zero tolerance: 0.0001
+Parsing input file Ironing2D-Q2L-AL-13x5-hardening.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Generating linear geometry on unit parameter domain \[0,1]^2
+	Length in X = 3
+	Length in Y = 1
+  Parsing <refine>
+  Parsing <raiseorder>
+  Parsing <topologysets>
+	Topology sets: bottom (1,3,1D)
+	               top (1,4,1D)
+  Parsing <refine>
+	Refining P1 5 1
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 12: (fixed)
+Parsing <finitedeformation>
+ Hardening: PiecewiseLin(t,Hcurve.dat,2)
+	Material code 0: 70000 0.3 0 0 0 0 5 24.37 0 0 1
+	Contact code 1000000
+	Prescribed contact body (expression) if(below(t,1.0),-0.075\*t,-0.075)
+	Prescribed contact body (expression) if(below(t,1.0),0.0,2.0\*(t-1.0))
+	Rigid Cylinder: R = 0.5, L = 1, dirC = 0 0 1
+	P1 (node 66): 0.5 1.5 0
+	Property code: 1000000
+	Penalty parameter: 10
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.166667 1
+	Point 2: P1 xi = 0.833333 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3
+Lagrangian basis functions are used
+Problem definition:
+NonlinearElasticityUL: Updated Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+PlasticMaterial: pMAT = 70000 0.3 0 0 58333.3 26923.1 0 0 5 24.37 0 0 1
+Added 13 Lagrange multipliers to patch 1
+Resolving Dirichlet boundary conditions
+	Constraining P1 E3 in direction(s) 12
+ >>> SAM model summary <<<
+Number of elements    18
+Number of nodes       79
+Number of dofs        145
+Number of D-dofs      130
+Number of L-dofs      13
+Number of X-dofs      2
+Number of constraints 2
+Number of unknowns    117
+MortarAugmentedLag: Mortar contact formulation (Augmented Lagrange, eps=10)
+  step=1  time=0.01
+  1 active contact nodes, closest non-active node 54: constraint = 0.67952
+MortarAugmentedLag: Tangent matrix has grown in size, from 2597 to 3077 entries.
+  1 active contact nodes, closest non-active node 56: constraint = 0.736018
+  Primary solution summary: L2-norm            : 0.00332956
+                            Max X-displacement : 0.00952603
+                            Max Y-displacement : 0.0240574
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -0.292571
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.05868
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -0.382473
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 659.926
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 316.317	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 367.875	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 450.553
+  Node #55:	sol1 = -5.023e-03 -2.406e-02
+  Node #63:	sol1 =  9.233e-05  2.863e-05
+  Total reactions for Rigid Body 1:  3.902e+00  3.901e+02  0.000e+00
+  step=2  time=0.02
+  1 active contact nodes, closest non-active node 56: constraint = 0.736049
+  Primary solution summary: L2-norm            : 0.00346833
+                            Max X-displacement : 0.0100244
+                            Max Y-displacement : 0.024906
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -0.589082
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.12868
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -0.663206
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 667.666
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 320.998	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 369.674	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 452.756
+  Node #55:	sol1 = -5.300e-03 -2.491e-02
+  Node #63:	sol1 =  9.279e-05  2.911e-05
+  Total reactions for Rigid Body 1:  4.145e+00  3.927e+02  0.000e+00
+  step=3  time=0.03
+  1 active contact nodes, closest non-active node 56: constraint = 0.731543
+  Primary solution summary: L2-norm            : 0.0036081
+                            Max X-displacement : 0.0105288
+                            Max Y-displacement : 0.0257543
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -0.889235
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.19688
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -0.857507
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 675.111
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 325.496	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 371.393	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 454.861
+  Node #55:	sol1 = -5.580e-03 -2.575e-02
+  Node #63:	sol1 =  9.323e-05  2.956e-05
+  Total reactions for Rigid Body 1:  4.393e+00  3.952e+02  0.000e+00
+  step=4  time=0.04
+  1 active contact nodes, closest non-active node 56: constraint = 0.727041
+  Primary solution summary: L2-norm            : 0.00374879
+                            Max X-displacement : 0.0110386
+                            Max Y-displacement : 0.0266023
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -1.19282
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.26344
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.01618
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 682.314
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 329.842	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 373.048	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 456.888
+  Node #55:	sol1 = -5.864e-03 -2.660e-02
+  Node #63:	sol1 =  9.363e-05  3.001e-05
+  Total reactions for Rigid Body 1:  4.645e+00  3.976e+02  0.000e+00
+  step=5  time=0.05
+  1 active contact nodes, closest non-active node 56: constraint = 0.722541
+  Primary solution summary: L2-norm            : 0.00389034
+                            Max X-displacement : 0.0115533
+                            Max Y-displacement : 0.02745
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -1.49966
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.32848
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.15399
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 689.316
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 334.063	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 374.65	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 458.851
+  Node #55:	sol1 = -6.152e-03 -2.745e-02
+  Node #63:	sol1 =  9.397e-05  3.044e-05
+  Total reactions for Rigid Body 1:  4.901e+00  3.999e+02  0.000e+00
+  step=6  time=0.06
+  1 active contact nodes, closest non-active node 56: constraint = 0.718043
+  Primary solution summary: L2-norm            : 0.00403269
+                            Max X-displacement : 0.0120724
+                            Max Y-displacement : 0.0282972
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -1.80965
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.3921
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.27768
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 696.151
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 338.178	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 376.208	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 460.758
+  Node #55:	sol1 = -6.441e-03 -2.830e-02
+  Node #63:	sol1 =  9.423e-05  3.086e-05
+  Total reactions for Rigid Body 1:  5.161e+00  4.021e+02  0.000e+00
+  step=7  time=0.07
+  1 active contact nodes, closest non-active node 56: constraint = 0.713548
+  Primary solution summary: L2-norm            : 0.00417577
+                            Max X-displacement : 0.0125956
+                            Max Y-displacement : 0.0291439
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -2.12266
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.45441
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.391
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 702.846
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 342.206	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 377.727	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 462.619
+  Node #55:	sol1 = -6.734e-03 -2.914e-02
+  Node #63:	sol1 =  9.442e-05  3.128e-05
+  Total reactions for Rigid Body 1:  5.425e+00  4.043e+02  0.000e+00
+  step=8  time=0.08
+  1 active contact nodes, closest non-active node 56: constraint = 0.709055
+  Primary solution summary: L2-norm            : 0.00431954
+                            Max X-displacement : 0.0131224
+                            Max Y-displacement : 0.0299901
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -2.43863
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.5155
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.4963
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 709.426
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 346.161	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 379.214	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 464.44
+  Node #55:	sol1 = -7.029e-03 -2.999e-02
+  Node #63:	sol1 =  9.452e-05  3.169e-05
+  Total reactions for Rigid Body 1:  5.693e+00  4.064e+02  0.000e+00
+  step=9  time=0.09
+  1 active contact nodes, closest non-active node 56: constraint = 0.704564
+  Primary solution summary: L2-norm            : 0.00446349
+                            Max X-displacement : 0.0136493
+                            Max Y-displacement : 0.0308352
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -2.75741
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.57544
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.59516
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 715.898
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 350.06	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 380.635	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 466.181
+  Node #55:	sol1 = -7.325e-03 -3.084e-02
+  Node #63:	sol1 =  9.458e-05  3.210e-05
+  Total reactions for Rigid Body 1:  5.963e+00  4.085e+02  0.000e+00
+  step=10  time=0.1
+  1 active contact nodes, closest non-active node 56: constraint = 0.700076
+  Primary solution summary: L2-norm            : 0.0046075
+                            Max X-displacement : 0.0141752
+                            Max Y-displacement : 0.0316793
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -3.07891
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.63432
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.68869
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 722.278
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 353.916	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 381.991	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 467.841
+  Node #55:	sol1 = -7.622e-03 -3.168e-02
+  Node #63:	sol1 =  9.459e-05  3.251e-05
+  Total reactions for Rigid Body 1:  6.236e+00  4.105e+02  0.000e+00
+  step=11  time=0.11
+  1 active contact nodes, closest non-active node 56: constraint = 0.695591
+  Primary solution summary: L2-norm            : 0.00475155
+                            Max X-displacement : 0.0147004
+                            Max Y-displacement : 0.0325223
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -3.40308
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.69218
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.77772
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 728.585
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 357.735	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 383.292	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 469.434
+  Node #55:	sol1 = -7.919e-03 -3.252e-02
+  Node #63:	sol1 =  9.456e-05  3.291e-05
+  Total reactions for Rigid Body 1:  6.510e+00  4.125e+02  0.000e+00
+  step=12  time=0.12
+  1 active contact nodes, closest non-active node 56: constraint = 0.691109
+  Primary solution summary: L2-norm            : 0.00489591
+                            Max X-displacement : 0.0152271
+                            Max Y-displacement : 0.0333645
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -3.7299
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.74909
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.8629
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 734.837
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 361.522	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 384.566	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 470.995
+  Node #55:	sol1 = -8.218e-03 -3.336e-02
+  Node #63:	sol1 =  9.445e-05  3.331e-05
+  Total reactions for Rigid Body 1:  6.786e+00  4.144e+02  0.000e+00
+  step=13  time=0.13
+  1 active contact nodes, closest non-active node 56: constraint = 0.686628
+  Primary solution summary: L2-norm            : 0.00504059
+                            Max X-displacement : 0.0157554
+                            Max Y-displacement : 0.034206
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -4.05934
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.8051
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.94472
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 741.046
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 365.281	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 385.82	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 472.531
+  Node #55:	sol1 = -8.518e-03 -3.421e-02
+  Node #63:	sol1 =  9.426e-05  3.371e-05
+  Total reactions for Rigid Body 1:  7.066e+00  4.163e+02  0.000e+00
+  step=14  time=0.14
+  1 active contact nodes, closest non-active node 56: constraint = 0.682148
+  Primary solution summary: L2-norm            : 0.00518557
+                            Max X-displacement : 0.0162855
+                            Max Y-displacement : 0.0350468
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -4.39136
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.86026
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.02358
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 747.219
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 369.018	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 387.058	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 474.047
+  Node #55:	sol1 = -8.819e-03 -3.505e-02
+  Node #63:	sol1 =  9.399e-05  3.411e-05
+  Total reactions for Rigid Body 1:  7.348e+00  4.182e+02  0.000e+00
+  step=15  time=0.15
+  1 active contact nodes, closest non-active node 56: constraint = 0.677669
+  Primary solution summary: L2-norm            : 0.00533086
+                            Max X-displacement : 0.0168171
+                            Max Y-displacement : 0.035887
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -4.72592
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.91462
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.09982
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 753.363
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 372.734	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 388.281	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 475.546
+  Node #55:	sol1 = -9.121e-03 -3.589e-02
+  Node #63:	sol1 =  9.365e-05  3.451e-05
+  Total reactions for Rigid Body 1:  7.634e+00  4.201e+02  0.000e+00
+  step=16  time=0.16
+  1 active contact nodes, closest non-active node 56: constraint = 0.67319
+  Primary solution summary: L2-norm            : 0.00547643
+                            Max X-displacement : 0.0173504
+                            Max Y-displacement : 0.0367266
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -5.06298
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 2.96822
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.17371
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 759.484
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 376.435	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 389.493	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 477.03
+  Node #55:	sol1 = -9.424e-03 -3.673e-02
+  Node #63:	sol1 =  9.324e-05  3.491e-05
+  Total reactions for Rigid Body 1:  7.922e+00  4.219e+02  0.000e+00
+  step=17  time=0.17
+  1 active contact nodes, closest non-active node 56: constraint = 0.668712
+  Primary solution summary: L2-norm            : 0.00562228
+                            Max X-displacement : 0.0178853
+                            Max Y-displacement : 0.0375655
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -5.40253
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.02109
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.24547
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 765.587
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 380.123	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 390.696	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 478.502
+  Node #55:	sol1 = -9.729e-03 -3.757e-02
+  Node #63:	sol1 =  9.275e-05  3.531e-05
+  Total reactions for Rigid Body 1:  8.213e+00  4.237e+02  0.000e+00
+  step=18  time=0.18
+  1 active contact nodes, closest non-active node 56: constraint = 0.664235
+  Primary solution summary: L2-norm            : 0.00576838
+                            Max X-displacement : 0.0184216
+                            Max Y-displacement : 0.0384039
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -5.74453
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.07327
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.31529
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 771.675
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 383.799	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 391.889	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 479.964
+  Node #55:	sol1 = -1.003e-02 -3.840e-02
+  Node #63:	sol1 =  9.219e-05  3.571e-05
+  Total reactions for Rigid Body 1:  8.506e+00  4.255e+02  0.000e+00
+  step=19  time=0.19
+  1 active contact nodes, closest non-active node 56: constraint = 0.659758
+  Primary solution summary: L2-norm            : 0.00591474
+                            Max X-displacement : 0.0189595
+                            Max Y-displacement : 0.0392416
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -6.08895
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.12479
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.38336
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 777.753
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 387.467	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 393.076	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 481.418
+  Node #55:	sol1 = -1.034e-02 -3.924e-02
+  Node #63:	sol1 =  9.156e-05  3.612e-05
+  Total reactions for Rigid Body 1:  8.803e+00  4.273e+02  0.000e+00
+  step=20  time=0.2
+  1 active contact nodes, closest non-active node 56: constraint = 0.655281
+  Primary solution summary: L2-norm            : 0.00606134
+                            Max X-displacement : 0.0194988
+                            Max Y-displacement : 0.0400788
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -6.43576
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.17569
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.4498
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 783.824
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 391.127	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 394.256	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 482.863
+  Node #55:	sol1 = -1.065e-02 -4.008e-02
+  Node #63:	sol1 =  9.086e-05  3.653e-05
+  Total reactions for Rigid Body 1:  9.102e+00  4.291e+02  0.000e+00
+  step=21  time=0.21
+  1 active contact nodes, closest non-active node 56: constraint = 0.650805
+  Primary solution summary: L2-norm            : 0.00620817
+                            Max X-displacement : 0.0200394
+                            Max Y-displacement : 0.0409154
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -6.78495
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.22598
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.51475
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 789.889
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 394.782	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 395.432	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 484.303
+  Node #55:	sol1 = -1.096e-02 -4.092e-02
+  Node #63:	sol1 =  9.009e-05  3.693e-05
+  Total reactions for Rigid Body 1:  9.404e+00  4.308e+02  0.000e+00
+  step=22  time=0.22
+  1 active contact nodes, closest non-active node 56: constraint = 0.646329
+  Primary solution summary: L2-norm            : 0.00635521
+                            Max X-displacement : 0.0205815
+                            Max Y-displacement : 0.0417514
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -7.13648
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.2757
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.57831
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 795.95
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 398.431	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 396.603	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 485.738
+  Node #55:	sol1 = -1.127e-02 -4.175e-02
+  Node #63:	sol1 =  8.926e-05  3.734e-05
+  Total reactions for Rigid Body 1:  9.708e+00  4.325e+02  0.000e+00
+  step=23  time=0.23
+  1 active contact nodes, closest non-active node 56: constraint = 0.641854
+  Primary solution summary: L2-norm            : 0.00650247
+                            Max X-displacement : 0.0211248
+                            Max Y-displacement : 0.0425869
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -7.49035
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.32487
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.64059
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 802.011
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 402.078	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 397.771	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 487.168
+  Node #55:	sol1 = -1.158e-02 -4.259e-02
+  Node #63:	sol1 =  8.837e-05  3.775e-05
+  Total reactions for Rigid Body 1:  1.002e+01  4.342e+02  0.000e+00
+  step=24  time=0.24
+  1 active contact nodes, closest non-active node 56: constraint = 0.637379
+  Primary solution summary: L2-norm            : 0.00664994
+                            Max X-displacement : 0.0216694
+                            Max Y-displacement : 0.0434218
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -7.84652
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.37351
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.70167
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 808.072
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 405.721	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 398.937	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 488.596
+  Node #55:	sol1 = -1.189e-02 -4.342e-02
+  Node #63:	sol1 =  8.741e-05  3.817e-05
+  Total reactions for Rigid Body 1:  1.033e+01  4.359e+02  0.000e+00
+  step=25  time=0.25
+  1 active contact nodes, closest non-active node 56: constraint = 0.632904
+  Primary solution summary: L2-norm            : 0.0067976
+                            Max X-displacement : 0.0222153
+                            Max Y-displacement : 0.0442561
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -8.20498
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.42164
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.76163
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 814.134
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 409.363	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 400.101	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 490.021
+  Node #55:	sol1 = -1.220e-02 -4.426e-02
+  Node #63:	sol1 =  8.640e-05  3.858e-05
+  Total reactions for Rigid Body 1:  1.064e+01  4.376e+02  0.000e+00
+  step=26  time=0.26
+  1 active contact nodes, closest non-active node 56: constraint = 0.628429
+  Primary solution summary: L2-norm            : 0.00694545
+                            Max X-displacement : 0.0227624
+                            Max Y-displacement : 0.0450899
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -8.56571
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.46929
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.82054
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 820.199
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 413.003	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 401.263	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 491.445
+  Node #55:	sol1 = -1.252e-02 -4.509e-02
+  Node #63:	sol1 =  8.532e-05  3.899e-05
+  Total reactions for Rigid Body 1:  1.095e+01  4.393e+02  0.000e+00
+  step=27  time=0.27
+  1 active contact nodes, closest non-active node 56: constraint = 0.623955
+  Primary solution summary: L2-norm            : 0.00709349
+                            Max X-displacement : 0.0233107
+                            Max Y-displacement : 0.0459231
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -8.92869
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.51647
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.87845
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 826.267
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 416.642	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 402.424	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 492.867
+  Node #55:	sol1 = -1.283e-02 -4.592e-02
+  Node #63:	sol1 =  8.418e-05  3.941e-05
+  Total reactions for Rigid Body 1:  1.127e+01  4.409e+02  0.000e+00
+  step=28  time=0.28
+  1 active contact nodes, closest non-active node 56: constraint = 0.619481
+  Primary solution summary: L2-norm            : 0.00724181
+                            Max X-displacement : 0.0238601
+                            Max Y-displacement : 0.0467556
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -9.29381
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.56319
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.93544
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 832.325
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 420.277	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 403.568	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 494.268
+  Node #55:	sol1 = -1.315e-02 -4.676e-02
+  Node #63:	sol1 =  8.282e-05  3.984e-05
+  Total reactions for Rigid Body 1:  1.159e+01  4.426e+02  0.000e+00
+  step=29  time=0.29
+  1 active contact nodes, closest non-active node 56: constraint = 0.615008
+  Primary solution summary: L2-norm            : 0.0073907
+                            Max X-displacement : 0.0244104
+                            Max Y-displacement : 0.0475872
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -9.66073
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.60948
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -2.99154
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 838.324
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 423.891	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 404.642	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 495.583
+  Node #55:	sol1 = -1.346e-02 -4.759e-02
+  Node #63:	sol1 =  8.078e-05  4.029e-05
+  Total reactions for Rigid Body 1:  1.191e+01  4.442e+02  0.000e+00
+  step=30  time=0.3
+  1 active contact nodes, closest non-active node 56: constraint = 0.610539
+  Primary solution summary: L2-norm            : 0.00753992
+                            Max X-displacement : 0.0249615
+                            Max Y-displacement : 0.0484181
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -10.0296
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.65535
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.04681
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 844.299
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 427.496	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 405.686	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 496.862
+  Node #55:	sol1 = -1.378e-02 -4.842e-02
+  Node #63:	sol1 =  7.842e-05  4.076e-05
+  Total reactions for Rigid Body 1:  1.224e+01  4.458e+02  0.000e+00
+  step=31  time=0.31
+  1 active contact nodes, closest non-active node 56: constraint = 0.606072
+  Primary solution summary: L2-norm            : 0.00768934
+                            Max X-displacement : 0.0255129
+                            Max Y-displacement : 0.0492481
+  Total reaction forces: Sum(R) = 0.000279314 0.00031303
+  displacement\*reactions: (R,u) = -10.4005
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.70081
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.10128
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 850.249
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 431.094	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 406.692	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 498.094
+  Node #55:	sol1 = -1.410e-02 -4.925e-02
+  Node #63:	sol1 =  7.600e-05  4.126e-05
+  Total reactions for Rigid Body 1:  1.257e+01  4.473e+02  0.000e+00
+  step=32  time=0.32
+  1 active contact nodes, closest non-active node 56: constraint = 0.60161
+  Primary solution summary: L2-norm            : 0.00783885
+                            Max X-displacement : 0.0260636
+                            Max Y-displacement : 0.0500771
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -10.773
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.74587
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.155
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 856.158
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 434.682	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 407.629	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 499.242
+  Node #55:	sol1 = -1.442e-02 -5.008e-02
+  Node #63:	sol1 =  7.375e-05  4.181e-05
+  Total reactions for Rigid Body 1:  1.289e+01  4.489e+02  0.000e+00
+  step=33  time=0.33
+  1 active contact nodes, closest non-active node 56: constraint = 0.597159
+  Primary solution summary: L2-norm            : 0.00798851
+                            Max X-displacement : 0.0266148
+                            Max Y-displacement : 0.0509053
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -11.1476
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.79055
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.208
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 862.061
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 438.267	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 408.551	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 500.371
+  Node #55:	sol1 = -1.474e-02 -5.091e-02
+  Node #63:	sol1 =  7.145e-05  4.238e-05
+  Total reactions for Rigid Body 1:  1.322e+01  4.504e+02  0.000e+00
+  step=34  time=0.34
+  1 active contact nodes, closest non-active node 56: constraint = 0.59271
+  Primary solution summary: L2-norm            : 0.0081383
+                            Max X-displacement : 0.0271662
+                            Max Y-displacement : 0.0517329
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -11.524
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.83486
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.26031
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 867.951
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 441.848	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 409.45	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 501.471
+  Node #55:	sol1 = -1.505e-02 -5.173e-02
+  Node #63:	sol1 =  6.918e-05  4.296e-05
+  Total reactions for Rigid Body 1:  1.356e+01  4.519e+02  0.000e+00
+  step=35  time=0.35
+  1 active contact nodes, closest non-active node 56: constraint = 0.588266
+  Primary solution summary: L2-norm            : 0.00828823
+                            Max X-displacement : 0.0277181
+                            Max Y-displacement : 0.0525599
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -11.9024
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.87881
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.31197
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 873.84
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 445.427	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 410.34	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 502.562
+  Node #55:	sol1 = -1.537e-02 -5.256e-02
+  Node #63:	sol1 =  6.685e-05  4.356e-05
+  Total reactions for Rigid Body 1:  1.389e+01  4.534e+02  0.000e+00
+  step=36  time=0.36
+  1 active contact nodes, closest non-active node 56: constraint = 0.583823
+  Primary solution summary: L2-norm            : 0.0084383
+                            Max X-displacement : 0.0282705
+                            Max Y-displacement : 0.0533863
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -12.2828
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.9224
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.363
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 879.729
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 449.004	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 411.227	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 503.648
+  Node #55:	sol1 = -1.569e-02 -5.339e-02
+  Node #63:	sol1 =  6.447e-05  4.415e-05
+  Total reactions for Rigid Body 1:  1.423e+01  4.549e+02  0.000e+00
+  step=37  time=0.37
+  1 active contact nodes, closest non-active node 56: constraint = 0.579381
+  Primary solution summary: L2-norm            : 0.0085885
+                            Max X-displacement : 0.0288235
+                            Max Y-displacement : 0.0542122
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -12.6652
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 3.96566
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.41343
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 885.62
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 452.58	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 412.111	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 504.731
+  Node #55:	sol1 = -1.601e-02 -5.421e-02
+  Node #63:	sol1 =  6.204e-05  4.476e-05
+  Total reactions for Rigid Body 1:  1.456e+01  4.564e+02  0.000e+00
+  step=38  time=0.38
+  1 active contact nodes, closest non-active node 56: constraint = 0.574939
+  Primary solution summary: L2-norm            : 0.00873883
+                            Max X-displacement : 0.0293771
+                            Max Y-displacement : 0.0550375
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -13.0496
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.00859
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.46329
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 891.513
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 456.155	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 412.994	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 505.812
+  Node #55:	sol1 = -1.633e-02 -5.504e-02
+  Node #63:	sol1 =  5.956e-05  4.537e-05
+  Total reactions for Rigid Body 1:  1.490e+01  4.579e+02  0.000e+00
+  step=39  time=0.39
+  1 active contact nodes, closest non-active node 56: constraint = 0.570498
+  Primary solution summary: L2-norm            : 0.00888929
+                            Max X-displacement : 0.0299312
+                            Max Y-displacement : 0.0558623
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -13.4359
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.0512
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.5126
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 897.409
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 459.728	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 413.876	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 506.892
+  Node #55:	sol1 = -1.665e-02 -5.586e-02
+  Node #63:	sol1 =  5.702e-05  4.598e-05
+  Total reactions for Rigid Body 1:  1.525e+01  4.593e+02  0.000e+00
+  step=40  time=0.4
+  1 active contact nodes, closest non-active node 56: constraint = 0.566058
+  Primary solution summary: L2-norm            : 0.00903986
+                            Max X-displacement : 0.0304858
+                            Max Y-displacement : 0.0566866
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -13.8241
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.0935
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.56138
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 903.308
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 463.3	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 414.758	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 507.972
+  Node #55:	sol1 = -1.697e-02 -5.669e-02
+  Node #63:	sol1 =  5.444e-05  4.659e-05
+  Total reactions for Rigid Body 1:  1.559e+01  4.608e+02  0.000e+00
+  step=41  time=0.41
+  1 active contact nodes, closest non-active node 56: constraint = 0.561618
+  Primary solution summary: L2-norm            : 0.00919056
+                            Max X-displacement : 0.031041
+                            Max Y-displacement : 0.0575103
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -14.2143
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.1355
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.60965
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 909.211
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 466.872	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 415.64	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 509.053
+  Node #55:	sol1 = -1.729e-02 -5.751e-02
+  Node #63:	sol1 =  5.181e-05  4.721e-05
+  Total reactions for Rigid Body 1:  1.594e+01  4.623e+02  0.000e+00
+  step=42  time=0.42
+  1 active contact nodes, closest non-active node 56: constraint = 0.557179
+  Primary solution summary: L2-norm            : 0.00934137
+                            Max X-displacement : 0.0315968
+                            Max Y-displacement : 0.0583335
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -14.6064
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.17721
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.65743
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 915.117
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 470.442	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 416.524	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 510.135
+  Node #55:	sol1 = -1.762e-02 -5.833e-02
+  Node #63:	sol1 =  4.913e-05  4.783e-05
+  Total reactions for Rigid Body 1:  1.629e+01  4.637e+02  0.000e+00
+  step=43  time=0.43
+  1 active contact nodes, closest non-active node 56: constraint = 0.55274
+  Primary solution summary: L2-norm            : 0.00949228
+                            Max X-displacement : 0.0321531
+                            Max Y-displacement : 0.0591561
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -15.0005
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.21863
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.70474
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 921.028
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 474.012	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 417.409	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 511.22
+  Node #55:	sol1 = -1.794e-02 -5.916e-02
+  Node #63:	sol1 =  4.640e-05  4.846e-05
+  Total reactions for Rigid Body 1:  1.664e+01  4.651e+02  0.000e+00
+  step=44  time=0.44
+  1 active contact nodes, closest non-active node 56: constraint = 0.548301
+  Primary solution summary: L2-norm            : 0.00964331
+                            Max X-displacement : 0.0327099
+                            Max Y-displacement : 0.0599782
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -15.3964
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.25977
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.7516
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 926.943
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 477.581	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 418.296	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 512.306
+  Node #55:	sol1 = -1.826e-02 -5.998e-02
+  Node #63:	sol1 =  4.362e-05  4.909e-05
+  Total reactions for Rigid Body 1:  1.699e+01  4.666e+02  0.000e+00
+  step=45  time=0.45
+  1 active contact nodes, closest non-active node 56: constraint = 0.543863
+  Primary solution summary: L2-norm            : 0.00979443
+                            Max X-displacement : 0.0332672
+                            Max Y-displacement : 0.0607998
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -15.7943
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.30065
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.79802
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 932.862
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 481.15	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 419.185	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 513.395
+  Node #55:	sol1 = -1.859e-02 -6.080e-02
+  Node #63:	sol1 =  4.081e-05  4.972e-05
+  Total reactions for Rigid Body 1:  1.734e+01  4.680e+02  0.000e+00
+  step=46  time=0.46
+  1 active contact nodes, closest non-active node 56: constraint = 0.539425
+  Primary solution summary: L2-norm            : 0.00994566
+                            Max X-displacement : 0.033825
+                            Max Y-displacement : 0.0616208
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -16.194
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.34126
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.84401
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 938.785
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 484.717	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 420.077	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 514.487
+  Node #55:	sol1 = -1.891e-02 -6.162e-02
+  Node #63:	sol1 =  3.795e-05  5.035e-05
+  Total reactions for Rigid Body 1:  1.770e+01  4.694e+02  0.000e+00
+  step=47  time=0.47
+  1 active contact nodes, closest non-active node 56: constraint = 0.534987
+  Primary solution summary: L2-norm            : 0.010097
+                            Max X-displacement : 0.0343834
+                            Max Y-displacement : 0.0624413
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -16.5957
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.38161
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.8896
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 944.713
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 488.284	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 420.972	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 515.583
+  Node #55:	sol1 = -1.923e-02 -6.244e-02
+  Node #63:	sol1 =  3.504e-05  5.098e-05
+  Total reactions for Rigid Body 1:  1.806e+01  4.708e+02  0.000e+00
+  step=48  time=0.48
+  1 active contact nodes, closest non-active node 56: constraint = 0.53055
+  Primary solution summary: L2-norm            : 0.0102484
+                            Max X-displacement : 0.0349422
+                            Max Y-displacement : 0.0632613
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -16.9992
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.42172
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.9348
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 950.645
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 491.851	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 421.87	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 516.683
+  Node #55:	sol1 = -1.956e-02 -6.326e-02
+  Node #63:	sol1 =  3.210e-05  5.162e-05
+  Total reactions for Rigid Body 1:  1.842e+01  4.722e+02  0.000e+00
+  step=49  time=0.49
+  1 active contact nodes, closest non-active node 56: constraint = 0.526113
+  Primary solution summary: L2-norm            : 0.0103999
+                            Max X-displacement : 0.0355016
+                            Max Y-displacement : 0.0640808
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -17.4046
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.46158
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -3.97961
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 956.582
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 495.417	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 422.771	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 517.787
+  Node #55:	sol1 = -1.989e-02 -6.408e-02
+  Node #63:	sol1 =  2.912e-05  5.225e-05
+  Total reactions for Rigid Body 1:  1.878e+01  4.736e+02  0.000e+00
+  step=50  time=0.5
+  1 active contact nodes, closest non-active node 56: constraint = 0.521676
+  Primary solution summary: L2-norm            : 0.0105515
+                            Max X-displacement : 0.0360614
+                            Max Y-displacement : 0.0648997
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -17.8118
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.50121
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.02406
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 962.522
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 498.982	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 423.676	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 518.895
+  Node #55:	sol1 = -2.021e-02 -6.490e-02
+  Node #63:	sol1 =  2.609e-05  5.289e-05
+  Total reactions for Rigid Body 1:  1.915e+01  4.750e+02  0.000e+00
+  step=51  time=0.51
+  1 active contact nodes, closest non-active node 56: constraint = 0.517239
+  Primary solution summary: L2-norm            : 0.0107032
+                            Max X-displacement : 0.0366218
+                            Max Y-displacement : 0.065718
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -18.2209
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.5406
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.06814
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 968.468
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 502.546	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 424.585	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 520.008
+  Node #55:	sol1 = -2.054e-02 -6.572e-02
+  Node #63:	sol1 =  2.303e-05  5.353e-05
+  Total reactions for Rigid Body 1:  1.951e+01  4.764e+02  0.000e+00
+  step=52  time=0.52
+  1 active contact nodes, closest non-active node 56: constraint = 0.512803
+  Primary solution summary: L2-norm            : 0.010855
+                            Max X-displacement : 0.0371826
+                            Max Y-displacement : 0.0665358
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -18.6319
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.57976
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.11188
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 974.417
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 506.109	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 425.497	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 521.126
+  Node #55:	sol1 = -2.086e-02 -6.654e-02
+  Node #63:	sol1 =  1.993e-05  5.417e-05
+  Total reactions for Rigid Body 1:  1.988e+01  4.777e+02  0.000e+00
+  step=53  time=0.53
+  1 active contact nodes, closest non-active node 56: constraint = 0.508367
+  Primary solution summary: L2-norm            : 0.0110068
+                            Max X-displacement : 0.0377439
+                            Max Y-displacement : 0.0673531
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -19.0447
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.61871
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.15528
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 980.371
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 509.672	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 426.414	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 522.249
+  Node #55:	sol1 = -2.119e-02 -6.735e-02
+  Node #63:	sol1 =  1.680e-05  5.482e-05
+  Total reactions for Rigid Body 1:  2.025e+01  4.791e+02  0.000e+00
+  step=54  time=0.54
+  1 active contact nodes, closest non-active node 56: constraint = 0.50393
+  Primary solution summary: L2-norm            : 0.0111588
+                            Max X-displacement : 0.0383057
+                            Max Y-displacement : 0.0681699
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -19.4593
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.65744
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.19836
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 986.328
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 513.234	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 427.336	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 523.377
+  Node #55:	sol1 = -2.152e-02 -6.817e-02
+  Node #63:	sol1 =  1.362e-05  5.546e-05
+  Total reactions for Rigid Body 1:  2.063e+01  4.805e+02  0.000e+00
+  step=55  time=0.55
+  1 active contact nodes, closest non-active node 56: constraint = 0.499494
+  Primary solution summary: L2-norm            : 0.0113108
+                            Max X-displacement : 0.038868
+                            Max Y-displacement : 0.0689861
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -19.8757
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.69596
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.24112
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 992.29
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 516.795	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 428.261	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 524.511
+  Node #55:	sol1 = -2.185e-02 -6.899e-02
+  Node #63:	sol1 =  1.042e-05  5.611e-05
+  Total reactions for Rigid Body 1:  2.100e+01  4.818e+02  0.000e+00
+  step=56  time=0.56
+  1 active contact nodes, closest non-active node 56: constraint = 0.495059
+  Primary solution summary: L2-norm            : 0.0114629
+                            Max X-displacement : 0.0394307
+                            Max Y-displacement : 0.0698017
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -20.294
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.73427
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.28357
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 998.256
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 520.356	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 429.192	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 525.651
+  Node #55:	sol1 = -2.218e-02 -6.980e-02
+  Node #63:	sol1 =  7.178e-06  5.675e-05
+  Total reactions for Rigid Body 1:  2.138e+01  4.832e+02  0.000e+00
+  step=57  time=0.57
+  1 active contact nodes, closest non-active node 56: constraint = 0.490623
+  Primary solution summary: L2-norm            : 0.011615
+                            Max X-displacement : 0.0399939
+                            Max Y-displacement : 0.0706169
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -20.7141
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.77238
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.32572
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1004.23
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 523.915	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 430.128	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 526.797
+  Node #55:	sol1 = -2.250e-02 -7.062e-02
+  Node #63:	sol1 =  3.904e-06  5.740e-05
+  Total reactions for Rigid Body 1:  2.176e+01  4.845e+02  0.000e+00
+  step=58  time=0.58
+  1 active contact nodes, closest non-active node 56: constraint = 0.486188
+  Primary solution summary: L2-norm            : 0.0117673
+                            Max X-displacement : 0.0405576
+                            Max Y-displacement : 0.0714315
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -21.136
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.81029
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.36758
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1010.2
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 527.473	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 431.068	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 527.948
+  Node #55:	sol1 = -2.283e-02 -7.143e-02
+  Node #63:	sol1 =  0.000e+00  5.805e-05
+  Total reactions for Rigid Body 1:  2.214e+01  4.859e+02  0.000e+00
+  step=59  time=0.59
+  1 active contact nodes, closest non-active node 56: constraint = 0.481752
+  Primary solution summary: L2-norm            : 0.0119196
+                            Max X-displacement : 0.0411218
+                            Max Y-displacement : 0.0722455
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -21.5597
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.84801
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.40916
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1016.18
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 531.031	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 432.014	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 529.107
+  Node #55:	sol1 = -2.316e-02 -7.225e-02
+  Node #63:	sol1 = -2.741e-06  5.870e-05
+  Total reactions for Rigid Body 1:  2.252e+01  4.872e+02  0.000e+00
+  step=60  time=0.6
+  1 active contact nodes, closest non-active node 56: constraint = 0.477317
+  Primary solution summary: L2-norm            : 0.012072
+                            Max X-displacement : 0.0416864
+                            Max Y-displacement : 0.0730589
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -21.9851
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.88554
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.45046
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1022.15
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 534.584	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 432.963	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 530.269
+  Node #55:	sol1 = -2.349e-02 -7.306e-02
+  Node #63:	sol1 = -6.102e-06  5.935e-05
+  Total reactions for Rigid Body 1:  2.291e+01  4.886e+02  0.000e+00
+  step=61  time=0.61
+  1 active contact nodes, closest non-active node 56: constraint = 0.472883
+  Primary solution summary: L2-norm            : 0.0122247
+                            Max X-displacement : 0.042251
+                            Max Y-displacement : 0.073869
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -22.4105
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.92289
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.4915
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1027.83
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 537.975	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 433.806	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 531.302
+  Node #55:	sol1 = -2.382e-02 -7.387e-02
+  Node #63:	sol1 = -9.024e-06  5.989e-05
+  Total reactions for Rigid Body 1:  2.329e+01  4.898e+02  0.000e+00
+  step=62  time=0.62
+  1 active contact nodes, closest non-active node 56: constraint = 0.468528
+  Primary solution summary: L2-norm            : 0.0123776
+                            Max X-displacement : 0.0428161
+                            Max Y-displacement : 0.0746771
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -22.8367
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.96005
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.53226
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1033.36
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 541.283	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 434.599	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 532.273
+  Node #55:	sol1 = -2.416e-02 -7.468e-02
+  Node #63:	sol1 = -1.175e-05  6.039e-05
+  Total reactions for Rigid Body 1:  2.368e+01  4.911e+02  0.000e+00
+  step=63  time=0.63
+  1 active contact nodes, closest non-active node 56: constraint = 0.464212
+  Primary solution summary: L2-norm            : 0.0125308
+                            Max X-displacement : 0.0433819
+                            Max Y-displacement : 0.0754842
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -23.2643
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 4.99702
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.57277
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1038.84
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 544.561	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 435.376	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 533.225
+  Node #55:	sol1 = -2.449e-02 -7.548e-02
+  Node #63:	sol1 = -1.444e-05  6.088e-05
+  Total reactions for Rigid Body 1:  2.407e+01  4.924e+02  0.000e+00
+  step=64  time=0.64
+  1 active contact nodes, closest non-active node 56: constraint = 0.45991
+  Primary solution summary: L2-norm            : 0.012684
+                            Max X-displacement : 0.0439485
+                            Max Y-displacement : 0.0762904
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -23.6932
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.03382
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.61302
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1044.29
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 547.82	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 436.146	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 534.167
+  Node #55:	sol1 = -2.482e-02 -7.629e-02
+  Node #63:	sol1 = -1.712e-05  6.135e-05
+  Total reactions for Rigid Body 1:  2.446e+01  4.936e+02  0.000e+00
+  step=65  time=0.65
+  1 active contact nodes, closest non-active node 56: constraint = 0.455615
+  Primary solution summary: L2-norm            : 0.0128374
+                            Max X-displacement : 0.0445159
+                            Max Y-displacement : 0.0770958
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -24.1237
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.07045
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.65302
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1049.72
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 551.064	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 436.911	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 535.104
+  Node #55:	sol1 = -2.516e-02 -7.710e-02
+  Node #63:	sol1 = -1.981e-05  6.182e-05
+  Total reactions for Rigid Body 1:  2.485e+01  4.948e+02  0.000e+00
+  step=66  time=0.66
+  1 active contact nodes, closest non-active node 56: constraint = 0.451326
+  Primary solution summary: L2-norm            : 0.012991
+                            Max X-displacement : 0.0450842
+                            Max Y-displacement : 0.0779006
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -24.5556
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.1069
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.69278
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1055.12
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 554.295	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 437.673	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 536.038
+  Node #55:	sol1 = -2.549e-02 -7.790e-02
+  Node #63:	sol1 = -2.250e-05  6.228e-05
+  Total reactions for Rigid Body 1:  2.524e+01  4.961e+02  0.000e+00
+  step=67  time=0.67
+  1 active contact nodes, closest non-active node 56: constraint = 0.447043
+  Primary solution summary: L2-norm            : 0.0131446
+                            Max X-displacement : 0.0456532
+                            Max Y-displacement : 0.0787046
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -24.9891
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.14318
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.73231
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1060.52
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 557.516	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 438.434	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 536.969
+  Node #55:	sol1 = -2.583e-02 -7.870e-02
+  Node #63:	sol1 = -2.521e-05  6.274e-05
+  Total reactions for Rigid Body 1:  2.564e+01  4.973e+02  0.000e+00
+  step=68  time=0.68
+  1 active contact nodes, closest non-active node 56: constraint = 0.442762
+  Primary solution summary: L2-norm            : 0.0132984
+                            Max X-displacement : 0.046223
+                            Max Y-displacement : 0.0795079
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -25.4241
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.17929
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.7716
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1065.9
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 560.728	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 439.193	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 537.9
+  Node #55:	sol1 = -2.617e-02 -7.951e-02
+  Node #63:	sol1 = -2.795e-05  6.320e-05
+  Total reactions for Rigid Body 1:  2.604e+01  4.985e+02  0.000e+00
+  step=69  time=0.69
+  1 active contact nodes, closest non-active node 56: constraint = 0.438486
+  Primary solution summary: L2-norm            : 0.0134524
+                            Max X-displacement : 0.0467935
+                            Max Y-displacement : 0.0803104
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -25.8605
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.21524
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.81066
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1071.27
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 563.933	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 439.946	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 538.821
+  Node #55:	sol1 = -2.651e-02 -8.031e-02
+  Node #63:	sol1 = -3.070e-05  6.366e-05
+  Total reactions for Rigid Body 1:  2.644e+01  4.997e+02  0.000e+00
+  step=70  time=0.7
+  1 active contact nodes, closest non-active node 56: constraint = 0.434205
+  Primary solution summary: L2-norm            : 0.0136064
+                            Max X-displacement : 0.0473648
+                            Max Y-displacement : 0.0811122
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -26.2984
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.25103
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.84951
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1076.63
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 567.132	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 440.695	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 539.739
+  Node #55:	sol1 = -2.685e-02 -8.111e-02
+  Node #63:	sol1 = -3.348e-05  6.413e-05
+  Total reactions for Rigid Body 1:  2.685e+01  5.009e+02  0.000e+00
+  step=71  time=0.71
+  1 active contact nodes, closest non-active node 56: constraint = 0.429925
+  Primary solution summary: L2-norm            : 0.0137606
+                            Max X-displacement : 0.0479369
+                            Max Y-displacement : 0.0819133
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -26.7378
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.28667
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.88813
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1081.98
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 570.323	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 441.445	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 540.657
+  Node #55:	sol1 = -2.719e-02 -8.191e-02
+  Node #63:	sol1 = -3.628e-05  6.459e-05
+  Total reactions for Rigid Body 1:  2.725e+01  5.021e+02  0.000e+00
+  step=72  time=0.72
+  1 active contact nodes, closest non-active node 56: constraint = 0.425647
+  Primary solution summary: L2-norm            : 0.0139149
+                            Max X-displacement : 0.0485097
+                            Max Y-displacement : 0.0827138
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -27.1788
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.32215
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.92655
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1087.32
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 573.508	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 442.196	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 541.577
+  Node #55:	sol1 = -2.753e-02 -8.271e-02
+  Node #63:	sol1 = -3.911e-05  6.505e-05
+  Total reactions for Rigid Body 1:  2.766e+01  5.033e+02  0.000e+00
+  step=73  time=0.73
+  1 active contact nodes, closest non-active node 56: constraint = 0.421371
+  Primary solution summary: L2-norm            : 0.0140693
+                            Max X-displacement : 0.0490833
+                            Max Y-displacement : 0.0835136
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -27.6212
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.35748
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -4.96476
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1092.66
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 576.688	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 442.944	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 542.494
+  Node #55:	sol1 = -2.787e-02 -8.351e-02
+  Node #63:	sol1 = -4.196e-05  6.552e-05
+  Total reactions for Rigid Body 1:  2.807e+01  5.045e+02  0.000e+00
+  step=74  time=0.74
+  1 active contact nodes, closest non-active node 56: constraint = 0.417093
+  Primary solution summary: L2-norm            : 0.0142238
+                            Max X-displacement : 0.0496576
+                            Max Y-displacement : 0.0843127
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -28.0651
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.39265
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.00276
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1097.99
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 579.862	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 443.694	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 543.411
+  Node #55:	sol1 = -2.821e-02 -8.431e-02
+  Node #63:	sol1 = -4.483e-05  6.599e-05
+  Total reactions for Rigid Body 1:  2.849e+01  5.057e+02  0.000e+00
+  step=75  time=0.75
+  1 active contact nodes, closest non-active node 56: constraint = 0.412817
+  Primary solution summary: L2-norm            : 0.0143785
+                            Max X-displacement : 0.0502327
+                            Max Y-displacement : 0.0851111
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -28.5104
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.42768
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.04057
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1103.31
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 583.03	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 444.445	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 544.331
+  Node #55:	sol1 = -2.856e-02 -8.511e-02
+  Node #63:	sol1 = -4.773e-05  6.645e-05
+  Total reactions for Rigid Body 1:  2.890e+01  5.069e+02  0.000e+00
+  step=76  time=0.76
+  1 active contact nodes, closest non-active node 56: constraint = 0.408542
+  Primary solution summary: L2-norm            : 0.0145332
+                            Max X-displacement : 0.0508085
+                            Max Y-displacement : 0.0859089
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -28.9573
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.46257
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.07818
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1108.63
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 586.193	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 445.197	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 545.252
+  Node #55:	sol1 = -2.890e-02 -8.591e-02
+  Node #63:	sol1 = -5.066e-05  6.692e-05
+  Total reactions for Rigid Body 1:  2.932e+01  5.080e+02  0.000e+00
+  step=77  time=0.77
+  1 active contact nodes, closest non-active node 56: constraint = 0.404267
+  Primary solution summary: L2-norm            : 0.0146881
+                            Max X-displacement : 0.051385
+                            Max Y-displacement : 0.0867061
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -29.4056
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.49731
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.1156
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1113.95
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 589.351	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 445.951	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 546.176
+  Node #55:	sol1 = -2.924e-02 -8.671e-02
+  Node #63:	sol1 = -5.361e-05  6.738e-05
+  Total reactions for Rigid Body 1:  2.974e+01  5.092e+02  0.000e+00
+  step=78  time=0.78
+  1 active contact nodes, closest non-active node 56: constraint = 0.399994
+  Primary solution summary: L2-norm            : 0.0148431
+                            Max X-displacement : 0.0519623
+                            Max Y-displacement : 0.0875025
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -29.8553
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.53192
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.15283
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1119.25
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 592.501	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 446.701	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 547.095
+  Node #55:	sol1 = -2.959e-02 -8.750e-02
+  Node #63:	sol1 = -5.667e-05  6.785e-05
+  Total reactions for Rigid Body 1:  3.016e+01  5.103e+02  0.000e+00
+  step=79  time=0.79
+  1 active contact nodes, closest non-active node 56: constraint = 0.395723
+  Primary solution summary: L2-norm            : 0.0149984
+                            Max X-displacement : 0.0525402
+                            Max Y-displacement : 0.0882979
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -30.3058
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.56639
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.18988
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1124.49
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 595.621	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 447.41	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 547.963
+  Node #55:	sol1 = -2.994e-02 -8.830e-02
+  Node #63:	sol1 = -6.031e-05  6.835e-05
+  Total reactions for Rigid Body 1:  3.058e+01  5.115e+02  0.000e+00
+  step=80  time=0.8
+  1 active contact nodes, closest non-active node 56: constraint = 0.391458
+  Primary solution summary: L2-norm            : 0.0151538
+                            Max X-displacement : 0.0531187
+                            Max Y-displacement : 0.0890925
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -30.7575
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.60072
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.22675
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1129.7
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 598.728	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 448.108	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 548.817
+  Node #55:	sol1 = -3.028e-02 -8.909e-02
+  Node #63:	sol1 = -6.415e-05  6.887e-05
+  Total reactions for Rigid Body 1:  3.101e+01  5.126e+02  0.000e+00
+  step=81  time=0.81
+  1 active contact nodes, closest non-active node 56: constraint = 0.387197
+  Primary solution summary: L2-norm            : 0.0153093
+                            Max X-displacement : 0.0536978
+                            Max Y-displacement : 0.0898864
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -31.2104
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.63492
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.26344
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1134.9
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 601.824	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 448.798	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 549.663
+  Node #55:	sol1 = -3.063e-02 -8.989e-02
+  Node #63:	sol1 = -6.814e-05  6.939e-05
+  Total reactions for Rigid Body 1:  3.143e+01  5.138e+02  0.000e+00
+  step=82  time=0.82
+  1 active contact nodes, closest non-active node 56: constraint = 0.382938
+  Primary solution summary: L2-norm            : 0.015465
+                            Max X-displacement : 0.0542775
+                            Max Y-displacement : 0.0906796
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -31.6647
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.66899
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.29996
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1140.08
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 604.911	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 449.487	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 550.507
+  Node #55:	sol1 = -3.098e-02 -9.068e-02
+  Node #63:	sol1 = -7.221e-05  6.991e-05
+  Total reactions for Rigid Body 1:  3.186e+01  5.149e+02  0.000e+00
+  step=83  time=0.83
+  1 active contact nodes, closest non-active node 56: constraint = 0.37868
+  Primary solution summary: L2-norm            : 0.0156208
+                            Max X-displacement : 0.0548578
+                            Max Y-displacement : 0.0914723
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -32.1204
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.70292
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.3363
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1145.26
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 607.991	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 450.176	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 551.351
+  Node #55:	sol1 = -3.133e-02 -9.147e-02
+  Node #63:	sol1 = -7.635e-05  7.044e-05
+  Total reactions for Rigid Body 1:  3.229e+01  5.160e+02  0.000e+00
+  step=84  time=0.84
+  1 active contact nodes, closest non-active node 56: constraint = 0.374424
+  Primary solution summary: L2-norm            : 0.0157767
+                            Max X-displacement : 0.0554387
+                            Max Y-displacement : 0.0922642
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -32.5774
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.73673
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.37248
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1150.42
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 611.063	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 450.866	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 552.196
+  Node #55:	sol1 = -3.168e-02 -9.226e-02
+  Node #63:	sol1 = -8.055e-05  7.097e-05
+  Total reactions for Rigid Body 1:  3.273e+01  5.171e+02  0.000e+00
+  step=85  time=0.85
+  1 active contact nodes, closest non-active node 56: constraint = 0.370168
+  Primary solution summary: L2-norm            : 0.0159326
+                            Max X-displacement : 0.0560202
+                            Max Y-displacement : 0.0930556
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -33.0357
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.77041
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.40849
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1155.58
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 614.129	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 451.557	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 553.042
+  Node #55:	sol1 = -3.203e-02 -9.306e-02
+  Node #63:	sol1 = -8.480e-05  7.150e-05
+  Total reactions for Rigid Body 1:  3.316e+01  5.182e+02  0.000e+00
+  step=86  time=0.86
+  1 active contact nodes, closest non-active node 56: constraint = 0.365914
+  Primary solution summary: L2-norm            : 0.0160887
+                            Max X-displacement : 0.0566023
+                            Max Y-displacement : 0.0938463
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -33.4955
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.80397
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.44434
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1160.73
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 617.187	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 452.249	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 553.89
+  Node #55:	sol1 = -3.238e-02 -9.385e-02
+  Node #63:	sol1 = -8.910e-05  7.203e-05
+  Total reactions for Rigid Body 1:  3.360e+01  5.193e+02  0.000e+00
+  step=87  time=0.87
+  1 active contact nodes, closest non-active node 56: constraint = 0.36166
+  Primary solution summary: L2-norm            : 0.0162449
+                            Max X-displacement : 0.0571849
+                            Max Y-displacement : 0.0946364
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -33.9565
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.83741
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.48003
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1165.87
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 620.239	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 452.943	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 554.739
+  Node #55:	sol1 = -3.273e-02 -9.464e-02
+  Node #63:	sol1 = -9.344e-05  7.256e-05
+  Total reactions for Rigid Body 1:  3.404e+01  5.204e+02  0.000e+00
+  step=88  time=0.88
+  1 active contact nodes, closest non-active node 56: constraint = 0.357407
+  Primary solution summary: L2-norm            : 0.0164011
+                            Max X-displacement : 0.0577682
+                            Max Y-displacement : 0.0954259
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -34.419
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.87072
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.51556
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1171
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 623.284	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 453.639	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 555.592
+  Node #55:	sol1 = -3.308e-02 -9.543e-02
+  Node #63:	sol1 = -9.783e-05  7.310e-05
+  Total reactions for Rigid Body 1:  3.448e+01  5.215e+02  0.000e+00
+  step=89  time=0.89
+  1 active contact nodes, closest non-active node 56: constraint = 0.353154
+  Primary solution summary: L2-norm            : 0.0165575
+                            Max X-displacement : 0.0583521
+                            Max Y-displacement : 0.0962148
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -34.8827
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.90392
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.55094
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1176.12
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 626.323	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 454.337	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 556.446
+  Node #55:	sol1 = -3.344e-02 -9.621e-02
+  Node #63:	sol1 = -1.023e-04  7.363e-05
+  Total reactions for Rigid Body 1:  3.492e+01  5.226e+02  0.000e+00
+  step=90  time=0.9
+  1 active contact nodes, closest non-active node 56: constraint = 0.348903
+  Primary solution summary: L2-norm            : 0.0167139
+                            Max X-displacement : 0.0589365
+                            Max Y-displacement : 0.0970031
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -35.3479
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.937
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.58617
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1181.24
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 629.356	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 455.037	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 557.304
+  Node #55:	sol1 = -3.379e-02 -9.700e-02
+  Node #63:	sol1 = -1.067e-04  7.417e-05
+  Total reactions for Rigid Body 1:  3.536e+01  5.237e+02  0.000e+00
+  step=91  time=0.91
+  1 active contact nodes, closest non-active node 56: constraint = 0.344651
+  Primary solution summary: L2-norm            : 0.0168705
+                            Max X-displacement : 0.0595215
+                            Max Y-displacement : 0.0977907
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -35.8143
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 5.96997
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.62125
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1186.35
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 632.383	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 455.739	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 558.164
+  Node #55:	sol1 = -3.414e-02 -9.779e-02
+  Node #63:	sol1 = -1.113e-04  7.470e-05
+  Total reactions for Rigid Body 1:  3.581e+01  5.248e+02  0.000e+00
+  step=92  time=0.92
+  1 active contact nodes, closest non-active node 56: constraint = 0.340401
+  Primary solution summary: L2-norm            : 0.0170271
+                            Max X-displacement : 0.0601072
+                            Max Y-displacement : 0.0985778
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -36.2821
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.00282
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.65619
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1191.45
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 635.403	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 456.445	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 559.028
+  Node #55:	sol1 = -3.450e-02 -9.858e-02
+  Node #63:	sol1 = -1.158e-04  7.524e-05
+  Total reactions for Rigid Body 1:  3.626e+01  5.258e+02  0.000e+00
+  step=93  time=0.93
+  1 active contact nodes, closest non-active node 56: constraint = 0.336151
+  Primary solution summary: L2-norm            : 0.0171838
+                            Max X-displacement : 0.0606934
+                            Max Y-displacement : 0.0993643
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -36.7512
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.03555
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.69098
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1196.54
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 638.418	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 457.152	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 559.895
+  Node #55:	sol1 = -3.485e-02 -9.936e-02
+  Node #63:	sol1 = -1.204e-04  7.578e-05
+  Total reactions for Rigid Body 1:  3.671e+01  5.269e+02  0.000e+00
+  step=94  time=0.94
+  1 active contact nodes, closest non-active node 56: constraint = 0.331901
+  Primary solution summary: L2-norm            : 0.0173406
+                            Max X-displacement : 0.0612802
+                            Max Y-displacement : 0.10015
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -37.2217
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.06818
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.72563
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1201.63
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 641.426	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 457.863	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 560.765
+  Node #55:	sol1 = -3.521e-02 -1.002e-01
+  Node #63:	sol1 = -1.250e-04  7.632e-05
+  Total reactions for Rigid Body 1:  3.716e+01  5.280e+02  0.000e+00
+  step=95  time=0.95
+  1 active contact nodes, closest non-active node 56: constraint = 0.327652
+  Primary solution summary: L2-norm            : 0.0174975
+                            Max X-displacement : 0.0618675
+                            Max Y-displacement : 0.100935
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -37.6935
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.1007
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.76014
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1206.71
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 644.429	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 458.576	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 561.639
+  Node #55:	sol1 = -3.557e-02 -1.009e-01
+  Node #63:	sol1 = -1.297e-04  7.686e-05
+  Total reactions for Rigid Body 1:  3.762e+01  5.290e+02  0.000e+00
+  step=96  time=0.96
+  1 active contact nodes, closest non-active node 56: constraint = 0.323403
+  Primary solution summary: L2-norm            : 0.0176545
+                            Max X-displacement : 0.0624555
+                            Max Y-displacement : 0.10172
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -38.1665
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.13311
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.79451
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1211.79
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 647.426	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 459.292	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 562.516
+  Node #55:	sol1 = -3.592e-02 -1.017e-01
+  Node #63:	sol1 = -1.344e-04  7.741e-05
+  Total reactions for Rigid Body 1:  3.807e+01  5.301e+02  0.000e+00
+  step=97  time=0.97
+  1 active contact nodes, closest non-active node 56: constraint = 0.319155
+  Primary solution summary: L2-norm            : 0.0178115
+                            Max X-displacement : 0.0630441
+                            Max Y-displacement : 0.102504
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -38.641
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.16542
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.82875
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1216.86
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 650.417	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 460.012	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 563.397
+  Node #55:	sol1 = -3.628e-02 -1.025e-01
+  Node #63:	sol1 = -1.391e-04  7.795e-05
+  Total reactions for Rigid Body 1:  3.853e+01  5.311e+02  0.000e+00
+  step=98  time=0.98
+  1 active contact nodes, closest non-active node 56: constraint = 0.314906
+  Primary solution summary: L2-norm            : 0.0179687
+                            Max X-displacement : 0.0636332
+                            Max Y-displacement : 0.103287
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -39.1167
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.19762
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.86286
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1221.92
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 653.403	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 460.734	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 564.281
+  Node #55:	sol1 = -3.664e-02 -1.033e-01
+  Node #63:	sol1 = -1.439e-04  7.849e-05
+  Total reactions for Rigid Body 1:  3.899e+01  5.322e+02  0.000e+00
+  step=99  time=0.99
+  1 active contact nodes, closest non-active node 56: constraint = 0.310659
+  Primary solution summary: L2-norm            : 0.0181259
+                            Max X-displacement : 0.0642229
+                            Max Y-displacement : 0.10407
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -39.5937
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.22971
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.89683
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1226.97
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 656.383	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 461.459	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 565.17
+  Node #55:	sol1 = -3.700e-02 -1.041e-01
+  Node #63:	sol1 = -1.487e-04  7.903e-05
+  Total reactions for Rigid Body 1:  3.946e+01  5.332e+02  0.000e+00
+  step=100  time=1
+  1 active contact nodes, closest non-active node 56: constraint = 0.306411
+  Primary solution summary: L2-norm            : 0.0182832
+                            Max X-displacement : 0.0648132
+                            Max Y-displacement : 0.104853
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -40.0721
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.26171
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.93068
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1232.02
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 659.357	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 462.188	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 566.063
+  Node #55:	sol1 = -3.736e-02 -1.049e-01
+  Node #63:	sol1 = -1.535e-04  7.958e-05
+  Total reactions for Rigid Body 1:  3.992e+01  5.343e+02  0.000e+00
+  step=101  time=1.001
+  1 active contact nodes, closest non-active node 56: constraint = 0.302164
+  Primary solution summary: L2-norm            : 0.0182721
+                            Max X-displacement : 0.0648238
+                            Max Y-displacement : 0.104689
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -39.3956
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.25551
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.92381
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1224.66
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 656.028	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 456.8	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 559.463
+  Node #55:	sol1 = -3.740e-02 -1.047e-01
+  Node #63:	sol1 = -1.610e-04  7.908e-05
+  Total reactions for Rigid Body 1:  4.149e+01  5.264e+02  0.000e+00
+  step=102  time=1.002
+  1 active contact nodes, closest non-active node 56: constraint = 0.292819
+  Primary solution summary: L2-norm            : 0.0182595
+                            Max X-displacement : 0.0648305
+                            Max Y-displacement : 0.104518
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -38.6842
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.24908
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.91668
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1216.98
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 652.559	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 451.147	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 552.54
+  Node #55:	sol1 = -3.743e-02 -1.045e-01
+  Node #63:	sol1 = -1.677e-04  7.852e-05
+  Total reactions for Rigid Body 1:  4.296e+01  5.181e+02  0.000e+00
+  step=103  time=1.003
+  1 active contact nodes, closest non-active node 56: constraint = 0.283515
+  Primary solution summary: L2-norm            : 0.0182454
+                            Max X-displacement : 0.0648335
+                            Max Y-displacement : 0.104337
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -37.9389
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.24242
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.9093
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1208.99
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 648.952	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 445.234	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 545.298
+  Node #55:	sol1 = -3.746e-02 -1.043e-01
+  Node #63:	sol1 = -1.737e-04  7.791e-05
+  Total reactions for Rigid Body 1:  4.433e+01  5.094e+02  0.000e+00
+  step=104  time=1.004
+  1 active contact nodes, closest non-active node 56: constraint = 0.274251
+  Primary solution summary: L2-norm            : 0.0182299
+                            Max X-displacement : 0.0648327
+                            Max Y-displacement : 0.104149
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -37.1605
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.23556
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.90168
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1200.7
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 645.213	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 439.068	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 537.746
+  Node #55:	sol1 = -3.749e-02 -1.041e-01
+  Node #63:	sol1 = -1.788e-04  7.725e-05
+  Total reactions for Rigid Body 1:  4.559e+01  5.003e+02  0.000e+00
+  step=105  time=1.005
+  1 active contact nodes, closest non-active node 56: constraint = 0.265029
+  Primary solution summary: L2-norm            : 0.0182129
+                            Max X-displacement : 0.0648278
+                            Max Y-displacement : 0.103952
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -36.3499
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.22851
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.89386
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1192.13
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 641.345	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 432.657	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 529.894
+  Node #55:	sol1 = -3.751e-02 -1.040e-01
+  Node #63:	sol1 = -1.832e-04  7.652e-05
+  Total reactions for Rigid Body 1:  4.674e+01  4.909e+02  0.000e+00
+  step=106  time=1.006
+  1 active contact nodes, closest non-active node 56: constraint = 0.255848
+  Primary solution summary: L2-norm            : 0.0181944
+                            Max X-displacement : 0.0648189
+                            Max Y-displacement : 0.103747
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -35.5082
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.22129
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.88583
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1183.28
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 637.355	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 426.009	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 521.752
+  Node #55:	sol1 = -3.752e-02 -1.037e-01
+  Node #63:	sol1 = -1.867e-04  7.574e-05
+  Total reactions for Rigid Body 1:  4.777e+01  4.811e+02  0.000e+00
+  step=107  time=1.007
+  1 active contact nodes, closest non-active node 56: constraint = 0.246709
+  Primary solution summary: L2-norm            : 0.0181744
+                            Max X-displacement : 0.0648058
+                            Max Y-displacement : 0.103533
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -34.6365
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.21392
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.87763
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1174.17
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 633.246	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 419.134	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 513.332
+  Node #55:	sol1 = -3.754e-02 -1.035e-01
+  Node #63:	sol1 = -1.893e-04  7.491e-05
+  Total reactions for Rigid Body 1:  4.868e+01  4.709e+02  0.000e+00
+  step=108  time=1.008
+  1 active contact nodes, closest non-active node 56: constraint = 0.237611
+  Primary solution summary: L2-norm            : 0.0181529
+                            Max X-displacement : 0.0647885
+                            Max Y-displacement : 0.103312
+  Total reaction forces: Sum(R) = -0.000151103 -0.000268223
+  displacement\*reactions: (R,u) = -33.7359
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.20641
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.86928
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1164.81
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 629.024	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 412.043	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 504.648
+  Node #55:	sol1 = -3.754e-02 -1.033e-01
+  Node #63:	sol1 = -1.911e-04  7.402e-05
+  Total reactions for Rigid Body 1:  4.946e+01  4.604e+02  0.000e+00
+  step=109  time=1.009
+  1 active contact nodes, closest non-active node 56: constraint = 0.228556
+  Primary solution summary: L2-norm            : 0.0181298
+                            Max X-displacement : 0.0647669
+                            Max Y-displacement : 0.103082
+  Total reaction forces: Sum(R) = -0.000145159 -0.000250927
+  displacement\*reactions: (R,u) = -32.8073
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.19879
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.86079
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1155.23
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 624.693	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 404.747	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 495.712
+  Node #55:	sol1 = -3.755e-02 -1.031e-01
+  Node #63:	sol1 = -1.919e-04  7.306e-05
+  Total reactions for Rigid Body 1:  5.012e+01  4.495e+02  0.000e+00
+  step=110  time=1.01
+  1 active contact nodes, closest non-active node 56: constraint = 0.219545
+  Primary solution summary: L2-norm            : 0.0181052
+                            Max X-displacement : 0.0647409
+                            Max Y-displacement : 0.102844
+  Total reaction forces: Sum(R) = -0.000140507 -0.000235876
+  displacement\*reactions: (R,u) = -31.852
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.19107
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.85219
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1145.42
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 620.26	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 397.259	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 486.541
+  Node #55:	sol1 = -3.754e-02 -1.028e-01
+  Node #63:	sol1 = -1.918e-04  7.205e-05
+  Total reactions for Rigid Body 1:  5.065e+01  4.382e+02  0.000e+00
+  step=111  time=1.011
+  1 active contact nodes, closest non-active node 56: constraint = 0.210576
+  Primary solution summary: L2-norm            : 0.018079
+                            Max X-displacement : 0.0647104
+                            Max Y-displacement : 0.102599
+  Total reaction forces: Sum(R) = -0.000135592 -0.000221027
+  displacement\*reactions: (R,u) = -30.8713
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.18329
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.84349
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1135.41
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 615.731	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 389.594	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 477.153
+  Node #55:	sol1 = -3.753e-02 -1.026e-01
+  Node #63:	sol1 = -1.907e-04  7.098e-05
+  Total reactions for Rigid Body 1:  5.104e+01  4.266e+02  0.000e+00
+  step=112  time=1.012
+  1 active contact nodes, closest non-active node 56: constraint = 0.201652
+  Primary solution summary: L2-norm            : 0.0180513
+                            Max X-displacement : 0.0646754
+                            Max Y-displacement : 0.102345
+  Total reaction forces: Sum(R) = -0.000130435 -0.000206417
+  displacement\*reactions: (R,u) = -29.8662
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.17545
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.83473
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1125.22
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 611.111	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 381.768	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 467.569
+  Node #55:	sol1 = -3.752e-02 -1.023e-01
+  Node #63:	sol1 = -1.887e-04  6.986e-05
+  Total reactions for Rigid Body 1:  5.129e+01  4.146e+02  0.000e+00
+  step=113  time=1.013
+  1 active contact nodes, closest non-active node 56: constraint = 0.192771
+  Primary solution summary: L2-norm            : 0.018022
+                            Max X-displacement : 0.0646358
+                            Max Y-displacement : 0.102083
+  Total reaction forces: Sum(R) = -0.000125059 -0.000192086
+  displacement\*reactions: (R,u) = -28.8381
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.16758
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.82592
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1114.86
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 606.407	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 373.801	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 457.811
+  Node #55:	sol1 = -3.750e-02 -1.021e-01
+  Node #63:	sol1 = -1.856e-04  6.867e-05
+  Total reactions for Rigid Body 1:  5.139e+01  4.023e+02  0.000e+00
+  step=114  time=1.014
+  1 active contact nodes, closest non-active node 56: constraint = 0.183935
+  Primary solution summary: L2-norm            : 0.0179912
+                            Max X-displacement : 0.0645916
+                            Max Y-displacement : 0.101814
+  Total reaction forces: Sum(R) = -0.000119487 -0.000178071
+  displacement\*reactions: (R,u) = -27.7882
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.15971
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.8171
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1104.36
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 601.627	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 365.712	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 447.904
+  Node #55:	sol1 = -3.748e-02 -1.018e-01
+  Node #63:	sol1 = -1.815e-04  6.742e-05
+  Total reactions for Rigid Body 1:  5.136e+01  3.897e+02  0.000e+00
+  step=115  time=1.015
+  1 active contact nodes, closest non-active node 56: constraint = 0.175143
+  Primary solution summary: L2-norm            : 0.0179587
+                            Max X-displacement : 0.0645425
+                            Max Y-displacement : 0.101537
+  Total reaction forces: Sum(R) = -0.000113744 -0.000164407
+  displacement\*reactions: (R,u) = -26.7179
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.15185
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.80828
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1093.73
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 596.777	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 357.525	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 437.877
+  Node #55:	sol1 = -3.744e-02 -1.015e-01
+  Node #63:	sol1 = -1.764e-04  6.611e-05
+  Total reactions for Rigid Body 1:  5.117e+01  3.767e+02  0.000e+00
+  step=116  time=1.016
+  1 active contact nodes, closest non-active node 56: constraint = 0.166396
+  Primary solution summary: L2-norm            : 0.0179247
+                            Max X-displacement : 0.0644887
+                            Max Y-displacement : 0.101253
+  Total reaction forces: Sum(R) = -0.000107855 -0.000151126
+  displacement\*reactions: (R,u) = -25.6285
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.14404
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.79949
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1083
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 591.864	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 349.267	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 427.763
+  Node #55:	sol1 = -3.741e-02 -1.013e-01
+  Node #63:	sol1 = -1.702e-04  6.474e-05
+  Total reactions for Rigid Body 1:  5.082e+01  3.634e+02  0.000e+00
+  step=117  time=1.017
+  1 active contact nodes, closest non-active node 56: constraint = 0.157693
+  Primary solution summary: L2-norm            : 0.017889
+                            Max X-displacement : 0.06443
+                            Max Y-displacement : 0.10096
+  Total reaction forces: Sum(R) = -0.000101848 -0.000138262
+  displacement\*reactions: (R,u) = -24.5214
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.1363
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.79077
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1072.2
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 586.897	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 340.966	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 417.597
+  Node #55:	sol1 = -3.736e-02 -1.010e-01
+  Node #63:	sol1 = -1.629e-04  6.331e-05
+  Total reactions for Rigid Body 1:  5.033e+01  3.498e+02  0.000e+00
+  step=118  time=1.018
+  1 active contact nodes, closest non-active node 56: constraint = 0.149036
+  Primary solution summary: L2-norm            : 0.0178518
+                            Max X-displacement : 0.0643664
+                            Max Y-displacement : 0.100661
+  Total reaction forces: Sum(R) = 0 -0.000125844
+  displacement\*reactions: (R,u) = -23.3979
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.12865
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.78213
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1061.33
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 581.883	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 332.657	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 407.42
+  Node #55:	sol1 = -3.732e-02 -1.007e-01
+  Node #63:	sol1 = -1.546e-04  6.183e-05
+  Total reactions for Rigid Body 1:  4.967e+01  3.358e+02  0.000e+00
+  step=119  time=1.019
+  1 active contact nodes, closest non-active node 56: constraint = 0.140425
+  Primary solution summary: L2-norm            : 0.017813
+                            Max X-displacement : 0.0642977
+                            Max Y-displacement : 0.100354
+  Total reaction forces: Sum(R) = 0 -0.0001139
+  displacement\*reactions: (R,u) = -22.2595
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.12112
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.7736
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1050.44
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 576.832	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 324.376	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 397.278
+  Node #55:	sol1 = -3.726e-02 -1.004e-01
+  Node #63:	sol1 = -1.451e-04  6.028e-05
+  Total reactions for Rigid Body 1:  4.885e+01  3.215e+02  0.000e+00
+  step=120  time=1.02
+  1 active contact nodes, closest non-active node 56: constraint = 0.131859
+  Primary solution summary: L2-norm            : 0.0177725
+                            Max X-displacement : 0.0642241
+                            Max Y-displacement : 0.100039
+  Total reaction forces: Sum(R) = 0 -0.000102456
+  displacement\*reactions: (R,u) = -21.1076
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.11373
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.76522
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1039.55
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 571.751	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 316.167	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 387.223
+  Node #55:	sol1 = -3.720e-02 -1.000e-01
+  Node #63:	sol1 = -1.345e-04  5.866e-05
+  Total reactions for Rigid Body 1:  4.787e+01  3.070e+02  0.000e+00
+  step=121  time=1.021
+  1 active contact nodes, closest non-active node 56: constraint = 0.123338
+  Primary solution summary: L2-norm            : 0.0177304
+                            Max X-displacement : 0.0641453
+                            Max Y-displacement : 0.0997175
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -19.9437
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.10653
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.75701
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1028.68
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 566.65	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 308.075	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 377.314
+  Node #55:	sol1 = -3.713e-02 -9.972e-02
+  Node #63:	sol1 = -1.227e-04  5.699e-05
+  Total reactions for Rigid Body 1:  4.671e+01  2.921e+02  0.000e+00
+  step=122  time=1.022
+  1 active contact nodes, closest non-active node 56: constraint = 0.114864
+  Primary solution summary: L2-norm            : 0.0176868
+                            Max X-displacement : 0.0640614
+                            Max Y-displacement : 0.0993886
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -18.7692
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.09952
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.749
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1017.87
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 561.538	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 300.156	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 367.614
+  Node #55:	sol1 = -3.706e-02 -9.939e-02
+  Node #63:	sol1 = -1.098e-04  5.526e-05
+  Total reactions for Rigid Body 1:  4.539e+01  2.769e+02  0.000e+00
+  step=123  time=1.023
+  1 active contact nodes, closest non-active node 56: constraint = 0.106436
+  Primary solution summary: L2-norm            : 0.0176415
+                            Max X-displacement : 0.0639723
+                            Max Y-displacement : 0.0990526
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -17.5857
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.09275
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.74123
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1007.16
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 556.426	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 292.468	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 358.198
+  Node #55:	sol1 = -3.698e-02 -9.905e-02
+  Node #63:	sol1 = -9.564e-05  5.347e-05
+  Total reactions for Rigid Body 1:  4.390e+01  2.614e+02  0.000e+00
+  step=124  time=1.024
+  1 active contact nodes, closest non-active node 56: constraint = 0.0980539
+  Primary solution summary: L2-norm            : 0.0175945
+                            Max X-displacement : 0.063878
+                            Max Y-displacement : 0.0987096
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -16.3946
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.08623
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.73373
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 996.565
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 551.323	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 285.078	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 349.148
+  Node #55:	sol1 = -3.689e-02 -9.871e-02
+  Node #63:	sol1 = -8.034e-05  5.161e-05
+  Total reactions for Rigid Body 1:  4.223e+01  2.456e+02  0.000e+00
+  step=125  time=1.025
+  1 active contact nodes, closest non-active node 56: constraint = 0.0897183
+  Primary solution summary: L2-norm            : 0.017546
+                            Max X-displacement : 0.0637784
+                            Max Y-displacement : 0.0983596
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -15.1975
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.08001
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.72652
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 986.132
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 546.242	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 278.06	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 340.552
+  Node #55:	sol1 = -3.680e-02 -9.836e-02
+  Node #63:	sol1 = -6.383e-05  4.970e-05
+  Total reactions for Rigid Body 1:  4.038e+01  2.296e+02  0.000e+00
+  step=126  time=1.026
+  1 active contact nodes, closest non-active node 56: constraint = 0.0814294
+  Primary solution summary: L2-norm            : 0.0174958
+                            Max X-displacement : 0.0636735
+                            Max Y-displacement : 0.0980027
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -13.996
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.07411
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.71964
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 975.896
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 541.192	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 271.493	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 332.51
+  Node #55:	sol1 = -3.670e-02 -9.800e-02
+  Node #63:	sol1 = -4.610e-05  4.772e-05
+  Total reactions for Rigid Body 1:  3.835e+01  2.132e+02  0.000e+00
+  step=127  time=1.027
+  1 active contact nodes, closest non-active node 56: constraint = 0.0731871
+  Primary solution summary: L2-norm            : 0.017444
+                            Max X-displacement : 0.0635632
+                            Max Y-displacement : 0.0976391
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -12.7915
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.06856
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.71313
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 965.896
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 536.185	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 265.467	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 325.129
+  Node #55:	sol1 = -3.659e-02 -9.764e-02
+  Node #63:	sol1 = -2.714e-05  4.568e-05
+  Total reactions for Rigid Body 1:  3.614e+01  1.966e+02  0.000e+00
+  step=128  time=1.028
+  1 active contact nodes, closest non-active node 56: constraint = 0.0649916
+  Primary solution summary: L2-norm            : 0.0173906
+                            Max X-displacement : 0.0634476
+                            Max Y-displacement : 0.0972687
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -11.5858
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.06339
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.70701
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 956.173
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 531.234	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 260.073	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 318.523
+  Node #55:	sol1 = -3.647e-02 -9.727e-02
+  Node #63:	sol1 = -6.937e-06  4.359e-05
+  Total reactions for Rigid Body 1:  3.374e+01  1.797e+02  0.000e+00
+  step=129  time=1.029
+  1 active contact nodes, closest non-active node 56: constraint = 0.0568431
+  Primary solution summary: L2-norm            : 0.0173356
+                            Max X-displacement : 0.0633265
+                            Max Y-displacement : 0.0968917
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -10.3803
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.05863
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.70132
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 946.769
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 526.351	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 255.408	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 312.81
+  Node #55:	sol1 = -3.635e-02 -9.689e-02
+  Node #63:	sol1 =  1.452e-05  4.143e-05
+  Total reactions for Rigid Body 1:  3.116e+01  1.625e+02  0.000e+00
+  step=130  time=1.03
+  1 active contact nodes, closest non-active node 56: constraint = 0.0487415
+  Primary solution summary: L2-norm            : 0.017279
+                            Max X-displacement : 0.0632
+                            Max Y-displacement : 0.0965081
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -9.1767
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.05432
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.6961
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 937.727
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 521.55	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 251.574	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 308.114
+  Node #55:	sol1 = -3.622e-02 -9.651e-02
+  Node #63:	sol1 =  3.724e-05  3.920e-05
+  Total reactions for Rigid Body 1:  2.839e+01  1.451e+02  0.000e+00
+  step=131  time=1.031
+  1 active contact nodes, closest non-active node 56: constraint = 0.0406871
+  Primary solution summary: L2-norm            : 0.0172208
+                            Max X-displacement : 0.0630681
+                            Max Y-displacement : 0.096118
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -7.97657
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.05049
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.69137
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 929.094
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 516.843	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 248.668	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 304.555
+  Node #55:	sol1 = -3.609e-02 -9.612e-02
+  Node #63:	sol1 =  6.124e-05  3.692e-05
+  Total reactions for Rigid Body 1:  2.543e+01  1.274e+02  0.000e+00
+  step=132  time=1.032
+  1 active contact nodes, closest non-active node 56: constraint = 0.0326799
+  Primary solution summary: L2-norm            : 0.017161
+                            Max X-displacement : 0.0629306
+                            Max Y-displacement : 0.0957216
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -6.78153
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.04717
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.68718
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 920.915
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 512.244	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 246.784	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 302.248
+  Node #55:	sol1 = -3.595e-02 -9.572e-02
+  Node #63:	sol1 =  8.652e-05  3.458e-05
+  Total reactions for Rigid Body 1:  2.228e+01  1.094e+02  0.000e+00
+  step=133  time=1.033
+  1 active contact nodes, closest non-active node 56: constraint = 0.0247199
+  Primary solution summary: L2-norm            : 0.0170995
+                            Max X-displacement : 0.0627876
+                            Max Y-displacement : 0.0953188
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -5.59322
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.04439
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.68355
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 913.24
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 507.769	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 246.01	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 301.299
+  Node #55:	sol1 = -3.580e-02 -9.532e-02
+  Node #63:	sol1 =  1.131e-04  3.218e-05
+  Total reactions for Rigid Body 1:  1.893e+01  9.124e+01  0.000e+00
+  step=134  time=1.034
+  1 active contact nodes, closest non-active node 56: constraint = 0.0168072
+  Primary solution summary: L2-norm            : 0.0170365
+                            Max X-displacement : 0.0626391
+                            Max Y-displacement : 0.0949097
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -4.41326
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.04219
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.68053
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 906.117
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 503.43	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 246.417	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 301.798
+  Node #55:	sol1 = -3.564e-02 -9.491e-02
+  Node #63:	sol1 =  1.410e-04  2.971e-05
+  Total reactions for Rigid Body 1:  1.539e+01  7.280e+01  0.000e+00
+  step=135  time=1.035
+  1 active contact nodes, closest non-active node 56: constraint = 0.00894195
+  Primary solution summary: L2-norm            : 0.0169719
+                            Max X-displacement : 0.062485
+                            Max Y-displacement : 0.0944946
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -3.24329
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.0406
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.67815
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 899.595
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 499.245	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 248.063	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 303.814
+  Node #55:	sol1 = -3.547e-02 -9.449e-02
+  Node #63:	sol1 =  1.702e-04  2.719e-05
+  Total reactions for Rigid Body 1:  1.166e+01  5.412e+01  0.000e+00
+  step=136  time=1.036
+  1 active contact nodes, closest non-active node 56: constraint = 0.0011241
+  Primary solution summary: L2-norm            : 0.016867
+                            Max X-displacement : 0.06208
+                            Max Y-displacement : 0.0940793
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -5.85696
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.04065
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.67813
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 889.826
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 491.427	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 259.398	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 317.696
+  Node #55:	sol1 = -3.489e-02 -9.408e-02
+  Node #63:	sol1 =  3.494e-04  2.316e-05
+  Total reactions for Rigid Body 1: -1.140e+01  6.715e+01  0.000e+00
+  step=137  time=1.037
+  2 active contact nodes, closest non-active node 57: constraint = 0.861082
+  Primary solution summary: L2-norm            : 0.0167975
+                            Max X-displacement : 0.0617669
+                            Max Y-displacement : 0.0938423
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -9.27272
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.04446
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.68199
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 884.377
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 485.749	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 272.517	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 333.764
+  Node #55:	sol1 = -3.435e-02 -9.384e-02
+  Node #63:	sol1 =  5.161e-04  2.012e-05
+  Total reactions for Rigid Body 1: -3.254e+01  9.153e+01  0.000e+00
+  step=138  time=1.038
+  1 active contact nodes, closest non-active node 55: constraint = 0.00214578
+  Primary solution summary: L2-norm            : 0.0168089
+                            Max X-displacement : 0.0616672
+                            Max Y-displacement : 0.094091
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -13.1941
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.05023
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.68887
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 888.901
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 486.288	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 284.107	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 347.959
+  Node #55:	sol1 = -3.412e-02 -9.409e-02
+  Node #63:	sol1 =  6.197e-04  2.033e-05
+  Total reactions for Rigid Body 1: -4.561e+01  1.297e+02  0.000e+00
+  step=139  time=1.039
+  1 active contact nodes, closest non-active node 55: constraint = 0.009329
+  Primary solution summary: L2-norm            : 0.0168267
+                            Max X-displacement : 0.0616071
+                            Max Y-displacement : 0.0943169
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -16.7067
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.05803
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.69787
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 893.147
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 486.713	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 295.03	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 361.336
+  Node #55:	sol1 = -3.395e-02 -9.432e-02
+  Node #63:	sol1 =  7.172e-04  1.932e-05
+  Total reactions for Rigid Body 1: -5.689e+01  1.636e+02  0.000e+00
+  step=140  time=1.04
+  1 active contact nodes, closest non-active node 55: constraint = 0.0165033
+  Primary solution summary: L2-norm            : 0.0168478
+                            Max X-displacement : 0.0615769
+                            Max Y-displacement : 0.0944895
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -19.8528
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.06763
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.70869
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 896.416
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 486.696	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 304.862	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 373.378
+  Node #55:	sol1 = -3.384e-02 -9.449e-02
+  Node #63:	sol1 =  8.090e-04  1.734e-05
+  Total reactions for Rigid Body 1: -6.660e+01  1.937e+02  0.000e+00
+  step=141  time=1.041
+  1 active contact nodes, closest non-active node 55: constraint = 0.0234879
+  Primary solution summary: L2-norm            : 0.0168713
+                            Max X-displacement : 0.0615597
+                            Max Y-displacement : 0.0946482
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -22.8745
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.07877
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.72114
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 900.712
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 487.066	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 315.567	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 386.49
+  Node #55:	sol1 = -3.376e-02 -9.465e-02
+  Node #63:	sol1 =  8.982e-04  1.508e-05
+  Total reactions for Rigid Body 1: -7.560e+01  2.223e+02  0.000e+00
+  step=142  time=1.042
+  1 active contact nodes, closest non-active node 55: constraint = 0.030493
+  Primary solution summary: L2-norm            : 0.0169035
+                            Max X-displacement : 0.0615926
+                            Max Y-displacement : 0.0947887
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -25.3538
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.09125
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.73494
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 903.139
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 486.937	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 323.012	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 395.608
+  Node #55:	sol1 = -3.373e-02 -9.479e-02
+  Node #63:	sol1 =  9.856e-04  1.144e-05
+  Total reactions for Rigid Body 1: -8.255e+01  2.456e+02  0.000e+00
+  step=143  time=1.043
+  1 active contact nodes, closest non-active node 55: constraint = 0.0375796
+  Primary solution summary: L2-norm            : 0.0169374
+                            Max X-displacement : 0.0616342
+                            Max Y-displacement : 0.0949213
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -27.764
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.10482
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.74988
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 906.654
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 487.267	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 331.262	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 405.712
+  Node #55:	sol1 = -3.372e-02 -9.492e-02
+  Node #63:	sol1 =  1.071e-03  7.671e-06
+  Total reactions for Rigid Body 1: -8.906e+01  2.681e+02  0.000e+00
+  step=144  time=1.044
+  1 active contact nodes, closest non-active node 55: constraint = 0.0447208
+  Primary solution summary: L2-norm            : 0.0169729
+                            Max X-displacement : 0.0616841
+                            Max Y-displacement : 0.0950486
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -30.1159
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.11939
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.76588
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 911.293
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 488.092	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 340.226	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 416.69
+  Node #55:	sol1 = -3.373e-02 -9.505e-02
+  Node #63:	sol1 =  1.154e-03  3.821e-06
+  Total reactions for Rigid Body 1: -9.517e+01  2.899e+02  0.000e+00
+  step=145  time=1.045
+  1 active contact nodes, closest non-active node 55: constraint = 0.0519333
+  Primary solution summary: L2-norm            : 0.0170102
+                            Max X-displacement : 0.0617417
+                            Max Y-displacement : 0.0951727
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -32.4192
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.1349
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.78286
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 917.078
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 489.441	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 349.822	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 428.443
+  Node #55:	sol1 = -3.376e-02 -9.517e-02
+  Node #63:	sol1 =  1.235e-03  0.000e+00
+  Total reactions for Rigid Body 1: -1.009e+02  3.111e+02  0.000e+00
+  step=146  time=1.046
+  1 active contact nodes, closest non-active node 55: constraint = 0.0592292
+  Primary solution summary: L2-norm            : 0.017049
+                            Max X-displacement : 0.0618063
+                            Max Y-displacement : 0.0952955
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -34.6823
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.15128
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.80076
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 924.016
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 491.332	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 359.978	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 440.881
+  Node #55:	sol1 = -3.381e-02 -9.530e-02
+  Node #63:	sol1 =  1.314e-03 -3.992e-06
+  Total reactions for Rigid Body 1: -1.064e+02  3.320e+02  0.000e+00
+  step=147  time=1.047
+  1 active contact nodes, closest non-active node 55: constraint = 0.0666166
+  Primary solution summary: L2-norm            : 0.0170917
+                            Max X-displacement : 0.0618885
+                            Max Y-displacement : 0.0954223
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -36.8008
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.16846
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.81948
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 931.099
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 493.375	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 369.714	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 452.805
+  Node #55:	sol1 = -3.386e-02 -9.542e-02
+  Node #63:	sol1 =  1.391e-03 -7.721e-06
+  Total reactions for Rigid Body 1: -1.112e+02  3.513e+02  0.000e+00
+  step=148  time=1.048
+  1 active contact nodes, closest non-active node 55: constraint = 0.0741399
+  Primary solution summary: L2-norm            : 0.0171354
+                            Max X-displacement : 0.0619759
+                            Max Y-displacement : 0.0955468
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -38.8524
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.18634
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.83893
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 938.873
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 495.782	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 379.584	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 464.893
+  Node #55:	sol1 = -3.393e-02 -9.555e-02
+  Node #63:	sol1 =  1.465e-03 -1.136e-05
+  Total reactions for Rigid Body 1: -1.156e+02  3.700e+02  0.000e+00
+  step=149  time=1.049
+  1 active contact nodes, closest non-active node 55: constraint = 0.0817229
+  Primary solution summary: L2-norm            : 0.0171778
+                            Max X-displacement : 0.0620617
+                            Max Y-displacement : 0.0956611
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -40.8035
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.20488
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.85904
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 946.921
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 498.397	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 389.178	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 476.643
+  Node #55:	sol1 = -3.400e-02 -9.566e-02
+  Node #63:	sol1 =  1.535e-03 -1.486e-05
+  Total reactions for Rigid Body 1: -1.196e+02  3.877e+02  0.000e+00
+  step=150  time=1.05
+  1 active contact nodes, closest non-active node 55: constraint = 0.0892676
+  Primary solution summary: L2-norm            : 0.0172213
+                            Max X-displacement : 0.0621497
+                            Max Y-displacement : 0.095781
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -42.6905
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.22398
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.87974
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 955.47
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 501.326	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 398.673	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 488.272
+  Node #55:	sol1 = -3.406e-02 -9.578e-02
+  Node #63:	sol1 =  1.605e-03 -1.821e-05
+  Total reactions for Rigid Body 1: -1.233e+02  4.048e+02  0.000e+00
+  step=151  time=1.051
+  1 active contact nodes, closest non-active node 55: constraint = 0.0969325
+  Primary solution summary: L2-norm            : 0.0172715
+                            Max X-displacement : 0.0622854
+                            Max Y-displacement : 0.0958696
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -44.312
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.24363
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.90091
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 962.23
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 503.562	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 406.401	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 497.738
+  Node #55:	sol1 = -3.421e-02 -9.587e-02
+  Node #63:	sol1 =  1.667e-03 -2.144e-05
+  Total reactions for Rigid Body 1: -1.261e+02  4.194e+02  0.000e+00
+  step=152  time=1.052
+  1 active contact nodes, closest non-active node 55: constraint = 0.104639
+  Primary solution summary: L2-norm            : 0.0173225
+                            Max X-displacement : 0.0624285
+                            Max Y-displacement : 0.0959521
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -45.7753
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.26365
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.92242
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 968.54
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 505.766	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 413.124	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 505.972
+  Node #55:	sol1 = -3.438e-02 -9.595e-02
+  Node #63:	sol1 =  1.727e-03 -2.474e-05
+  Total reactions for Rigid Body 1: -1.283e+02  4.325e+02  0.000e+00
+  step=153  time=1.053
+  1 active contact nodes, closest non-active node 55: constraint = 0.112402
+  Primary solution summary: L2-norm            : 0.0173738
+                            Max X-displacement : 0.0625719
+                            Max Y-displacement : 0.0960365
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -47.1479
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.28393
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.94419
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 975.044
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 508.172	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 419.517	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 513.801
+  Node #55:	sol1 = -3.454e-02 -9.604e-02
+  Node #63:	sol1 =  1.787e-03 -2.808e-05
+  Total reactions for Rigid Body 1: -1.301e+02  4.448e+02  0.000e+00
+  step=154  time=1.054
+  1 active contact nodes, closest non-active node 55: constraint = 0.120251
+  Primary solution summary: L2-norm            : 0.0174304
+                            Max X-displacement : 0.0627457
+                            Max Y-displacement : 0.0961224
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -48.3689
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.30442
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.96615
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 980.786
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 510.313	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 425.068	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 520.6
+  Node #55:	sol1 = -3.472e-02 -9.612e-02
+  Node #63:	sol1 =  1.841e-03 -3.102e-05
+  Total reactions for Rigid Body 1: -1.314e+02  4.557e+02  0.000e+00
+  step=155  time=1.055
+  1 active contact nodes, closest non-active node 55: constraint = 0.128268
+  Primary solution summary: L2-norm            : 0.0174893
+                            Max X-displacement : 0.062932
+                            Max Y-displacement : 0.0962083
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -49.5156
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.32504
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -5.98822
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 986.513
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 512.505	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 430.376	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 527.101
+  Node #55:	sol1 = -3.492e-02 -9.621e-02
+  Node #63:	sol1 =  1.893e-03 -3.377e-05
+  Total reactions for Rigid Body 1: -1.324e+02  4.660e+02  0.000e+00
+  step=156  time=1.056
+  1 active contact nodes, closest non-active node 55: constraint = 0.1364
+  Primary solution summary: L2-norm            : 0.0175489
+                            Max X-displacement : 0.0631221
+                            Max Y-displacement : 0.0962936
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -50.6256
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.34574
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.01036
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 992.581
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 514.899	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 435.721	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 533.647
+  Node #55:	sol1 = -3.513e-02 -9.629e-02
+  Node #63:	sol1 =  1.943e-03 -3.646e-05
+  Total reactions for Rigid Body 1: -1.333e+02  4.760e+02  0.000e+00
+  step=157  time=1.057
+  1 active contact nodes, closest non-active node 55: constraint = 0.144617
+  Primary solution summary: L2-norm            : 0.0176104
+                            Max X-displacement : 0.0633205
+                            Max Y-displacement : 0.0963829
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -51.67
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.36649
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.03254
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 998.61
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 517.325	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 440.847	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 539.925
+  Node #55:	sol1 = -3.534e-02 -9.638e-02
+  Node #63:	sol1 =  1.991e-03 -3.893e-05
+  Total reactions for Rigid Body 1: -1.339e+02  4.854e+02  0.000e+00
+  step=158  time=1.058
+  1 active contact nodes, closest non-active node 55: constraint = 0.152973
+  Primary solution summary: L2-norm            : 0.017674
+                            Max X-displacement : 0.0635276
+                            Max Y-displacement : 0.0964762
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -52.6461
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.38725
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.05473
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1004.52
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 519.743	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 445.713	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 545.884
+  Node #55:	sol1 = -3.555e-02 -9.648e-02
+  Node #63:	sol1 =  2.037e-03 -4.114e-05
+  Total reactions for Rigid Body 1: -1.342e+02  4.943e+02  0.000e+00
+  step=159  time=1.059
+  1 active contact nodes, closest non-active node 55: constraint = 0.161468
+  Primary solution summary: L2-norm            : 0.017738
+                            Max X-displacement : 0.0637377
+                            Max Y-displacement : 0.0965679
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -53.5901
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.408
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.07688
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1010.67
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 522.311	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 450.594	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 551.863
+  Node #55:	sol1 = -3.578e-02 -9.657e-02
+  Node #63:	sol1 =  2.081e-03 -4.327e-05
+  Total reactions for Rigid Body 1: -1.345e+02  5.030e+02  0.000e+00
+  step=160  time=1.06
+  1 active contact nodes, closest non-active node 55: constraint = 0.170039
+  Primary solution summary: L2-norm            : 0.0178024
+                            Max X-displacement : 0.0639501
+                            Max Y-displacement : 0.096658
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -54.5029
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.4287
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.09897
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1017.05
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 525.02	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 455.481	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 557.848
+  Node #55:	sol1 = -3.601e-02 -9.666e-02
+  Node #63:	sol1 =  2.124e-03 -4.530e-05
+  Total reactions for Rigid Body 1: -1.346e+02  5.114e+02  0.000e+00
+  step=161  time=1.061
+  1 active contact nodes, closest non-active node 55: constraint = 0.178683
+  Primary solution summary: L2-norm            : 0.0178672
+                            Max X-displacement : 0.0641651
+                            Max Y-displacement : 0.0967472
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -55.3737
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.44934
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.12099
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1023.49
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 527.795	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 460.246	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 563.684
+  Node #55:	sol1 = -3.624e-02 -9.675e-02
+  Node #63:	sol1 =  2.165e-03 -4.722e-05
+  Total reactions for Rigid Body 1: -1.345e+02  5.196e+02  0.000e+00
+  step=162  time=1.062
+  1 active contact nodes, closest non-active node 55: constraint = 0.187407
+  Primary solution summary: L2-norm            : 0.0179323
+                            Max X-displacement : 0.06438
+                            Max Y-displacement : 0.0968407
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -56.1577
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.4699
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.14289
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1029.5
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 530.432	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 464.537	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 568.939
+  Node #55:	sol1 = -3.646e-02 -9.684e-02
+  Node #63:	sol1 =  2.204e-03 -4.892e-05
+  Total reactions for Rigid Body 1: -1.342e+02  5.270e+02  0.000e+00
+  step=163  time=1.063
+  1 active contact nodes, closest non-active node 55: constraint = 0.196241
+  Primary solution summary: L2-norm            : 0.0179983
+                            Max X-displacement : 0.0645977
+                            Max Y-displacement : 0.096938
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -56.879
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.49033
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.16465
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1035.23
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 532.981	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 468.506	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 573.8
+  Node #55:	sol1 = -3.669e-02 -9.694e-02
+  Node #63:	sol1 =  2.242e-03 -5.037e-05
+  Total reactions for Rigid Body 1: -1.336e+02  5.339e+02  0.000e+00
+  step=164  time=1.064
+  1 active contact nodes, closest non-active node 55: constraint = 0.205193
+  Primary solution summary: L2-norm            : 0.0180642
+                            Max X-displacement : 0.0648163
+                            Max Y-displacement : 0.0970324
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -57.5661
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.5106
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.18624
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1041.02
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 535.58	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 472.428	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 578.603
+  Node #55:	sol1 = -3.692e-02 -9.703e-02
+  Node #63:	sol1 =  2.278e-03 -5.173e-05
+  Total reactions for Rigid Body 1: -1.330e+02  5.406e+02  0.000e+00
+  step=165  time=1.065
+  1 active contact nodes, closest non-active node 55: constraint = 0.214203
+  Primary solution summary: L2-norm            : 0.0181301
+                            Max X-displacement : 0.0650359
+                            Max Y-displacement : 0.0971237
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -58.2206
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.53072
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.20763
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1046.87
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 538.226	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 476.305	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 583.352
+  Node #55:	sol1 = -3.715e-02 -9.712e-02
+  Node #63:	sol1 =  2.312e-03 -5.299e-05
+  Total reactions for Rigid Body 1: -1.322e+02  5.471e+02  0.000e+00
+  step=166  time=1.066
+  1 active contact nodes, closest non-active node 55: constraint = 0.22327
+  Primary solution summary: L2-norm            : 0.0181971
+                            Max X-displacement : 0.0652601
+                            Max Y-displacement : 0.0972165
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -58.827
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.55065
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.22883
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1052.36
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 540.728	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 479.893	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 587.746
+  Node #55:	sol1 = -3.739e-02 -9.722e-02
+  Node #63:	sol1 =  2.342e-03 -5.404e-05
+  Total reactions for Rigid Body 1: -1.313e+02  5.532e+02  0.000e+00
+  step=167  time=1.067
+  1 active contact nodes, closest non-active node 55: constraint = 0.232439
+  Primary solution summary: L2-norm            : 0.018264
+                            Max X-displacement : 0.0654851
+                            Max Y-displacement : 0.0973064
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -59.4008
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.57038
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.24979
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1057.85
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 543.249	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 483.416	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 592.061
+  Node #55:	sol1 = -3.763e-02 -9.731e-02
+  Node #63:	sol1 =  2.370e-03 -5.499e-05
+  Total reactions for Rigid Body 1: -1.303e+02  5.592e+02  0.000e+00
+  step=168  time=1.068
+  1 active contact nodes, closest non-active node 55: constraint = 0.241666
+  Primary solution summary: L2-norm            : 0.0183303
+                            Max X-displacement : 0.0657094
+                            Max Y-displacement : 0.0973923
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -59.9428
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.5899
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.27052
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1063.35
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 545.793	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 486.865	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 596.286
+  Node #55:	sol1 = -3.787e-02 -9.739e-02
+  Node #63:	sol1 =  2.397e-03 -5.583e-05
+  Total reactions for Rigid Body 1: -1.292e+02  5.649e+02  0.000e+00
+  step=169  time=1.069
+  1 active contact nodes, closest non-active node 55: constraint = 0.250932
+  Primary solution summary: L2-norm            : 0.0183964
+                            Max X-displacement : 0.0659338
+                            Max Y-displacement : 0.0974748
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -60.4548
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.60919
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.291
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1068.87
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 548.366	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 490.272	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 600.458
+  Node #55:	sol1 = -3.811e-02 -9.747e-02
+  Node #63:	sol1 =  2.422e-03 -5.660e-05
+  Total reactions for Rigid Body 1: -1.280e+02  5.705e+02  0.000e+00
+  step=170  time=1.07
+  1 active contact nodes, closest non-active node 55: constraint = 0.260248
+  Primary solution summary: L2-norm            : 0.0184645
+                            Max X-displacement : 0.0661676
+                            Max Y-displacement : 0.0975613
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -60.9132
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.62825
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.31121
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1073.91
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 550.747	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 493.275	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 604.136
+  Node #55:	sol1 = -3.836e-02 -9.756e-02
+  Node #63:	sol1 =  2.442e-03 -5.714e-05
+  Total reactions for Rigid Body 1: -1.267e+02  5.757e+02  0.000e+00
+  step=171  time=1.071
+  1 active contact nodes, closest non-active node 55: constraint = 0.269699
+  Primary solution summary: L2-norm            : 0.0185362
+                            Max X-displacement : 0.0664162
+                            Max Y-displacement : 0.0976552
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.2954
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.64707
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.33113
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1077.99
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 552.726	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 495.526	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 606.893
+  Node #55:	sol1 = -3.862e-02 -9.766e-02
+  Node #63:	sol1 =  2.453e-03 -5.734e-05
+  Total reactions for Rigid Body 1: -1.252e+02  5.803e+02  0.000e+00
+  step=172  time=1.072
+  1 active contact nodes, closest non-active node 55: constraint = 0.279322
+  Primary solution summary: L2-norm            : 0.018608
+                            Max X-displacement : 0.0666659
+                            Max Y-displacement : 0.0977483
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.6383
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.66561
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.35074
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1081.87
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 554.639	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 497.554	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 609.377
+  Node #55:	sol1 = -3.888e-02 -9.775e-02
+  Node #63:	sol1 =  2.461e-03 -5.739e-05
+  Total reactions for Rigid Body 1: -1.235e+02  5.847e+02  0.000e+00
+  step=173  time=1.073
+  1 active contact nodes, closest non-active node 55: constraint = 0.289013
+  1 active contact nodes, closest non-active node 55: constraint = 0.298817
+  Primary solution summary: L2-norm            : 0.0186812
+                            Max X-displacement : 0.0669214
+                            Max Y-displacement : 0.0978445
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.9319
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.68386
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.37002
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1085.26
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 556.356	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 499.196	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 611.387
+  Node #55:	sol1 = -3.914e-02 -9.784e-02
+  Node #63:	sol1 =  2.464e-03 -5.724e-05
+  Total reactions for Rigid Body 1: -1.218e+02  5.887e+02  0.000e+00
+  step=174  time=1.074
+  1 active contact nodes, closest non-active node 55: constraint = 0.298816
+  1 active contact nodes, closest non-active node 55: constraint = 0.308773
+  Primary solution summary: L2-norm            : 0.0187567
+                            Max X-displacement : 0.0671868
+                            Max Y-displacement : 0.0979476
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.1649
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.70181
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.38897
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1087.9
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 557.751	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 500.264	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 612.696
+  Node #55:	sol1 = -3.941e-02 -9.795e-02
+  Node #63:	sol1 =  2.461e-03 -5.682e-05
+  Total reactions for Rigid Body 1: -1.199e+02  5.923e+02  0.000e+00
+  step=175  time=1.075
+  1 active contact nodes, closest non-active node 55: constraint = 0.308773
+  Primary solution summary: L2-norm            : 0.0188325
+                            Max X-displacement : 0.0674558
+                            Max Y-displacement : 0.0980508
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.3604
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.71944
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.40755
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1090.34
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 559.083	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 501.121	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 613.746
+  Node #55:	sol1 = -3.968e-02 -9.805e-02
+  Node #63:	sol1 =  2.455e-03 -5.627e-05
+  Total reactions for Rigid Body 1: -1.179e+02  5.956e+02  0.000e+00
+  step=176  time=1.076
+  1 active contact nodes, closest non-active node 55: constraint = 0.318807
+  Primary solution summary: L2-norm            : 0.0189089
+                            Max X-displacement : 0.0677293
+                            Max Y-displacement : 0.0981551
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.5166
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.73674
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.42577
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1092.55
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 560.339	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 501.733	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 614.495
+  Node #55:	sol1 = -3.995e-02 -9.816e-02
+  Node #63:	sol1 =  2.447e-03 -5.558e-05
+  Total reactions for Rigid Body 1: -1.159e+02  5.987e+02  0.000e+00
+  step=177  time=1.077
+  1 active contact nodes, closest non-active node 55: constraint = 0.328926
+  Primary solution summary: L2-norm            : 0.018984
+                            Max X-displacement : 0.0679976
+                            Max Y-displacement : 0.0982573
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.6382
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.75369
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.44362
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1094.67
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 561.563	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.235	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 615.109
+  Node #55:	sol1 = -4.022e-02 -9.826e-02
+  Node #63:	sol1 =  2.438e-03 -5.480e-05
+  Total reactions for Rigid Body 1: -1.138e+02  6.015e+02  0.000e+00
+  step=178  time=1.078
+  1 active contact nodes, closest non-active node 55: constraint = 0.339075
+  Primary solution summary: L2-norm            : 0.0190578
+                            Max X-displacement : 0.0682606
+                            Max Y-displacement : 0.0983574
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.7266
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.77029
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.46108
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1096.69
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 562.755	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.631	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 615.595
+  Node #55:	sol1 = -4.048e-02 -9.836e-02
+  Node #63:	sol1 =  2.429e-03 -5.392e-05
+  Total reactions for Rigid Body 1: -1.116e+02  6.042e+02  0.000e+00
+  step=179  time=1.079
+  1 active contact nodes, closest non-active node 55: constraint = 0.349251
+  Primary solution summary: L2-norm            : 0.0191316
+                            Max X-displacement : 0.0685233
+                            Max Y-displacement : 0.0984574
+  Total reaction forces: Sum(R) = 0.000282807 0
+  displacement\*reactions: (R,u) = -62.7794
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.78653
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.47816
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1098.43
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 563.83	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.832	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 615.841
+  Node #55:	sol1 = -4.074e-02 -9.846e-02
+  Node #63:	sol1 =  2.419e-03 -5.295e-05
+  Total reactions for Rigid Body 1: -1.094e+02  6.066e+02  0.000e+00
+  step=180  time=1.08
+  1 active contact nodes, closest non-active node 57: constraint = 0.348127
+  Primary solution summary: L2-norm            : 0.0192068
+                            Max X-displacement : 0.0687897
+                            Max Y-displacement : 0.09856
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.7893
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.80242
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.49485
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1099.68
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 564.679	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.701	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 615.68
+  Node #55:	sol1 = -4.101e-02 -9.856e-02
+  Node #63:	sol1 =  2.405e-03 -5.185e-05
+  Total reactions for Rigid Body 1: -1.071e+02  6.088e+02  0.000e+00
+  step=181  time=1.081
+  1 active contact nodes, closest non-active node 57: constraint = 0.335167
+  Primary solution summary: L2-norm            : 0.0192809
+                            Max X-displacement : 0.0690525
+                            Max Y-displacement : 0.0986598
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.7754
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.81793
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.51113
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1100.89
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 565.515	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.539	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 615.483
+  Node #55:	sol1 = -4.127e-02 -9.866e-02
+  Node #63:	sol1 =  2.390e-03 -5.071e-05
+  Total reactions for Rigid Body 1: -1.047e+02  6.108e+02  0.000e+00
+  step=182  time=1.082
+  1 active contact nodes, closest non-active node 57: constraint = 0.322233
+  Primary solution summary: L2-norm            : 0.0193539
+                            Max X-displacement : 0.0693116
+                            Max Y-displacement : 0.0987568
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.7383
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.83306
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.52701
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1102.08
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 566.339	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.351	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 615.252
+  Node #55:	sol1 = -4.153e-02 -9.876e-02
+  Node #63:	sol1 =  2.375e-03 -4.954e-05
+  Total reactions for Rigid Body 1: -1.024e+02  6.127e+02  0.000e+00
+  step=183  time=1.083
+  1 active contact nodes, closest non-active node 57: constraint = 0.309327
+  Primary solution summary: L2-norm            : 0.0194258
+                            Max X-displacement : 0.0695669
+                            Max Y-displacement : 0.0988509
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.6788
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.84782
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.54249
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1103.23
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 567.15	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 502.139	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 614.992
+  Node #55:	sol1 = -4.179e-02 -9.885e-02
+  Node #63:	sol1 =  2.359e-03 -4.834e-05
+  Total reactions for Rigid Body 1: -9.995e+01  6.145e+02  0.000e+00
+  step=184  time=1.084
+  1 active contact nodes, closest non-active node 57: constraint = 0.29645
+  Primary solution summary: L2-norm            : 0.0194965
+                            Max X-displacement : 0.0698183
+                            Max Y-displacement : 0.0989422
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.5971
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.86219
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.55757
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1104.36
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 567.947	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 501.905	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 614.706
+  Node #55:	sol1 = -4.204e-02 -9.894e-02
+  Node #63:	sol1 =  2.342e-03 -4.713e-05
+  Total reactions for Rigid Body 1: -9.751e+01  6.162e+02  0.000e+00
+  step=185  time=1.085
+  1 active contact nodes, closest non-active node 57: constraint = 0.283603
+  Primary solution summary: L2-norm            : 0.019566
+                            Max X-displacement : 0.0700657
+                            Max Y-displacement : 0.0990306
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.494
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.87618
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.57223
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1105.45
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 568.731	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 501.652	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 614.396
+  Node #55:	sol1 = -4.229e-02 -9.903e-02
+  Node #63:	sol1 =  2.325e-03 -4.590e-05
+  Total reactions for Rigid Body 1: -9.506e+01  6.178e+02  0.000e+00
+  step=186  time=1.086
+  1 active contact nodes, closest non-active node 57: constraint = 0.270786
+  Primary solution summary: L2-norm            : 0.0196342
+                            Max X-displacement : 0.070309
+                            Max Y-displacement : 0.0991162
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.3696
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.88979
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.58649
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1106.51
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 569.499	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 501.382	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 614.065
+  Node #55:	sol1 = -4.254e-02 -9.912e-02
+  Node #63:	sol1 =  2.307e-03 -4.465e-05
+  Total reactions for Rigid Body 1: -9.258e+01  6.193e+02  0.000e+00
+  step=187  time=1.087
+  1 active contact nodes, closest non-active node 57: constraint = 0.258001
+  Primary solution summary: L2-norm            : 0.0197019
+                            Max X-displacement : 0.0705518
+                            Max Y-displacement : 0.0992011
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.2196
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.90302
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.60034
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1107.46
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 570.225	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 500.991	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 613.586
+  Node #55:	sol1 = -4.279e-02 -9.920e-02
+  Node #63:	sol1 =  2.288e-03 -4.336e-05
+  Total reactions for Rigid Body 1: -9.007e+01  6.206e+02  0.000e+00
+  step=188  time=1.088
+  1 active contact nodes, closest non-active node 57: constraint = 0.245233
+  Primary solution summary: L2-norm            : 0.0197702
+                            Max X-displacement : 0.0707996
+                            Max Y-displacement : 0.0992885
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -62.0371
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.91586
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.61378
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1108.15
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 570.869	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 500.332	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 612.779
+  Node #55:	sol1 = -4.304e-02 -9.929e-02
+  Node #63:	sol1 =  2.267e-03 -4.199e-05
+  Total reactions for Rigid Body 1: -8.751e+01  6.218e+02  0.000e+00
+  step=189  time=1.089
+  1 active contact nodes, closest non-active node 57: constraint = 0.232461
+  Primary solution summary: L2-norm            : 0.0198371
+                            Max X-displacement : 0.071043
+                            Max Y-displacement : 0.0993732
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.8349
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.92831
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.62681
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1108.82
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 571.497	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 499.664	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 611.961
+  Node #55:	sol1 = -4.329e-02 -9.937e-02
+  Node #63:	sol1 =  2.245e-03 -4.061e-05
+  Total reactions for Rigid Body 1: -8.494e+01  6.229e+02  0.000e+00
+  step=190  time=1.09
+  1 active contact nodes, closest non-active node 57: constraint = 0.219725
+  Primary solution summary: L2-norm            : 0.0199027
+                            Max X-displacement : 0.0712817
+                            Max Y-displacement : 0.0994552
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.6132
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.94038
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.63942
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1109.47
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 572.11	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 498.989	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 611.134
+  Node #55:	sol1 = -4.353e-02 -9.946e-02
+  Node #63:	sol1 =  2.223e-03 -3.923e-05
+  Total reactions for Rigid Body 1: -8.236e+01  6.239e+02  0.000e+00
+  step=191  time=1.091
+  1 active contact nodes, closest non-active node 57: constraint = 0.207025
+  Primary solution summary: L2-norm            : 0.0199669
+                            Max X-displacement : 0.0715158
+                            Max Y-displacement : 0.0995345
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.3723
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.95205
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.65161
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1110.08
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 572.704	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 498.307	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 610.299
+  Node #55:	sol1 = -4.377e-02 -9.953e-02
+  Node #63:	sol1 =  2.201e-03 -3.785e-05
+  Total reactions for Rigid Body 1: -7.976e+01  6.248e+02  0.000e+00
+  step=192  time=1.092
+  1 active contact nodes, closest non-active node 57: constraint = 0.194361
+  Primary solution summary: L2-norm            : 0.0200297
+                            Max X-displacement : 0.071745
+                            Max Y-displacement : 0.099611
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -61.1126
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.96332
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.6634
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1110.66
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 573.28	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 497.62	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 609.458
+  Node #55:	sol1 = -4.400e-02 -9.961e-02
+  Node #63:	sol1 =  2.179e-03 -3.647e-05
+  Total reactions for Rigid Body 1: -7.715e+01  6.256e+02  0.000e+00
+  step=193  time=1.093
+  1 active contact nodes, closest non-active node 57: constraint = 0.181734
+  Primary solution summary: L2-norm            : 0.020091
+                            Max X-displacement : 0.0719694
+                            Max Y-displacement : 0.0996849
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -60.8344
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.97421
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.67477
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1111.22
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 573.836	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 496.929	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 608.611
+  Node #55:	sol1 = -4.423e-02 -9.968e-02
+  Node #63:	sol1 =  2.156e-03 -3.509e-05
+  Total reactions for Rigid Body 1: -7.453e+01  6.263e+02  0.000e+00
+  step=194  time=1.094
+  1 active contact nodes, closest non-active node 57: constraint = 0.169145
+  Primary solution summary: L2-norm            : 0.0201508
+                            Max X-displacement : 0.0721888
+                            Max Y-displacement : 0.099756
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -60.538
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.98471
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.68573
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1111.73
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 574.37	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 496.235	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 607.761
+  Node #55:	sol1 = -4.446e-02 -9.976e-02
+  Node #63:	sol1 =  2.133e-03 -3.371e-05
+  Total reactions for Rigid Body 1: -7.189e+01  6.270e+02  0.000e+00
+  step=195  time=1.095
+  1 active contact nodes, closest non-active node 57: constraint = 0.156594
+  Primary solution summary: L2-norm            : 0.0202092
+                            Max X-displacement : 0.0724032
+                            Max Y-displacement : 0.0998245
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -60.2237
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 6.99481
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.69628
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1112.22
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 574.882	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 495.537	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 606.907
+  Node #55:	sol1 = -4.468e-02 -9.982e-02
+  Node #63:	sol1 =  2.109e-03 -3.234e-05
+  Total reactions for Rigid Body 1: -6.926e+01  6.275e+02  0.000e+00
+  step=196  time=1.096
+  1 active contact nodes, closest non-active node 57: constraint = 0.144081
+  Primary solution summary: L2-norm            : 0.020266
+                            Max X-displacement : 0.0726124
+                            Max Y-displacement : 0.0998903
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -59.8917
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.00452
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.70641
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1112.66
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 575.37	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 494.838	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 606.05
+  Node #55:	sol1 = -4.490e-02 -9.989e-02
+  Node #63:	sol1 =  2.085e-03 -3.098e-05
+  Total reactions for Rigid Body 1: -6.661e+01  6.280e+02  0.000e+00
+  step=197  time=1.097
+  1 active contact nodes, closest non-active node 57: constraint = 0.131608
+  Primary solution summary: L2-norm            : 0.0203214
+                            Max X-displacement : 0.0728164
+                            Max Y-displacement : 0.0999534
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -59.5422
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.01385
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.71614
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1113.07
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 575.833	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 494.136	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 605.191
+  Node #55:	sol1 = -4.511e-02 -9.995e-02
+  Node #63:	sol1 =  2.062e-03 -2.962e-05
+  Total reactions for Rigid Body 1: -6.396e+01  6.285e+02  0.000e+00
+  step=198  time=1.098
+  1 active contact nodes, closest non-active node 57: constraint = 0.119174
+  Primary solution summary: L2-norm            : 0.0203751
+                            Max X-displacement : 0.0730152
+                            Max Y-displacement : 0.100014
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -59.1757
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.02278
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.72546
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1113.44
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 576.27	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 493.434	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 604.331
+  Node #55:	sol1 = -4.532e-02 -1.000e-01
+  Node #63:	sol1 =  2.038e-03 -2.828e-05
+  Total reactions for Rigid Body 1: -6.130e+01  6.288e+02  0.000e+00
+  step=199  time=1.099
+  1 active contact nodes, closest non-active node 57: constraint = 0.10678
+  Primary solution summary: L2-norm            : 0.0204273
+                            Max X-displacement : 0.0732087
+                            Max Y-displacement : 0.100072
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -58.7923
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.03133
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.73437
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1113.76
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 576.68	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 492.731	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 603.47
+  Node #55:	sol1 = -4.552e-02 -1.001e-01
+  Node #63:	sol1 =  2.013e-03 -2.694e-05
+  Total reactions for Rigid Body 1: -5.864e+01  6.291e+02  0.000e+00
+  step=200  time=1.1
+  1 active contact nodes, closest non-active node 57: constraint = 0.0944256
+  Primary solution summary: L2-norm            : 0.0204779
+                            Max X-displacement : 0.0733967
+                            Max Y-displacement : 0.100127
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -58.3922
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 7.03949
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -6.74287
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 1114.04
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 577.061	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 492.027	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 602.608
+  Node #55:	sol1 = -4.572e-02 -1.001e-01
+  Node #63:	sol1 =  1.989e-03 -2.562e-05
+  Total reactions for Rigid Body 1: -5.597e+01  6.293e+02  0.000e+00
+  Time integration completed.

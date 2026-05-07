@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Compression of a thick hollow cylinder, nonlinear analysis. !-->
+<!-- Isotropic hyperelastic material, quartic/cubic elements. !-->
+
+<simulation>
+
+  <geometry dim="3">
+    <patchfile>half_pipe.g2</patchfile>
+    <raiseorder patch="1" u="2" v="3" w="2"/>
+    <refine patch="1" u="1" v="1"/>
+  </geometry>
+
+  <boundaryconditions>
+    <propertyfile>faceload2.prc</propertyfile>
+    <dirichlet code="1" comp="123"/>
+    <dirichlet code="2" comp="123"/>
+    <dirichlet code="3" comp="123"/>
+    <neumann code="4" direction="1" type="linear">-235.0</neumann>
+    <neumann code="5" direction="1" type="linear"> 235.0</neumann>
+  </boundaryconditions>
+
+  <finitedeformation>
+    <formulation>
+      <updatedlagrange/>
+    </formulation>
+    <isotropic version="13" E="16800" nu="0.4" rho="0"/>
+  </finitedeformation>
+
+  <discretization>
+    <nGauss>4</nGauss>
+  </discretization>
+
+  <nonlinearsolver>
+    <timestepping>
+      <step start="0.0" end="0.25">0.25</step>
+    </timestepping>
+    <rtol value="1.0e-16"/>
+    <dtol value="1.0e2"/>
+    <energy2/>
+  </nonlinearsolver>
+
+</simulation>

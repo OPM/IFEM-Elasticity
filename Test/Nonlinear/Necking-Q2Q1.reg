@@ -1,0 +1,114 @@
+Necking-p2.xinp -outPrec 6
+
+Input file: Necking-p2.xinp
+Equation solver: 2
+Number of Gauss points: 4
+Norm- and component output precision: 6
+Parsing input file Necking-p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file strip2D.g2
+	Reading patch 1
+	Reading patch 2
+  Parsing <raiseorder>
+  Parsing <refine>
+  Parsing <topology>
+  Parsing <topologysets>
+	Topology sets: bottom (1,3,1D)
+	               left (1,1,1D) (2,1,1D)
+	               top (2,4,1D)
+  Parsing <patchfile>
+  Parsing <raiseorder>
+	Raising order of P1 1 1
+	Raising order of P2 1 1
+  Parsing <refine>
+	Refining P1 2 2
+	Refining P2 2 2
+  Parsing <topology>
+	Connecting P2 E3 to P1 E4 reversed? 0
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 2: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 1000002 (linear): 1\*t
+Parsing <finitedeformation>
+	Material code 0: 206.9 0.29 0 0 0.12924 0 1 0.45 0.715 16.93 1
+Parsing <nonlinearsolver>
+Parsing <postprocessing>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 1 0
+	Point 2: P2 xi = 0 1
+	Point 3: P2 xi = 1 1
+Parsing input file succeeded.
+Equation solver: 2
+Number of Gauss points: 3
+Problem definition:
+NonlinearElasticityULMixed: Continuous volumetric change and pressure fields
+NonlinearElasticityUL: Updated Lagrangian formulation
+Elasticity: 2D, gravity = 0 0
+PlasticMaterial: pMAT = 206.9 0.29 0 0 164.206 80.1938 0.12924 0 1 0.45 0.715 16.93 1
+Using C^(p-2) continuous displacement basis
+Renumbered 76 nodes.
+Resolving Dirichlet boundary conditions
+	Constraining P1 E1 in direction(s) 1
+	Constraining P2 E1 in direction(s) 1
+	Constraining P1 E3 in direction(s) 2
+	Constraining P2 E4 in direction(s) 2 code = 1000002
+Result point #1: patch #1 (u,v)=(1,0), node #8, global #8, X = 6.29757 0 0
+Result point #2: patch #2 (u,v)=(0,1), node #57, global #138, X = 0 26.667 0
+Result point #3: patch #2 (u,v)=(1,1), node #64, global #145, X = 6.413 26.667 0
+ >>> SAM model summary <<<
+Number of elements    18
+Number of nodes       165
+Number of dofs        330
+Number of D-dofs      240
+Number of P-dofs      90
+Number of constraints 8
+Number of unknowns    299
+  step=1  time=0.5
+  Primary solution summary: L2-norm            : 0.184127
+                            Max X-displacement : 0.109589
+                            Max Y-displacement : 0.5
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -1.8908
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 0.967828	 a(u^h,u^h) = 0.9366908516
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -0.972318	(f,u)+(t,u) = 0.9454014067
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 8.70657
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 3.86605	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 5.56464	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 6.81526
+  Node #8:	sol1 = -1.086578e-01  0.000000e+00
+		sol2 =  7.266988e-02  6.918239e-01  3.657961e-01  1.059790e-04  5.364554e-01  2.276300e-02  3.767633e-01  6.918239e-01  3.657961e-01  7.266986e-02  7.023199e-01 -5.313939e-02
+		reac =  0.000000e+00  3.193818e-01
+  Node #138:	sol1 =  0.000000e+00  5.000000e-01
+		sol2 = -8.033214e-04  5.995253e-01  2.837364e-01  0.000000e+00  5.201346e-01  1.774770e-02  2.941528e-01  5.995253e-01  2.837364e-01 -8.033214e-04  5.655321e-01 -5.205335e-02
+		reac = -1.050974e-03 -3.152793e-01
+  Node #145:	sol1 = -1.034963e-01  5.000000e-01
+		sol2 =  8.073443e-04  5.999503e-01  2.844974e-01 -2.179853e-05  5.191160e-01  1.745360e-02  2.950850e-01  5.999503e-01  2.844974e-01  8.073436e-04  5.684375e-01 -5.301370e-02
+		reac =  0.000000e+00 -3.147069e-01
+  step=2  time=1
+  Primary solution summary: L2-norm            : 0.368468
+                            Max X-displacement : 0.22382
+                            Max Y-displacement : 1
+  Total reaction forces: Sum(R) = 0 0
+  displacement\*reactions: (R,u) = -4.14204
+  Energy norm:    |u^h| = a(u^h,u^h)^0.5 : 1.70804	 a(u^h,u^h) = 2.917390494
+  External energy: ((f,u^h)+(t,u^h))^0.5 : -1.71065	(f,u)+(t,u) = 2.926311656
+  Stress norm, L2: (sigma^h,sigma^h)^0.5 : 9.78806
+  Pressure norm, L2:       (p^h,p^h)^0.5 : 4.37105	(p^h = trace(sigma^h)/3)
+  Deviatoric stress norm:  (s^d,s^d)^0.5 : 6.20387	(s^d = sigma^h - p^h\*I)
+  Stress norm, von Mises: vm(sigma^h)    : 7.59816
+  Node #8:	sol1 = -2.224206e-01  0.000000e+00
+		sol2 =  1.319435e-01  8.240453e-01  4.718842e-01  2.546440e-04  5.994090e-01  4.684410e-02  4.759577e-01  8.240454e-01  4.718842e-01  1.319434e-01  7.940449e-01 -1.765708e-02
+		reac =  0.000000e+00  3.495560e-01
+  Node #138:	sol1 =  0.000000e+00  1.000000e+00
+		sol2 = -2.149076e-03  6.670139e-01  3.288402e-01  0.000000e+00  5.795233e-01  3.802063e-02  3.312350e-01  6.670139e-01  3.288402e-01 -2.149076e-03  5.715646e-01 -1.073648e-02
+		reac = -1.156607e-03 -3.452929e-01
+  Node #145:	sol1 = -2.137643e-01  1.000000e+00
+		sol2 =  2.700873e-03  6.704834e-01  3.327851e-01 -2.417413e-05  5.783292e-01  3.754700e-02  3.353231e-01  6.704834e-01  3.327851e-01  2.700872e-03  5.798136e-01 -1.140206e-02
+		reac =  0.000000e+00 -3.447388e-01
+  Time integration completed.

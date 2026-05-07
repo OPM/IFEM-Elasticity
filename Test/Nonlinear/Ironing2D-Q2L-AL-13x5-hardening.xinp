@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- 2D Contact between a elastoplastic block and a rigid cylinder. !-->
+<!-- Augmented Lagrange contact formulation. !-->
+<!-- Quadratic Lagrange finite elements. !-->
+
+<simulation>
+
+  <geometry dim="2" Lx="3.0" Ly="1.0">
+    <refine patch="1" u="5" v="1"/>
+    <raiseorder patch="1" u="1" v="1"/>
+    <topologysets>
+      <set name="bottom" type="edge">
+        <item patch="1">3</item>
+      </set>
+      <set name="top" type="edge">
+        <item patch="1">4</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet comp="12" set="bottom"/>
+  </boundaryconditions>
+
+  <finitedeformation>
+    <formulation>
+      <updatedlagrange/>
+    </formulation>
+    <plastic E="70000.0" nu="0.3" yield="5" Y0="24.37" istrt="1">
+      <hardeningcurve type="piecewiselinear">Hcurve.dat</hardeningcurve>
+    </plastic>
+    <contact formulation="augmented lagrange">
+      <cylinder R="0.5">
+        <point>0.5 1.5</point>
+        <slave set="top"/>
+        <dirichlet comp="2" type="expression">if(below(t,1.0),-0.075*t,-0.075)</dirichlet>
+        <dirichlet comp="1" type="expression">if(below(t,1.0),0.0,2.0*(t-1.0))</dirichlet>
+        <eps value="1.0e1"/>
+      </cylinder>
+    </contact>
+  </finitedeformation>
+
+  <discretization type="Lagrange">
+    <nGauss>3</nGauss>
+  </discretization>
+
+  <nonlinearsolver>
+    <timestepping>
+      <step start="0.0" end="1.0">0.01</step>
+      <step start="1.0" end="1.1">0.001</step>
+    </timestepping>
+    <rtol value="1.0e-12"/>
+    <dtol value="1.0e3"/>
+  </nonlinearsolver>
+
+  <postprocessing>
+    <resultpoints>
+      <point patch="1" u="0.166666666667" v="1.0"/>
+      <point patch="1" u="0.833333333333" v="1.0"/>
+    </resultpoints>
+  </postprocessing>
+
+</simulation>

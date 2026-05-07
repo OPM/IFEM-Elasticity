@@ -1,0 +1,336 @@
+// $Id$
+//==============================================================================
+//!
+//! \file RigidBody.C
+//!
+//! \date Jun 05 2012
+//!
+//! \author Knut Morten Okstad / SINTEF
+//!
+//! \brief Representation of rigid bodies in contact analysis.
+//!
+//==============================================================================
+
+#include "RigidBody.h"
+#include "ElementBlock.h"
+#include "Utilities.h"
+#include "Vec3Oper.h"
+
+#ifndef epsZ
+//! \brief Zero tolerance for point coalescence.
+#define epsZ 1.0e-16
+#endif
+
+
+RigidBody::RigidBody (unsigned char n, size_t np) :  nsd(n)
+{
+  X0.resize(np);
+  Xn.resize(np);
+  MLGN.resize(np,0);
+
+  eps = 1.0;
+  code = -1;
+  gBlock = 0;
+}
+
+
+void RigidBody::initPoints (const std::vector<Vec3>& p)
+{
+  for (size_t i = 0; i < X0.size() && i < p.size(); i++)
+    X0[i] = p[i];
+}
+
+
+void RigidBody::initNodes (const std::vector<int>& nodes)
+{
+  for (size_t i = 0; i < MLGN.size() && i < nodes.size(); i++)
+    MLGN[i] = nodes[i];
+}
+
+
+void RigidBody::renumberNodes (const std::map<int,int>& old2new)
+{
+  for (int& node : MLGN)
+    utl::renumber(node,old2new);
+}
+
+
+void RigidBody::print (std::ostream& os) const
+{
+  for (size_t i = 0; i < MLGN.size(); i++)
+    os <<"\n\tP"<< i+1 <<" (node "<< MLGN[i] <<"): "<< X0[i];
+  os <<"\n\tProperty code: "<< code
+     <<"\n\tPenalty parameter: "<< eps << std::endl;
+}
+
+
+bool RigidBody::update (const RealArray& displ)
+{
+  for (size_t i = 0; i < MLGN.size(); i++)
+    if (displ.empty())
+      Xn[i] = X0[i];
+    else
+    {
+      int n = MLGN[i];
+#ifdef INDEX_CHECK
+      if (n < 1 || nsd*static_cast<size_t>(n) > displ.size())
+      {
+	std::cerr <<" *** RigidBody::update: Global DOF "<< nsd*n
+		  <<" is out of range [1,"<< displ.size() <<"]"<< std::endl;
+	return false;
+      }
+#endif
+      for (unsigned char j = 0; j < nsd; j++)
+	Xn[i][j] = X0[i][j] + displ[nsd*(n-1)+j];
+    }
+
+  return true;
+}
+
+
+Vec3 RigidBody::getPosition () const
+{
+  return Xn.front() - X0.front();
+}
+
+
+void RigidSphere::print (std::ostream& os) const
+{
+  const_cast<RigidSphere*>(this)->update(RealArray());
+
+  os <<"\tRigid Sphere: R = "<< R;
+  this->RigidBody::print(os);
+}
+
+
+ElementBlock* RigidSphere::tesselate () const
+{
+  const size_t ntheta = 180; // Number of elements around equator
+  const size_t nphi   =  60; // Number of elements from pole to pole
+
+  return new SphereBlock(X0.front(),R,ntheta,nphi);
+}
+
+
+double RigidSphere::evalGap (const Vec3& X, Vec3& normal, RealArray& N) const
+{
+  normal = X - Xn[0];
+
+  N.resize(1);
+  N[0] = 1.0;
+
+  return normal.normalize() - R;
+}
+
+
+void RigidSphere::geometricStiffness (const Vec3& X, Vec3& normal,
+				      Matrix& Tg, RealArray& N) const
+{
+  Tg.resize(nsd,nsd,true);
+
+  Vec3 dX = X - Xn[0];
+  double d = dX.normalize(epsZ);
+
+  if (d > epsZ)
+    normal = dX;
+  else
+  {
+    normal *= -1.0;
+    d = 1.0;
+  }
+
+  for (unsigned char j = 0; j < nsd; j++)
+    for (unsigned char i = 0; i < nsd; i++)
+      Tg(i+1,j+1) = ((i == j ? 1.0 : 0.0) - dX[i]*dX[j]) / d;
+
+  N.resize(1);
+  N[0] = 1.0;
+}
+
+
+RigidCylinder::RigidCylinder (double r, unsigned char n)
+  : RigidBody(n,n-1), R(r), L(1.0)
+{
+  if (nsd == 2) dirC.z = 1.0;
+}
+
+
+void RigidCylinder::print (std::ostream& os) const
+{
+  const_cast<RigidCylinder*>(this)->update(RealArray());
+
+  os <<"\tRigid Cylinder: R = "<< R <<", L = "<< L <<", dirC = "<< dirC;
+  this->RigidBody::print(os);
+}
+
+
+ElementBlock* RigidCylinder::tesselate () const
+{
+  const size_t ntheta = 180; // Number of element in circular direction
+
+  return new CylinderBlock(X0.front(),
+                           X0.size() > 1 ? X0[1] : X0.front() + L*dirC,
+                           R, ntheta);
+}
+
+
+bool RigidCylinder::update (const RealArray& displ)
+{
+  if (!this->RigidBody::update(displ))
+    return false;
+
+  if (nsd == 3)
+  {
+    // Update the cylinder axis direction vector
+    dirC = Xn[1] - Xn[0];
+    if ((L = dirC.normalize(epsZ)) <= epsZ)
+    {
+      std::cerr <<" *** RigidCylinder::update: Degenerated cylinder.\n";
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+double RigidCylinder::evalGap (const Vec3& X, Vec3& normal, RealArray& N) const
+{
+  normal = X - Xn.front();
+  double z = normal*dirC;
+  normal -= z*dirC;
+
+  N.resize(nsd-1);
+  if (nsd == 2)
+    N[0] = 1.0;
+  else
+  {
+    N[0] = 1.0 - z/L;
+    N[1] = z/L;
+  }
+
+  return normal.normalize() - R;
+}
+
+
+void RigidCylinder::geometricStiffness (const Vec3& X, Vec3& normal,
+					Matrix& Tg, RealArray& N) const
+{
+  Tg.resize(nsd,nsd,true);
+
+  Vec3 dX = X - Xn.front();
+  double z = dX*dirC;
+  dX -= z*dirC;
+  double d = dX.normalize(epsZ);
+
+  if (d > epsZ)
+    normal = dX;
+  else
+  {
+    normal *= -1.0;
+    d = 1.0;
+  }
+
+  for (unsigned char j = 0; j < nsd; j++)
+    for (unsigned char i = 0; i < nsd; i++)
+      Tg(i+1,j+1) = ((i == j ? 1.0 : 0.0) - dirC[i]*dirC[j] - dX[i]*dX[j]) / d;
+
+  N.resize(nsd-1);
+  if (nsd == 2)
+    N[0] = 1.0;
+  else
+  {
+    N[0] = 1.0 - z/L;
+    N[1] = z/L;
+  }
+}
+
+
+void RigidPlane::print (std::ostream& os) const
+{
+  const_cast<RigidPlane*>(this)->update(RealArray());
+
+  os <<"\tRigid Plane: Triangle area = "<< Area <<", normal = "<< nVec;
+  this->RigidBody::print(os);
+}
+
+
+ElementBlock* RigidPlane::tesselate () const
+{
+  if (X0.size() > 2)
+    return new PlaneBlock(X0[0],X0[1],X0[2]);
+
+  Vec3 X2(X0.front());
+  X2.z += X0[1].x - X0[0].x;
+  return new PlaneBlock(X0[0],X0[1],X2);
+}
+
+
+bool RigidPlane::update (const RealArray& displ)
+{
+  if (!this->RigidBody::update(displ))
+    return false;
+
+  // Calculate the plane normal
+  Vec3 t1 = Xn[1] - Xn.front();
+  if (nsd == 2)
+  {
+    if ((Area = t1.normalize(epsZ)) <= epsZ)
+    {
+      std::cerr <<" *** RigidPlane::update: Degenerated plane.\n";
+      return false;
+    }
+    nVec.x = -t1.y;
+    nVec.y =  t1.x;
+  }
+  else
+  {
+    Vec3 t2 = Xn[2] - Xn.front();
+    if ((Area = nVec.cross(t1,t2).normalize(epsZ)) <= epsZ)
+    {
+      std::cerr <<" *** RigidPlane::update: Degenerated plane.\n";
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+double RigidPlane::evalGap (const Vec3& X, Vec3& normal, RealArray& N) const
+{
+  normal = nVec;
+
+  Vec3 dX = X - Xn.front();
+  double gN = dX*nVec;
+  dX -= gN*nVec;
+
+  N.resize(nsd);
+  if (nsd == 2)
+  {
+    double xi = dX.length()/Area;
+    N[0] = 1.0 - xi;
+    N[1] = xi;
+  }
+  else
+  {
+    // Area coordinates
+    double A2 = Vec3(dX, Xn[1] - Xn.front()).length()/Area;
+    double A3 = Vec3(Xn[2] - Xn.front(), dX).length()/Area;
+
+    N[0] = 1.0 - A2 - A3;
+    N[1] = A2;
+    N[2] = A3;
+  }
+
+  return gN;
+}
+
+
+void RigidPlane::geometricStiffness (const Vec3& X, Vec3& normal,
+				     Matrix& Tg, RealArray& N) const
+{
+  // No geometric stiffness, but invoke evalGap to evaluate N
+  Tg.resize(0,0,true);
+  this->evalGap(X,normal,N);
+}

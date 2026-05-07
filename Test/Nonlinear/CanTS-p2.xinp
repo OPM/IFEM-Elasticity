@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Cantilever beam with a tip shear load. !-->
+<!-- Isotropic linear elastic material. !-->
+<!-- Nonlinear 3D analysis with quadratic elements. !-->
+
+<simulation>
+
+  <geometry dim="3" Lx="10.0" Ly="0.1478" Lz="0.1">
+    <raiseorder patch="1" u="1" v="1" w="1"/>
+    <refine patch="1" u="3"/>
+    <topologysets>
+      <set name="fixed_end" type="face">
+        <item patch="1">1</item>
+      </set>
+      <set name="free_end" type="face">
+        <item patch="1">2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="fixed_end" comp="123"/>
+    <neumann set="free_end" direction="3" type="linear">18223.95</neumann>
+  </boundaryconditions>
+
+  <finitedeformation>
+    <isotropic E="1e8" nu="0" rho="0"/>
+  </finitedeformation>
+
+  <nonlinearsolver>
+    <timestepping>
+      <step start="0.0" end="0.3">0.1</step>
+    </timestepping>
+    <rtol value="1.0e-16"/>
+    <dtol value="1.0e5"/>
+    <energy2/>
+  </nonlinearsolver>
+
+</simulation>
