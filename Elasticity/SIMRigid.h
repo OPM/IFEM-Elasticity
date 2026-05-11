@@ -7,7 +7,7 @@
 //!
 //! \author Knut Morten Okstad / SINTEF
 //!
-//! \brief Rigid Coupling handler for elasticity problems.
+//! \brief Rigid and nodal coupling handler for elasticity problems.
 //!
 //=============================================================================
 
@@ -15,14 +15,15 @@
 #define _SIM_RIGID_H
 
 #include "TopologySet.h"
+#include <vector>
 
 class SIMinput;
 class ElementBlock;
-namespace tinyxml2  { class XMLElement;  }
+namespace tinyxml2 { class XMLElement; }
 
 
 /*!
-  \brief Rigid coupling handler for elasticity problems.
+  \brief Rigid and nodal coupling handler for elasticity problems.
 */
 
 class SIMRigid
@@ -35,15 +36,28 @@ protected:
 
   //! \brief Parses a rigid coupling definition from an XML element.
   bool parseRigid(const tinyxml2::XMLElement* elem, SIMinput* mySim);
+  //! \brief Parses general nodal couplings from an XML element.
+  bool parseCouplings(const tinyxml2::XMLElement* elem);
 
   //! \brief Creates multi-point constraint equations for the rigid couplings.
   bool addRigidMPCs(SIMinput* mySim, int& ngnod) const;
+  //! \brief Creates multi-point constraint equations for the general couplings.
+  bool addGeneralCouplings(SIMinput* mySim) const;
 
   //! \brief Creates an element block visualizing the rigid couplings.
   ElementBlock* rigidGeometry(SIMinput* mySim) const;
 
 private:
-  std::map<int,TopItem> myMasters; //!< Discrete master points
+  using PntMap  = std::map<int,TopItem>; //!< Discrete master point definition
+  using Master  = std::pair<int,double>; //!< Independent node with weight
+  using Masters = std::vector<Master>;   //!< Independent node list
+  using Couplin = std::map<int,Masters>; //!< General nodal coupling
+  using CplMap  = std::map<int,Couplin>; //!< Couplings for patches
+  using TolMap  = std::map<int,double>;  //!< Geometry tolerance for patches
+
+  PntMap myMasters;   //!< Discrete master point container
+  CplMap myCouplings; //!< Nodal coupling container
+  TolMap myGeomTols;  //!< Geometry tolerance container
 };
 
 #endif

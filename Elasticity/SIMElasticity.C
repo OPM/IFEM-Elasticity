@@ -366,13 +366,13 @@ void SIMElasticity<Dim>::preprocessA ()
 
 /*!
   This method creates the multi-point constraint equations representing the
-  rigid couplings in the model, if any.
+  rigid and nodal couplings in the model, if any.
 */
 
 template<class Dim>
 bool SIMElasticity<Dim>::preprocessBeforeAsmInit (int& ngnod)
 {
-  return this->addRigidMPCs(this,ngnod);
+  return this->addRigidMPCs(this,ngnod) && this->addGeneralCouplings(this);
 }
 
 
@@ -642,26 +642,40 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
 template<class Dim>
 bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
 {
-  if (!strcasecmp(elem->Value(),"postprocessing"))
-  {
-    const tinyxml2::XMLElement* child = elem->FirstChildElement();
-    for (; child && !plotRgd; child = child->NextSiblingElement())
-      if (!strcasecmp(child->Value(),"plot_rigid"))
-        plotRgd = true;
-      else if (!strcasecmp(child->Value(),"strain"))
-        Elasticity::wantStrain = true;
-  }
-  else if (!strcasecmp(elem->Value(),"localsystem"))
-    if (ElasticBase* elInt = this->getIntegrand(); elInt)
-      static_cast<Elasticity*>(elInt)->parseLocalSystem(elem);
-
-  if (strcasecmp(elem->Value(),myContext.c_str()))
-    return this->Dim::parse(elem);
-
   bool result = true;
 
-  const tinyxml2::XMLElement* child = elem->FirstChildElement();
-  for (; child; child = child->NextSiblingElement())
+  if (strcasecmp(elem->Value(),myContext.c_str()))
+  {
+    if (!this->Dim::parse(elem))
+      return false;
+
+    else if (!strcasecmp(elem->Value(),"geometry"))
+    {
+      for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+           child; child = child->NextSiblingElement())
+        if (!strcasecmp(child->Value(),"coupling"))
+          result &= this->parseCouplings(child);
+    }
+    else if (!strcasecmp(elem->Value(),"postprocessing"))
+    {
+      for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+           child; child = child->NextSiblingElement())
+        if (!strcasecmp(child->Value(),"plot_rigid"))
+          plotRgd = true;
+        else if (!strcasecmp(child->Value(),"strain"))
+          Elasticity::wantStrain = true;
+    }
+    else if (!strcasecmp(elem->Value(),"localsystem"))
+    {
+      if (ElasticBase* elInt = this->getIntegrand(); elInt)
+        static_cast<Elasticity*>(elInt)->parseLocalSystem(elem);
+    }
+
+    return result;
+  }
+
+  for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+       child; child = child->NextSiblingElement())
 
     if (!strcasecmp(child->Value(),"isotropic") ||
         !strcasecmp(child->Value(),"texturematerial"))
@@ -725,6 +739,9 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
 
     else if (!strcasecmp(child->Value(),"rigid"))
       result &= this->parseRigid(child,this);
+
+    else if (!strcasecmp(child->Value(),"coupling"))
+      result &= this->parseCouplings(child);
 
     else if (!strcasecmp(child->Value(),"anasol"))
       result &= this->parseAnaSol(child);
