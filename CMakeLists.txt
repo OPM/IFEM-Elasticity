@@ -37,7 +37,7 @@ ifem_add_dependency_dir(
     BeamGeometry
     IFEM-BeamGeometry
   TARGET
-    BeamGeometry
+    IFEM::BeamGeometry
   OPTIONAL
 )
 
@@ -50,8 +50,8 @@ ifem_add_application(
     LinearElasticity
 )
 
-if(TARGET BeamGeometry)
-  target_link_libraries(LinEl PRIVATE BeamGeometry)
+if(TARGET IFEM::BeamGeometry)
+  target_link_libraries(LinEl PRIVATE IFEM::BeamGeometry)
 endif()
 
 ifem_add_application(
