@@ -377,6 +377,9 @@ else()
   ifem_add_check_target()
 endif()
 
+if(TARGET IFEM::BeamGeometry)
+  get_target_property(BeamGeometry_DIRECTORY IFEM::BeamGeometry SOURCE_DIR)
+endif()
 # For generating the doxy
 ifem_add_doc_target(
   TARGET
