@@ -15,16 +15,16 @@ if(NOT TARGET IFEM)
   endif()
 endif()
 
-if(NOT TARGET Beam)
+if(NOT TARGET IFEM::Beam)
   add_subdirectory(Beam)
 endif()
-if(NOT TARGET Elasticity)
+if(NOT TARGET IFEM::Elasticity)
   add_subdirectory(Elasticity)
 endif()
-if(NOT TARGET LinearElasticity)
+if(NOT TARGET IFEM::LinearElasticity)
   add_subdirectory(Linear)
 endif()
-if(NOT TARGET Shell)
+if(NOT TARGET IFEM::Shell)
   add_subdirectory(Shell)
 endif()
 
@@ -47,7 +47,7 @@ ifem_add_application(
   SOURCES
     main_LinEl.C
   LIBRARIES
-    LinearElasticity
+    IFEM::LinearElasticity
 )
 
 if(TARGET IFEM::BeamGeometry)
@@ -60,7 +60,7 @@ ifem_add_application(
   SOURCES
     main_ShellEl.C
   LIBRARIES
-    Shell
+    IFEM::Shell
 )
 
 # Regression tests
@@ -368,7 +368,7 @@ ifem_add_test_app(
   WORKDIR
     ${PROJECT_SOURCE_DIR}/Test/Linear
   LIBRARIES
-    LinearElasticity
+    IFEM::LinearElasticity
 )
 
 if(IFEM_COMMON_APP_BUILD)

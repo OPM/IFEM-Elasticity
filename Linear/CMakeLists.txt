@@ -5,6 +5,8 @@ project(LinearElasticity LANGUAGES C CXX)
 ifem_add_library(
   NAME
     LinearElasticity
+  ALIAS
+    IFEM::LinearElasticity
   SOURCES
     AnalyticSolutions.C
     DynamicDriver.C
@@ -33,7 +35,7 @@ ifem_add_library(
     SIMLinKLModal.h
     SIMmcStatic.h
   LIBRARIES
-    Beam
-    Elasticity
-    Shell
+    IFEM::Beam
+    IFEM::Elasticity
+    IFEM::Shell
 )
