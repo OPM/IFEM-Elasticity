@@ -5,6 +5,8 @@ project(Beam LANGUAGES C CXX)
 ifem_add_library(
   NAME
     Beam
+  ALIAS
+    IFEM::Beam
   SOURCES
     BeamProperty.C
     ElasticBar.C
@@ -21,7 +23,7 @@ ifem_add_library(
     SIMElasticBar.h
     SIMLinElBeam.h
   LIBRARIES
-    Elasticity
+    IFEM::Elasticity
 )
 
 target_include_directories(Beam INTERFACE ${PROJECT_SOURCE_DIR})

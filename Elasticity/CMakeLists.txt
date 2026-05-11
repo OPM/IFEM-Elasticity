@@ -5,6 +5,8 @@ project(Elasticity LANGUAGES C CXX)
 ifem_add_library(
   NAME
     Elasticity
+  ALIAS
+    IFEM::Elasticity
   SOURCES
     ArcLengthDriver.C
     ElasticBase.C

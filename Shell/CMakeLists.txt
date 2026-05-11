@@ -5,6 +5,8 @@ project(ShellEl LANGUAGES C CXX)
 ifem_add_library(
   NAME
     Shell
+  ALIAS
+    IFEM::Shell
   SOURCES
     KirchhoffLoveShell.C
     NLKirchhoffLoveShell.C
@@ -16,5 +18,5 @@ ifem_add_library(
     SIMKLShell.h
     SIMShell.h
   LIBRARIES
-    Elasticity
+    IFEM::Elasticity
 )
