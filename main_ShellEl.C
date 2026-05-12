@@ -60,6 +60,7 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
 
   // Initialize the solution vectors
   simulator.initSol();
+  simulator.initProj(model.opt.project.size());
 
   // Initialize the linear equation solver
   if (!simulator.initEqSystem(true,model.getNoFields()))

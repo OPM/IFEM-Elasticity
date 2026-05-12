@@ -233,7 +233,6 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
 
   SIMoptions::ProjectionMap::const_iterator pit = opt.project.begin();
   bool doProject = pit != opt.project.end();
-  if (doProject) proSol.resize(1);
 
   if (dtDump <= 0.0) dtDump = params.stopTime + 1.0;
   double lastSave = params.time.t;

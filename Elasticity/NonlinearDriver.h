@@ -105,10 +105,13 @@ public:
   //! \param[in] data Container for serialized data
   virtual bool deSerialize(const SerializeMap& data);
 
+  //! \brief Initializes the projected solution vector.
+  void initProj(size_t nProj) { proSol.resize(nProj); }
+
   //! \brief Returns a pointer to the projected solution.
-  const Vector* getProjection() const
+  const Vector* getProjection(size_t idx = 0) const
   {
-    return proSol.empty() ? nullptr : proSol.data();
+    return idx < proSol.size() ? &proSol[idx] : nullptr;
   }
 
   //! \brief Returns a pointer to the element norms, if they are to be saved.

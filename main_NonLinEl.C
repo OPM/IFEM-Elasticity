@@ -138,6 +138,7 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
   NewmarkSIM* dynSim = dynamic_cast<NewmarkSIM*>(&simulator);
   simulator.initPrm();
   simulator.initSol(dynSim ? 3 : 2);
+  simulator.initProj(pOpt.size());
 
   // Initialize the linear equation solver
   if (!simulator.initEqSystem(!dynSim, dynSim ? 0 : model->getNoFields()))

@@ -98,7 +98,6 @@ public:
 
     SIMoptions::ProjectionMap::const_iterator pi = Newmark::opt.project.begin();
     bool doProject = pi != Newmark::opt.project.end();
-    if (doProject) proSol.resize(1);
 
     double nextSave = params.time.t + Newmark::opt.dtSave;
 
@@ -195,10 +194,13 @@ public:
     return params.deSerialize(data) && this->Newmark::deSerialize(data);
   }
 
+  //! \brief Initializes the projected solution vector.
+  void initProj(size_t nProj) { proSol.resize(nProj); }
+
   //! \brief Returns a pointer to the projected solution.
-  const Vector* getProjection() const
+  const Vector* getProjection(size_t idx = 0) const
   {
-    return proSol.empty() ? nullptr : proSol.data();
+    return idx < proSol.size() ? &proSol[idx] : nullptr;
   }
 
   //! \brief Dummy method required for template instantiation.

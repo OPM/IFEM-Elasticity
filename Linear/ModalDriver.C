@@ -185,6 +185,7 @@ int modalSim (char* infile, size_t nM, bool dumpModes, bool qstatic,
   // Set beta=0 for quasi-static simulation
   if (qstatic) model->setIntegrationPrm(2,0.0);
   simulator.initSol(qstatic ? 1 : 3, nM);
+  simulator.initProj(model->opt.project.size());
 
   // Save FE model to VTF file for visualization
   if (model->opt.format >= 0 && !simulator.saveModel(infile))
