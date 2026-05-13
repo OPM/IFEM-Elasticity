@@ -68,7 +68,7 @@ Number of nodes       66
 Number of dofs        132
 Number of constraints 6
 Number of unknowns    109
-Global L2 projection will be used to compute
+Continuous global L2-projection will be used to compute
 smoothed secondary solution fields.
   step=1  time=0.5
   Primary solution summary: L2-norm            : 0.187342

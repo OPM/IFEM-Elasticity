@@ -56,10 +56,10 @@ Number of elements    16
 Number of nodes       40
 Number of dofs        80
 Number of unknowns    74
-Global L2 projection will be used to compute
+Continuous global L2-projection will be used to compute
 smoothed secondary solution fields.
  >>> Starting adaptive simulation based on
-     Global L2 projection error estimates (norm group 1) <<<
+     Continuous global L2-projection error estimates (norm group 1) <<<
   step=1  time=0.05
   Primary solution summary: L2-norm            : 0.0148791
                             Max X-displacement : 0.00612471
@@ -67,7 +67,7 @@ smoothed secondary solution fields.
   Total reaction forces: Sum(R) = .* -156434
 Energy norm           a(u^h,u^h)^0.5 : 77.8643
 External energy((f,u^h)+(t,u^h))^0.5 : 77.8711
->>> Error estimates based on Global L2 projection <<<
+>>> Error estimates based on Continuous global L2-projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 77.8496
 Error norm a(e,e)^0.5, e=u^r-u^h     : 1.5105
  relative error (% of |u^r|) : 1.94027

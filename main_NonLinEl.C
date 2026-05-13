@@ -122,23 +122,16 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
     model->opt.hdf5.clear();
   }
 
-  // We only allow the version=2 global L2-projection here
-  SIMoptions::ProjectionMap& pOpt = model->opt.project;
-  if (pOpt.find(SIMoptions::CGL2) == pOpt.end() &&
-      pOpt.find(SIMoptions::CGL2_INT) == pOpt.end())
-    pOpt.clear();
-  else
-  {
-    pOpt.clear();
-    pOpt[SIMoptions::CGL2_INT] = "Global L2 projection";
-  }
-  SIMoptions::ProjectionMap::const_iterator pit = pOpt.begin();
+  // If more than one projection method is specified, use only the first one
+  const char* projectType = nullptr;
+  if (!model->opt.project.empty())
+    projectType = model->opt.project.begin()->second.c_str();
 
   // Define the initial configuration
   NewmarkSIM* dynSim = dynamic_cast<NewmarkSIM*>(&simulator);
   simulator.initPrm();
   simulator.initSol(dynSim ? 3 : 2);
-  simulator.initProj(pOpt.size());
+  simulator.initProj(projectType ? 1 : 0);
 
   // Initialize the linear equation solver
   if (!simulator.initEqSystem(!dynSim, dynSim ? 0 : model->getNoFields()))
@@ -159,7 +152,7 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
     // The secondary results will be projected anyway, but without the
     // nodal averaging across patch boundaries in case of multiple patches.
     int results = DataExporter::PRIMARY;
-    if (pit == pOpt.end() && !model->opt.pSolOnly)
+    if (!projectType && !model->opt.pSolOnly)
       results |= DataExporter::SECONDARY;
     if (dumpNodeMap)
       results |= DataExporter::L2G_NODE;
@@ -182,10 +175,10 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
                             -DataExporter::PRIMARY);
       writer->setFieldValue("a",model,&dynSim->getAcceleration());
     }
-    if (pit != pOpt.end())
+    if (projectType)
     {
       writer->registerField("sigma","projected",DataExporter::SIM,
-                            DataExporter::SECONDARY,pit->second.c_str());
+                            DataExporter::SECONDARY,projectType);
       writer->setFieldValue("sigma",model,simulator.getProjection());
     }
   }
@@ -206,8 +199,8 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
                               model->opt.restartInc);
   }
 
-  if (pit != pOpt.end())
-    IFEM::cout <<"\n"<< pit->second <<" will be used to compute"
+  if (projectType)
+    IFEM::cout <<"\n"<< projectType <<" will be used to compute"
                <<"\nsmoothed secondary solution fields."<< std::endl;
 
   // Now invoke the main solution driver

@@ -46,7 +46,7 @@
   </nonlinearsolver>
 
   <postprocessing>
-    <projection type="cgl2"/>
+    <projection type="gl2"/>
   </postprocessing>
 
   <adaptive>

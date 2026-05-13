@@ -51,7 +51,7 @@
   </nonlinearsolver>
 
   <postprocessing>
-    <projection type="cgl2"/>
+    <projection type="gl2"/>
     <vtfformat nviz="3">BINARY</vtfformat>
     <resultpoints printmapping="true">
       <point patch="1" u="1.0" v="0.0"/>

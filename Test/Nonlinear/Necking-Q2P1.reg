@@ -1,4 +1,4 @@
-Necking-p2.xinp -MX1 -cgl2 -printMaxPatch -outPrec 6
+Necking-p2.xinp -MX1 -gl2 -printMaxPatch -outPrec 6
 
 Input file: Necking-p2.xinp
 Equation solver: 2
@@ -68,7 +68,7 @@ Number of nodes       45
 Number of dofs        90
 Number of constraints 5
 Number of unknowns    71
-Global L2 projection will be used to compute
+Continuous global L2-projection will be used to compute
 smoothed secondary solution fields.
   step=1  time=0.5
   Primary solution summary: L2-norm            : 0.189889
