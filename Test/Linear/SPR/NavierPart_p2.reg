@@ -1,52 +1,90 @@
-../NavierPart_p2.inp -2DKL -nGauss 2 -grvl -spr
+../NavierPart_p2.xinp -2DKL -spr
 
-Input file: NavierPart_p2.inp
+Input file: ../NavierPart_p2.xinp
+Equation solver: 1
+Number of Gauss points: 4
+Spline basis with C1-continuous patch interfaces is used
+Basis function values are precalculated but not cached
+Evaluation time for property functions: 1
+Solution component output zero tolerance: 1e-06
+Parsing input file ../NavierPart_p2.xinp
+Parsing <discretization>
+Parsing <geometry>
+  Parsing <patch>
+	Reading inlined patch geometry definition
+	Reading patch 1
+  Parsing <refine>
+  Parsing <topologysets>
+	Topology sets: boundary (1,1,1D) (1,2,1D) (1,3,1D) (1,4,1D)
+	               plate (1,0,2D)
+  Parsing <patch>
+  Parsing <refine>
+	Refining P1 4 4
+  Parsing <topologysets>
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 1: (fixed)
+Parsing <kirchhofflove>
+	Material code 0: 2.1e+11 0.3 1000 0.1
+	Pressure code 1000001 (stepxy): (1000\*StepXY(\[4,6]x\[3.2,4.8]))
+	Analytic solution: NavierPlate a=10 b=8 t=0.1 E=2.1e+11 nu=0.3 pz=1000 xi=0.5 eta=0.5 c=2 d=1.6
+NavierPlate: w_centre = 0.0001386811746
+             Max. number of terms in Fourier series = 100
+Parsing <postprocessing>
+  Parsing <projection>
+  Parsing <resultpoints>
+	Point 1: P1 xi = 0.5 0.5
+Parsing input file succeeded.
 Equation solver: 1
 Number of Gauss points: 2
-Reading input file NavierPart_p2.inp
-Reading data file plate_10x8.g2
-Reading patch 1
-Number of patch refinements: 1
-	Refining P1 4 4
-Number of constraints: 4
+Spline basis with C1-continuous patch interfaces is used
+Basis function values are precalculated but not cached
+Enabled projection(s): Greville point projection
+Problem definition:
+KirchhoffLovePlate: thickness = 0.1, gravity = 0
+LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1000, alpha = 1.2e-07
+Resolving Dirichlet boundary conditions
 	Constraining P1 E1 in direction(s) 1
 	Constraining P1 E2 in direction(s) 1
 	Constraining P1 E3 in direction(s) 1
 	Constraining P1 E4 in direction(s) 1
-Number of isotropic materials: 1
-	Material code 0: 2.1e+11 0.3 1000 0.1
-Number of pressures: 1
-	Pressure code 0: (1000\*StepXY(\[4,6]x\[3.2,4.8]))
-Analytic solution: NavierPlate a=10 b=8 t=0.1 E=2.1e+11 nu=0.3 pz=1000 xi=0.5 eta=0.5 c=2 d=1.6
-NavierPlate: w_centre = 0.0001386811746
-Number of result points: 1
-	Point 1: P1 xi = 0.5 0.5
-Reading input file succeeded.
-Problem definition:
-KirchhoffLovePlate: thickness = 0.1, gravity = 0
-LinIsotropic: plane stress, E = 2.1e+11, nu = 0.3, rho = 1000
-Resolving Dirichlet boundary conditions
 Result point #1: patch #1 (u,v)=(0.5,0.5), node #25, X = 5 4 0
+Primary solution components (sol1): "w"
+Secondary solution components (sol2): "m_xx" "m_yy" "m_xy" "q_x" "q_y"
  >>> SAM model summary <<<
 Number of elements    25
 Number of nodes       49
 Number of dofs        49
 Number of unknowns    25
+Number of quadrature points 100
+Processing integrand associated with code 0
 Assembling interior matrix terms for P1
+Done.
+Sum external load : 3200 0 0
 Solving the equation system ...
  >>> Solution summary <<<
 L2-norm            : 4.89273e-05
 Max displacement   : 0.0001558 node 25
 Projecting secondary solution ...
+	Greville point projection
+Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 0.640802
 External energy ((f,u^h)+(t,u^h)^0.5 : 0.640802
 Exact norm  |u|   = a(u,u)^0.5       : 0.648876
 Exact error a(e,e)^0.5, e=u-u^h      : 0.101001
 Exact relative error (%) : 15.5656
+>>> Error estimates based on Greville point projection <<<
 Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.630481
 Error norm a(e,e)^0.5, e=u^r-u^h     : 0.104126
  relative error (% of |u|)   : 16.0472
 Exact error a(e,e)^0.5, e=u-u^r      : 0.0544198
  relative error (% of |u|)   : 8.38678
+Effectivity index             : 1.03094
+Effectivity index, theta^EX          : 1.56974
+L2-norm |s^r| = (s^r,s^r)^0.5        : 2763.18
+L2-error (e,e)^0.5, e=s^r-s^h        : 461.069
+ relative error (% of |s^r|) : 16.6862
   Node #25:	sol1 =  1.348059e-04
+		exact1  1.386812e-04
 		sol2 =  5.775019e+02  6.698790e+02  0.000000e+00
+		exact2  6.239563e+02  7.160132e+02  0.000000e+00

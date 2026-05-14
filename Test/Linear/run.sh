@@ -9,6 +9,7 @@
 
 # Define the name of the executable here
 mysim=LinEl
+if ! which $mysim; then mysim=../../Release/bin/$mysim; fi
 
 run () {
 # This function runs a simulation with the specified options,
@@ -27,7 +28,7 @@ run () {
   echo Running $inp ...
   shift
   time -f "real time %E, user time %U, system time %S" \
-  ../../../Release/bin/$mysim $inp $* > $log
+  $mysim $inp $* > $log
   if [ -h $inp ]; then rm $inp; fi
   if [ ! -e Reference/$log ]; then
     mv $log Reference
@@ -65,8 +66,8 @@ run PipeJoint.xinp PipeJoint-vibration -vtf 1 -nu 7 -nv 7 -free -eig 4 -nev 16 -
 run PipeJoint.xinp PipeJoint-NURBS     -vtf 1 -nu 7 -nv 7 -hdf5
 run PipeJoint.xinp PipeJoint-Lagrange  -vtf 1 -lagrange
 
-run NavierPress_p2.inp -2DKL -nGauss 2 -vtf 1 -nviz 7
-run NavierPress_p3.inp -2DKL -nGauss 3 -vtf 1 -nviz 7 -hdf5
-run NavierPart_p2.inp  -2DKL -nGauss 2 -vtf 1 -nviz 7
-run NavierPart_p3.inp  -2DKL -nGauss 3 -vtf 1 -nviz 7 -hdf5
-run NavierPoint_p3.inp -2DKL -nGauss 3 -vtf 1 -nviz 5 -hdf5
+run NavierUload_p2.xinp -2DKL -vtf 1 -nviz 7
+run NavierUload_p3.xinp -2DKL -vtf 1 -nviz 7 -hdf5
+run NavierPart_p2.xinp  -2DKL -vtf 1 -nviz 7
+run NavierPart_p3.xinp  -2DKL -vtf 1 -nviz 7 -hdf5
+run NavierPoint_p3.xinp -2DKL -vtf 1 -nviz 5 -hdf5
