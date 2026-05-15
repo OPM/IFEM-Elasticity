@@ -1,40 +1,68 @@
-../Cylinder-p4.inp -checkRHS -lagrange -nGauss 5 -spr
+../Cylinder-p4.xinp -checkRHS -lagrange -nGauss 5 -spr
 
-Input file: Cylinder-p4.inp
+Input file: Cylinder-p4.xinp
 Equation solver: 1
 Number of Gauss points: 5
 Lagrangian basis functions are used
+Evaluation time for property functions: 1
 Check that each patch has a right-hand coordinate system
-Reading input file Cylinder-p4.inp
-Number of patches: 1
-Reading patch file cylinder.g2
+Solution component output zero tolerance: 1e-06
+Parsing input file Cylinder-p4.xinp
+Parsing <geometry>
+  Parsing <patchfile>
+	Reading data file cylinder.g2
+	Reading patch 1
 	Swapped.
-Number of constraints: 4
-	Constraining P1 F5 in direction(s) 3
-	Constraining P1 F6 in direction(s) 3
-	Constraining P1 V1 in direction(s) 123
-	Constraining P1 V3 in direction(s) 23
-Number of periodicities: 1
+  Parsing <topologysets>
+	Topology sets: P1 (1,1,0D)
+	               P2 (1,3,0D)
+	               ends (1,5,2D) (1,6,2D)
+	               internal (1,3,2D)
+  Parsing <periodic>
+  Parsing <patchfile>
+  Parsing <topologysets>
+  Parsing <periodic>
 	Periodic I-direction P1
-Number of pressures: 1
-	Pressure on P1 F3 direction 0: -1e+06
+Parsing <boundaryconditions>
+  Parsing <dirichlet>
+	Dirichlet code 3: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 123: (fixed)
+  Parsing <dirichlet>
+	Dirichlet code 23: (fixed)
+  Parsing <neumann>
+	Neumann code 1000000 direction 0: -1e+06
+Parsing <localsystem>
 Local coordinate system: Cylindric
-Reading input file succeeded.
+Parsing input file succeeded.
+Equation solver: 1
+Number of Gauss points: 5
+Lagrangian basis functions are used
 Problem definition:
 Elasticity: 3D, gravity = 0 0 0
-LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850
+LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
+Renumbered 1650 nodes.
 Resolving Dirichlet boundary conditions
+	Constraining P1 V1 in direction(s) 123
+	Constraining P1 V3 in direction(s) 23
+	Constraining P1 F5 in direction(s) 3
+	Constraining P1 F6 in direction(s) 3
  >>> SAM model summary <<<
 Number of elements    64
 Number of nodes       1632
 Number of dofs        4896
 Number of unknowns    3805
+Number of quadrature points 8000 400
+Processing integrand associated with code 0
 Assembling interior matrix terms for P1
 Assembling Neumann matrix terms for boundary 3 on P1
+Done.
+Sum external load : -140387
 Solving the equation system ...
  >>> Solution summary <<<
 L2-norm            : 6.7873e-06
 Max X-displacement : 1.85443e-05
 Max Y-displacement : 9.27217e-06
+Integrating solution norms (FE solution) ...
 Energy norm |u^h| = a(u^h,u^h)^0.5   : 17.0667
 External energy ((f,u^h)+(t,u^h)^0.5 : 17.0667

@@ -51,9 +51,9 @@ run Hole2D-p3.xinp Hole2D-NURBS    -vtf 1 -nviz 4 -hdf5
 run Hole2D-p3.xinp Hole2D-Lagrange -vtf 1 -lagrange
 run Hole2D-p3.xinp Hole2D-Spectral -vtf 1 -spectral
 
-run Cylinder-p4.inp Cylinder-NURBS    -checkRHS -vtf 1 -nviz 5 -hdf5
-run Cylinder-p4.inp Cylinder-Lagrange -checkRHS -vtf 1 -lagrange -nGauss 5
-run Cylinder-p4.inp Cylinder-Spectral -checkRHS -vtf 1 -spectral
+run Cylinder-p4.xinp Cylinder-NURBS    -checkRHS -vtf 1 -nviz 5 -hdf5
+run Cylinder-p4.xinp Cylinder-Lagrange -checkRHS -vtf 1 -lagrange -nGauss 5
+run Cylinder-p4.xinp Cylinder-Spectral -checkRHS -vtf 1 -spectral
 
 run Cylinder-Axisymm.xinp -2Daxisymm -vtf 1 -nviz 5 -hdf5
 
