@@ -187,8 +187,7 @@ void SIMElasticity<Dim>::clearProperties ()
 
   bCode.clear();
 
-  Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem);
-  if (elp)
+  if (Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem); elp)
   {
     elp->setMaterial(nullptr);
     elp->setBodyForce(nullptr);
@@ -353,14 +352,14 @@ void SIMElasticity<Dim>::preprocessA ()
     else if (p.pcode == Property::NEUMANN_ANASOL)
     {
       STensorFunc* stressField = Dim::mySol->getStressSol();
-      if (stressField)
+      if (!stressField)
+        p.pcode = Property::UNDEFINED;
+      else
       {
         p.pcode = Property::NEUMANN;
         if (Dim::myTracs.find(p.pindx) == Dim::myTracs.end())
           Dim::myTracs[p.pindx] = new TractionField(*stressField);
       }
-      else
-        p.pcode = Property::UNDEFINED;
     }
 }
 
@@ -406,9 +405,9 @@ bool SIMElasticity<Dim>::preprocessB ()
 
     // Find the location of the point which is furthest away from the centre
     Vec3 X1(X0);
-    double d, dmax = 0.0;
+    double dmax = 0.0;
     for (const Vec3& X : Xnodes)
-      if ((d = (X-X0).length2()) > dmax)
+      if (double d = (X-X0).length2(); d > dmax)
       {
         dmax = d;
         X1 = X;
@@ -417,7 +416,7 @@ bool SIMElasticity<Dim>::preprocessB ()
     // Find the location of the point which is furthest away from X1
     Vec3 X2(X1);
     for (const Vec3& X : Xnodes)
-      if ((d = (X-X1).length2()) > dmax)
+      if (double d = (X-X1).length2(); d > dmax)
       {
         dmax = d;
         X2 = X;
@@ -635,12 +634,14 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
       else if (!strcasecmp(child->Value(),"strain"))
         Elasticity::wantStrain = true;
   }
+  else if (!strcasecmp(elem->Value(),"localsystem"))
+    if (ElasticBase* elInt = this->getIntegrand(); elInt)
+      static_cast<Elasticity*>(elInt)->parseLocalSystem(elem);
 
   if (strcasecmp(elem->Value(),myContext.c_str()))
     return this->Dim::parse(elem);
 
   bool result = true;
-  ElasticBase* elInt = this->getIntegrand();
 
   const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
@@ -664,7 +665,7 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
       IFEM::cout <<"  Parsing <"<< child->Value() <<">"<< std::endl;
       int code = this->parseMaterialSet(child,mVec.size());
       IFEM::cout <<"\tMaterial code "<< code <<":";
-      if (elInt)
+      if (ElasticBase* elInt = this->getIntegrand(); elInt)
         mVec.push_back(elInt->parseMatProp(child));
       IFEM::cout << std::endl;
     }
@@ -713,11 +714,13 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
 
     else if (!strcasecmp(child->Value(),"dualfield"))
     {
-      FunctionBase* exf = this->parseDualTag(child,2);
-      if (exf && elInt)
-        static_cast<Elasticity*>(elInt)->addExtrFunction(exf);
+      if (FunctionBase* exf = this->parseDualTag(child,2); exf)
+        if (ElasticBase* elInt = this->getIntegrand(); elInt)
+          static_cast<Elasticity*>(elInt)->addExtrFunction(exf);
     }
-    else if (!(elInt && elInt->parse(child)))
+
+    else if (ElasticBase* elInt = this->getIntegrand();
+             !(elInt && elInt->parse(child)))
       result &= this->Dim::parse(child);
 
   return result;
