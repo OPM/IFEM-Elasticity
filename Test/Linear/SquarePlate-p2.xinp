@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- Square plate subjected to in-plane compression.
+     Linearized buckling analysis, quadratic splines. !-->
+
+<simulation>
+
+  <geometry dim="3" Lx="10.0" Ly="10.0" Lz="0.1">
+    <raiseorder patch="1" u="1" v="1" w="1"/>
+    <refine patch="1" u="3" v="3"/>
+    <topologysets>
+      <set name="ends" type="face">
+        <item patch="1">1 2</item>
+      </set>
+    </topologysets>
+  </geometry>
+
+  <boundaryconditions>
+    <fixline patch="1" line="11" xi="0.5" code="3"/>
+    <fixline patch="1" line="12" xi="0.5" code="3"/>
+    <fixline patch="1" line="23" xi="0.5" code="3"/>
+    <fixline patch="1" line="24" xi="0.5" code="3"/>
+    <fixpoint patch="1" rx="0.0" ry="0.0" rz="0.5" code="123"/>
+    <fixpoint patch="1" rx="0.0" ry="1.0" rz="0.5" code="13"/>
+    <neumann set="ends" direction="0">-10.0</neumann>
+  </boundaryconditions>
+
+  <elasticity>
+    <isotropic E="10.92" nu="0.3" rho="1.0e-6"/>
+  </elasticity>
+
+  <discretization>
+    <nGauss>3</nGauss>
+  </discretization>
+
+  <eigensolver mode="5">
+    <nev>20</nev>
+    <ncv>40</ncv>
+    <shift>2.0e-4</shift>
+  </eigensolver>
+
+</simulation>

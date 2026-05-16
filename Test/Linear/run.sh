@@ -57,10 +57,9 @@ run Cylinder-p4.xinp Cylinder-Spectral -checkRHS -vtf 1 -spectral
 
 run Cylinder-Axisymm.xinp -2Daxisymm -vtf 1 -nviz 5 -hdf5
 
-eigOpt="-eig 5 -nev 20 -ncv 40 -shift 2.0e-4"
-run SquarePlate-p2.inp SquarePlate-Splines  $eigOpt -nGauss 3 -vtf 1 -nviz 3
-run SquarePlate-p2.inp SquarePlate-Lagrange $eigOpt -nGauss 3 -vtf 1 -lagrange
-run SquarePlate-p2.inp SquarePlate-Spectral $eigOpt -nGauss 3 -vtf 1 -spectral
+run SquarePlate-p2.xinp SquarePlate-Splines  -vtf 1 -nviz 3
+run SquarePlate-p2.xinp SquarePlate-Lagrange -vtf 1 -lagrange
+run SquarePlate-p2.xinp SquarePlate-Spectral -vtf 1 -spectral
 
 run PipeJoint.xinp PipeJoint-vibration -vtf 1 -nu 7 -nv 7 -free -eig 4 -nev 16 -ncv 32
 run PipeJoint.xinp PipeJoint-NURBS     -vtf 1 -nu 7 -nv 7 -hdf5
