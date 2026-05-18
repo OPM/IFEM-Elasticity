@@ -22,6 +22,7 @@
 #ifdef USE_OPENMP
 #include <omp.h>
 #else
+//! \brief Debug print activation only when built without USE_OPENMP defined.
 #define NOMP_DEBUG INT_DEBUG
 #endif
 
@@ -471,8 +472,7 @@ bool MortarPenalty::assemble (SystemMatrix& Ktan, SystemVector& Res) const
   bool locked = Ktan.lockPattern(false); // Unlock the sparsity pattern
   bool status = this->assResAndTangent(Ktan,Res,mortar);
   Ktan.lockPattern(locked); // Lock the sparsity pattern again
-  size_t newnnz = Ktan.dim(0);
-  if (newnnz > nnzK)
+  if (size_t newnnz = Ktan.dim(0); newnnz > nnzK)
     std::cout <<"MortarPenalty: Tangent matrix has grown in size, from "
               << nnzK <<" to "<< newnnz <<" entries."<< std::endl;
 
@@ -670,9 +670,7 @@ bool MortarAugmentedLag::assemble (SystemMatrix& Ktan, SystemVector& Res) const
 
   // Loop over all Augmented Lagrange multipliers
   for (size_t n = 1; n <= mortar.getNoSlaves(); n++)
-  {
-    double AA = mortar.weightedArea(n);
-    if (AA > 0.0)
+    if (double AA = mortar.weightedArea(n); AA > 0.0)
     {
       double Rl;
       if (n <= activeSlave.size() && activeSlave[n-1])
@@ -705,11 +703,9 @@ bool MortarAugmentedLag::assemble (SystemMatrix& Ktan, SystemVector& Res) const
       if (Kl != 0.0)
         Ktan.assemble(Kll,mortar.getSAM(),Res,mnen);
     }
-  }
 
   Ktan.lockPattern(locked); // Lock the sparsity pattern again
-  size_t newnnz = Ktan.dim(0);
-  if (newnnz >  nnzK)
+  if (size_t newnnz = Ktan.dim(0); newnnz >  nnzK)
     std::cout <<"MortarAugmentedLag: Tangent matrix has grown in size, from "
               << nnzK <<" to "<< newnnz <<" entries."<< std::endl;
 
