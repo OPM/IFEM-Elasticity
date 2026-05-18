@@ -12,7 +12,6 @@
 //==============================================================================
 
 #include "SIMFiniteDefEl.h"
-#include "SIMLinEl.h"
 #include "SIM2D.h"
 #include "SIM3D.h"
 #include "HHTSIM.h"
@@ -20,6 +19,7 @@
 #include "NewmarkNLSIM.h"
 #include "NewmarkDriver.h"
 #include "ArcLengthDriver.h"
+#include "Elasticity.h"
 #include "HDF5Writer.h"
 #include "Utilities.h"
 #include "Profiler.h"
@@ -379,9 +379,9 @@ int main (int argc, char** argv)
   {
     // Create the linear continuum model
     if (args.twoD)
-      model = new SIMLinEl<SIM2D>(args.checkRHS);
+      model = new SIMElasticity<SIM2D>(args.checkRHS);
     else
-      model = new SIMLinEl<SIM3D>(args.checkRHS);
+      model = new SIMElasticity<SIM3D>(args.checkRHS);
 
     if (args.algor == GENALPHA)
     {

@@ -12,7 +12,7 @@
 //==============================================================================
 
 #include "SIMElasticity.h"
-#include "Elasticity.h"
+#include "LinearElasticity.h"
 #include "ElasticityUtils.h"
 #include "MaterialBase.h"
 
@@ -430,6 +430,23 @@ bool SIMElasticity<Dim>::preprocessB ()
   }
 
   return true;
+}
+
+
+/*!
+  The default implementation of this method returns a LinearElasticity instance,
+  suitable for doing dynamic elasticity problems with isotropic linear-elastic
+  material behaviour.
+  Override this method if more advanced formulations are needed.
+*/
+
+template<class Dim>
+ElasticBase* SIMElasticity<Dim>::getIntegrand()
+{
+  if (!Dim::myProblem)
+    Dim::myProblem = new LinearElasticity(Dim::dimension,Elastic::axiSymmetry);
+
+  return dynamic_cast<ElasticBase*>(Dim::myProblem);
 }
 
 

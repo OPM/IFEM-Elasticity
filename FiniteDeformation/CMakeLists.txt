@@ -44,7 +44,6 @@ ifem_add_library(
     RigidBody.h
     SIMContact.h
     SIMFiniteDefEl.h
-    SIMLinEl.h
   LIBRARIES
     IFEM::Elasticity
 )
