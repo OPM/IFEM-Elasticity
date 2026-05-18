@@ -142,6 +142,9 @@ public:
   //! \brief Prints out material parameters to the log stream.
   virtual void printLog() const;
 
+  //! \brief Returns \e true if the material has internal history variables.
+  virtual bool isHistoryDependent() const { return true; }
+
   //! \brief Initializes the material with the number of integration points.
   virtual void initIntegration(size_t nGP);
   //! \brief Initializes the material model for a new integration loop.

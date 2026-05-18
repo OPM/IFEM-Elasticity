@@ -47,6 +47,8 @@ public:
 
   //! \brief Returns \e false if plane stress in 2D.
   virtual bool isPlaneStrain() const { return true; }
+  //! \brief Returns \e true if the material has internal history variables.
+  virtual bool isHistoryDependent() const { return false; }
 
   //! \brief Initializes the material with the number of integration points.
   virtual void initIntegration(size_t) {}
