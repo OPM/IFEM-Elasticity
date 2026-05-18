@@ -130,7 +130,6 @@ bool SIMFiniteDefEl<Dim>::parse (const tinyxml2::XMLElement* elem)
   if (strcasecmp(elem->Value(),"finitedeformation"))
     return this->SIMElasticity<Dim>::parse(elem);
 
-  ElasticBase* elInt = this->getIntegrand();
   Material* defaultMat = nullptr;
 
   const tinyxml2::XMLElement* child = elem->FirstChildElement();
@@ -253,11 +252,12 @@ bool SIMFiniteDefEl<Dim>::parse (const tinyxml2::XMLElement* elem)
       Dim::preserveNOrder = true; // because extra nodes have been added
     }
 
-    else if (elInt)
+    else if (ElasticBase* elInt = this->getIntegrand(); elInt)
       elInt->parse(child);
 
-  if (elInt && defaultMat)
-    elInt->setMaterial(defaultMat);
+  if (defaultMat)
+    if (ElasticBase* elInt = this->getIntegrand(); elInt)
+      elInt->setMaterial(defaultMat);
 
   return true;
 }
@@ -266,7 +266,9 @@ bool SIMFiniteDefEl<Dim>::parse (const tinyxml2::XMLElement* elem)
 template<class Dim>
 ElasticBase* SIMFiniteDefEl<Dim>::getIntegrand ()
 {
-  if (!Dim::myProblem) Dim::myProblem = nlo.getIntegrand();
+  if (!Dim::myProblem)
+    Dim::myProblem = nlo.getIntegrand();
+
   return dynamic_cast<ElasticBase*>(Dim::myProblem);
 }
 
@@ -274,7 +276,20 @@ ElasticBase* SIMFiniteDefEl<Dim>::getIntegrand ()
 template<class Dim>
 bool SIMFiniteDefEl<Dim>::preprocessB ()
 {
-  Dim::myInts.insert({ 0, Dim::myProblem });
+  if (std::find_if(mDat.begin(), mDat.end(), [](const Material* mat)
+                   { return mat->isHistoryDependent(); }) != mDat.end())
+    for (const SIMoptions::ProjectionMap::value_type& proj : Dim::opt.project)
+      if (proj.first != SIMoptions::CGL2_INT)
+      {
+        std::cerr <<"\n *** Invalid projection method ("<< proj.first <<")."
+                  <<"\n     Only CGL2 (version 2) works for history dependent"
+                  <<" materials.\n     Rerun with <projection type=\"gl2\">"
+                  <<" (or command-line option -gl2) instead."<< std::endl;
+        return false;
+      }
+
+  Dim::myInts.emplace(0,Dim::myProblem);
+
   if (this->withContact())
   {
     Dim::opt.num_threads_SLU *= -1; // do not lock the sparsity pattern
@@ -384,8 +399,9 @@ template<class Dim>
 void SIMFiniteDefEl<Dim>::dumpMoreResults (double, utl::LogStream& os,
                                            std::streamsize prec) const
 {
-  const RealArray* rf = Dim::myEqSys ? Dim::myEqSys->getReactions() : nullptr;
-  if (rf) this->printBodyReactions(*this->getSAM(),*rf,os,prec);
+  if (Dim::myEqSys)
+    if (const RealArray* rf = Dim::myEqSys->getReactions(); rf)
+      this->printBodyReactions(*this->getSAM(),*rf,os,prec);
 }
 
 
