@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(LinEl LANGUAGES C CXX)
+project(Elasticity LANGUAGES C CXX)
 
 message(STATUS "Configuring project ${PROJECT_NAME}")
 

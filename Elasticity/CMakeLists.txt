@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(Elasticity LANGUAGES C CXX)
+project(Elastic LANGUAGES C CXX)
 
 ifem_add_library(
   NAME

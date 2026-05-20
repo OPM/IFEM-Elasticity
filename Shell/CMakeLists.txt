@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(ShellEl LANGUAGES C CXX)
+project(Shell LANGUAGES C CXX)
 
 ifem_add_library(
   NAME
