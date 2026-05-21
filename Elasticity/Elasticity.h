@@ -40,7 +40,7 @@ protected:
   //! \brief The default constructor initializes all pointers to zero.
   //! \param[in] n Number of spatial dimensions
   //! \param[in] ax \e If \e true, and axisymmetric 3D formulation is assumed
-  Elasticity(unsigned short int n, bool ax = false);
+  explicit Elasticity(unsigned short int n, bool ax = false);
 
 public:
   //! \brief The destructor frees the dynamically allocated data objects.
@@ -188,7 +188,7 @@ public:
   //! manually when leaving the scope of the pointer variable receiving the
   //! returned pointer value.
   //! \param[in] asol Pointer to analytical solution fields (optional)
-  virtual NormBase* getNormIntegrand(AnaSol* asol = nullptr) const;
+  virtual NormBase* getNormIntegrand(AnaSol* asol) const;
 
   //! \brief Returns a pointer to an Integrand for boundary force evaluation.
   //! \note The Integrand is allocated dynamically and has to be deleted
@@ -206,15 +206,20 @@ public:
 
   //! \brief Returns the number of primary/secondary solution field components.
   //! \param[in] fld which field set to consider (1=primary, 2=secondary)
-  virtual size_t getNoFields(int fld = 2) const;
+  virtual size_t getNoFields(int fld) const;
   //! \brief Returns the name of a primary solution field component.
-  //! \param[in] i Field component index
+  //! \param[in] i Field component index (0-based)
   //! \param[in] prefix Name prefix for all components
   virtual std::string getField1Name(size_t i, const char* prefix) const;
   //! \brief Returns the name of a secondary solution field component.
-  //! \param[in] i Field component index
+  //! \param[in] i Field component index (0-based)
   //! \param[in] prefix Name prefix for all components
   virtual std::string getField2Name(size_t i, const char* prefix) const;
+  //! \brief Returns the number of element-wise field components.
+  virtual size_t getNoElmFields() const { return elmRes.rows(); }
+  //! \brief Returns the name of an element-wise field component.
+  //! \param[in] i Field component index (0-based)
+  virtual std::string getEFieldName(size_t i) const;
 
   //! \brief Initializes the maximum stress values buffer.
   //! \param[in] nP Number of patches in the model, or 1 if global maximum
@@ -374,8 +379,6 @@ public:
   //! \param[in] a The analytical stress field (optional)
   //! \param[in] fld which field set to consider (2=all, 3=stress comps. only)
   explicit ElasticityNorm(Elasticity& p, STensorFunc* a = nullptr, int fld = 2);
-  //! \brief Empty destructor.
-  virtual ~ElasticityNorm() {}
 
   //! \brief Returns whether this norm has explicit boundary contributions.
   virtual bool hasBoundaryTerms() const { return true; }
@@ -440,9 +443,6 @@ public:
   //! \param[in] p The Elasticity problem to evaluate nodal forces for
   explicit ElasticityForce(Elasticity& p)
     : ForceBase(p), X0(nullptr), anasol(nullptr), nodal(true) {}
-
-  //! \brief Empty destructor.
-  virtual ~ElasticityForce() {}
 
   using ForceBase::getLocalIntegral;
   //! \brief Returns a local integral container for the element \a iEl.

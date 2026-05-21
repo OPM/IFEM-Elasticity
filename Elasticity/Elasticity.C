@@ -912,6 +912,11 @@ bool Elasticity::getPrincipalDir (Matrix& pdir, size_t nPt, size_t idx) const
 }
 
 
+/*!
+  For \a fld equal to 3, this method returns the number of
+  unique components in the stress- and strain-tensor only.
+*/
+
 size_t Elasticity::getNoFields (int fld) const
 {
   if (fld < 2)
@@ -982,6 +987,12 @@ std::string Elasticity::getField2Name (size_t i, const char* prefix) const
     name += "P" + std::to_string(i);
 
   return name;
+}
+
+
+std::string Elasticity::getEFieldName (size_t i) const
+{
+  return material->getElParamLabel(1+i);
 }
 
 

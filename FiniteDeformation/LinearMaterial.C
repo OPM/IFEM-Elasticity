@@ -90,13 +90,31 @@ bool LinearMaterial::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 }
 
 
+double LinearMaterial::evaluate (const FiniteElement& fe, size_t idx) const
+{
+  return material->evaluate(fe,idx);
+}
+
+
 int LinearMaterial::getNoIntVariables () const
 {
   return material->getNoIntVariables();
 }
 
 
+int LinearMaterial::getNoElParameters () const
+{
+  return material->getNoElParameters();
+}
+
+
 double LinearMaterial::getInternalVar (int idx, char* label, size_t iGP) const
 {
   return material->getInternalVar(idx,label,iGP);
+}
+
+
+const char* LinearMaterial::getElParamLabel (int idx) const
+{
+  return material->getElParamLabel(idx);
 }

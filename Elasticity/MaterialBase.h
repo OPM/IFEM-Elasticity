@@ -103,11 +103,16 @@ public:
   virtual bool evaluate(double&, double&, const FiniteElement&,
                         const Vec3&) const { return false; }
 
+  //! \brief Evaluates an element-wise material parameter.
+  virtual double evaluate(const FiniteElement&, size_t) const { return 0.0; }
+
   //! \brief Returns whether the material model has diverged or not.
   virtual bool diverged(size_t = 0) const { return false; }
 
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const { return 0; }
+  //! \brief Returns number of element-wise parameters of the material model.
+  virtual int getNoElParameters() const { return 0; }
 
   //! \brief Returns the label of an internal variable.
   //! \param[in] idx 1-based index of the internal variable
@@ -128,6 +133,9 @@ public:
 
   //! \brief Returns an internal variable associated with the material model.
   virtual double getInternalVar(int, char*, size_t = 0) const { return 0.0; }
+
+  //! \brief Returns the label of an element-wise material parameter.
+  virtual const char* getElParamLabel(int) const { return "(unnamed)"; }
 };
 
 #endif
