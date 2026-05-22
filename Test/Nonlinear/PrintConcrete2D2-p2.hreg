@@ -7,12 +7,8 @@ PrintConcrete2D2-p2.xinp
 /0/Elasticity-1/basis/1  Dataset {181}
 /0/Elasticity-1/basis/2  Dataset {181}
 /0/Elasticity-1/fields   Group
-/0/Elasticity-1/fields/Yield\ limit Group
-/0/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /0/Elasticity-1/fields/Yield\ utilization Group
 /0/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/0/Elasticity-1/fields/Youngs\ modulus Group
-/0/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /0/Elasticity-1/fields/displacement Group
 /0/Elasticity-1/fields/displacement/1 Dataset {36}
 /0/Elasticity-1/fields/s_xx Group
@@ -26,6 +22,10 @@ PrintConcrete2D2-p2.xinp
 /0/Elasticity-1/fields/von\ Mises\ stress Group
 /0/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /0/Elasticity-1/knotspan Group
+/0/Elasticity-1/knotspan/Yield\ limit Group
+/0/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/0/Elasticity-1/knotspan/Youngs\ modulus Group
+/0/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /0/Elasticity-1/knotspan/mask Group
 /0/Elasticity-1/knotspan/mask/1 Dataset {4}
 /0/timeinfo              Group
@@ -33,12 +33,8 @@ PrintConcrete2D2-p2.xinp
 /1                       Group
 /1/Elasticity-1          Group
 /1/Elasticity-1/fields   Group
-/1/Elasticity-1/fields/Yield\ limit Group
-/1/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /1/Elasticity-1/fields/Yield\ utilization Group
 /1/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/1/Elasticity-1/fields/Youngs\ modulus Group
-/1/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /1/Elasticity-1/fields/displacement Group
 /1/Elasticity-1/fields/displacement/1 Dataset {36}
 /1/Elasticity-1/fields/s_xx Group
@@ -52,20 +48,18 @@ PrintConcrete2D2-p2.xinp
 /1/Elasticity-1/fields/von\ Mises\ stress Group
 /1/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /1/Elasticity-1/knotspan Group
+/1/Elasticity-1/knotspan/Yield\ limit Group
+/1/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/1/Elasticity-1/knotspan/Youngs\ modulus Group
+/1/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /1/timeinfo              Group
 /1/timeinfo/level        Dataset {1}
 /10                      Group
 /10/Elasticity-1         Group
 /10/Elasticity-1/fields  Group
-/10/Elasticity-1/fields/Yield\ limit Group
-/10/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/10/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /10/Elasticity-1/fields/Yield\ utilization Group
 /10/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /10/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/10/Elasticity-1/fields/Youngs\ modulus Group
-/10/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/10/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /10/Elasticity-1/fields/displacement Group
 /10/Elasticity-1/fields/displacement/1 Dataset {36}
 /10/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -85,20 +79,20 @@ PrintConcrete2D2-p2.xinp
 /10/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /10/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /10/Elasticity-1/knotspan Group
+/10/Elasticity-1/knotspan/Yield\ limit Group
+/10/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/10/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/10/Elasticity-1/knotspan/Youngs\ modulus Group
+/10/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/10/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /10/timeinfo             Group
 /10/timeinfo/level       Dataset {1}
 /11                      Group
 /11/Elasticity-1         Group
 /11/Elasticity-1/fields  Group
-/11/Elasticity-1/fields/Yield\ limit Group
-/11/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/11/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /11/Elasticity-1/fields/Yield\ utilization Group
 /11/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /11/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/11/Elasticity-1/fields/Youngs\ modulus Group
-/11/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/11/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /11/Elasticity-1/fields/displacement Group
 /11/Elasticity-1/fields/displacement/1 Dataset {36}
 /11/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -118,6 +112,12 @@ PrintConcrete2D2-p2.xinp
 /11/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /11/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /11/Elasticity-1/knotspan Group
+/11/Elasticity-1/knotspan/Yield\ limit Group
+/11/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/11/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/11/Elasticity-1/knotspan/Youngs\ modulus Group
+/11/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/11/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /11/Elasticity-1/knotspan/mask Group
 /11/Elasticity-1/knotspan/mask/2 Dataset {4}
 /11/timeinfo             Group
@@ -125,15 +125,9 @@ PrintConcrete2D2-p2.xinp
 /12                      Group
 /12/Elasticity-1         Group
 /12/Elasticity-1/fields  Group
-/12/Elasticity-1/fields/Yield\ limit Group
-/12/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/12/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /12/Elasticity-1/fields/Yield\ utilization Group
 /12/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /12/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/12/Elasticity-1/fields/Youngs\ modulus Group
-/12/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/12/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /12/Elasticity-1/fields/displacement Group
 /12/Elasticity-1/fields/displacement/1 Dataset {36}
 /12/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -153,20 +147,20 @@ PrintConcrete2D2-p2.xinp
 /12/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /12/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /12/Elasticity-1/knotspan Group
+/12/Elasticity-1/knotspan/Yield\ limit Group
+/12/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/12/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/12/Elasticity-1/knotspan/Youngs\ modulus Group
+/12/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/12/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /12/timeinfo             Group
 /12/timeinfo/level       Dataset {1}
 /13                      Group
 /13/Elasticity-1         Group
 /13/Elasticity-1/fields  Group
-/13/Elasticity-1/fields/Yield\ limit Group
-/13/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/13/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /13/Elasticity-1/fields/Yield\ utilization Group
 /13/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /13/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/13/Elasticity-1/fields/Youngs\ modulus Group
-/13/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/13/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /13/Elasticity-1/fields/displacement Group
 /13/Elasticity-1/fields/displacement/1 Dataset {36}
 /13/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -186,6 +180,12 @@ PrintConcrete2D2-p2.xinp
 /13/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /13/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /13/Elasticity-1/knotspan Group
+/13/Elasticity-1/knotspan/Yield\ limit Group
+/13/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/13/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/13/Elasticity-1/knotspan/Youngs\ modulus Group
+/13/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/13/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /13/Elasticity-1/knotspan/mask Group
 /13/Elasticity-1/knotspan/mask/2 Dataset {4}
 /13/timeinfo             Group
@@ -193,15 +193,9 @@ PrintConcrete2D2-p2.xinp
 /14                      Group
 /14/Elasticity-1         Group
 /14/Elasticity-1/fields  Group
-/14/Elasticity-1/fields/Yield\ limit Group
-/14/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/14/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /14/Elasticity-1/fields/Yield\ utilization Group
 /14/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /14/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/14/Elasticity-1/fields/Youngs\ modulus Group
-/14/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/14/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /14/Elasticity-1/fields/displacement Group
 /14/Elasticity-1/fields/displacement/1 Dataset {36}
 /14/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -221,20 +215,20 @@ PrintConcrete2D2-p2.xinp
 /14/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /14/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /14/Elasticity-1/knotspan Group
+/14/Elasticity-1/knotspan/Yield\ limit Group
+/14/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/14/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/14/Elasticity-1/knotspan/Youngs\ modulus Group
+/14/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/14/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /14/timeinfo             Group
 /14/timeinfo/level       Dataset {1}
 /15                      Group
 /15/Elasticity-1         Group
 /15/Elasticity-1/fields  Group
-/15/Elasticity-1/fields/Yield\ limit Group
-/15/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/15/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /15/Elasticity-1/fields/Yield\ utilization Group
 /15/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /15/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/15/Elasticity-1/fields/Youngs\ modulus Group
-/15/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/15/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /15/Elasticity-1/fields/displacement Group
 /15/Elasticity-1/fields/displacement/1 Dataset {36}
 /15/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -254,6 +248,12 @@ PrintConcrete2D2-p2.xinp
 /15/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /15/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /15/Elasticity-1/knotspan Group
+/15/Elasticity-1/knotspan/Yield\ limit Group
+/15/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/15/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/15/Elasticity-1/knotspan/Youngs\ modulus Group
+/15/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/15/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /15/Elasticity-1/knotspan/mask Group
 /15/Elasticity-1/knotspan/mask/2 Dataset {4}
 /15/timeinfo             Group
@@ -261,15 +261,9 @@ PrintConcrete2D2-p2.xinp
 /16                      Group
 /16/Elasticity-1         Group
 /16/Elasticity-1/fields  Group
-/16/Elasticity-1/fields/Yield\ limit Group
-/16/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/16/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /16/Elasticity-1/fields/Yield\ utilization Group
 /16/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /16/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/16/Elasticity-1/fields/Youngs\ modulus Group
-/16/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/16/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /16/Elasticity-1/fields/displacement Group
 /16/Elasticity-1/fields/displacement/1 Dataset {36}
 /16/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -289,17 +283,19 @@ PrintConcrete2D2-p2.xinp
 /16/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /16/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /16/Elasticity-1/knotspan Group
+/16/Elasticity-1/knotspan/Yield\ limit Group
+/16/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/16/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/16/Elasticity-1/knotspan/Youngs\ modulus Group
+/16/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/16/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /16/timeinfo             Group
 /16/timeinfo/level       Dataset {1}
 /2                       Group
 /2/Elasticity-1          Group
 /2/Elasticity-1/fields   Group
-/2/Elasticity-1/fields/Yield\ limit Group
-/2/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /2/Elasticity-1/fields/Yield\ utilization Group
 /2/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/2/Elasticity-1/fields/Youngs\ modulus Group
-/2/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /2/Elasticity-1/fields/displacement Group
 /2/Elasticity-1/fields/displacement/1 Dataset {36}
 /2/Elasticity-1/fields/s_xx Group
@@ -313,17 +309,17 @@ PrintConcrete2D2-p2.xinp
 /2/Elasticity-1/fields/von\ Mises\ stress Group
 /2/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /2/Elasticity-1/knotspan Group
+/2/Elasticity-1/knotspan/Yield\ limit Group
+/2/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/2/Elasticity-1/knotspan/Youngs\ modulus Group
+/2/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /2/timeinfo              Group
 /2/timeinfo/level        Dataset {1}
 /3                       Group
 /3/Elasticity-1          Group
 /3/Elasticity-1/fields   Group
-/3/Elasticity-1/fields/Yield\ limit Group
-/3/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /3/Elasticity-1/fields/Yield\ utilization Group
 /3/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/3/Elasticity-1/fields/Youngs\ modulus Group
-/3/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /3/Elasticity-1/fields/displacement Group
 /3/Elasticity-1/fields/displacement/1 Dataset {36}
 /3/Elasticity-1/fields/s_xx Group
@@ -337,6 +333,10 @@ PrintConcrete2D2-p2.xinp
 /3/Elasticity-1/fields/von\ Mises\ stress Group
 /3/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /3/Elasticity-1/knotspan Group
+/3/Elasticity-1/knotspan/Yield\ limit Group
+/3/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/3/Elasticity-1/knotspan/Youngs\ modulus Group
+/3/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /3/Elasticity-1/knotspan/mask Group
 /3/Elasticity-1/knotspan/mask/1 Dataset {4}
 /3/timeinfo              Group
@@ -344,12 +344,8 @@ PrintConcrete2D2-p2.xinp
 /4                       Group
 /4/Elasticity-1          Group
 /4/Elasticity-1/fields   Group
-/4/Elasticity-1/fields/Yield\ limit Group
-/4/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /4/Elasticity-1/fields/Yield\ utilization Group
 /4/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/4/Elasticity-1/fields/Youngs\ modulus Group
-/4/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /4/Elasticity-1/fields/displacement Group
 /4/Elasticity-1/fields/displacement/1 Dataset {36}
 /4/Elasticity-1/fields/s_xx Group
@@ -363,17 +359,17 @@ PrintConcrete2D2-p2.xinp
 /4/Elasticity-1/fields/von\ Mises\ stress Group
 /4/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /4/Elasticity-1/knotspan Group
+/4/Elasticity-1/knotspan/Yield\ limit Group
+/4/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/4/Elasticity-1/knotspan/Youngs\ modulus Group
+/4/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /4/timeinfo              Group
 /4/timeinfo/level        Dataset {1}
 /5                       Group
 /5/Elasticity-1          Group
 /5/Elasticity-1/fields   Group
-/5/Elasticity-1/fields/Yield\ limit Group
-/5/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /5/Elasticity-1/fields/Yield\ utilization Group
 /5/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/5/Elasticity-1/fields/Youngs\ modulus Group
-/5/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /5/Elasticity-1/fields/displacement Group
 /5/Elasticity-1/fields/displacement/1 Dataset {36}
 /5/Elasticity-1/fields/s_xx Group
@@ -387,6 +383,10 @@ PrintConcrete2D2-p2.xinp
 /5/Elasticity-1/fields/von\ Mises\ stress Group
 /5/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /5/Elasticity-1/knotspan Group
+/5/Elasticity-1/knotspan/Yield\ limit Group
+/5/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/5/Elasticity-1/knotspan/Youngs\ modulus Group
+/5/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /5/Elasticity-1/knotspan/mask Group
 /5/Elasticity-1/knotspan/mask/1 Dataset {4}
 /5/timeinfo              Group
@@ -394,12 +394,8 @@ PrintConcrete2D2-p2.xinp
 /6                       Group
 /6/Elasticity-1          Group
 /6/Elasticity-1/fields   Group
-/6/Elasticity-1/fields/Yield\ limit Group
-/6/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /6/Elasticity-1/fields/Yield\ utilization Group
 /6/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/6/Elasticity-1/fields/Youngs\ modulus Group
-/6/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /6/Elasticity-1/fields/displacement Group
 /6/Elasticity-1/fields/displacement/1 Dataset {36}
 /6/Elasticity-1/fields/s_xx Group
@@ -413,17 +409,17 @@ PrintConcrete2D2-p2.xinp
 /6/Elasticity-1/fields/von\ Mises\ stress Group
 /6/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /6/Elasticity-1/knotspan Group
+/6/Elasticity-1/knotspan/Yield\ limit Group
+/6/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/6/Elasticity-1/knotspan/Youngs\ modulus Group
+/6/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /6/timeinfo              Group
 /6/timeinfo/level        Dataset {1}
 /7                       Group
 /7/Elasticity-1          Group
 /7/Elasticity-1/fields   Group
-/7/Elasticity-1/fields/Yield\ limit Group
-/7/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /7/Elasticity-1/fields/Yield\ utilization Group
 /7/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/7/Elasticity-1/fields/Youngs\ modulus Group
-/7/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /7/Elasticity-1/fields/displacement Group
 /7/Elasticity-1/fields/displacement/1 Dataset {36}
 /7/Elasticity-1/fields/s_xx Group
@@ -437,6 +433,10 @@ PrintConcrete2D2-p2.xinp
 /7/Elasticity-1/fields/von\ Mises\ stress Group
 /7/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /7/Elasticity-1/knotspan Group
+/7/Elasticity-1/knotspan/Yield\ limit Group
+/7/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/7/Elasticity-1/knotspan/Youngs\ modulus Group
+/7/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /7/Elasticity-1/knotspan/mask Group
 /7/Elasticity-1/knotspan/mask/1 Dataset {4}
 /7/timeinfo              Group
@@ -444,12 +444,8 @@ PrintConcrete2D2-p2.xinp
 /8                       Group
 /8/Elasticity-1          Group
 /8/Elasticity-1/fields   Group
-/8/Elasticity-1/fields/Yield\ limit Group
-/8/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
 /8/Elasticity-1/fields/Yield\ utilization Group
 /8/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
-/8/Elasticity-1/fields/Youngs\ modulus Group
-/8/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
 /8/Elasticity-1/fields/displacement Group
 /8/Elasticity-1/fields/displacement/1 Dataset {36}
 /8/Elasticity-1/fields/s_xx Group
@@ -463,20 +459,18 @@ PrintConcrete2D2-p2.xinp
 /8/Elasticity-1/fields/von\ Mises\ stress Group
 /8/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /8/Elasticity-1/knotspan Group
+/8/Elasticity-1/knotspan/Yield\ limit Group
+/8/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/8/Elasticity-1/knotspan/Youngs\ modulus Group
+/8/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
 /8/timeinfo              Group
 /8/timeinfo/level        Dataset {1}
 /9                       Group
 /9/Elasticity-1          Group
 /9/Elasticity-1/fields   Group
-/9/Elasticity-1/fields/Yield\ limit Group
-/9/Elasticity-1/fields/Yield\ limit/1 Dataset {18}
-/9/Elasticity-1/fields/Yield\ limit/2 Dataset {18}
 /9/Elasticity-1/fields/Yield\ utilization Group
 /9/Elasticity-1/fields/Yield\ utilization/1 Dataset {18}
 /9/Elasticity-1/fields/Yield\ utilization/2 Dataset {18}
-/9/Elasticity-1/fields/Youngs\ modulus Group
-/9/Elasticity-1/fields/Youngs\ modulus/1 Dataset {18}
-/9/Elasticity-1/fields/Youngs\ modulus/2 Dataset {18}
 /9/Elasticity-1/fields/displacement Group
 /9/Elasticity-1/fields/displacement/1 Dataset {36}
 /9/Elasticity-1/fields/displacement/2 Dataset {36}
@@ -496,6 +490,12 @@ PrintConcrete2D2-p2.xinp
 /9/Elasticity-1/fields/von\ Mises\ stress/1 Dataset {18}
 /9/Elasticity-1/fields/von\ Mises\ stress/2 Dataset {18}
 /9/Elasticity-1/knotspan Group
+/9/Elasticity-1/knotspan/Yield\ limit Group
+/9/Elasticity-1/knotspan/Yield\ limit/1 Dataset {4}
+/9/Elasticity-1/knotspan/Yield\ limit/2 Dataset {4}
+/9/Elasticity-1/knotspan/Youngs\ modulus Group
+/9/Elasticity-1/knotspan/Youngs\ modulus/1 Dataset {4}
+/9/Elasticity-1/knotspan/Youngs\ modulus/2 Dataset {4}
 /9/Elasticity-1/knotspan/mask Group
 /9/Elasticity-1/knotspan/mask/2 Dataset {4}
 /9/timeinfo              Group

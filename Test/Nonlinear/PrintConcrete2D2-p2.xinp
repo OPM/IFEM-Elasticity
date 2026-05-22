@@ -42,7 +42,7 @@
       <updatedlagrange/>
     </formulation>
     <gravity y="-9.81"/>
-    <druckerprager E="1.4e6" nu="0.3" rho="2070" beta="35">
+    <druckerprager E="1.4e6" nu="0.3" rho="2070" beta="35" elm_output="true">
       <stiffness aging="true" type="piecewiselinear">Betong.dat 2</stiffness>
       <yieldlimit beta="35" type="piecewiselinear">Betong.dat 3</yieldlimit>
     </druckerprager>
@@ -60,9 +60,14 @@
     <class fixzeros="true"/>
   </linearsolver>
 
+   <nonlinearsolver>
+     <noEnergy/>
+   </nonlinearsolver>
+
   <postprocessing>
     <vtfformat merge="true">BINARY</vtfformat>
     <direct2nd/>
+    <saveNorms/>
   </postprocessing>
 
 </simulation>

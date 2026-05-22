@@ -60,13 +60,24 @@ public:
                         const Tensor& F, const SymmTensor& eps, char iop,
                         const TimeDomain* prm, const Tensor* Fpf) const;
 
+  //! \brief Evaluates an element-wise material parameter.
+  //! \param[in] fe Finite element quantities at current point
+  //! \param[in] idx 1-based index of the element variable
+  virtual double evaluate(const FiniteElement& fe, size_t idx) const;
+
   //! \brief Returns number of internal result variables of the material model.
   virtual int getNoIntVariables() const;
+  //! \brief Returns number of element-wise parameters of the material model.
+  virtual int getNoElParameters() const;
 
   //! \brief Returns an internal variable associated with the material model.
   //! \param[in] idx 1-based index of the internal variable
   //! \param[out] label Name of the internal variable (for result presentation)
   virtual double getInternalVar(int idx, char* label, size_t) const;
+
+  //! \brief Returns the label of an element-wise material parameter.
+  //! \param[in] idx 1-based index of the material parameter
+  virtual const char* getElParamLabel(int idx) const;
 
 private:
   ScalarFunc* yieldLimit; //!< Age-dependent yield limit
@@ -77,6 +88,7 @@ private:
   double alpha; //!< Material parameter, equals tan(beta)
   double Kappa; //!< Material parameter, valid range [0.778,1.0]
   char version; //!< Formulation version
+  bool elmOutp; //!< If \e true, output E and sigma_y as element parameters
 };
 
 #endif

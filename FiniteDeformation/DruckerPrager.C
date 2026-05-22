@@ -24,6 +24,7 @@ DruckerPrager::DruckerPrager(unsigned short int nd, bool ps, bool ax)
   : LinIsotropic(ps,ax), mySigma(nd, ax || !ps)
 {
   version = 'C';
+  elmOutp = false;
   yieldLimit = nullptr;
   alpha = sigy = 0.0;
   Kappa = 1.0;
@@ -70,6 +71,8 @@ void DruckerPrager::parse (const tinyxml2::XMLElement* elem)
       alpha = tan(beta);
     IFEM::cout <<"\t  alpha = "<< alpha <<"  beta = "<< beta;
   }
+
+  utl::getAttribute(elem,"elm_output",elmOutp);
 }
 
 
@@ -93,25 +96,64 @@ bool DruckerPrager::evaluate (Matrix& C, SymmTensor& sigma, double& U,
 }
 
 
+double DruckerPrager::evaluate (const FiniteElement& fe, size_t idx) const
+{
+  if (!elmOutp)
+    return 0.0; // No element parameter output for this material
+
+  if (!Eaging)
+    ++idx;
+  else if (idx == 1)
+    return (*Eaging)(fe.age);
+
+  if (yieldLimit && idx == 2)
+    return (*yieldLimit)(fe.age);
+
+  return 0.0;
+}
+
+
 int DruckerPrager::getNoIntVariables () const
 {
   int nvar = 1;
-  if (Eaging) nvar += 1;
-  if (yieldLimit) nvar += 2;
+  if (elmOutp)
+  {
+    if (yieldLimit) nvar++;
+  }
+  else
+  {
+    if (Eaging) nvar += 1;
+    if (yieldLimit) nvar += 2;
+  }
+  return nvar;
+}
+
+
+int DruckerPrager::getNoElParameters () const
+{
+  int nvar = 0;
+  if (elmOutp)
+  {
+    if (Eaging) nvar ++;
+    if (yieldLimit) nvar ++;
+  }
   return nvar;
 }
 
 
 double DruckerPrager::getInternalVar (int idx, char* label, size_t) const
 {
-  if (idx > 1 && idx < 3 && !Eaging)
-    ++idx;
   if (idx < 1 || idx > this->getNoIntVariables())
   {
     if (label)
       strcpy(label,"zero");
     return 0.0;
   }
+
+  if (elmOutp && idx == 2)
+    idx = 4; // Yield utilization
+  else if (!elmOutp && idx > 1 && !Eaging)
+    ++idx; // Skip Youngs modulus
 
   // Lambda function evaluating the Drucker-Prager stress measure, version A.
   std::function<double(const SymmTensor&)> DPstressA =
@@ -176,4 +218,18 @@ double DruckerPrager::getInternalVar (int idx, char* label, size_t) const
   }
 
   return 0.0;
+}
+
+
+const char* DruckerPrager::getElParamLabel (int idx) const
+{
+  switch (idx) {
+  case 1:
+    if (Eaging)
+      return "Youngs modulus";
+  case 2:
+    return "Yield limit";
+  default:
+    return "zero";
+  }
 }
