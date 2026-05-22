@@ -67,9 +67,8 @@ int mlcSim (char* infile, SIMoutput* model, bool fixDup, bool dumpNodeMap,
     if (model->opt.saveNorms) results |= DataExporter::NORMS;
     if (dumpNodeMap) results |= DataExporter::L2G_NODE;
     writer->registerField("u","solution",DataExporter::SIM,results);
-    writer->setFieldValue("u",model,
-                          &simulator.getSolution(),nullptr,
-                          simulator.getNorms());
+    writer->setFieldValue("u",model,&simulator.getSolution(),
+                          nullptr,simulator.getNorms());
   }
 
   // Now invoke the main solution driver

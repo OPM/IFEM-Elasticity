@@ -83,6 +83,13 @@ public:
   //! \brief Defines the local coordinate system for stress output.
   void setLocalSystem(LocalSystem* cs) { locSys = cs; }
 
+  //! \brief Allocates element buffers for material parameters.
+  //! \param[in] npar Number of material parameters in each element
+  //! \param[in] nElms Total number of elements in the model
+  void initElmRes(size_t npar, size_t nElms) { elmRes.resize(npar,nElms,true); }
+  //! \brief Returns a const reference to the element result matrix.
+  const Matrix& getElmRes() const { return elmRes; }
+
   using ElasticBase::initIntegration;
   //! \brief Initializes the integrand with the number of integration points.
   //! \param[in] nGp Total number of interior integration points
@@ -136,6 +143,18 @@ public:
   //! \param[in] asol The analytical solution field
   //! \param[in] X Cartesian coordinates of current point
   virtual bool evalSol(Vector& s, const STensorFunc& asol, const Vec3& X) const;
+
+  using ElasticBase::finalizeElement;
+  //! \brief Finalizes the element quantities after the numerical integration.
+  //! \param elmInt The local integral object to receive the contributions
+  //! \param[in] fe Nodal and integration point data for current element
+  //! \param[in] time Parameters for nonlinear and time-dependent simulations
+  //! \param[in] iGP Global integration point counter of first point in element
+  //!
+  //! \details This method is overridden to evaluate the element-wise
+  //! material parameters for post-processing.
+  virtual bool finalizeElement(LocalIntegral& elmInt, const FiniteElement& fe,
+                               const TimeDomain& time, size_t iGP);
 
   //! \brief Evaluates the finite element (FE) strain at an integration point.
   //! \param[out] s The FE strans values at current point
@@ -344,6 +363,7 @@ protected:
   VecFunc*      fluxFld;  //!< Pointer to explicit boundary traction field
   VecFunc*      bodyFld;  //!< Pointer to body force field
   Vec3Vec*      pDirBuf;  //!< Principal stress directions buffer
+  Matrix        elmRes;   //!< Element-wise material parameters for output
 
   FunctionBase*              dualRHS; //!< Extraction function for dual RHS
   std::vector<FunctionBase*> dualFld; //!< Extraction functions for VCP

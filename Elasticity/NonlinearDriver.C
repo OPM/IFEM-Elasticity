@@ -64,8 +64,8 @@ bool NonlinearDriver::parse (char* keyWord, std::istream& is)
     calcEn = 0; // switch off energy norm calculation
   else if (!strncasecmp(keyWord,"ENERGY2",7))
     calcEn = 2; // also print the square of the global norm values
-  else if (!strncasecmp(keyWord,"ADAPTIVE",8) && adap)
-    return adap->parse(keyWord,is);
+  else if (!strncasecmp(keyWord,"ADAPTIVE",8))
+    return !adap || adap->parse(keyWord,is);
   else
     return this->NonLinSIM::parse(keyWord,is);
 
@@ -78,10 +78,10 @@ bool NonlinearDriver::parse (const tinyxml2::XMLElement* elem)
   if (adap && !strcasecmp(elem->Value(),"adaptive"))
     return adap->parse(elem);
 
-  const tinyxml2::XMLElement* child = elem->FirstChildElement();
   if (!strcasecmp(elem->Value(),"nonlinearsolver"))
   {
-    for (; child; child = child->NextSiblingElement())
+    for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+         child; child = child->NextSiblingElement())
       if (!strncasecmp(child->Value(),"noEnergy",8))
         calcEn = 0; // switch off energy norm calculation
       else if (!strncasecmp(child->Value(),"energy2",7))
@@ -92,7 +92,8 @@ bool NonlinearDriver::parse (const tinyxml2::XMLElement* elem)
 
   else if (!strcasecmp(elem->Value(),"postprocessing"))
   {
-    for (; child; child = child->NextSiblingElement())
+    for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+         child; child = child->NextSiblingElement())
       if (!strcasecmp(child->Value(),"direct2nd"))
         opt.pSolOnly = false;
       else if (!strcasecmp(child->Value(),"saveNewElms0"))
@@ -121,7 +122,7 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
   double normL2 = model.solutionNorms(solution.front(),dMax,iMax);
   bool haveReac = model.getCurrentReactions(RF,solution.front());
 
-  if (calcEn)
+  if (calcEn && !adap)
   {
     model.setMode(SIM::NORMS);
     model.setQuadratureRule(opt.nGauss[1]);
@@ -353,6 +354,15 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
     if (opt.dtSave <= 0.0 || params.hasReached(nextSave))
     {
       ++iStep;
+
+      if (opt.saveNorms && elp && !elp->getElmRes().empty())
+      {
+        // Include element-wise material parameters
+        if (calcEn || adap)
+          eNorm.augmentRows(elp->getElmRes(),true);
+        else
+          eNorm = elp->getElmRes();
+      }
 
       // Save solution variables to VTF for visualization
       if (opt.format >= 0)

@@ -17,7 +17,7 @@
 #include "NeoHookeMaterial.h"
 #include "PlasticMaterial.h"
 #include "DruckerPrager.h"
-#include "ElasticBase.h"
+#include "Elasticity.h"
 #include "ElasticityUtils.h"
 
 #include "IFEM.h"
@@ -29,6 +29,7 @@
 #include "Utilities.h"
 #include "Property.h"
 #include "tinyxml2.h"
+#include <numeric>
 
 
 template<class Dim>
@@ -276,6 +277,15 @@ ElasticBase* SIMFiniteDefEl<Dim>::getIntegrand ()
 template<class Dim>
 bool SIMFiniteDefEl<Dim>::preprocessB ()
 {
+  if (Elasticity* elp = dynamic_cast<Elasticity*>(Dim::myProblem); elp)
+  {
+    // Allocate element buffers for material parameters
+    int npar = std::accumulate(mDat.begin(), mDat.end(), 0,
+                               [](int n, const Material* m)
+                               { return std::max(n,m->getNoElParameters()); });
+    elp->initElmRes(npar,this->getNoElms(true,true));
+  }
+
   if (std::find_if(mDat.begin(), mDat.end(), [](const Material* mat)
                    { return mat->isHistoryDependent(); }) != mDat.end())
     for (const SIMoptions::ProjectionMap::value_type& proj : Dim::opt.project)

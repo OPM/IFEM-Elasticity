@@ -887,6 +887,18 @@ bool Elasticity::evalEps (Vector& s, const Vector& eV, const FiniteElement& fe,
 }
 
 
+bool Elasticity::finalizeElement (LocalIntegral& elmInt,
+                                  const FiniteElement& fe,
+                                  const TimeDomain& time, size_t iGP)
+{
+  if (fe.iel > 0 && fe.iel <= static_cast<int>(elmRes.cols()))
+    for (size_t i = 1; i <= elmRes.rows(); i++)
+      elmRes(i,fe.iel) = material->evaluate(fe,i);
+
+  return this->finalizeElement(elmInt,time,iGP);
+}
+
+
 Vector* Elasticity::getExtractionField (size_t ifield)
 {
   return dS && ifield < primsol.size() ? &primsol[ifield] : nullptr;
