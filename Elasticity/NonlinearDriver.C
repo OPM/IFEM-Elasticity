@@ -382,21 +382,15 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
         if (!model.writeGlvV(myForces,"Internal forces",iStep,nBlock,2))
           return 11;
 
-        if (doProject)
-        {
-          // Write projected solution fields to VTF-file
+        if (doProject) // Write projected solution fields to VTF-file
           if (!model.writeGlvP(proSol.front(),iStep,
                                nBlock,110,pit->second.c_str(),
                                elp ? elp->getMaxVals() : nullptr))
             return 11;
 
-          // Write element norms
-          if (!model.writeGlvN(eNorm,iStep,nBlock,{pit->second}))
-            return 11;
-        }
-        else // Write element norms without projections
-          if (!model.writeGlvN(eNorm,iStep,nBlock))
-            return 11;
+        // Write element norms
+        if (!model.writeGlvN(eNorm,iStep,nBlock))
+          return 11;
       }
 
       if (elp) elp->enableMaxValCalc(false);

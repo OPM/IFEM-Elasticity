@@ -926,23 +926,11 @@ int main (int argc, char** argv)
         return terminate(18);
 
     // Write element norms
-    if (!eNorm.empty())
-    {
-      std::vector<std::string> prefix;
-      prefix.reserve(pOpt.size());
-      for (pit = pOpt.begin(); pit != pOpt.end(); ++pit)
-        prefix.push_back(pit->second);
+    if (!model->writeGlvN(eNorm,1,nBlock))
+      return terminate(19);
 
-      if (!model->writeGlvN(eNorm,1,nBlock,prefix))
-        return terminate(19);
-    }
-
-    if (!fNorm.empty())
-    {
-      std::vector<std::string> prefix = { "Dual projected" };
-      if (!model->writeGlvN(fNorm,1,nBlock,prefix,300,"Dual"))
-        return terminate(19);
-    }
+    if (!model->writeGlvN(fNorm,1,nBlock,300,"Dual"))
+      return terminate(19);
 
     model->writeGlvStep(1,0.0,-1);
   }
