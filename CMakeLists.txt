@@ -110,6 +110,7 @@ ifem_add_vtf_test(
     LinEl
   TEST_FILES
     Linear/Annulus3D.vreg
+    Linear/CanTS2D-p1-dual.vreg
     Linear/Hole2D-p3.vreg
     Linear/MidShipFrame.vreg
     Linear/ScordelisLo-p4-4x4.vreg
