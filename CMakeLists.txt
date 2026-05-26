@@ -31,6 +31,10 @@ if(NOT TARGET IFEM::Shell)
   add_subdirectory(Shell)
 endif()
 
+if(VERBOSE_DEBUG GREATER 0)
+  target_compile_definitions(Elasticity PUBLIC $<$<CONFIG:Debug>:INT_DEBUG=${VERBOSE_DEBUG}>)
+endif()
+
 ifem_add_dependency_dir(
   APP
     Elasticity
@@ -488,4 +492,4 @@ ifem_add_doc_target(
 
 # Installation
 include(GNUInstallDirs)
-install(TARGETS LinEl ShellEl DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS LinEl ShellEl NonLinEl DESTINATION ${CMAKE_INSTALL_BINDIR})
