@@ -1,4 +1,4 @@
-PrintConcrete2D-p2.xinp -printMax -ztol 0.001
+PrintConcrete2D-p2.xinp -ztol 0.001
 
 Input file: PrintConcrete2D-p2.xinp
 Equation solver: 2

@@ -664,6 +664,14 @@ bool SIMElasticity<Dim>::parse (const tinyxml2::XMLElement* elem)
           plotRgd = true;
         else if (!strcasecmp(child->Value(),"strain"))
           Elasticity::wantStrain = true;
+        else if (!strcasecmp(child->Value(),"print_max"))
+          if (ElasticBase* elInt = this->getIntegrand(); elInt)
+          {
+            size_t nP = 1;
+            if (bool pch; utl::getAttribute(child,"patch",pch) && pch)
+              nP = Dim::myModel.size();
+            static_cast<Elasticity*>(elInt)->initMaxVals(nP);
+          }
     }
     else if (!strcasecmp(elem->Value(),"localsystem"))
     {

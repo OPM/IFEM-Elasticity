@@ -246,7 +246,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
   else if (doProject)
     getMaxVals = true;
   if (getMaxVals && !printMax)
-    const_cast<Elasticity*>(elp)->initMaxVals(1);
+    printMax = const_cast<Elasticity*>(elp)->initMaxVals(1);
 
   int iStep = aStep = 0; // Save initial state to VTF
   if (save0 && opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)

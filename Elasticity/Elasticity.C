@@ -1008,16 +1008,22 @@ std::string Elasticity::getEFieldName (size_t i) const
 }
 
 
-void Elasticity::initMaxVals (size_t nP)
+bool Elasticity::initMaxVals (size_t nP)
 {
 #ifdef INT_DEBUG
   std::cout <<"Elasticity::initMaxVals: "<< maxVal.size()
             <<" --> "<< nP << std::endl;
 #endif
-  if (maxVal.empty() && nP > 0)
-    maxVal.resize(this->getNoFields(2),PointValues(nP,PointValue(Vec3(),0.0)));
-  else for (PointValues& pval : maxVal)
-    std::fill(pval.begin(),pval.end(),PointValue(Vec3(),0.0));
+  if (!maxVal.empty())
+  {
+    for (PointValues& pval : maxVal)
+      std::fill(pval.begin(),pval.end(),PointValue(Vec3(),0.0));
+    return nP == 1; // already allocated
+  }
+  else if (nP > 0)
+    maxVal.resize(this->getNoFields(2),PointValues(nP,{Vec3(),0.0}));
+
+  return false;
 }
 
 

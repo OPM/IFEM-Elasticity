@@ -568,6 +568,8 @@ int main (int argc, char** argv)
     numPatch = model->getFEModel().size();
   if (printMax)
     const_cast<LinearElasticity*>(lelp)->initMaxVals(numPatch);
+  else if (lelp && !pOpt.empty())
+    printMax = const_cast<LinearElasticity*>(lelp)->initMaxVals(1);
 
   // Lambda function to print out max stress values
   auto&& printMaxStress = [lelp,outPrec](const char* heading)

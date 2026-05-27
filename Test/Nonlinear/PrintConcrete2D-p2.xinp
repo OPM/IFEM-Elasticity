@@ -51,6 +51,7 @@
   <postprocessing>
     <vtfformat>BINARY</vtfformat>
     <direct2nd/>
+    <print_max/>
   </postprocessing>
 
 </simulation>

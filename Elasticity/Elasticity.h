@@ -249,7 +249,7 @@ public:
   //! determined. Otherwise, if it equals the number of patches in the model,
   //! the maximum values are computed for each patch separately. If \a nP is 0,
   //! the max-values buffer is initialized to zero without touching its size.
-  void initMaxVals(size_t nP = 0);
+  bool initMaxVals(size_t nP = 0);
 
   //! \brief Returns a pointer to the max values for external update.
   std::vector<PointValues>* getMaxVals() const { return &maxVal; }

@@ -58,6 +58,7 @@
       <point patch="1" u="0.0" v="1.0"/>
       <point patch="1" u="1.0" v="1.0"/>
     </resultpoints>
+    <print_max/>
   </postprocessing>
 
 </simulation>
