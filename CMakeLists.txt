@@ -102,13 +102,6 @@ ifem_add_hdf5_test(
     Linear/LR/Lshape-adap-p2.hreg
 )
 
-ifem_add_hdf5_test(
-  TARGET
-    NonLinEl
-  TEST_FILES
-    Nonlinear/PrintConcrete2D2-p2.hreg
-)
-
 ifem_add_vtf_test(
   TARGET
     LinEl
@@ -308,8 +301,6 @@ ifem_add_regression_test(
     Nonlinear/Necking-Q2P1.reg
     Nonlinear/Necking-Q2-Q1.reg
     Nonlinear/Necking-Q2Q1.reg
-    Nonlinear/PrintConcrete2D-p2.reg
-    Nonlinear/PrintConcrete2D2-p2.reg
 )
 
 if(NOT MPI_FOUND OR IFEM_SERIAL_TESTS_IN_PARALLEL)

@@ -16,7 +16,6 @@
 #include "LinearMaterial.h"
 #include "NeoHookeMaterial.h"
 #include "PlasticMaterial.h"
-#include "DruckerPrager.h"
 #include "Elasticity.h"
 #include "ElasticityUtils.h"
 
@@ -192,17 +191,6 @@ SIMFiniteDefEl<Dim>::parseMaterial (const tinyxml2::XMLElement* elem)
     else
       mat = new LinIsotropic();
 
-    mat->parse(elem);
-    IFEM::cout << std::endl;
-  }
-
-  else if (!strcasecmp(elem->Value(),"druckerprager"))
-  {
-    int code = this->parseMaterialSet(elem,mDat.size());
-    IFEM::cout <<"\tMaterial code "<< code <<":";
-
-    mat = new DruckerPrager(Dim::dimension,
-                            !Elastic::planeStrain,Elastic::axiSymmetry);
     mat->parse(elem);
     IFEM::cout << std::endl;
   }

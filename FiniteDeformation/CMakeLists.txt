@@ -8,7 +8,6 @@ ifem_add_library(
   ALIAS
     IFEM::FiniteDeformation
   SOURCES
-    DruckerPrager.C
     LinearMaterial.C
     MixedTanMat.C
     MortarContact.C
@@ -28,7 +27,6 @@ ifem_add_library(
     accKMx.f
     stiff_TL.f
   HEADERS
-    DruckerPrager.h
     LinearMaterial.h
     MixedTanMat.h
     MortarContact.h
