@@ -43,6 +43,10 @@ protected:
   //! \param[in] elem The XML element to parse
   virtual bool parse(const tinyxml2::XMLElement* elem);
 
+  //! \brief Parses material data from an XML element.
+  //! \param[in] elem The XML element to parse
+  virtual Material* parseMaterial(const tinyxml2::XMLElement* elem);
+
   //! \brief Returns the actual integrand.
   virtual ElasticBase* getIntegrand();
 

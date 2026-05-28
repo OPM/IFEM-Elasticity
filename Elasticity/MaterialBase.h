@@ -49,6 +49,8 @@ public:
   virtual bool isPlaneStrain() const { return true; }
   //! \brief Returns \e true if the material has internal history variables.
   virtual bool isHistoryDependent() const { return false; }
+  //! \brief Returns \e true if the stiffness-curve is linear.
+  virtual bool isLinear() const { return true; }
 
   //! \brief Initializes the material with the number of integration points.
   virtual void initIntegration(size_t) {}

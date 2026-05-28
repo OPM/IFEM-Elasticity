@@ -133,113 +133,18 @@ bool SIMFiniteDefEl<Dim>::parse (const tinyxml2::XMLElement* elem)
 
   Material* defaultMat = nullptr;
 
-  const tinyxml2::XMLElement* child = elem->FirstChildElement();
-  for (; child; child = child->NextSiblingElement())
+  for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+       child; child = child->NextSiblingElement())
 
-    if (!strcasecmp(child->Value(),"isotropic"))
+    if (Material* mat = this->parseMaterial(child); mat)
     {
-      int code = this->parseMaterialSet(child,mDat.size());
-      IFEM::cout <<"\tMaterial code "<< code;
-
-      int mVer = -1;
-      if (utl::getAttribute(child,"version",mVer))
-        IFEM::cout <<" ("<< mVer <<"):";
+      if (nlo.form >= SIM::UPDATED_LAGRANGE && mat->isLinear())
+        mDat.push_back(new LinearMaterial(mat));
       else
-        IFEM::cout <<":";
+        mDat.push_back(mat);
 
-      if (mVer >= 0 && nlo.form >= SIM::UPDATED_LAGRANGE)
-        mDat.push_back(new NeoHookeMaterial(mVer));
-      else if (Dim::dimension == 2)
-        mDat.push_back(new LinIsotropic(!Elastic::planeStrain,
-                                        Elastic::axiSymmetry));
-      else
-        mDat.push_back(new LinIsotropic());
-
-      mDat.back()->parse(child);
-      IFEM::cout << std::endl;
-
-      if (mVer < 0 && nlo.form >= SIM::UPDATED_LAGRANGE)
-        mDat.back() = new LinearMaterial(mDat.back());
-
-      if (!defaultMat || code == 0) defaultMat = mDat.back();
-    }
-
-    else if (!strcasecmp(child->Value(),"druckerprager"))
-    {
-      int code = this->parseMaterialSet(child,mDat.size());
-      IFEM::cout <<"\tMaterial code "<< code;
-
-      mDat.push_back(new DruckerPrager(Dim::dimension,
-                                       !Elastic::planeStrain,
-                                       Elastic::axiSymmetry));
-      mDat.back()->parse(child);
-      IFEM::cout << std::endl;
-
-      if (nlo.form >= SIM::UPDATED_LAGRANGE)
-        mDat.back() = new LinearMaterial(mDat.back());
-
-      if (!defaultMat || code == 0) defaultMat = mDat.back();
-    }
-    else if (!strcasecmp(child->Value(),"plastic"))
-    {
-      int code = this->parseMaterialSet(child,mDat.size());
-
-      RealArray pMAT;
-      ScalarFunc* hfunc = nullptr;
-      const tinyxml2::XMLElement* gchild = child->FirstChildElement();
-      for (; gchild; gchild = gchild->NextSiblingElement())
-        if (strcasecmp(gchild->Value(),"hardeningcurve"))
-        {
-          std::string value(gchild->Value());
-          char* cval = strtok(const_cast<char*>(value.c_str())," ");
-          for (; cval; cval = strtok(nullptr," "))
-            pMAT.push_back(atof(cval));
-        }
-        else if (gchild->FirstChild())
-        {
-          // An isotropic hardening function is specified
-          IFEM::cout <<" Hardening: ";
-          std::string type("expression");
-          utl::getAttribute(gchild,"type",type);
-          hfunc = utl::parseTimeFunc(gchild->FirstChild()->Value(),type);
-        }
-
-      if (pMAT.size() < 11) pMAT.resize(11,0.0);
-      utl::getAttribute(child,"Bmod" ,pMAT[0]);
-      utl::getAttribute(child,"Emod" ,pMAT[0]);
-      utl::getAttribute(child,"E"    ,pMAT[0]);
-      utl::getAttribute(child,"Smod" ,pMAT[1]);
-      utl::getAttribute(child,"nu"   ,pMAT[1]);
-      utl::getAttribute(child,"rho"  ,pMAT[3]);
-      utl::getAttribute(child,"Hiso" ,pMAT[4]);
-      utl::getAttribute(child,"Hkin" ,pMAT[5]);
-      utl::getAttribute(child,"yield",pMAT[6]);
-      utl::getAttribute(child,"Y0"   ,pMAT[7]);
-      utl::getAttribute(child,"Yinf" ,pMAT[8]);
-      utl::getAttribute(child,"beta" ,pMAT[9]);
-      utl::getAttribute(child,"istrt",pMAT[10]);
-      int iYield = static_cast<int>(pMAT[6]);
-      if (iYield == 4)
-      {
-        utl::getAttribute(child,"A"  ,pMAT[7]);
-        utl::getAttribute(child,"B"  ,pMAT[8]);
-        utl::getAttribute(child,"n"  ,pMAT[9]);
-      }
-      else if (iYield == 6)
-      {
-        if (pMAT.size() < 13) pMAT.resize(13,0.0);
-        utl::getAttribute(child,"Q1",pMAT[8]);
-        utl::getAttribute(child,"C1",pMAT[9]);
-        utl::getAttribute(child,"Q2",pMAT[11]);
-        utl::getAttribute(child,"C2",pMAT[12]);
-      }
-      mDat.push_back(new PlasticMaterial(pMAT,hfunc));
-
-      IFEM::cout <<"\tMaterial code "<< code <<":";
-      for (double v : pMAT) IFEM::cout <<" "<< v;
-      IFEM::cout << std::endl;
-
-      if (!defaultMat || code == 0) defaultMat = mDat.back();
+      if (!defaultMat)
+        defaultMat = mDat.back();
     }
 
     else if (!strcasecmp(child->Value(),"contact"))
@@ -261,6 +166,108 @@ bool SIMFiniteDefEl<Dim>::parse (const tinyxml2::XMLElement* elem)
       elInt->setMaterial(defaultMat);
 
   return true;
+}
+
+
+template<class Dim> Material*
+SIMFiniteDefEl<Dim>::parseMaterial (const tinyxml2::XMLElement* elem)
+{
+  Material* mat = nullptr;
+
+  if (!strcasecmp(elem->Value(),"isotropic"))
+  {
+    int code = this->parseMaterialSet(elem,mDat.size());
+    IFEM::cout <<"\tMaterial code "<< code;
+
+    int mVer = -1;
+    if (utl::getAttribute(elem,"version",mVer))
+      IFEM::cout <<" ("<< mVer <<"):";
+    else
+      IFEM::cout <<":";
+
+    if (mVer >= 0 && nlo.form >= SIM::UPDATED_LAGRANGE)
+      mat = new NeoHookeMaterial(mVer);
+    else if (Dim::dimension == 2)
+      mat = new LinIsotropic(!Elastic::planeStrain,Elastic::axiSymmetry);
+    else
+      mat = new LinIsotropic();
+
+    mat->parse(elem);
+    IFEM::cout << std::endl;
+  }
+
+  else if (!strcasecmp(elem->Value(),"druckerprager"))
+  {
+    int code = this->parseMaterialSet(elem,mDat.size());
+    IFEM::cout <<"\tMaterial code "<< code <<":";
+
+    mat = new DruckerPrager(Dim::dimension,
+                            !Elastic::planeStrain,Elastic::axiSymmetry);
+    mat->parse(elem);
+    IFEM::cout << std::endl;
+  }
+
+  else if (!strcasecmp(elem->Value(),"plastic"))
+  {
+    RealArray pMAT;
+    ScalarFunc* hfunc = nullptr;
+    for (const tinyxml2::XMLElement* child = elem->FirstChildElement();
+         child; child = child->NextSiblingElement())
+      if (strcasecmp(child->Value(),"hardeningcurve"))
+      {
+        char* hdat = strdup(child->Value());
+        for (char* s = strtok(hdat," "); s; s = strtok(nullptr," "))
+          pMAT.push_back(atof(s));
+        free(hdat);
+      }
+      else if (child->FirstChild())
+      {
+        // An isotropic hardening function is specified
+        IFEM::cout <<" Hardening: ";
+        std::string type("expression");
+        utl::getAttribute(child,"type",type);
+        hfunc = utl::parseTimeFunc(child->FirstChild()->Value(),type);
+      }
+
+    if (pMAT.size() < 11) pMAT.resize(11,0.0);
+    utl::getAttribute(elem,"Bmod" ,pMAT[0]);
+    utl::getAttribute(elem,"Emod" ,pMAT[0]);
+    utl::getAttribute(elem,"E"    ,pMAT[0]);
+    utl::getAttribute(elem,"Smod" ,pMAT[1]);
+    utl::getAttribute(elem,"nu"   ,pMAT[1]);
+    utl::getAttribute(elem,"rho"  ,pMAT[3]);
+    utl::getAttribute(elem,"Hiso" ,pMAT[4]);
+    utl::getAttribute(elem,"Hkin" ,pMAT[5]);
+    utl::getAttribute(elem,"yield",pMAT[6]);
+    utl::getAttribute(elem,"Y0"   ,pMAT[7]);
+    utl::getAttribute(elem,"Yinf" ,pMAT[8]);
+    utl::getAttribute(elem,"beta" ,pMAT[9]);
+    utl::getAttribute(elem,"istrt",pMAT[10]);
+    int iYield = static_cast<int>(pMAT[6]);
+    if (iYield == 4)
+    {
+      utl::getAttribute(elem,"A"  ,pMAT[7]);
+      utl::getAttribute(elem,"B"  ,pMAT[8]);
+      utl::getAttribute(elem,"n"  ,pMAT[9]);
+    }
+    else if (iYield == 6)
+    {
+      if (pMAT.size() < 13) pMAT.resize(13,0.0);
+      utl::getAttribute(elem,"Q1",pMAT[8]);
+      utl::getAttribute(elem,"C1",pMAT[9]);
+      utl::getAttribute(elem,"Q2",pMAT[11]);
+      utl::getAttribute(elem,"C2",pMAT[12]);
+    }
+
+    int code = this->parseMaterialSet(elem,mDat.size());
+    IFEM::cout <<"\tMaterial code "<< code <<":";
+    for (double v : pMAT) IFEM::cout <<" "<< v;
+    IFEM::cout << std::endl;
+
+    mat = new PlasticMaterial(pMAT,hfunc);
+  }
+
+  return mat;
 }
 
 
@@ -288,10 +295,13 @@ bool SIMFiniteDefEl<Dim>::preprocessB ()
 
   if (std::find_if(mDat.begin(), mDat.end(), [](const Material* mat)
                    { return mat->isHistoryDependent(); }) != mDat.end())
-    for (const SIMoptions::ProjectionMap::value_type& proj : Dim::opt.project)
-      if (proj.first != SIMoptions::CGL2_INT)
+    if (SIMoptions::ProjectionMap::const_iterator pit =
+        std::find_if(Dim::opt.project.begin(), Dim::opt.project.end(),
+                     [](const SIMoptions::ProjectionMap::value_type& prj)
+                     { return prj.first != SIMoptions::CGL2_INT; });
+        pit != Dim::opt.project.end())
       {
-        std::cerr <<"\n *** Invalid projection method ("<< proj.first <<")."
+        std::cerr <<"\n *** Invalid projection method ("<< pit->first <<")."
                   <<"\n     Only CGL2 (version 2) works for history dependent"
                   <<" materials.\n     Rerun with <projection type=\"gl2\">"
                   <<" (or command-line option -gl2) instead."<< std::endl;

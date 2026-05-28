@@ -144,6 +144,8 @@ public:
 
   //! \brief Returns \e true if the material has internal history variables.
   virtual bool isHistoryDependent() const { return true; }
+  //! \brief Returns \e false since stiffness-curve is non-linear.
+  virtual bool isLinear() const { return false; }
 
   //! \brief Initializes the material with the number of integration points.
   virtual void initIntegration(size_t nGP);

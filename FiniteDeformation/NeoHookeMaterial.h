@@ -40,6 +40,9 @@ public:
   //! \brief Prints out material parameters to the log stream.
   virtual void printLog() const;
 
+  //! \brief Returns \e false since stiffness-curve is non-linear.
+  virtual bool isLinear() const { return false; }
+
   using LinIsotropic::evaluate;
   //! \brief Evaluates the constitutive relation at an integration point.
   //! \param[out] C Constitutive matrix at current point
