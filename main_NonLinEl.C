@@ -312,18 +312,15 @@ int main (int argc, char** argv)
       stopTime = atof(argv[++i]);
     else if (!strcmp(argv[i],"-check"))
       stopTime = -1.0;
-    else if (!infile)
-    {
-      infile = argv[i];
-      if (strcasestr(infile,".xinp"))
-      {
-        if (!args.readXML(infile,false))
-          return 1;
-        i = 0; // start over and let command-line options override input file
-      }
-    }
-    else
+    else if (infile)
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
+    else if (strcasestr(infile = argv[i],".xinp"))
+    {
+      if (args.readXML(infile,false))
+        i = 0; // start over and let command-line options override input file
+      else
+        return 1; // pre-parse failure
+    }
 
   if (!infile)
   {
@@ -342,10 +339,10 @@ int main (int argc, char** argv)
     return 0;
   }
 
-  if (IFEM::getOptions().discretization == ASM::Spline && args.adaptive)
+  if (IFEM::getOptions().discretization == ASM::Spline && args.adap)
     IFEM::getOptions().discretization = ASM::LRSpline;
   else if (IFEM::getOptions().discretization < ASM::LRSpline)
-    args.adaptive = false;
+    args.adap = false;
 
   IFEM::cout <<"\nInput file: "<< infile;
   IFEM::getOptions().print(IFEM::cout);
@@ -378,7 +375,7 @@ int main (int argc, char** argv)
   if (linear && args.algor > STATIC)
   {
     // Create the linear continuum model
-    if (args.twoD)
+    if (args.dim == 2)
       model = new SIMElasticity<SIM2D>(args.checkRHS);
     else
       model = new SIMElasticity<SIM3D>(args.checkRHS);
@@ -400,7 +397,7 @@ int main (int argc, char** argv)
   }
 
   // Create the nonlinear continuum model
-  if (args.twoD)
+  if (args.dim == 2)
     model = new SIMFiniteDefEl<SIM2D>(args.checkRHS,args.options);
   else
     model = new SIMFiniteDefEl<SIM3D>(args.checkRHS,args.options);
@@ -409,7 +406,7 @@ int main (int argc, char** argv)
   case STATIC:
   {
     // Invoke the nonlinear quasi-static solver with fixed load increments
-    NonlinearDriver simulator(*model,linear,args.adaptive);
+    NonlinearDriver simulator(*model,linear,args.adap);
     return runSimulator(simulator,model,infile,ignoredPatches,args.fixDup,
                         args.printMax,dtDump,stopTime,zero_tol,outPrec,
                         args.dNodeMap);
@@ -417,7 +414,7 @@ int main (int argc, char** argv)
   case ARCLEN:
   {
     // Invoke the nonlinear quasi-static arc-length solver
-    ArcLengthDriver simulator(*model,args.adaptive);
+    ArcLengthDriver simulator(*model,args.adap);
     return runSimulator(simulator,model,infile,ignoredPatches,args.fixDup,
                         args.printMax,dtDump,stopTime,zero_tol,outPrec,
                         args.dNodeMap);

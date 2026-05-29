@@ -37,11 +37,15 @@ bool NLargs::parseArg (const char* argv)
   else if (!strcmp(argv,"-fixDup"))
     fixDup = true;
   else if (!strncmp(argv,"-2Dpstra",8))
-    twoD = Elastic::planeStrain = true;
+  {
+    dim = 2;
+    Elastic::planeStrain = true;
+  }
   else if (!strncmp(argv,"-2Daxi",6))
-    twoD = Elastic::axiSymmetry = true;
-  else if (!strncmp(argv,"-2D",3))
-    twoD = true;
+  {
+    dim = 2;
+    Elastic::axiSymmetry = true;
+  }
   else if (!strcmp(argv,"-linear"))
     form = SIM::LINEAR;
   else if (!strcmp(argv,"-UL"))
@@ -81,10 +85,8 @@ bool NLargs::parseArg (const char* argv)
     algor = NEWHHT;
   else if (!strcmp(argv,"-arclen"))
     algor = ARCLEN;
-  else if (!strncmp(argv,"-adap",5))
-    adaptive = true;
   else
-    return false;
+    return this->SIMargsBase::parseArg(argv);
 
   this->setFormulation(form,pOrd);
   return true;
@@ -93,16 +95,8 @@ bool NLargs::parseArg (const char* argv)
 
 bool NLargs::parse (const tinyxml2::XMLElement* elem)
 {
-  if (!strcasecmp(elem->Value(),"geometry"))
+  if (!strcasecmp(elem->Value(),"finitedeformation"))
   {
-    int dim = 3;
-    if (!utl::getAttribute(elem,"dimension",dim))
-      utl::getAttribute(elem,"dim",dim);
-    twoD = dim == 2;
-  }
-  else if (!strcasecmp(elem->Value(),"finitedeformation"))
-  {
-    utl::getAttribute(elem,"adaptive",adaptive);
     const tinyxml2::XMLElement* child = elem->FirstChildElement("formulation");
     if (child) this->parseFormulation(child);
   }
@@ -123,7 +117,7 @@ bool NLargs::parse (const tinyxml2::XMLElement* elem)
       algor = NEWHHT;
   }
 
-  return IFEM::getOptions().parseDiscretizationTag(elem);
+  return this->SIMargsBase::parse(elem);
 }
 
 
@@ -135,9 +129,9 @@ void NLargs::parseFormulation (const tinyxml2::XMLElement* elem)
   const tinyxml2::XMLElement* child = elem->FirstChildElement();
   for (; child; child = child->NextSiblingElement())
     if (!strcasecmp(child->Value(),"planestrain"))
-      Elastic::planeStrain = twoD;
+      Elastic::planeStrain = dim == 2;
     else if (!strcasecmp(child->Value(),"axisymmetric"))
-      Elastic::axiSymmetry = twoD;
+      Elastic::axiSymmetry = dim == 2;
     else if (!strcasecmp(child->Value(),"totallagrange"))
       form = SIM::TOTAL_LAGRANGE;
     else if (!strcasecmp(child->Value(),"updatedlagrange") &&
