@@ -32,6 +32,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <ctype.h>
 
 
@@ -129,6 +130,7 @@ int main (int argc, char** argv)
   bool dumpNodeMap = false;
   bool tracRes = false;
   char* infile = nullptr;
+  char* g2file = nullptr;
   char* supid = nullptr;
   Elasticity::wantStrain = false;
   Elasticity::wantPrincipalStress = true;
@@ -242,21 +244,44 @@ int main (int argc, char** argv)
       mlcase = true;
     else if (!strcmp(argv[i],"-dumpModes"))
       dumpModes = true;
-    else if (!infile)
-    {
-      infile = argv[i];
-      if (strcasestr(infile,".xinp"))
-      {
-        if (!args.readXML(infile,false))
-          return 1;
-        i = 0; // start over and let command-line options override input file
-      }
-    }
-    else
+    else if (infile)
       std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
+    else if (strcasestr(argv[i],".g2"))
+      g2file = argv[i];
+    else if (strcasestr(infile = argv[i],".xinp"))
+    {
+      if (args.readXML(infile,false))
+        i = 0; // start over and let command-line options override input file
+      else
+        return 1; // pre-parse failure
+    }
 
   if (iop >= 200)
     noProj = noError = true;
+
+  if (g2file && !infile)
+  {
+    // Create a temporary input file referring to the g2-file
+    static char tmpname[24] = "/tmp/tmp_XXXXXX.xinp";
+    int fd = mkstemps(tmpname,5);
+    infile = const_cast<char*>(tmpname);
+    std::string xinp = "<simulation><geometry>\n"
+      "  <patchfile>" + std::string(g2file) +
+      "</patchfile>\n</geometry></simulation>\n";
+    if (fd < 0 || write(fd,xinp.c_str(),xinp.size()) < 0)
+    {
+      std::cerr <<" *** Failed to write temporary file "<< tmpname << std::endl;
+      return 1;
+    }
+    close(fd);
+    if (IFEM::getOptions().format >= 0)
+    {
+      // Set default vtf-file name
+      std::string& vtf = IFEM::getOptions().vtf;
+      vtf = g2file;
+      vtf.replace(vtf.find_last_of('.'),std::string::npos,".vtf");
+    }
+  }
 
   if (!infile)
   {
