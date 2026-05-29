@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!-- 2D helix with self-interconnection. !-->
+
+<simulation>
+
+  <geometry dim="2">
+    <patchfile>snail-p1.g2</patchfile>
+    <topologysets>
+      <set name="fixed" type="nodes">
+        <item patch="1">22:31</item>
+      </set>
+      <set name="loaded" type="edge">
+        <item patch="1">2</item>
+      </set>
+    </topologysets>
+    <coupling patch="1" xtol="0.001">
+      32  1 1.0 \
+      33  2 1.0 \
+      34  3 1.0 \
+      35  4 1.0 \
+      36  5 1.0 \
+      37  6 1.0 \
+      38  7 1.0 \
+      39  8 1.0 \
+      40  9 1.0 \
+      41 10 1.0 \
+      42 11 1.0
+    </coupling>
+  </geometry>
+
+  <boundaryconditions>
+    <dirichlet set="fixed" comp="12"/>
+    <neumann set="loaded" direction="2">-1.0e9</neumann>
+  </boundaryconditions>
+
+</simulation>

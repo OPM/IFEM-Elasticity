@@ -231,6 +231,7 @@ ifem_add_regression_test(
     Linear/RectPlate-modal.reg
     Linear/ScordelisLo-p4-4x4.reg
     Linear/ScordelisLo-symm-p4-2x2.reg
+    Linear/Snail-p1.reg
     Linear/SquarePlate-Lagrange.reg
     Linear/SquarePlate-Spectral.reg
     Linear/SquarePlate-Splines.reg
