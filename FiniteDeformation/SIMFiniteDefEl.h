@@ -86,10 +86,11 @@ public:
 
   //! \brief Writes current model geometry to the VTF-file.
   //! \param nBlock Running result block counter
-  //! \param[in] inpFile File name used to construct the VTF-file name from
+  //! \param[in] time The time from which this (new) geometry applies
+  //! \param[in] append If \e true, append new blocks to existing ones, if any
   //!
   //! \details This method is overridden to also write out the contact bodies.
-  virtual bool writeGlvG(int& nBlock, const char* inpFile, bool = true);
+  virtual bool writeGlvG(int& nBlock, double time, bool append);
   //! \brief Writes contact body movements to the VTF-file.
   //! \param nBlock Running result block counter
   //! \param[in] iStep Load/time step identifier

@@ -387,9 +387,9 @@ void SIMFiniteDefEl<Dim>::printIFforces (const Vector& sf, RealArray& weights)
 
 
 template<class Dim>
-bool SIMFiniteDefEl<Dim>::writeGlvG (int& nBlock, const char* inpFile, bool)
+bool SIMFiniteDefEl<Dim>::writeGlvG (int& nBlock, double time, bool append)
 {
-  if (!this->SIMElasticity<Dim>::writeGlvG(nBlock,inpFile))
+  if (!this->SIMElasticity<Dim>::writeGlvG(nBlock,time,append))
     return false;
 
   return this->writeGlvBodies(this->getVTF(),nBlock);

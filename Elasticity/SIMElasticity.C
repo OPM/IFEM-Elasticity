@@ -878,10 +878,9 @@ void SIMElasticity<Dim>::printNormGroup (const Vector& gNorm,
 */
 
 template<class Dim>
-bool SIMElasticity<Dim>::writeGlvG (int& nBlock,
-                                    const char* inpFile, bool doClear)
+bool SIMElasticity<Dim>::writeGlvG (int& nBlock, double time, bool append)
 {
-  if (!this->Dim::writeGlvG(nBlock,inpFile,doClear))
+  if (!this->Dim::writeGlvG(nBlock,time,append))
     return false;
   else if (!plotRgd)
     return true;
