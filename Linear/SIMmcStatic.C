@@ -73,12 +73,12 @@ int SIMmcStatic::solveStatic (const char* inpfile,
     return 0; // No VTF output
 
   // Helper class for cleaning the VTF objects on termination
-  class clearVTF
+  class ClearVTF
   {
     std::vector<SIMoutput*>& ourSims;
   public:
-    clearVTF(std::vector<SIMoutput*>& sims) : ourSims(sims) {}
-    ~clearVTF() { for (SIMoutput* sim : ourSims) sim->setVTF(nullptr); }
+    ClearVTF(std::vector<SIMoutput*>& sims) : ourSims(sims) {}
+    ~ClearVTF() { for (SIMoutput* sim : ourSims) sim->setVTF(nullptr); }
   } vtfCleaner(mySims);
 
   // Write VTF-file with model geometry
@@ -91,7 +91,7 @@ int SIMmcStatic::solveStatic (const char* inpfile,
   {
     startBlk[i] = geoBlk;
     mySims[i]->setVTF(mySims.front()->getVTF());
-    if (!mySims[i]->writeGlvG(geoBlk,nullptr,true))
+    if (!mySims[i]->writeGlvG(geoBlk,0.0,true))
       return 12;
   }
 

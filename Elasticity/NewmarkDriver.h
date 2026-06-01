@@ -101,6 +101,14 @@ public:
 
     double nextSave = params.time.t + Newmark::opt.dtSave;
 
+    if (Newmark::opt.format >= 0)
+    {
+      PROFILE("Postprocessing");
+      // Save geometry to VTF
+      if (!this->saveModel(params.time.t))
+        return 4;
+    }
+
     // Open output file for result point print, if requested
     std::ostream* os = !rptFile.empty() ? new std::ofstream(rptFile) : nullptr;
     utl::LogStream* log = os ? new utl::LogStream(*os) : &IFEM::cout;

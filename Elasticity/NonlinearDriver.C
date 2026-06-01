@@ -248,12 +248,16 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
   if (getMaxVals && !printMax)
     printMax = const_cast<Elasticity*>(elp)->initMaxVals(1);
 
-  int iStep = aStep = 0; // Save initial state to VTF
-  if (save0 && opt.format >= 0 && params.multiSteps() && params.time.dt > 0.0)
+  int iStep = aStep = 0;
+  if (opt.format >= 0)
   {
     PROFILE("Postprocessing");
-    if (!this->saveStep(-(++iStep),params.time.t))
+    // Save geometry and (optionally) the initial state to VTF
+    if (!this->saveModel(params.time.t))
       return 4;
+    if (save0 && params.multiSteps() && params.time.dt > 0.0)
+      if (!this->saveStep(-(++iStep),params.time.t))
+        return 4;
   }
 
   // Initialize mesh adaptation parameters
