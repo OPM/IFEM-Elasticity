@@ -27,7 +27,7 @@
 */
 
 template<class Simulator>
-int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
+int runSimulator (Simulator& simulator, SIMoutput& model, char* infile,
                   double stopTime, double zero_tol, double outPrec)
 {
   utl::profiler->start("Model input");
@@ -47,16 +47,13 @@ int runSimulator (Simulator& simulator, SIMbase& model, char* infile,
   if (!model.preprocess())
     return 2;
 
-  if (model.opt.format >= 0)
-  {
-    // Save FE model to VTF file for visualization
-    model.opt.nViz[2] = 1;
-    if (!simulator.saveModel(infile))
-      return 3;
-  }
+  // Open VTF file for visualization
+  if (!model.openGlv(infile))
+    return 3;
 
-  if (stopTime < 0.0)
-    return 0; // Data check only, no simulation
+  if (stopTime < 0.0) // Data check only, no simulation
+    // Save FE model to VTF file for visualization
+    return simulator.saveModel() && model.writeGlvStep(1) ? 0 : 3;
 
   // Initialize the solution vectors
   simulator.initSol();

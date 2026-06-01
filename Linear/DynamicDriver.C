@@ -43,8 +43,8 @@ int dynamicSim (char* infile, SIMoutput* model, bool fixDup,
   if (!model->preprocess({},fixDup))
     return 2;
 
-  // Save FE model to VTF file for visualization
-  if (model->opt.format >= 0 && !simulator.saveModel(infile))
+  // Open VTF file for visualization
+  if (!model->openGlv(infile))
     return 3;
 
   // Define the initial configuration and initialize the solution vectors

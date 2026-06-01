@@ -48,19 +48,28 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
 {
   utl::profiler->start("Model input");
 
-  std::ostream* oss = nullptr;
-
-  // Lambda function cleaning heap-allocated objects before exiting.
-  auto&& exitSim = [oss,model](int status)
+  // Helper class cleaning the heap-allocated objects before exiting
+  class HeapObjects
   {
-    delete oss;
-    delete model;
-    return status;
-  };
+    SIMbase* ourSim;
+  public:
+    DataExporter* writer = nullptr;
+    HDF5Restart* restart = nullptr;
+    std::ostream* os = nullptr;
+
+    HeapObjects(SIMbase* sim) : ourSim(sim) {}
+    ~HeapObjects()
+    {
+      delete writer;
+      delete restart;
+      delete os;
+      delete ourSim;
+    }
+  } output(model);
 
   // Read in solver and model definitions
   if (!simulator.read(infile))
-    return exitSim(1);
+    return 1;
 
   // Let the stop time specified on command-line override input file setting
   if (stopTime > 0.0)
@@ -73,18 +82,11 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
 
   // Preprocess the model and establish data structures for the algebraic system
   if (!model->preprocess(ignoredPatches,fixDup))
-    return exitSim(2);
+    return 2;
 
-  if (model->opt.format >= 0)
-  {
-    // Save FE model to VTF file for visualization
-    if (model->getNoSpaceDim() < 3)
-      model->opt.nViz[2] = 1;
-    if (!simulator.saveModel(infile))
-      return exitSim(4);
-    else if (stopTime < 0.0 && !model->writeGlvStep(1))
-      return exitSim(4);
-  }
+  // Open VTF file for visualization
+  if (!model->openGlv(infile))
+    return 4;
 
   if (dtDump < 0.0)
   {
@@ -98,13 +100,14 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
     if (stopTime >= 0.0)
     {
       strcat(strtok(infile,"."),".sol");
-      oss = new std::ofstream(infile);
-      *oss <<"#NPoints="<< model->getNoNodes() <<"\n";
+      output.os = new std::ofstream(infile);
+      *output.os <<"#NPoints="<< model->getNoNodes() <<"\n";
     }
   }
 
-  if (stopTime < 0.0)
-    return exitSim(0); // model check
+  if (stopTime < 0.0) // model check
+    // Save FE model to VTF file for visualization
+    return simulator.saveModel() && model->writeGlvStep(1) ? 0 : 4;
 
   size_t numPatch = 1;
   const Elasticity* lelp;
@@ -135,18 +138,17 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
 
   // Initialize the linear equation solver
   if (!simulator.initEqSystem(!dynSim, dynSim ? 0 : model->getNoFields()))
-    return exitSim(3);
+    return 3;
 
   // Load solution state from serialized data in case of restart
   if (!simulator.checkForRestart())
-    return exitSim(5);
+    return 5;
 
   // Open HDF5 result database
-  DataExporter* writer = nullptr;
   if (model->opt.dumpHDF5(infile))
   {
-    const std::string& fileName = model->opt.hdf5;
-    IFEM::cout <<"\nWriting HDF5 file "<< fileName <<".hdf5"<< std::endl;
+    const std::string& fName = model->opt.hdf5;
+    IFEM::cout <<"\nWriting HDF5 file "<< fName <<".hdf5"<< std::endl;
 
     // Include secondary results only if no projection has been requested.
     // The secondary results will be projected anyway, but without the
@@ -161,29 +163,28 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
     if (model->hasElementActivator())
       results |= DataExporter::ELEMENT_MASK;
 
-    writer = new DataExporter(true,model->opt.saveInc);
-    writer->registerWriter(new HDF5Writer(fileName,model->getProcessAdm()));
-    writer->registerField("u","solution",DataExporter::SIM,results);
-    writer->setFieldValue("u",model,&simulator.getSolution(),
-                          nullptr,simulator.getNorms());
+    output.writer = new DataExporter(true,model->opt.saveInc);
+    output.writer->registerWriter(new HDF5Writer(fName,model->getProcessAdm()));
+    output.writer->registerField("u","solution",DataExporter::SIM,results);
+    output.writer->setFieldValue("u",model,&simulator.getSolution(),
+                                 nullptr,simulator.getNorms());
     if (dynSim)
     {
-      writer->registerField("v","velocity",DataExporter::SIM,
-                            -DataExporter::PRIMARY);
-      writer->setFieldValue("v",model,&dynSim->getVelocity());
-      writer->registerField("a","acceleration",DataExporter::SIM,
-                            -DataExporter::PRIMARY);
-      writer->setFieldValue("a",model,&dynSim->getAcceleration());
+      output.writer->registerField("v","velocity",DataExporter::SIM,
+                                   -DataExporter::PRIMARY);
+      output.writer->setFieldValue("v",model,&dynSim->getVelocity());
+      output.writer->registerField("a","acceleration",DataExporter::SIM,
+                                   -DataExporter::PRIMARY);
+      output.writer->setFieldValue("a",model,&dynSim->getAcceleration());
     }
     if (projectType)
     {
-      writer->registerField("sigma","projected",DataExporter::SIM,
-                            DataExporter::SECONDARY,projectType);
-      writer->setFieldValue("sigma",model,simulator.getProjection());
+      output.writer->registerField("sigma","projected",DataExporter::SIM,
+                                   DataExporter::SECONDARY,projectType);
+      output.writer->setFieldValue("sigma",model,simulator.getProjection());
     }
   }
 
-  HDF5Restart* restart = nullptr;
   if (model->opt.restartInc > 0)
   {
     std::string hdf5file(infile);
@@ -195,8 +196,8 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
     for (int i = 1; std::filesystem::exists(hdf5file + ".hdf5"); i++)
       hdf5file = hdf5file.substr(0,idot) + std::to_string(i);
     IFEM::cout <<"\nWriting HDF5 file "<< hdf5file <<".hdf5"<< std::endl;
-    restart = new HDF5Restart(hdf5file,model->getProcessAdm(),
-                              model->opt.restartInc);
+    output.restart = new HDF5Restart(hdf5file,model->getProcessAdm(),
+                                     model->opt.restartInc);
   }
 
   if (projectType)
@@ -204,14 +205,10 @@ int runSimulator (Simulator& simulator, SIMoutput* model, char* infile,
                <<"\nsmoothed secondary solution fields."<< std::endl;
 
   // Now invoke the main solution driver
-  utl::LogStream log(oss);
-  int status = simulator.solveProblem(writer, restart, oss ? &log : nullptr,
-                                      printMax, std::abs(dtDump),
-                                      zero_tol, outPrec);
-
-  delete writer;
-  delete restart;
-  return exitSim(status);
+  utl::LogStream log(output.os);
+  return simulator.solveProblem(output.writer, output.restart,
+                                output.os ? &log : nullptr,
+                                printMax, std::abs(dtDump), zero_tol, outPrec);
 }
 
 
@@ -288,18 +285,18 @@ int main (int argc, char** argv)
     {
       dtDump = atof(argv[++i]);
       if (++i < argc && !strcmp(argv[i],"raw"))
-	dtDump *= -1;
+        dtDump *= -1;
       else
-	--i;
+        --i;
     }
 #ifndef USE_OPENMP
     else if (!strcmp(argv[i],"-dbgElm"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
-	utl::parseIntegers(dbgElms,argv[++i]);
+        utl::parseIntegers(dbgElms,argv[++i]);
 #endif
     else if (!strcmp(argv[i],"-ignore"))
       while (i < argc-1 && isdigit(argv[i+1][0]))
-	utl::parseIntegers(ignoredPatches,argv[++i]);
+        utl::parseIntegers(ignoredPatches,argv[++i]);
     else if (!strcmp(argv[i],"-vox") && i < argc-1)
       VTF::vecOffset[0] = atof(argv[++i]);
     else if (!strcmp(argv[i],"-voy") && i < argc-1)
