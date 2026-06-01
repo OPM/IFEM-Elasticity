@@ -72,25 +72,27 @@ int SIMmcStatic::solveStatic (const char* inpfile,
   if (opt.format < 0)
     return 0; // No VTF output
 
-  // Lambda function for cleaning the VTF objects on termination.
-  auto&& terminate = [this](int status)
+  // Helper class for cleaning the VTF objects on termination
+  class clearVTF
   {
-    for (SIMoutput* sim : mySims)
-      sim->setVTF(nullptr);
-    return status;
-  };
+    std::vector<SIMoutput*>& ourSims;
+  public:
+    clearVTF(std::vector<SIMoutput*>& sims) : ourSims(sims) {}
+    ~clearVTF() { for (SIMoutput* sim : ourSims) sim->setVTF(nullptr); }
+  } vtfCleaner(mySims);
 
   // Write VTF-file with model geometry
   int geoBlk = 0, nBlock = 0;
   std::vector<int> startBlk(nSim,0);
   if (!mySims.front()->writeGlvG(geoBlk,inpfile))
-    return terminate(12);
-  else for (i = 1; i < nSim; i++)
+    return 12;
+
+  for (i = 1; i < nSim; i++)
   {
     startBlk[i] = geoBlk;
     mySims[i]->setVTF(mySims.front()->getVTF());
-    if (!mySims[i]->writeGlvG(geoBlk,nullptr,false))
-      return terminate(12);
+    if (!mySims[i]->writeGlvG(geoBlk,nullptr,true))
+      return 12;
   }
 
   // Write solution fields to VTF-file
@@ -99,11 +101,12 @@ int SIMmcStatic::solveStatic (const char* inpfile,
     mySims[i]->setMode(SIM::RECOVERY);
     mySims[i]->setStartGeo(startBlk[i]);
     if (!mySims[i]->writeGlvS(displ,1,nBlock))
-      return terminate(16);
+      return 16;
   }
 
   mySims.front()->writeGlvStep(1,0.0,-1);
   mySims.front()->closeGlv();
 
-  return terminate(0);
+  return 0;
+
 }
