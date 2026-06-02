@@ -12,7 +12,7 @@ mechanics problems, built using the [IFEM](https://github.com/OPM/IFEM) library.
 ### Getting the code
 
 This is done by first navigating to a folder `<App root>` in which you want
-the the applications and typing
+the applications and typing
 
     git clone https://github.com/OPM/IFEM-Elasticity
 
