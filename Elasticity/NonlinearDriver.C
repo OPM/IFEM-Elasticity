@@ -393,7 +393,7 @@ int NonlinearDriver::solveProblem (DataExporter* writer, HDF5Restart* restart,
             return 11;
 
         // Write element norms
-        if (!model.writeGlvN(eNorm,iStep,nBlock))
+        if (!model.writeGlvN(eNorm,iStep,nBlock,200,tn))
           return 11;
       }
 

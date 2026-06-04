@@ -956,7 +956,7 @@ int main (int argc, char** argv)
     if (!model->writeGlvN(eNorm,1,nBlock))
       return terminate(19);
 
-    if (!model->writeGlvN(fNorm,1,nBlock,300,"Dual"))
+    if (!model->writeGlvN(fNorm,1,nBlock,300,0.0,"Dual"))
       return terminate(19);
 
     model->writeGlvStep(1,0.0,-1);
