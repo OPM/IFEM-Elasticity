@@ -38,53 +38,52 @@ protected:
   //! \brief Parses a data section from the input stream.
   //! \param[in] keyWord Keyword of current data section to read
   //! \param is The file stream to read from
-  virtual bool parse(char* keyWord, std::istream& is);
+  bool parse(char* keyWord, std::istream& is) override;
   //! \brief Parses a data section from an XML element.
   //! \param[in] elem The XML element to parse
-  virtual bool parse(const tinyxml2::XMLElement* elem);
+  bool parse(const tinyxml2::XMLElement* elem) override;
 
   //! \brief Parses material data from an XML element.
   //! \param[in] elem The XML element to parse
   virtual Material* parseMaterial(const tinyxml2::XMLElement* elem);
 
   //! \brief Returns the actual integrand.
-  virtual ElasticBase* getIntegrand();
+  ElasticBase* getIntegrand() override;
 
   //! \brief Performs some pre-processing tasks on the FE model.
-  virtual bool preprocessB();
+  bool preprocessB() override;
 
   //! \brief Creates a property set for contact condition on an entity set.
   //! \param[in] slaveSet Name of the slave boundary entity set
   //! \param[out] code Property code associated with the contact set
-  virtual bool createContactSet(const std::string& slaveSet, int& code);
+  bool createContactSet(const std::string& slaveSet, int& code) override;
 
   //! \brief Specialized preprocessing performed before assembly initialization.
   //! \param ngnod Total number of nodal points in this model
-  virtual bool preprocessBeforeAsmInit(int& ngnod);
+  bool preprocessBeforeAsmInit(int& ngnod) override;
 
   //! \brief Assembles problem-dependent discrete terms, if any.
-  virtual bool assembleDiscreteTerms(const IntegrandBase* problem,
-                                     const TimeDomain&);
+  bool assembleDiscreteTerms(const IntegrandBase* problem,
+                             const TimeDomain&) override;
 
 public:
   //! \brief Prints out problem-specific data to the log stream.
-  virtual bool printProblem() const;
+  bool printProblem() const override;
 
   //! \brief Updates the time-dependent in-homogeneous Dirichlet coefficients.
   //! \param[in] time Current time
   //! \param[in] prevSol Pointer to previous primary solution in DOF-order
-  //! \param[in] tangent Pointer to previous primary solution in DOF-order
   //! \param[in] tangent If \e true, use time-derivatives of prescribed values
-  virtual bool updateDirichlet(double time, const Vector* prevSol, bool tangent);
+  bool updateDirichlet(double time, const Vector* prevSol, bool tangent) override;
 
   //! \brief Updates Problem-dependent state based on current solution.
   //! \param[in] solution Current primary solution vector
-  virtual bool updateConfiguration(const Vector& solution);
+  bool updateConfiguration(const Vector& solution) override;
 
   //! \brief Prints interface force resultants associated with given boundaries.
   //! \param[in] sf Internal nodal forces
   //! \param weights Nodal weights (in case some nodes are present in more sets)
-  virtual void printIFforces(const Vector& sf, RealArray& weights);
+  void printIFforces(const Vector& sf, RealArray& weights) override;
 
   //! \brief Writes current model geometry to the VTF-file.
   //! \param nBlock Running result block counter
@@ -92,17 +91,17 @@ public:
   //! \param[in] append If \e true, append new blocks to existing ones, if any
   //!
   //! \details This method is overridden to also write out the contact bodies.
-  virtual bool writeGlvG(int& nBlock, double time, bool append);
+  bool writeGlvG(int& nBlock, double time, bool append) override;
   //! \brief Writes contact body movements to the VTF-file.
   //! \param nBlock Running result block counter
   //! \param[in] iStep Load/time step identifier
-  virtual bool writeGlvA(int& nBlock, int iStep, double, int) const;
+  bool writeGlvA(int& nBlock, int iStep, double, int) const override;
 
   //! \brief Dumps additional problem-specific results in ASCII format.
   //! \param os Output stream to write the solution data to
   //! \param[in] prec Number of digits after the decimal point
-  virtual void dumpMoreResults(double, utl::LogStream& os,
-                               std::streamsize prec) const;
+  void dumpMoreResults(double, utl::LogStream& os,
+                       std::streamsize prec) const override;
 
 private:
   NLoptions nlo; //!< Input options defining the nonlinear formulation
