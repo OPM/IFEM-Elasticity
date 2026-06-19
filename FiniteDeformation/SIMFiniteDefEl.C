@@ -363,12 +363,12 @@ bool SIMFiniteDefEl<Dim>::printProblem () const
 
 
 template<class Dim>
-bool SIMFiniteDefEl<Dim>::updateDirichlet (double time, const Vector* prevSol)
+bool SIMFiniteDefEl<Dim>::updateDirichlet (double time, const Vector* prevSol, bool tangent)
 {
   if (prevSol)
     this->SIMContact::updateDirichlet(time);
 
-  return this->SIMElasticity<Dim>::updateDirichlet(time,prevSol);
+  return this->SIMElasticity<Dim>::updateDirichlet(time,prevSol,tangent);
 }
 
 
