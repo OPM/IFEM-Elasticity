@@ -73,7 +73,9 @@ public:
   //! \brief Updates the time-dependent in-homogeneous Dirichlet coefficients.
   //! \param[in] time Current time
   //! \param[in] prevSol Pointer to previous primary solution in DOF-order
-  virtual bool updateDirichlet(double time, const Vector* prevSol);
+  //! \param[in] tangent Pointer to previous primary solution in DOF-order
+  //! \param[in] tangent If \e true, use time-derivatives of prescribed values
+  virtual bool updateDirichlet(double time, const Vector* prevSol, bool tangent);
 
   //! \brief Updates Problem-dependent state based on current solution.
   //! \param[in] solution Current primary solution vector
