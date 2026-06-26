@@ -1,8 +1,6 @@
-# IFEM Elasticity
-
 ## Introduction
 
-This module contains applications and libraries for solving various solid
+This repository contains applications and libraries for solving various solid
 mechanics problems, built using the [IFEM](https://github.com/OPM/IFEM) library.
 
 ### Getting all dependencies
@@ -20,11 +18,11 @@ the applications and typing
 
 To compile, first navigate to the root catalogue `<App root>`.
 
-1. `cd IFEM-Elasticity`
-2. `mkdir Debug`
-3. `cd Debug`
-5. `cmake -DCMAKE_BUILD_TYPE=Debug ..`
-6. `make`
+    cd IFEM-Elasticity
+    mkdir Debug
+    cd Debug
+    cmake -DCMAKE_BUILD_TYPE=Debug ..
+    make
 
 This will compile the libraries and three applications.
 The executables can be found in the `bin` sub-folder.
