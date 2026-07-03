@@ -103,8 +103,8 @@ bool NonlinearElasticityUL::evalInt (LocalIntegral& elmInt,
   if (!this->kinematics(elMat.vec.front(),fe.N,fe.dNdX,X.x,Bmat,F,E))
     return false;
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
+  double detJW = fe.detJxW;
+  double J = 1.0;
   double r = axiSymmetry ? X.x : 0.0;
 
   bool lHaveStrains = !E.isZero(1.0e-16);
@@ -119,7 +119,7 @@ bool NonlinearElasticityUL::evalInt (LocalIntegral& elmInt,
         for (unsigned short int j = 1; j <= nsd; j++)
           Fi(i,j) = F(i,j);
 
-    double J = Fi.inverse();
+    J = Fi.inverse();
     if (axiSymmetry) J *= F(3,3);
     if (J == 0.0) return false;
 
@@ -190,11 +190,11 @@ bool NonlinearElasticityUL::evalInt (LocalIntegral& elmInt,
 
   if (eS)
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,X,detJW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe,X,J);
 
   if (gS)
     // Integrate the load gradient vector due to other body forces
-    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,X,detJW,true);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe,X,J,true);
 
   return true;
 }
@@ -228,8 +228,7 @@ bool NonlinearElasticityUL::evalBou (LocalIntegral& elmInt,
     tracVal[fe.iGP].second += T;
   }
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
+  double detJW = fe.detJxW;
 
   if (loadOp == 1)
   {
@@ -374,11 +373,8 @@ bool ElasticityNormUL::evalInt (LocalIntegral& elmInt,
     if (!ulp.material->diverged(fe.iGP+1))
       return false;
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  double detJW = ulp.isAxiSymmetric() ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
   // Integrate the norms
-  return evalInt(static_cast<ElmNorm&>(elmInt),sigma,U,F.det(),detJW);
+  return evalInt(static_cast<ElmNorm&>(elmInt),sigma,U,F.det(),fe.detJxW);
 }
 
 
@@ -465,9 +461,6 @@ bool ElasticityNormUL::evalBou (LocalIntegral& elmInt,
   tp[iP] = t;
   up[iP] = u;
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  double detJW = ulp.isAxiSymmetric() ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
-  static_cast<ElmNorm&>(elmInt)[1] += Ux[iP]*detJW;
+  static_cast<ElmNorm&>(elmInt)[1] += Ux[iP]*fe.detJxW;
   return true;
 }

@@ -619,16 +619,17 @@ void Elasticity::formMassMatrix (Matrix& EM, const Vector& N,
 }
 
 
-void Elasticity::formBodyForce (Vector& ES, RealArray& sumLoad, const Vector& N,
-                                const Vec3& X, double detJW, bool grd) const
+void Elasticity::formBodyForce (Vector& ES, RealArray& sumLoad,
+                                const FiniteElement& fe, const Vec3& X,
+                                double scale, bool grd) const
 {
   Vec3 f = this->getBodyforce(X,grd);
   if (f.isZero()) return;
 
-  f *= detJW;
-  for (size_t a = 1; a <= N.size(); a++)
+  f *= scale*fe.detJxW;
+  for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= nsd; i++)
-      ES(nsd*(a-1)+i) += f[i-1]*N(a);
+      ES(nsd*(a-1)+i) += f(i)*fe.N(a);
 
   if (grd) return;
 
@@ -652,9 +653,6 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
     return false;
   }
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
   // Evaluate the surface traction
   Vec3 T = this->getTraction(X,normal);
 
@@ -673,7 +671,7 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
   Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= nsd; i++)
-      ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+      ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*fe.detJxW;
 
   // Integrate total external load
   RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
@@ -693,7 +691,7 @@ bool Elasticity::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
     Vector& GS = static_cast<ElmMats&>(elmInt).b[gS-1];
     for (size_t a = 1; a <= fe.N.size(); a++)
       for (unsigned short int i = 1; i <= nsd; i++)
-        GS(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+        GS(nsd*(a-1)+i) += T[i-1]*fe.N(a)*fe.detJxW;
   }
 
   return true;
@@ -1131,13 +1129,9 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     sigmah.resize(3,utl::RETAIN);
   }
 
-  double detJW = fe.detJxW;
-  if (problem.isAxiSymmetric())
-    detJW *= 2.0*M_PI*X.x;
-
   size_t ip = 0;
   // Integrate the energy norm a(u^h,u^h)
-  pnorm[ip++] += sigmah.dot(Cinv*sigmah)*detJW;
+  pnorm[ip++] += sigmah.dot(Cinv*sigmah)*fe.detJxW;
 
   if (problem.haveLoads())
   {
@@ -1146,7 +1140,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     // Evaluate the displacement field
     Vec3 u = problem.evalSol(pnorm.vec.front(),fe.N);
     // Integrate the external energy (f,u^h)
-    pnorm[ip] += f*u*detJW;
+    pnorm[ip] += f*u*fe.detJxW;
   }
   ip++;
 
@@ -1162,22 +1156,22 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
     }
 
     // Integrate the energy norm a(u,u)
-    pnorm[ip++] += sigma.dot(Cinv*sigma)*detJW;
+    pnorm[ip++] += sigma.dot(Cinv*sigma)*fe.detJxW;
     // Integrate the error in energy norm a(u-u^h,u-u^h)
     error = sigma - sigmah;
-    pnorm[ip++] += error.dot(Cinv*error)*detJW;
+    pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
   }
 
   // Integrate the volume
-  pnorm[ip++] += detJW;
+  pnorm[ip++] += fe.detJxW;
 
   for (const Vector& eps : epsz)
   {
     // Evaluate the variational-consistent postprocessing quantity, a(u^h,w)
     // (typically a sectional force component, or a mean stress component)
-    pnorm[ip++] += sigmah.dot(eps)*detJW;
+    pnorm[ip++] += sigmah.dot(eps)*fe.detJxW;
     if (anasol) // Evaluate the corresponding exact quantity, a(u,w)
-      pnorm[ip++] += sigma.dot(eps)*detJW;
+      pnorm[ip++] += sigma.dot(eps)*fe.detJxW;
   }
 
 #if INT_DEBUG > 3
@@ -1200,10 +1194,10 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 	  sigmar[k++] = psol.dot(fe.N,j,nrcmp);
 
       // Integrate the energy norm a(u^r,u^r)
-      pnorm[ip++] += sigmar.dot(Cinv*sigmar)*detJW;
+      pnorm[ip++] += sigmar.dot(Cinv*sigmar)*fe.detJxW;
       // Integrate the error in energy norm a(u^r-u^h,u^r-u^h)
       error = sigmar - sigmah;
-      pnorm[ip++] += error.dot(Cinv*error)*detJW;
+      pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
 
       if (Elasticity::wantStrain)
       {
@@ -1215,15 +1209,15 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
       double l2e = error.norm2();
 
       // Integrate the L2-norm (sigma^r,sigma^r)
-      pnorm[ip++] += l2u*l2u*detJW;
+      pnorm[ip++] += l2u*l2u*fe.detJxW;
       // Integrate the error in L2-norm (sigma^r-sigma^h,sigma^r-sigma^h)
-      pnorm[ip++] += l2e*l2e*detJW;
+      pnorm[ip++] += l2e*l2e*fe.detJxW;
 
       if (anasol)
       {
 	// Integrate the error in the projected solution a(u-u^r,u-u^r)
 	error = sigma - sigmar;
-	pnorm[ip++] += error.dot(Cinv*error)*detJW;
+	pnorm[ip++] += error.dot(Cinv*error)*fe.detJxW;
 	ip++; // Make room for the local effectivity index here
       }
     }
@@ -1245,12 +1239,8 @@ bool ElasticityNorm::evalBou (LocalIntegral& elmInt, const FiniteElement& fe,
   // Evaluate the displacement field
   Vec3 u = problem.evalSol(pnorm.vec.front(),fe.N);
 
-  double detJW = fe.detJxW;
-  if (problem.isAxiSymmetric())
-    detJW *= 2.0*M_PI*X.x;
-
   // Integrate the external energy
-  pnorm[1] += T*u*detJW;
+  pnorm[1] += T*u*fe.detJxW;
   return true;
 }
 

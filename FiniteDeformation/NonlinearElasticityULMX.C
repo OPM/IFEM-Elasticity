@@ -274,7 +274,7 @@ bool NonlinearElasticityULMX::evalInt (LocalIntegral& elmInt,
   ptData.u[3] = fe.xi;
   ptData.u[4] = fe.eta;
   ptData.u[5] = fe.zeta;
-  ptData.detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
+  ptData.detJW = fe.detJxW;
 
   // Evaluate the pressure modes (generalized coordinates)
   Vec3 Xg = X - mx->X0;
@@ -295,7 +295,7 @@ bool NonlinearElasticityULMX::evalInt (LocalIntegral& elmInt,
 
   if (eS && mxMat)
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(mxMat->b[eS-1],mxMat->c,fe.N,X,J*ptData.detJW);
+    this->formBodyForce(mxMat->b[eS-1],mxMat->c,fe,X,J);
 
   return true;
 }

@@ -111,40 +111,37 @@ bool NonlinearElasticityTL::evalInt (LocalIntegral& elmInt,
       return false;
   }
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
   if (eKm)
   {
     // Integrate the material stiffness matrix
     Matrix CB;
-    CB.multiply(Cmat,Bmat).multiply(detJW); // CB = C*B*|J|*w
+    CB.multiply(Cmat,Bmat).multiply(fe.detJxW); // CB = C*B*|J|*w
     elMat.A[eKm-1].multiply(Bmat,CB,true,false,true); // EK += B^T * CB
   }
 
   if (eKg && lHaveStrains)
     // Integrate the geometric stiffness matrix
-    this->formKG(elMat.A[eKg-1],fe.N,fe.dNdX,X.x,S,detJW);
+    this->formKG(elMat.A[eKg-1],fe.N,fe.dNdX,X.x,S,fe.detJxW);
 
   if (eM)
     // Integrate the mass matrix
-    this->formMassMatrix(elMat.A[eM-1],fe.N,X,detJW);
+    this->formMassMatrix(elMat.A[eM-1],fe.N,X,fe.detJxW);
 
   if (iS && lHaveStrains)
   {
     // Integrate the internal forces
-    S *= -detJW;
+    S *= -fe.detJxW;
     if (!Bmat.multiply(S,elMat.b[iS-1],true,true)) // ES -= B^T*S
       return false;
   }
 
   if (eS)
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,X,detJW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe,X);
 
   if (gS)
     // Integrate the load gradient vector due to other body forces
-    this->formBodyForce(elMat.b[gS-1],elMat.c,fe.N,X,detJW,true);
+    this->formBodyForce(elMat.b[gS-1],elMat.c,fe,X,1.0,true);
 
   return true;
 }
@@ -204,19 +201,16 @@ bool NonlinearElasticityTL::evalBou (LocalIntegral& elmInt,
     if (gS) pullBack(Tg);
   }
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
   // Integrate the force vector
   Vector& ES = static_cast<ElmMats&>(elmInt).b[eS-1];
   for (size_t a = 1; a <= fe.N.size(); a++)
     for (unsigned short int i = 1; i <= nsd; i++)
-      ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*detJW;
+      ES(nsd*(a-1)+i) += T[i-1]*fe.N(a)*fe.detJxW;
 
   // Integrate total external load
   RealArray& sumLoad = static_cast<ElmMats&>(elmInt).c;
   for (unsigned short int i = 0; i < nsd && i < sumLoad.size(); i++)
-    sumLoad[i] += T[i]*detJW;
+    sumLoad[i] += T[i]*fe.detJxW;
 
   if (gS)
   {
@@ -224,7 +218,7 @@ bool NonlinearElasticityTL::evalBou (LocalIntegral& elmInt,
     Vector& GS = static_cast<ElmMats&>(elmInt).b[gS-1];
     for (size_t a = 1; a <= fe.N.size(); a++)
       for (unsigned short int i = 1; i <= nsd; i++)
-        GS(nsd*(a-1)+i) += Tg[i-1]*fe.N(a)*detJW;
+        GS(nsd*(a-1)+i) += Tg[i-1]*fe.N(a)*fe.detJxW;
   }
 
   return true;

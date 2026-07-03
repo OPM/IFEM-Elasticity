@@ -514,8 +514,7 @@ bool NonlinearElasticityFbar::evalInt (LocalIntegral& elmInt,
     dNdx = fe.dNdX;
   }
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  double detJW = (axiSymmetry ? 2.0*M_PI*X.x : 1.0)*fe.detJxW*J;
+  double detJW = fe.detJxW*J;
   double r = axiSymmetry ? X.x + fbar.vec.front().dot(fe.N,0,nsd) : 0.0;
 
   Vector M;
@@ -661,7 +660,7 @@ bool NonlinearElasticityFbar::evalInt (LocalIntegral& elmInt,
 
   if (eS)
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(fbar.b[eS-1],fbar.c,fe.N,X,detJW);
+    this->formBodyForce(fbar.b[eS-1],fbar.c,fe,X,J);
 
   return true;
 }
@@ -753,11 +752,8 @@ bool ElasticityNormFbar::evalInt (LocalIntegral& elmInt,
   if (!p.material->evaluate(Cmat,sigma,U,fe,X,Fbar,E,3,&prm,&F))
     return false;
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  double detJW = p.isAxiSymmetric() ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
   // Integrate the norms
-  return ElasticityNormUL::evalInt(*fbar.myNorm,sigma,U,F.det(),detJW);
+  return ElasticityNormUL::evalInt(*fbar.myNorm,sigma,U,F.det(),fe.detJxW);
 }
 
 

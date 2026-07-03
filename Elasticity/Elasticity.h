@@ -292,12 +292,12 @@ protected:
   //! \brief Calculates integration point body force vector contributions.
   //! \param ES Element vector to receive the body force contributions
   //! \param sumLoad Total external load in each spatial direction
-  //! \param[in] N Basis function values at current point
+  //! \param[in] fe Finite element data at current point
   //! \param[in] X Cartesian coordinates of current point
-  //! \param[in] detJW Jacobian determinant times integration point weight
+  //! \param[in] scale Constant scaling factor
   //! \param[in] grd If \e true, the gradient (time-derivative) is computed
-  void formBodyForce(Vector& ES, RealArray& sumLoad, const Vector& N,
-                     const Vec3& X, double detJW, bool grd = false) const;
+  void formBodyForce(Vector& ES, RealArray& sumLoad, const FiniteElement& fe,
+                     const Vec3& X, double scale = 1.0, bool grd = false) const;
 
   //! \brief Calculates the strain-displacement matrix.
   //! \param[in] Bmat The strain-displacement matrix
@@ -347,7 +347,7 @@ public:
                 bool inverted = false) const;
 
   //! \brief Returns \e true if this is an axial-symmetric problem.
-  bool isAxiSymmetric() const { return axiSymmetry; }
+  virtual bool isAxiSymmetric() const { return axiSymmetry; }
 
   //! \brief Returns the tensile energy array (interface for fracture problems).
   virtual const RealArray* getTensileEnergy() const { return nullptr; }
@@ -441,6 +441,9 @@ public:
   //! \brief Returns whether a norm quantity stores element contributions.
   virtual bool hasElementContributions(size_t i, size_t j) const;
 
+  //! \brief Returns \e true if this is an axial-symmetric problem.
+  virtual bool isAxiSymmetric() const { return myProblem.isAxiSymmetric(); }
+
 private:
   STensorFunc* anasol; //!< Analytical stress field
 };
@@ -479,6 +482,9 @@ public:
 
   //! \brief Returns the number of force components.
   virtual size_t getNoComps() const;
+
+  //! \brief Returns \e true if this is an axial-symmetric problem.
+  virtual bool isAxiSymmetric() const { return myProblem.isAxiSymmetric(); }
 
 private:
   //! \brief Evaluates the integrand for global force resultants.

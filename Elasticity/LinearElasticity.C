@@ -214,14 +214,11 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 #endif
   }
 
-  // Axi-symmetric integration point volume; 2*pi*r*|J|*w
-  const double detJW = axiSymmetry ? 2.0*M_PI*X.x*fe.detJxW : fe.detJxW;
-
   if (eKm > 0)
   {
     // Integrate the material stiffness matrix
     Matrix CB;
-    CB.multiply(Cmat,Bmat).multiply(detJW); // CB = C*B*|J|*w
+    CB.multiply(Cmat,Bmat).multiply(fe.detJxW); // CB = C*B*|J|*w
     elMat.A[eKm-1].multiply(Bmat,CB,true,false,true); // EK += B^T * CB
   }
 
@@ -229,17 +226,17 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   {
     // Integrate the geometric stiffness matrix
     double r = axiSymmetry ? X.x + eV.dot(fe.N,0,nsd) : 0.0;
-    this->formKG(elMat.A[eKg-1],fe.N,fe.dNdX,r,sigma,detJW);
+    this->formKG(elMat.A[eKg-1],fe.N,fe.dNdX,r,sigma,fe.detJxW);
   }
 
   if (eM > 0)
     // Integrate the mass matrix
-    this->formMassMatrix(elMat.A[eM-1],fe.N,X,detJW);
+    this->formMassMatrix(elMat.A[eM-1],fe.N,X,fe.detJxW);
 
   if (iS > 0 && lHaveStrains)
   {
     // Integrate the internal forces
-    sigma *= -detJW;
+    sigma *= -fe.detJxW;
     if (!Bmat.multiply(sigma,elMat.b[iS-1],true,true)) // ES -= B^T*sigma
       return false;
   }
@@ -247,9 +244,9 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (eS > 0)
   {
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,X,detJW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe,X);
     // Integrate the load vector due to initial or temperature strains
-    if (!this->formInitStrainForces(elMat,fe.N,Bmat,Cmat,X,detJW))
+    if (!this->formInitStrainForces(elMat,fe.N,Bmat,Cmat,X,fe.detJxW))
       return false;
   }
 
@@ -273,7 +270,7 @@ bool LinearElasticity::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
 #endif
 
   // Integrate the dual load vector
-  sigma *= detJW;
+  sigma *= fe.detJxW;
   return Bmat.multiply(sigma,elMat.b[dS-1],true,true);
 }
 

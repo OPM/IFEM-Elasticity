@@ -139,7 +139,7 @@ bool NonlinearElasticity::evalInt (LocalIntegral& elmInt,
     // This is too costly, but is basically what is done in the fortran routines
     PROFILE4("dNdX^t*F^t*C*F*dNdX");
     unsigned short int i, j, k, l, m, n;
-    SymmTensor4 D(Cmat,nsd); // fourth-order material tensor
+    SymmTensor4 D(Cmat); // fourth-order material tensor
     for (size_t a = 1; a <= fe.N.size(); a++)
       for (size_t b = 1; b <= fe.N.size(); b++)
 	for (m = 1; m <= nsd; m++)
@@ -182,7 +182,7 @@ bool NonlinearElasticity::evalInt (LocalIntegral& elmInt,
 
   if (eS)
     // Integrate the load vector due to gravitation and other body forces
-    this->formBodyForce(elMat.b[eS-1],elMat.c,fe.N,X,fe.detJxW);
+    this->formBodyForce(elMat.b[eS-1],elMat.c,fe,X);
 
   return true;
 }
