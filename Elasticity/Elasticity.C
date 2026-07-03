@@ -277,16 +277,20 @@ Vec3 Elasticity::getTraction (const Vec3& X, const Vec3& n, bool grd) const
 }
 
 
-Vec3 Elasticity::getBodyforce (const Vec3& X, bool grd) const
+Vec3 Elasticity::getBodyforce (const Vec3& X, double age, bool grd) const
 {
-  if (grd)
-    return bodyFld ? bodyFld->deriv(X,4) : Vec3();
+  double rampS = 1.0;
+  if (age < rampT)
+    rampS = (grd ? 1.0 : age)/rampT;
+  else if (grd)
+    rampS = 0.0;
 
-  Vec3 f(gravity);
-  f *= material->getMassDensity(X);
+  Vec3 f;
+  if (rampS > 0.0)
+    f += rampS*material->getMassDensity(X)*gravity;
 
   if (bodyFld)
-    f += (*bodyFld)(X);
+    f += grd ? bodyFld->deriv(X,4) : (*bodyFld)(X);
 
   return f;
 }
@@ -623,7 +627,7 @@ void Elasticity::formBodyForce (Vector& ES, RealArray& sumLoad,
                                 const FiniteElement& fe, const Vec3& X,
                                 double scale, bool grd) const
 {
-  Vec3 f = this->getBodyforce(X,grd);
+  Vec3 f = this->getBodyforce(X,fe.age,grd);
   if (f.isZero()) return;
 
   f *= scale*fe.detJxW;
@@ -1136,7 +1140,7 @@ bool ElasticityNorm::evalInt (LocalIntegral& elmInt, const FiniteElement& fe,
   if (problem.haveLoads())
   {
     // Evaluate the body load
-    Vec3 f = problem.getBodyforce(X);
+    Vec3 f = problem.getBodyforce(X,fe.age);
     // Evaluate the displacement field
     Vec3 u = problem.evalSol(pnorm.vec.front(),fe.N);
     // Integrate the external energy (f,u^h)

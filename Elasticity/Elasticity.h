@@ -183,8 +183,9 @@ public:
   Vec3 getTraction(const Vec3& X, const Vec3& n, bool grd = false) const;
   //! \brief Evaluates the body force field (if any) at specified point.
   //! \param[in] X Cartesian coordinates of evaluation point
+  //! \param[in] age Time since birth of current element
   //! \param[in] grd If \e true, evaluate the time-derivative of the body force
-  Vec3 getBodyforce(const Vec3& X, bool grd = false) const;
+  Vec3 getBodyforce(const Vec3& X, double age, bool grd = false) const;
   //! \brief Returns whether an external load is defined.
   virtual bool haveLoads() const;
 

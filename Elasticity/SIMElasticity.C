@@ -502,7 +502,7 @@ bool SIMElasticity<Dim>::parse (char* keyWord, std::istream& is)
     if (Dim::dimension == 3) IFEM::cout <<" "<< gz;
     IFEM::cout << std::endl;
     if (elInt)
-      elInt->setGravity(gx,gy,gz);
+      elInt->setGravity(Vec3(gx,gy,gz));
   }
 
   else if (!strncasecmp(keyWord,"CONSTANT_PRESSURE",17))
