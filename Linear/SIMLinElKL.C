@@ -147,12 +147,13 @@ bool SIMLinElKL::parseAnaSol (const tinyxml2::XMLElement* elem)
 }
 
 
-void SIMLinElKL::preprocessA ()
+bool SIMLinElKL::preprocessA ()
 {
-  this->SIMKLShell::preprocessA();
+  if (!this->SIMKLShell::preprocessA())
+    return false;
 
   ThinPlateSol* plSol = dynamic_cast<ThinPlateSol*>(mySol);
-  if (!plSol) return;
+  if (!plSol) return true;
 
   // Define analytical boundary condition fields (for rotations)
   for (Property& prop : myProps)
@@ -198,6 +199,8 @@ void SIMLinElKL::preprocessA ()
           prop.pcode = Property::UNDEFINED;
       }
     }
+
+  return true;
 }
 
 

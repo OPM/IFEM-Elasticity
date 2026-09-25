@@ -69,7 +69,7 @@ protected:
   bool parseTwist(const tinyxml2::XMLElement* elem);
 
   //! \brief Preprocessing performed before the FEM model generation.
-  virtual void preprocessA();
+  virtual bool preprocessA();
   //! \brief Preprocessing performed after the FEM model generation.
   virtual bool preprocessB();
 

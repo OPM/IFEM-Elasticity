@@ -410,7 +410,7 @@ bool SIMKLShell::initNeumann (size_t propInd)
 }
 
 
-void SIMKLShell::preprocessA ()
+bool SIMKLShell::preprocessA ()
 {
   // Check if we have neumann conditions (for Gauss point visualization).
   // Need to do this to enable calculation of the number of boundary
@@ -422,6 +422,8 @@ void SIMKLShell::preprocessA ()
 
   this->getProblem()->setTraction(dummy);
   this->printProblem();
+
+  return true;
 }
 
 

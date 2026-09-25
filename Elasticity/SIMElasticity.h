@@ -85,7 +85,7 @@ public:
 
 protected:
   //! \brief Performs some preprocessing tasks before the FEM model generation.
-  virtual void preprocessA();
+  virtual bool preprocessA();
   //! \brief Specialized preprocessing performed before assembly initialization.
   virtual bool preprocessBeforeAsmInit(int& ngnod);
   //! \brief Preprocessing performed after the system assembly initialization.
