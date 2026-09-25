@@ -93,7 +93,7 @@ protected:
   virtual bool parse(const tinyxml2::XMLElement* elem);
 
   //! \brief Performs some pre-processing tasks on the FE model.
-  virtual void preprocessA();
+  virtual bool preprocessA();
   //! \brief Performs some pre-processing tasks on the FE model.
   virtual bool preprocessB();
 

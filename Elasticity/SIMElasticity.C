@@ -312,7 +312,7 @@ bool SIMElasticity<Dim>::haveAnaSol () const
 */
 
 template<class Dim>
-void SIMElasticity<Dim>::preprocessA ()
+bool SIMElasticity<Dim>::preprocessA ()
 {
   ElasticBase* elInt = this->getIntegrand();
 
@@ -325,7 +325,7 @@ void SIMElasticity<Dim>::preprocessA ()
   if (Dim::dualField && elInt)
     static_cast<Elasticity*>(elInt)->setDualRHS(Dim::dualField);
 
-  if (!Dim::mySol) return;
+  if (!Dim::mySol) return true;
 
   // Define analytical boundary condition fields
   for (Property& p : Dim::myProps)
@@ -357,6 +357,8 @@ void SIMElasticity<Dim>::preprocessA ()
           Dim::myTracs[p.pindx] = new TractionField(*stressField);
       }
     }
+
+  return true;
 }
 
 

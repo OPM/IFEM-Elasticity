@@ -370,7 +370,7 @@ bool SIMElasticBar::initNeumann (size_t propInd)
 }
 
 
-void SIMElasticBar::preprocessA ()
+bool SIMElasticBar::preprocessA ()
 {
   if (nf == 3 && nsd < 3)
     nf = nsd; // 2D bar/cable, two DOFs per node
@@ -378,6 +378,8 @@ void SIMElasticBar::preprocessA ()
   this->printProblem();
   for (ASMbase* pch : myModel)
     pch->setNoFields(nf%10);
+
+  return true;
 }
 
 

@@ -46,7 +46,7 @@ protected:
   virtual bool parseAnaSol(const tinyxml2::XMLElement* elem);
 
   //! \brief Performs some pre-processing tasks on the FE model.
-  virtual void preprocessA();
+  virtual bool preprocessA();
 
   //! \brief Returns norm index of the integrated volume.
   virtual size_t getVolumeIndex() const;
