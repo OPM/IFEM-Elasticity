@@ -267,17 +267,15 @@ int main (int argc, char** argv)
   double dtDump = 0.0;
   double zero_tol = 1.0e-8;
   double stopTime = 0.0;
-  char* infile = nullptr;
   NLargs args;
 
   IFEM::Init(argc,argv,"Finite Deformation Nonlinear solver");
 
-  for (int i = 1; i < argc; i++)
-    if (argv[i] == infile || args.parseArg(argv[i]))
-      ; // ignore the input file on the second pass
-    else if (SIMoptions::ignoreOldOptions(argc,argv,i))
-      ; // ignore the obsolete option
-    else if (!strcmp(argv[i],"-outPrec") && i < argc-1)
+  // Lambda function for parsing the command-line options not stored in NLargs.
+  auto&& external_args = [argc,argv,&ignoredPatches,&outPrec,&dtDump,
+                          &zero_tol,&stopTime](int& i) -> bool
+  {
+    if (!strcmp(argv[i],"-outPrec") && i < argc-1)
       outPrec = atoi(argv[++i]);
     else if (!strcmp(argv[i],"-ztol") && i < argc-1)
       zero_tol = atof(argv[++i]);
@@ -309,16 +307,12 @@ int main (int argc, char** argv)
       stopTime = atof(argv[++i]);
     else if (!strcmp(argv[i],"-check"))
       stopTime = -1.0;
-    else if (infile)
-      std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
-    else if (strcasestr(infile = argv[i],".xinp"))
-    {
-      if (args.readXML(infile,false))
-        i = 0; // start over and let command-line options override input file
-      else
-        return 1; // pre-parse failure
-    }
+    else
+      return false;
+    return true;
+  };
 
+  char* infile = args.preParse(argc,argv,external_args);
   if (!infile)
   {
     std::cout <<"usage: "<< argv[0]

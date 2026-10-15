@@ -118,18 +118,14 @@ int main (int argc, char** argv)
   char printMax = false;
   bool dumpASCII = false;
   bool dumpMatlab = false;
-  bool KLp = false;
-  bool isC1 = false;
-  bool shell = false;
   bool noProj = false;
   bool noError = false;
-  char dualSol = false;
+  unsigned char dualSol = 0;
   char dynSol = false;
   bool mlcase = false;
   bool dumpModes = false;
   bool dumpNodeMap = false;
   bool tracRes = false;
-  char* infile = nullptr;
   char* g2file = nullptr;
   char* supid = nullptr;
   Elasticity::wantStrain = false;
@@ -138,12 +134,14 @@ int main (int argc, char** argv)
 
   int myPid = IFEM::Init(argc,argv,"Linear Elasticity solver");
 
-  for (i = 1; i < argc; i++)
-    if (argv[i] == infile || args.parseArg(argv[i]))
-      ; // ignore the input file on the second pass
-    else if (SIMoptions::ignoreOldOptions(argc,argv,i))
-      ; // ignore the obsolete option
-    else if (!strcmp(argv[i],"-printMax"))
+  // Lambda function for parsing the options not stored in ElasticityArgs.
+  auto&& external_args = [argc,argv,&topSets,&ignoredPatches,&iop,&outPrec,
+                          &zero_tol,&checkRHS,&vizRHS,&fixDup,&printMax,
+                          &dumpASCII,&dumpMatlab,&noProj,&noError,
+                          &dualSol,&dynSol,&mlcase,&dumpModes,&dumpNodeMap,
+                          &tracRes,&g2file,&supid,myPid](int& i) -> bool
+  {
+    if (!strcmp(argv[i],"-printMax"))
       printMax = 'G';
     else if (!strcmp(argv[i],"-printMaxPatch"))
       printMax = 'P';
@@ -170,8 +168,7 @@ int main (int argc, char** argv)
         utl::parseIntegers(ignoredPatches,argv[++i]);
     else if (!strncmp(argv[i],"-vo",3) && i < argc-1)
     {
-      int d = tolower(argv[i][3]) - 'x';
-      if (d >= 0 && d < 3)
+      if (int d = tolower(argv[i][3]) - 'x'; d >= 0 && d < 3)
         VTF::vecOffset[d] = atof(argv[++i]);
     }
     else if (!strncmp(argv[i],"-shrink",7) && i < argc-1)
@@ -198,32 +195,6 @@ int main (int argc, char** argv)
       vizRHS = 2;
     else if (!strcmp(argv[i],"-fixDup"))
       fixDup = true;
-    else if (!strcmp(argv[i],"-1DC1"))
-      args.dim = isC1 = true;
-    else if (!strcmp(argv[i],"-1DKL"))
-      args.dim = isC1 = KLp = true;
-    else if (!strncmp(argv[i],"-2DKL",5))
-    {
-      args.dim = 2;
-      isC1 = KLp = true;
-      shell = !strncmp(argv[i]+5,"shel",4);
-    }
-    else if (!strncmp(argv[i],"-1D2DKL",5))
-    {
-      args.dim = 12;
-      isC1 = KLp = true;
-      shell = !strncmp(argv[i]+7,"shel",4);
-    }
-    else if (!strncmp(argv[i],"-2Dpstra",8))
-    {
-      args.dim = 2;
-      Elastic::planeStrain = true;
-    }
-    else if (!strncmp(argv[i],"-2Daxi",6))
-    {
-      args.dim = 2;
-      Elastic::axiSymmetry = true;
-    }
     else if (!strcmp(argv[i],"-strain"))
       Elasticity::wantStrain = true;
     else if (!strncmp(argv[i],"-noPrin",7))
@@ -233,7 +204,7 @@ int main (int argc, char** argv)
     else if (!strncmp(argv[i],"-noE",4))
       noError = true;
     else if (!strncmp(argv[i],"-dualadap",9))
-      dualSol = 'd', args.adap = -2;
+      dualSol = 'D';
     else if (!strncmp(argv[i],"-dual",5))
       dualSol = 'd';
     else if (!strncmp(argv[i],"-dyn",4))
@@ -244,17 +215,14 @@ int main (int argc, char** argv)
       mlcase = true;
     else if (!strcmp(argv[i],"-dumpModes"))
       dumpModes = true;
-    else if (infile)
-      std::cerr <<"  ** Unknown option ignored: "<< argv[i] << std::endl;
-    else if (strcasestr(argv[i],".g2"))
+    else if (strstr(argv[i],".g2") || strstr(argv[i],".G2"))
       g2file = argv[i];
-    else if (strcasestr(infile = argv[i],".xinp"))
-    {
-      if (args.readXML(infile,false))
-        i = 0; // start over and let command-line options override input file
-      else
-        return 1; // pre-parse failure
-    }
+    else
+      return false;
+    return true;
+  };
+
+  char* infile = args.preParse(argc,argv,external_args);
 
   if (iop >= 200)
     noProj = noError = true;
@@ -327,11 +295,14 @@ int main (int argc, char** argv)
   if (IFEM::getOptions().discretization < ASM::Spline || args.dim == 1)
     ASM::cachePolicy = ASM::NO_CACHE;
 
+  if (dualSol == 'D')
+    args.adap = 2;
+
   if (IFEM::getOptions().discretization < ASM::LRSpline)
   {
     if (args.adap)
       IFEM::getOptions().discretization = ASM::LRSpline;
-    else if (isC1)
+    else if (args.isC1)
       IFEM::getOptions().discretization = ASM::SplineC1;
   }
 
@@ -357,7 +328,7 @@ int main (int argc, char** argv)
     IFEM::cout <<"\nSpecified boundary conditions are ignored";
   if (fixDup)
     IFEM::cout <<"\nCo-located nodes will be merged";
-  if (checkRHS && args.dim > 1 && !KLp)
+  if (checkRHS && args.dim > 1 && !args.KLp)
     IFEM::cout <<"\nCheck that each patch has a right-hand coordinate system";
   if (!ignoredPatches.empty())
   {
@@ -382,22 +353,22 @@ int main (int argc, char** argv)
   std::vector<Mode> modes;
   if (args.dim == 1)
   {
-    if (KLp)
+    if (args.KLp)
       model = new SIMLinElBeamC1("Euler-Bernoulli beam solver");
     else
       model = new SIMLinElBeam("Linear Elastic Beam solver", dynSol ? 1 : 0);
   }
-  else if (args.dim == 12 && KLp)
+  else if (args.dim == 12 && args.KLp)
   {
     SIMoutput* model1D = nullptr;
-    if (shell)
+    if (args.shell)
     {
       model1D = new SIMLinElBeam("Linear Elastic Beam solver");
       model1D->opt.discretization = ASM::Lagrange;
     }
     else
       model1D = new SIMLinElBeamC1("Euler-Bernoulli beam solver");
-    model  = new SIMLinElKL("Kirchhoff-Love plate/shell solver",shell);
+    model  = new SIMLinElKL("Kirchhoff-Love plate/shell solver",args.shell);
     theSim = mSim = new SIMmcStatic({model,model1D});
   }
   else if (args.dim == 13)
@@ -414,19 +385,19 @@ int main (int argc, char** argv)
   }
   else if (modalS)
   {
-    if (KLp)
-      model = new SIMLinKLModal(modes,shell);
+    if (args.KLp)
+      model = new SIMLinKLModal(modes,args.shell);
     else if (args.dim == 2)
       model = new SIMLinElModal<SIM2D>(modes,checkRHS);
     else
       model = new SIMLinElModal<SIM3D>(modes,checkRHS);
   }
-  else if (KLp)
-    model = new SIMLinElKL(nullptr,shell);
+  else if (args.KLp)
+    model = new SIMLinElKL(nullptr,args.shell);
   else if (args.dim == 2)
-    model = new SIMLinEl2D(supid,checkRHS,dualSol);
+    model = new SIMLinEl2D(supid,checkRHS,tolower(dualSol));
   else
-    model = new SIMLinEl3D(supid,checkRHS,dualSol);
+    model = new SIMLinEl3D(supid,checkRHS,tolower(dualSol));
 
   AdaptiveSIM* aSim = nullptr;
   if (!theSim)
@@ -546,7 +517,7 @@ int main (int argc, char** argv)
   if (mSim) // Solve the multi-dimensional elasticity problem
     return terminate(mSim->solveStatic(infile,exporter,zero_tol,outPrec));
 
-  if (aSim && !aSim->initAdaptor(abs(args.adap)-1))
+  if (aSim && !aSim->initAdaptor(args.adap-1))
     return terminate(3);
 
   Matrix  Kred, eNorm, fNorm;
@@ -667,7 +638,7 @@ int main (int argc, char** argv)
           return terminate(6);
       if (!model->projectAnaSol(projx[i],pit->first))
         projx[i].clear();
-      else if (KLp && projx[i].size() < projs[i].size())
+      else if (args.KLp && projx[i].size() < projs[i].size())
         // Account for absent shear force components
         // in the analytical solution, insert zeroes instead
         expandNodalVec(projx[i],model->getNoNodes(),
@@ -723,7 +694,7 @@ int main (int argc, char** argv)
       std::streamsize oldPrec = IFEM::cout.precision(outPrec);
       const Vector& norm = gNorm.front();
       double Rel = norm.size() > 2 ? 100.0/norm(3) : 0.0;
-      if (args.dim == 1 && !KLp)
+      if (args.dim == 1 && !args.KLp)
       {
         IFEM::cout <<"L2-norm: |u^h| = (u^h,u^h)^0.5     : "<< norm(1);
         if (norm.size() > 2)
@@ -788,7 +759,7 @@ int main (int argc, char** argv)
           IFEM::cout <<"\nExact error a(e,e)^0.5, e=u-u^rr     : "<< exaErr
                      <<"\n- relative error (% of |u|)   : "<< exaErr*Rel;
         }
-        if (!shell)
+        if (!args.shell)
           IFEM::cout <<"\nL2-norm |s^r| = (s^r,s^r)^0.5        : "<< gNorm[j](3)
                      <<"\nL2-error (e,e)^0.5, e=s^r-s^h        : "<< gNorm[j](4)
                      <<"\n- relative error (% of |s^r|) : "

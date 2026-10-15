@@ -18,14 +18,14 @@
 
 
 /*!
-  \brief Class holding application parameters.
+  \brief Class holding Elasticity application parameters.
 */
 
 class ElasticityArgs : public SIMargsBase
 {
 public:
   //! \brief Default constructor.
-  ElasticityArgs() : SIMargsBase("elasticity"), eig(0) {}
+  ElasticityArgs() : SIMargsBase("elasticity") {}
 
   //! \brief Parses a command-line argument.
   virtual bool parseArg(const char* argv);
@@ -35,7 +35,10 @@ protected:
   virtual bool parse(const tinyxml2::XMLElement* elem);
 
 public:
-  int eig; //!< Eigenvalue solver option
+  int  eig = 0;     //!< Eigenvalue solver option
+  bool KLp = false; //!< If \e true, this is  Kirchhoff-Love plate/shell problem
+  bool isC1 = false; //!< If \e true, a C1-continuous descretization is used
+  bool shell = false; //!< If \e true, this is a shell problem
 };
 
 #endif
