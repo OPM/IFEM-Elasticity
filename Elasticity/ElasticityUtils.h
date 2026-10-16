@@ -43,10 +43,9 @@ namespace Elastic //! Dimension-independent utilities for Elasticity
                            const std::map<int,Vec3>& bCode,
                            const SIMgeneric* model, bool indented = false);
 
-  extern bool planeStrain; //!< Plane strain/stress option - 2D only
-  extern bool axiSymmetry; //!< Axisymmtry option - 2D only
-  extern bool GIpointsVTF; //!< Option for Gauss point output to VTF
-  extern double time;      //!< Time for function evaluation (linear problems)
+  // These global variables are defined and documented in SIMElasticity.C
+  extern bool planeStrain, axiSymmetry, GIpointsVTF;
+  extern double time;
 }
 
 #endif
