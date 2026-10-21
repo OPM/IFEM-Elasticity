@@ -23,10 +23,24 @@ Parsing <geometry>
 	Reading patch 8
 	Reading patch 9
 	Reading patch 10
-  Parsing <nodefile>
-	Reading data file pipe_bifurcation.gno
+  Parsing <topology>
   Parsing <patchfile>
-  Parsing <nodefile>
+  Parsing <topology>
+	Connecting P2 F4 to P1 F3 orient 0
+	Connecting P3 F3 to P1 F4 orient 0
+	Connecting P6 F2 to P1 F2 orient 1
+	Connecting P3 F4 to P2 F3 orient 0
+	Connecting P7 F2 to P2 F2 orient 2
+	Connecting P9 F2 to P3 F2 orient 2
+	Connecting P5 F3 to P4 F4 orient 0
+	Connecting P6 F4 to P4 F3 orient 0
+	Connecting P8 F2 to P4 F2 orient 1
+	Connecting P6 F3 to P5 F4 orient 0
+	Connecting P10 F2 to P5 F2 orient 1
+	Connecting P9 F3 to P7 F4 orient 0
+	Connecting P10 F4 to P7 F3 orient 0
+	Connecting P9 F4 to P8 F3 orient 0
+	Connecting P10 F3 to P8 F4 orient 0
 Parsing <boundaryconditions>
   Parsing <propertyfile>
 	Reading data file pipe_bifurcation.prc
@@ -43,7 +57,7 @@ Number of Gauss points: 4
 Problem definition:
 Elasticity: 3D, gravity = 0 0 0
 LinIsotropic: E = 2.05e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Renumbered 246 nodes.
+Renumbered 179 nodes.
 Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
 Number of elements    12
