@@ -119,10 +119,10 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
 
   const size_t nsd = model.getNoSpaceDim();
 
-  size_t iMax[3];
-  double dMax[3];
+  size_t iMax[4];
+  double dMax[4];
   RealArray RF, Fext;
-  double normL2 = model.solutionNorms(solution.front(),dMax,iMax);
+  double normL2 = model.solutionNorms(solution.front(),dMax,iMax,nsd+1);
   bool haveReac = model.getCurrentReactions(RF,solution.front());
 
   if (calcEn && !adap)
@@ -148,6 +148,9 @@ bool NonlinearDriver::solutionNorms (const TimeDomain& time,
     if (utl::trunc(dMax[d]) != 0.0)
       IFEM::cout <<"\n                            Max "<< char('X'+d)
                  <<"-displacement : "<< dMax[d] <<" node "<< iMax[d];
+  if (utl::trunc(dMax[nsd]) != 0.0)
+    IFEM::cout <<"\n                          Max |u| displacement : "
+               << dMax[nsd] <<" node "<< iMax[nsd];
 
   if (model.extractScalars(Fext))
   {
