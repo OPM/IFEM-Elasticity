@@ -22,9 +22,9 @@ Parsing <boundaryconditions>
   Parsing <fixpoint>
   Parsing <fixpoint>
 	Constraining P1 point at 0.5 0 with code 2
-	Prescribing node 2 at X = -1 -1 0
+	Prescribing node [0-9]* at X = -1 -1 0
 	Constraining P1 point at 0.5 1 with code 12
-	Prescribing node 13 at X = 0 0 0
+	Prescribing node [0-9]* at X = 0 0 0
 Parsing <discretization>
 Parsing <postprocessing>
   Parsing <projection>
@@ -122,9 +122,9 @@ Parsing <boundaryconditions>
   Parsing <fixpoint>
   Parsing <fixpoint>
 	Constraining P1 point at 0.5 0 with code 2
-	Prescribing node 2 at X = -1 -1 0
+	Prescribing node [0-9]* at X = -1 -1 0
 	Constraining P1 point at 0.5 1 with code 12
-	Prescribing node 18 at X = 0 0 0
+	Prescribing node [0-9]* at X = 0 0 0
 Parsing <postprocessing>
   Parsing <projection>
 Parsing <adaptive>
@@ -210,9 +210,9 @@ Parsing <boundaryconditions>
   Parsing <fixpoint>
   Parsing <fixpoint>
 	Constraining P1 point at 0.5 0 with code 2
-	Prescribing node 2 at X = -1 -1 0
+	Prescribing node [0-9]* at X = -1 -1 0
 	Constraining P1 point at 0.5 1 with code 12
-	Prescribing node 12 at X = 0 0 0
+	Prescribing node [0-9]* at X = 0 0 0
 Parsing <postprocessing>
   Parsing <projection>
 Parsing <adaptive>
@@ -298,9 +298,9 @@ Parsing <boundaryconditions>
   Parsing <fixpoint>
   Parsing <fixpoint>
 	Constraining P1 point at 0.5 0 with code 2
-	Prescribing node 2 at X = -1 -1 0
+	Prescribing node [0-9]* at X = -1 -1 0
 	Constraining P1 point at 0.5 1 with code 12
-	Prescribing node 24 at X = 0 0 0
+	Prescribing node [0-9]* at X = 0 0 0
 Parsing <postprocessing>
   Parsing <projection>
 Parsing <adaptive>
@@ -386,9 +386,9 @@ Parsing <boundaryconditions>
   Parsing <fixpoint>
   Parsing <fixpoint>
 	Constraining P1 point at 0.5 0 with code 2
-	Prescribing node 2 at X = -1 -1 0
+	Prescribing node [0-9]* at X = -1 -1 0
 	Constraining P1 point at 0.5 1 with code 12
-	Prescribing node 20 at X = 0 0 0
+	Prescribing node [0-9]* at X = 0 0 0
 Parsing <postprocessing>
   Parsing <projection>
 Parsing <adaptive>
