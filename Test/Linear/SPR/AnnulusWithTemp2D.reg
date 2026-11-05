@@ -32,7 +32,13 @@ Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2e+11 0.3 7850 1.2e-05
 	Initial temperature: 273
-	Temperature: r=sqrt(x\*x+y\*y); a=0.03; b=0.04; Ti=373.0; To=293.0; Ti+(To-Ti)\*log(r/a)/log(b/a)
+	Temperature:
+		r=sqrt(x\*x+y\*y);
+		a=0.03;
+		b=0.04;
+		Ti=373.0;
+		To=293.0;
+		Ti+(To-Ti)\*log(r/a)/log(b/a);
   Parsing <anasol>
 	Analytical solution: Pipe Ri=0.03 Ro=0.04 Ti=373 To=293 Tref=273
 Parsing input file succeeded.

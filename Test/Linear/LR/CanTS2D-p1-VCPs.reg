@@ -25,7 +25,13 @@ Parsing <boundaryconditions>
   Parsing <neumann>
 	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
   Parsing <neumann>
-	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Neumann code 2000000 direction 2 (expression):
+		L=2;
+		H=0.4;
+		I=H\*H\*H/12;
+		Y=y/H-0.5;
+		F0=1000000;
+		-F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y);
 	Constraining P1 point at 0 0 with code 1
 	Prescribing node 1 at X = 0 0 0
 	Constraining P1 point at 0 0.5 with code 12
@@ -126,51 +132,6 @@ Average element error                : 0.81723
 Refining 3 basis functions with errors in range \[35112.3,47234.8] 2.85714% of all basis functions
 Refined mesh: 98 elements 121 nodes.
 Adaptive step 2
-Parsing input file CanTS2D-p1-VCPs.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,1,1D) (1,2,1D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <neumann>
-	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
-  Parsing <neumann>
-	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-	Constraining P1 point at 0 0 with code 1
-	Prescribing node 1 at X = 0 0 0
-	Constraining P1 point at 0 0.5 with code 12
-	Prescribing node 58 at X = 0 0.2 0
-	Constraining P1 point at 0 1 with code 1
-	Prescribing node 25 at X = 0 0.4 0
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-  Parsing <anasol>
-	Analytical solution: Expression
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4 0 0
-	X2     = 0.5 0.1 0
-	comp   = 1
-	comp   = 6
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 3000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
 Number of elements    98
 Number of nodes       121
@@ -231,50 +192,6 @@ Average element error                : 0.68193
 Refining 3 basis functions with errors in range \[6691.23,7616.77] 2.47934% of all basis functions
 Refined mesh: 122 elements 143 nodes.
 Adaptive step 3
-Parsing input file CanTS2D-p1-VCPs.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,1,1D) (1,2,1D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <neumann>
-	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
-  Parsing <neumann>
-	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-	Constraining P1 point at 0 0 with code 1
-	Prescribing node 1 at X = 0 0 0
-	Constraining P1 point at 0 0.5 with code 12
-	Prescribing node 66 at X = 0 0.2 0
-	Constraining P1 point at 0 1 with code 1
-	Prescribing node 29 at X = 0 0.4 0
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-  Parsing <anasol>
-	Analytical solution: Expression
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4375 0.0375 0
-	X2     = 0.4625 0.0625 0
-	comp   = 1
-	comp   = 6
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 3000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
 Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
 Number of elements    122
@@ -336,51 +253,6 @@ Average element error                : 0.55132
 Refining 3 basis functions with errors in range \[718.669,815.554] 2.0979% of all basis functions
 Refined mesh: 146 elements 161 nodes.
 Adaptive step 4
-Parsing input file CanTS2D-p1-VCPs.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,1,1D) (1,2,1D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <neumann>
-	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
-  Parsing <neumann>
-	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-	Constraining P1 point at 0 0 with code 1
-	Prescribing node 1 at X = 0 0 0
-	Constraining P1 point at 0 0.5 with code 12
-	Prescribing node 71 at X = 0 0.2 0
-	Constraining P1 point at 0 1 with code 1
-	Prescribing node 29 at X = 0 0.4 0
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-  Parsing <anasol>
-	Analytical solution: Expression
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.4375 0.0375 0
-	X2     = 0.4625 0.0625 0
-	comp   = 1
-	comp   = 6
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 3000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
 Number of elements    146
 Number of nodes       161
@@ -441,51 +313,6 @@ Average element error                : 0.4621
 Refining 4 basis functions with errors in range \[134.798,196.533] 2.48447% of all basis functions
 Refined mesh: 173 elements 186 nodes.
 Adaptive step 5
-Parsing input file CanTS2D-p1-VCPs.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,1,1D) (1,2,1D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <fixpoint>
-  Parsing <neumann>
-	Neumann code 1000000 direction 1 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; F0\*(L\*H/I)\*Y
-  Parsing <neumann>
-	Neumann code 2000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-	Constraining P1 point at 0 0 with code 1
-	Prescribing node 1 at X = 0 0 0
-	Constraining P1 point at 0 0.5 with code 12
-	Prescribing node 84 at X = 0 0.2 0
-	Constraining P1 point at 0 1 with code 1
-	Prescribing node 29 at X = 0 0.4 0
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-  Parsing <anasol>
-	Analytical solution: Expression
-  Parsing <dualfield>
-	patch  = 1
-	X0     = 0.45 0.05 0
-	X1     = 0.44375 0.04375 0
-	X2     = 0.45625 0.05625 0
-	comp   = 1
-	comp   = 6
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 3000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
  >>> SAM model summary <<<
 Number of elements    173
 Number of nodes       186

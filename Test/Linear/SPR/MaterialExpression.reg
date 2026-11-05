@@ -20,7 +20,10 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 12: (fixed)
   Parsing <neumann>
-	  Stiffness function (expression) : r=sqrt
+	  Stiffness function (expression) :
+		r=sqrt(x\*x+y\*y);
+		theta=atan2(y,x);
+		if(below(r,1.333333),1.0, if(above(r,1.666667),1.0, if(below(theta,0.5109907472970435),1.0, if(above(theta,1.059805579497853),1.0,1.0e3))));
 Equation solver: 1
 Number of Gauss points: 4
 Problem definition:

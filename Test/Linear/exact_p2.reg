@@ -25,7 +25,9 @@ Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 1000 0.3
   Parsing <bodyforce>
-	Bodyforce code 1000012 (expression): 1000/(1-0.3^2)\*(-2\*y^2 - x^2 + 0.3\*x\*(x - 2\*y) - 2\*x\*y + 3 - 0.3) | 1000/(1-0.3^2)\*(-2\*x^2 - y^2 + 0.3\*y\*(y - 2\*x) - 2\*x\*y + 3 - 0.3)
+	Bodyforce code 1000012 (expression):
+		1000/(1-0.3^2)\*(-2\*y^2 - x^2 + 0.3\*x\*(x - 2\*y) - 2\*x\*y + 3 - 0.3)
+		1000/(1-0.3^2)\*(-2\*x^2 - y^2 + 0.3\*y\*(y - 2\*x) - 2\*x\*y + 3 - 0.3)
   Parsing <boundaryforce>
 	Boundary force "edges" code 1000000
 	Analytical solution: Expression

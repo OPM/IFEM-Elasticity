@@ -24,7 +24,13 @@ Parsing <boundaryconditions>
   Parsing <dirichlet>
 	Dirichlet code 2: (fixed)
   Parsing <neumann>
-	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
+	Neumann code 1000000 direction 2 (expression):
+		L=2;
+		H=0.4;
+		I=H\*H\*H/12;
+		Y=y/H-0.5;
+		F0=1000000;
+		-F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y);
 Parsing <elasticity>
   Parsing <isotropic>
 	Material code 0: 2.068e+11 0.29
@@ -100,43 +106,6 @@ Average element error                : 0.81595
 Refining 3 basis functions with errors in range \[184772,188955]
 Refined mesh: 104 elements 125 nodes.
 Adaptive step 2
-Parsing input file CanTS2D-p1.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,2,1D)
-	               support (1,1,0D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <dirichlet>
-	Dirichlet code 1: (fixed)
-  Parsing <dirichlet>
-	Dirichlet code 2: (fixed)
-  Parsing <neumann>
-	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-	Analytical solution: Expression
-  Parsing <dualfield>
-	X0     = 0.6 0 0
-	normal = 1 0 0
-	depth  = 0.1, width = 0
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 2000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
-	Constraining P1 V1 in direction(s) 2
-	Constraining P1 E1 in direction(s) 1
  >>> SAM model summary <<<
 Number of elements    104
 Number of nodes       125
@@ -180,43 +149,6 @@ Average element error                : 0.646644
 Refining 3 basis functions with errors in range \[294874,346829]
 Refined mesh: 125 elements 149 nodes.
 Adaptive step 3
-Parsing input file CanTS2D-p1.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,2,1D)
-	               support (1,1,0D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <dirichlet>
-	Dirichlet code 1: (fixed)
-  Parsing <dirichlet>
-	Dirichlet code 2: (fixed)
-  Parsing <neumann>
-	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-	Analytical solution: Expression
-  Parsing <dualfield>
-	X0     = 0.6 0 0
-	normal = 1 0 0
-	depth  = 0.05, width = 0
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 2000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
-	Constraining P1 V1 in direction(s) 2
-	Constraining P1 E1 in direction(s) 1
  >>> SAM model summary <<<
 Number of elements    125
 Number of nodes       149
@@ -260,43 +192,6 @@ Average element error                : 0.534917
 Refining 3 basis functions with errors in range \[120640,121743]
 Refined mesh: 155 elements 172 nodes.
 Adaptive step 4
-Parsing input file CanTS2D-p1.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,2,1D)
-	               support (1,1,0D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <dirichlet>
-	Dirichlet code 1: (fixed)
-  Parsing <dirichlet>
-	Dirichlet code 2: (fixed)
-  Parsing <neumann>
-	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-	Analytical solution: Expression
-  Parsing <dualfield>
-	X0     = 0.6 0 0
-	normal = 1 0 0
-	depth  = 0.05, width = 0
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 2000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
-	Constraining P1 V1 in direction(s) 2
-	Constraining P1 E1 in direction(s) 1
  >>> SAM model summary <<<
 Number of elements    155
 Number of nodes       172
@@ -340,43 +235,6 @@ Average element error                : 0.435848
 Refining 4 basis functions with errors in range \[88133.6,118254]
 Refined mesh: 185 elements 201 nodes.
 Adaptive step 5
-Parsing input file CanTS2D-p1.xinp
-Parsing <discretization>
-Parsing <geometry>
-  Parsing <refine>
-  Parsing <topologysets>
-	Topology sets: fixed (1,1,1D)
-	               loaded (1,2,1D)
-	               support (1,1,0D)
-  Parsing <refine>
-  Parsing <topologysets>
-Parsing <boundaryconditions>
-  Parsing <dirichlet>
-	Dirichlet code 1: (fixed)
-  Parsing <dirichlet>
-	Dirichlet code 2: (fixed)
-  Parsing <neumann>
-	Neumann code 1000000 direction 2 (expression): L=2; H=0.4; I=H\*H\*H/12; Y=y/H-0.5; F0=1000000; -F0\*(H\*H/I)\*(0.5-x/L)\*(0.25-Y\*Y)
-Parsing <elasticity>
-  Parsing <isotropic>
-	Material code 0: 2.068e+11 0.29
-	Analytical solution: Expression
-  Parsing <dualfield>
-	X0     = 0.6 0 0
-	normal = 1 0 0
-	depth  = 0.05, width = 0
-  Parsing <boundaryforce>
-	Boundary force "fixed" code 2000000
-Parsing <adaptive>
-Parsing <postprocessing>
-  Parsing <projection>
-Parsing input file succeeded.
-Problem definition:
-Elasticity: 2D, gravity = 0 0
-LinIsotropic: plane stress, E = 2.068e+11, nu = 0.29, rho = 7850, alpha = 1.2e-07
-Resolving Dirichlet boundary conditions
-	Constraining P1 V1 in direction(s) 2
-	Constraining P1 E1 in direction(s) 1
  >>> SAM model summary <<<
 Number of elements    185
 Number of nodes       201
