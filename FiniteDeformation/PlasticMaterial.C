@@ -256,25 +256,31 @@ double PlasticMaterial::getInternalVar (int idx, char* label, size_t iP1) const
       p = resPoints[iP2-1];
 
   switch (idx) {
-  case 1:
-    if (label) strcpy(label,"E_pp"); // Equivalent plastic strain
+  case 1: // Equivalent plastic strain
+    if (label)
+      strncpy(label,"E_pp",MAX_LABEL_LENGTH);
     return p ? (p->diverged() ? 0.0 : p->getVariable(6)) : 0.0;
-  case 2:
-    if (label) strcpy(label,"s_h"); // Mean stress
+  case 2: // Mean stress
+    if (label)
+      strncpy(label,"s_h",MAX_LABEL_LENGTH);
     return p ? p->getMeanStress() : 0.0;
-  case 3:
-  case 4:
-  case 5:
-    if (label) sprintf(label,"s_%d",idx-2); // Principal stress
+  case 3: // Max principal stress
+  case 4: // Middle principal stress
+  case 5: // Minimum principal stress
+    if (label && MAX_LABEL_LENGTH > 3)
+      sprintf(label,"s_%d",idx-2);
     return p ? p->getPrnStress(idx-3) : 0.0;
-  case 6:
-    if (label) strcpy(label,"T"); // Stress triaxiality
+  case 6: // Stress triaxiality
+    if (label)
+      strncpy(label,"T",MAX_LABEL_LENGTH);
     return p ? p->getTriax() : 0.0;
-  case 7:
-    if (label) strcpy(label,"L"); // Lode parameter
+  case 7: // Lode parameter
+    if (label)
+      strncpy(label,"L",MAX_LABEL_LENGTH);
     return p ? p->getLode() : 0.0;
-  default:
-    if (label) strcpy(label,"zero");
+  default: // Unknown quantity
+    if (label)
+      strncpy(label,"zero",MAX_LABEL_LENGTH);
     return 0.0;
   }
 }

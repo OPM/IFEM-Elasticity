@@ -364,7 +364,7 @@ void NeoHookeMaterial::volumetricModuli (double J, double& U,
 double NeoHookeMaterial::getInternalVar (int, char* label, size_t) const
 {
   if (label)
-    strcpy(label,"hydrostatic pressure");
+    strncpy(label,"hydrostatic pressure",MAX_LABEL_LENGTH);
 
   return sigma_p;
 }

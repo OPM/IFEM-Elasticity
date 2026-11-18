@@ -35,6 +35,9 @@ protected:
   //! \brief The default constructor is protected to allow sub-classes only.
   Material() {}
 
+  //! \brief Size of internal variable name buffer.
+  static constexpr int MAX_LABEL_LENGTH = 64;
+
 public:
   //! \brief Empty destructor.
   virtual ~Material() {}
@@ -123,7 +126,7 @@ public:
   //! \param[in] idx 1-based index of the internal variable
   const char* getInternalLabel(int idx) const
   {
-    static char label[32];
+    static char label[MAX_LABEL_LENGTH];
     this->getInternalVar(idx,label);
     return label;
   }
