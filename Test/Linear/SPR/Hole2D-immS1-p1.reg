@@ -1,7 +1,7 @@
 ../Hole2D-immS1-p1.xinp -2D -spr
 
 Input file: Hole2D-immS1-p1.xinp
-Equation solver: 1
+Equation solver: 2
 Number of Gauss points: 4
 Parsing input file Hole2D-immS1-p1.xinp
 Parsing <discretization>
@@ -40,7 +40,7 @@ Parsing <elasticity>
 	Variables: nu=0.3;F0=10;a=1; R=sqrt(x\*x+y\*y); R2=if(above(R,a),a\*a/(R\*R),1); R4=if(above(R,a),R2\*R2,1); th=atan2(y,x); C2=cos(2\*th); C4=cos(4\*th); S2=sin(2\*th); S4=sin(4\*th);
 	Stress: F0\*(1-R2\*(1.5\*C2+C4)+1.5\*R4\*C4)| F0\*(-R2\*(0.5\*C2-C4)-1.5\*R4\*C4)| F0\*nu\*(1-2\*R2\*C2)| F0\*(-R2\*(0.5\*S2+S4)+1.5\*R4\*S4)
 Parsing input file succeeded.
-Equation solver: 1
+Equation solver: 2
 Number of Gauss points: 2
 Enabled projection(s): Continuous global L2-projection
 Problem definition:
@@ -62,23 +62,23 @@ Assembling Neumann matrix terms for boundary 2 on P1
 Assembling Neumann matrix terms for boundary 4 on P1
 Solving the equation system ...
  >>> Solution summary <<<
-L2-norm            : 0.0152067
-Max X-displacement : 0.0346016
-Max Y-displacement : 0.00981996
+L2-norm            : 0.0206489
+Max X-displacement : 0.0455382
+Max Y-displacement : 0.0144621
 Projecting secondary solution ...
 	Continuous global L2-projection
-Energy norm |u^h| = a(u^h,u^h)^0.5   : 0.996744
-External energy ((f,u^h)+(t,u^h)^0.5 : 1.13321
+Energy norm |u^h| = a(u^h,u^h)^0.5   : 1.29389
+External energy ((f,u^h)+(t,u^h)^0.5 : 1.29451
 Exact norm  |u|   = a(u,u)^0.5       : 1.29931
-Exact error a(e,e)^0.5, e=u-u^h      : 0.336617
-Exact relative error (%) : 25.9075
+Exact error a(e,e)^0.5, e=u-u^h      : 0.103971
+Exact relative error (%) : 8.00206
 >>> Error estimates based on Continuous global L2-projection <<<
-Energy norm |u^r| = a(u^r,u^r)^0.5   : 0.994697
-Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0638592
- relative error (% of |u|)   : 4.91487
-Exact error a(e,e)^0.5, e=u-u^r      : 0.332576
- relative error (% of |u|)   : 25.5964
-Effectivity index             : 0.189708
-L2-norm |s^r| = (s^r,s^r)^0.5        : 31.6322
-L2-error (e,e)^0.5, e=s^r-s^h        : 1.72651
- relative error (% of |s^r|) : 5.45807
+Energy norm |u^r| = a(u^r,u^r)^0.5   : 1.29118
+Error norm a(e,e)^0.5, e=u^r-u^h     : 0.0836813
+ relative error (% of |u|)   : 6.44046
+Exact error a(e,e)^0.5, e=u-u^r      : 0.0755326
+ relative error (% of |u|)   : 5.8133
+Effectivity index             : 0.804851
+L2-norm |s^r| = (s^r,s^r)^0.5        : 40.6241
+L2-error (e,e)^0.5, e=s^r-s^h        : 2.18408
+ relative error (% of |s^r|) : 5.37631
